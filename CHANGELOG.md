@@ -3,6 +3,12 @@
 Newest first. Each entry: date · who (which AI / person) · what changed · files.
 Add yours at the top before you finish.
 
+## 2026-11-22 · ChatGPT · Private central exam database (deployment pending)
+- Added `supabase/migrations/20261122_private_exam_notices.sql`: private schema, exactly one administrator slot tied to a confirmed Supabase Auth user ID and verified email, unique admin-approved student identity bindings, versioned notice publishing, and own-ID-only lookup RPCs. Anonymous callers and authenticated users cannot read the private tables. All admin RPCs independently check administrator identity.
+- `public/index.html`: OTP verification isolated from legacy grades login; conditional admin page, PDF extraction and row/range review, publication history, identity approval/revocation, central results shared via the exam lookup helper. Verified session and central lookup results stay in memory; no other student's ID rules are returned to students.
+- Not applied to Supabase: connector authorization, Auth email-OTP configuration, singleton admin bootstrap, actual notice import/review and SQL access-control tests remain pending. The supplied PDF is not committed to GitHub. Full central coverage and automatic official notice discovery are not enabled yet. Existing grades login is still legacy email-only.
+- Validation: all inline JS parsed; synthetic admin parser tests confirmed multi-range extraction and no full ranges retained in personal import. Browser/PDF and SQL integration tests still required.
+
 ## 2026-11-22 · ChatGPT · Default course order by grading method
 - `public/index.html`: default order within each semester is required criterion-graded courses, relative-graded courses with at least one recorded actual assessment score or a recorded final grade, relative-graded courses without actual scores, other/unknown grading methods, non-GenEd S/U, then GenEd. Predicted scores are not actual scores; a recorded zero counts. Stable ordering within each group.
 - Keep drag/keyboard reordering as a per-semester manual override; show a restore-default button. The dashboard and course lists share the sorting helper. Existing course data and grades are unchanged.
