@@ -1,3 +1,8 @@
+## 2026-11-22 — ChatGPT: Compact aligned course cards
+
+- `public/index.html`: use seven shared desktop card tracks rather than nine. Let metadata flow immediately after its own title, combine optional warnings into progress, reduce track gaps from 9px to 5px and internal padding, and remove a redundant norm-grading chip when the grade badge already shows that label. Preserve shared score bar/forecast/goal/exam/footer positions and natural readable title wrapping. No exam or grade data changes.
+- `tests/smoke.mjs`: preserve alignment assertions for the important content and buttons; replace strict metadata alignment with proximity to its own title; verify empty warning collapse and compact gap before forecasts. Inline JavaScript syntax checked; browser CI pending.
+
 ## 2026-11-22 — ChatGPT: Personal exam schedule in the existing overview
 
 - `public/index.html`: remove the oversized separate exam-room form. Student ID is only entered on the email-entry screen; missing-ID and account edit actions open that same screen without losing saved grades. Overview is the default route and first navigation item. Fetch device-scoped personal rooms into transient React context, keyed by entered account and courses/sections; keep grade state and score export unchanged. Personal final exam date/time/room supersede general schedule for display, course cards/details, and calendar export. Unmatched or ambiguous rooms are labeled; calendar shows all recorded exam dates independent of the six-item upcoming list. Place upcoming/calendar above course cards. Explicit shared track positions for course cards.

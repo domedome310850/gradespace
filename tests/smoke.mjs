@@ -87,7 +87,7 @@ async function run(browser, lang, width) {
       await page.evaluate(h=>{location.hash=h;},hash);
       await page.waitForTimeout(350);
       const layout=await page.evaluate(()=>{
-        const selectors=['.ccard-name','.ccard-meta','.ccard-bar-slot','.ccard-progress-slot','.ccard-warning-slot','.ccard-forecast-slot','.ccard-goal-slot','.ccard-exam-slot','.ccard-foot','.gbar-track','.ccard-forecast-slot .basis-box','.ccard-goal-slot .ccard-line','.ccard-exam-slot .ccard-line','.ccard-foot > .btn','.goal-pick-button'];
+        const selectors=['.ccard-name','.ccard-bar-slot','.ccard-progress-slot','.ccard-forecast-slot','.ccard-goal-slot','.ccard-exam-slot','.ccard-foot','.gbar-track','.ccard-forecast-slot .basis-box','.ccard-goal-slot .ccard-line','.ccard-exam-slot .ccard-line','.ccard-foot > .btn','.goal-pick-button'];
         let compared=0;const failures=[];
         document.querySelectorAll('.course-grid').forEach(grid=>{
           const cards=[...grid.querySelectorAll('.ccard')],groups=[];
@@ -100,6 +100,18 @@ async function run(browser, lang, width) {
           for(const group of groups){
             if(group.cards.length<2)continue;
             compared++;
+            // Metadata intentionally follows its own title, not the longest neighboring title.
+            // Keep the important score/forecast/goal/exam/footer tracks aligned.
+            for(const c of group.cards){
+              const name=c.querySelector('.ccard-name').getBoundingClientRect();
+              const meta=c.querySelector('.ccard-meta').getBoundingClientRect();
+              if(meta.top-name.bottom>5||meta.top-name.bottom<0)failures.push('metadata detached from title');
+              const warning=c.querySelector('.ccard-warning-slot');
+              if(!warning.textContent.trim()&&getComputedStyle(warning).display!=='none')failures.push('empty warning consumes space');
+            }
+            const progressBottom=Math.max(...group.cards.map(c=>c.querySelector('.ccard-progress-slot').getBoundingClientRect().bottom));
+            const forecastTop=group.cards[0].querySelector('.ccard-forecast-slot').getBoundingClientRect().top;
+            if(forecastTop-progressBottom>8)failures.push('excess gap before forecast');
             const bottoms=group.cards.map(c=>c.getBoundingClientRect().bottom);
             if(Math.max(...bottoms)-Math.min(...bottoms)>2)failures.push('card bottom');
             for(const sel of selectors){
