@@ -851,7 +851,7 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-s
 .ccard-foot { margin-top: auto; min-width: 0; padding-top: 8px; border-top: 1px solid var(--line); }
 .ccard-foot > .row { min-width: 0; }
 .ccard-foot > .btn { flex: none; }
-/* Eight shared tracks: heading, bar, progress, warnings, forecast, goal, exam, footer.
+/* Nine shared tracks: title, metadata, bar, progress, warnings, forecast, goal, exam, footer.
    The sortable wrapper must also be a subgrid so dragging retains the same card geometry. */
 .ccard-slot { min-width: 0; }
 .ccard-slot:empty { display: none; }
@@ -860,7 +860,7 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-s
 @supports (grid-template-rows: subgrid) {
   @media (min-width: 641px) {
     .course-grid > .ccard,
-    .course-grid > .sort-item { grid-row: span 8; }
+    .course-grid > .sort-item { grid-row: span 9; }
     .course-grid > .sort-item { display: grid; grid-template-rows: subgrid; }
     .course-grid > .ccard,
     .course-grid > .sort-item > .ccard {
@@ -872,6 +872,27 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-s
       width: 100%;
     }
     .course-grid > .sort-item > .ccard { grid-row: 1 / -1; }
+    .course-grid .ccard-top {
+      display: grid;
+      grid-row: span 2;
+      grid-template-rows: subgrid;
+      grid-template-columns: minmax(0,1fr) auto;
+      column-gap: 12px;
+      row-gap: 3px;
+      align-items: start;
+    }
+    .course-grid .ccard-top > .grow {
+      display: grid;
+      grid-column: 1;
+      grid-row: 1 / -1;
+      grid-template-rows: subgrid;
+      align-items: start;
+    }
+    .course-grid .ccard-top > .grade-badge {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: start;
+    }
     .course-grid .ccard-slot:empty { display: block; }
     .course-grid .ccard-foot { margin-top: 0; align-self: end; }
     .course-grid .ccard-slot { align-self: start; }
