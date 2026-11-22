@@ -3,6 +3,12 @@
 Newest first. Each entry: date · who (which AI / person) · what changed · files.
 Add yours at the top before you finish.
 
+## 2026-11-22 · ChatGPT · Automatic exam rounds and aligned cards
+- `public/index.html`: save a visible, editable 10-digit student ID locally; optional hide/show; default exam session to automatic using Bangkok date and the official Chula semester calendar for 2569, with manual override. For other terms use recorded exam dates or ask the user to select the session.
+- Include section-wide room assignments from the supplied CBS final notice, without publishing student ID ranges or individual identifiers. Where rooms depend on a student-number range, local PDF import remains available. Central official PDF source is not configured: no verified accessible source URL was found; no complete automatic individual lookup is claimed. A verified source or an authenticated private backend is needed for that feature.
+- Dashboard upcoming and calendar use the same resolved exam record as course cards; dates from known exam schedules supersede stale assessment dates. Show time and venue or explicit unknown status, and prevent duplicate exam entries. Course cards stretch to the tallest card in their own row with aligned bottom actions.
+- Validation: three inline JS scripts syntax-checked; isolated round-switching and dashboard exam de-duplication/date/venue checks passed. Browser/Playwright tests pending; verify the supplied PDF import and responsive layout before merging.
+
 ## 2026-11-22 · ChatGPT · Course UI, unique course colors, timetable and personal exam rooms
 - `public/index.html`: compact withdrawn/completed course cards; inset dropdown chevrons; shorter grade labels; visible pencil edit action; viewport-clamped, portal-based tooltips; aligned course header; GPA contributing course/credit coverage.
 - Unique colors across saved course enrollments (including previous years/terms), with a custom hex color picker and duplicate validation. Existing duplicate colors are reassigned on normalization; no scores or grade records are altered.
