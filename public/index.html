@@ -125,7 +125,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .save-dot.busy { background: var(--warn); }
 .page { padding: 8px 28px 48px; max-width: 1160px; width: 100%; margin: 0 auto; }
 .bottomnav { display: none; }
-@media(max-width:900px){.bottomnav{grid-template-columns: repeat(7,minmax(48px,1fr)) !important;}}
+@media(max-width:900px){.bottomnav{grid-template-columns: repeat(8,minmax(0,1fr)) !important;}}
 
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; }
@@ -733,6 +733,7 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .gs-floating-tip { position: fixed; z-index: 2147483647; max-width: min(280px,calc(100vw - 24px)); background: var(--ink); color: var(--bg); padding: 8px 10px; border-radius: 9px; font-size: 12.5px; font-weight: 400; line-height: 1.5; white-space: normal; pointer-events: none; box-shadow: 0 4px 16px #0003; }
 .swatches input[type=color] { width: 36px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; }
 .swatch:disabled { opacity: .35; cursor: not-allowed; }
+.exam-notice-row { display:flex;align-items:center;gap:12px;min-width:0;border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));background:var(--surface-2);padding:12px;border-radius:12px; }.exam-notice-row .grow{min-width:0;display:grid;gap:4px;overflow-wrap:anywhere;}.exam-notice-row a.btn{flex:none;}@media(max-width:420px){.exam-notice-row{flex-wrap:wrap}.bottomnav a{font-size:9px;padding-inline:0;min-width:0;}.bottomnav a span{white-space:normal;overflow-wrap:anywhere;}}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -2606,7 +2607,8 @@ en: {
   'store.web': 'Your data saves automatically under your email. Type the same email on any device to see it. Anyone who knows your email can open it too.',
   'tagline': 'Know your grades. Plan your GPA.', 'taglineShort': 'Know your grades. Plan your GPA.',
   'loading': 'Loading your grades…', 'mainNav': 'Main navigation',
-  'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & Q&A',
+  "notice.subtitle":"Match your own student ID and registered courses against the faculty exam notice.","notice.id":"Student ID (10 digits)","notice.file":"Faculty exam notice (PDF)","notice.type":"Exam session","notice.run":"Find and remember my rooms","notice.clear":"Forget ID and imported rooms","notice.privacy":"Your ID and matching results stay in this browser. The PDF is read locally; no roster is uploaded. On a shared computer, clear this data when finished.","notice.support":"Supports text-based CBS exam notices with the same seven-column layout. Choose the correct academic term and exam session.","notice.empty":"No imported notice for this term and session.","notice.found":"Matched in notice","notice.none":"Not found in this notice","notice.ambiguous":"Multiple matches or section mismatch — verify with the faculty","notice.needSec":"Enter your enrolled section first","notice.saved":"Saved matching results on this device","notice.error":"Unable to read this notice. Check the faculty, PDF layout, academic year and semester. No old results were changed.","notice.badID":"Enter a valid 10-digit student ID.","notice.busy":"Reading PDF on your device…","notice.source":"Faculty exam notice · page {n}","notice.secRange":"Notice Sec {s}","notice.secUnknown":"Exact section not shown","notice.noCourses":"No active courses in this term.","notice.openReg":"Open official Chula exam lookup","notice.imported":"Imported {n} pages · review against the latest announcement","notice.warning":"Some lines could not be interpreted confidently. Check the original notice.","notice.verify":"A match is not proof of enrollment. Only saved active courses are checked; a section range does not identify an exact section. Confirm against the latest faculty notice/Reg.","notice.changed":"Changing the ID will replace previously imported results for this browser account.","notice.clearConfirm":"Remove the saved student ID and imported room results from this browser?","notice.pickTerm":"Select a term with its academic year first.","notice.room":"Exam room / venue",
+  'nav.exams': 'Exam rooms', 'navShort.exams': 'Exams', 'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & Q&A',
   'navShort.dashboard': 'Home', 'navShort.years': 'Years', 'navShort.courses': 'Courses', 'navShort.simulator': 'Simulator', 'navShort.gpa': 'GPA', 'navShort.feedback':'Ideas', 'navShort.help':'Help',
   'sync.device': 'Saved on this device', 'sync.account': 'Saved to your account', 'sync.saving': 'Saving…', 'sync.error': 'Saved on this device only',
   'store.device': 'Your data is saved in this browser on this device only. It doesn’t sync to other devices, so export a backup now and then.',
@@ -2977,7 +2979,8 @@ th: {
   'store.web': 'คะแนนจะบันทึกอัตโนมัติตามอีเมลที่กรอก ใช้อีเมลเดิมเพื่อเปิดข้อมูลจากเครื่องอื่นได้',
   'tagline': 'รู้เกรดตัวเอง วางแผน GPA ได้', 'taglineShort': 'รู้เกรดตัวเอง วางแผน GPA ได้',
   'loading': 'กำลังโหลดข้อมูลเกรด…', 'mainNav': 'เมนูหลัก',
-  'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'คู่มือ / ถามตอบ',
+  "notice.subtitle":"ค้นหาห้องสอบจากเลขนิสิตและวิชาที่ลงเรียน โดยเทียบกับประกาศของคณะ","notice.id":"เลขประจำตัวนิสิต (10 หลัก)","notice.file":"ประกาศตารางสอบคณะ (PDF)","notice.type":"รอบสอบ","notice.run":"ค้นหาและจำห้องสอบของฉัน","notice.clear":"ลืมเลขนิสิตและห้องสอบที่นำเข้า","notice.privacy":"เลขนิสิตและผลที่ตรงกันเก็บไว้ในเบราว์เซอร์นี้เท่านั้น อ่าน PDF บนเครื่อง ไม่อัปโหลดรายชื่อ หากใช้เครื่องร่วมกับคนอื่นควรล้างข้อมูลหลังใช้งาน","notice.support":"รองรับ PDF ตารางสอบคณะพาณิชย์ฯ แบบข้อความ 7 คอลัมน์ในรูปแบบเดียวกัน เลือกเทอมและรอบสอบให้ตรงกับประกาศ","notice.empty":"ยังไม่มีประกาศที่นำเข้าสำหรับเทอมและรอบสอบนี้","notice.found":"พบในประกาศ","notice.none":"ไม่พบในประกาศนี้","notice.ambiguous":"พบหลายรายการหรือ Sec ไม่ตรง — โปรดตรวจสอบกับคณะ","notice.needSec":"ระบุ Sec ที่ลงเรียนก่อน","notice.saved":"บันทึกผลที่ตรงกันบนอุปกรณ์นี้แล้ว","notice.error":"อ่านประกาศไม่สำเร็จ โปรดตรวจคณะ รูปแบบ PDF ปีและเทอม ข้อมูลเดิมไม่ถูกเปลี่ยน","notice.badID":"กรอกเลขนิสิตให้ครบ 10 หลัก","notice.busy":"กำลังอ่าน PDF บนอุปกรณ์ของคุณ…","notice.source":"ประกาศตารางสอบคณะ · หน้า {n}","notice.secRange":"Sec ตามประกาศ {s}","notice.secUnknown":"ประกาศไม่ระบุ Sec ที่แน่นอน","notice.noCourses":"ไม่มีวิชาที่กำลังเรียนในเทอมนี้","notice.openReg":"เปิดระบบสอบถามตารางสอบของ Reg","notice.imported":"นำเข้า {n} หน้า · โปรดตรวจสอบกับประกาศล่าสุด","notice.warning":"มีบางบรรทัดที่อ่านได้ไม่ชัดเจน โปรดตรวจสอบเอกสารต้นฉบับ","notice.verify":"ผลตรงช่วงเลขไม่ใช่หลักฐานการลงทะเบียน ระบบตรวจเฉพาะวิชาที่ยังเรียนอยู่ ช่วง Sec ไม่ได้บอก Sec ที่แน่นอน โปรดยืนยันกับประกาศล่าสุดหรือ Reg","notice.changed":"หากเปลี่ยนเลขนิสิต ผลที่เคยนำเข้าในบัญชีนี้บนเบราว์เซอร์จะถูกแทนที่","notice.clearConfirm":"ลบเลขนิสิตและข้อมูลห้องสอบที่นำเข้าออกจากเบราว์เซอร์นี้หรือไม่","notice.pickTerm":"เลือกเทอมที่ระบุปีการศึกษาแล้วก่อน","notice.room":"ห้องสอบ / สถานที่",
+  'nav.exams': 'ห้องสอบของฉัน', 'navShort.exams': 'ห้องสอบ', 'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'คู่มือ / ถามตอบ',
   'navShort.dashboard': 'ภาพรวม', 'navShort.years': 'ชั้นปี', 'navShort.courses': 'วิชา', 'navShort.simulator': 'จำลอง', 'navShort.gpa': 'GPA', 'navShort.feedback':'เสนอแนะ', 'navShort.help':'ช่วยเหลือ',
   'sync.device': 'บันทึกไว้ในเครื่องนี้', 'sync.account': 'บันทึกลงบัญชีแล้ว', 'sync.saving': 'กำลังบันทึก…', 'sync.error': 'บันทึกไว้ในเครื่องนี้เท่านั้น',
   'store.device': 'ข้อมูลถูกบันทึกไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ซิงก์ไปเครื่องอื่น ควรสำรองข้อมูลเก็บไว้เป็นระยะ',
@@ -3317,7 +3320,7 @@ function doUndo(id) {
 function confirmDialog(o) { openModal('confirm', o); }
 
 /* ================= routing ================= */
-var PAGES = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences'];
+var PAGES = ['dashboard', 'years', 'courses', 'exams', 'simulator', 'gpa', 'feedback', 'help', 'preferences'];
 function parseHash() {
   var x = (location.hash || '').replace(/^#/, '');
   if (x.indexOf('course-') === 0) return { page: 'course', id: x.slice(7) };
@@ -3856,12 +3859,129 @@ function baseExamsFor(c, state) {
   return shared||null;
 }
 
+/* Exam notice reader: CBS table format, client-side only. No roster or ID is sent to a server. */
+var ExamNotice=(function(){
+  var months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  function studentId(v){return String(v||'').replace(/[\s-]/g,'');}
+  function validId(v){return /^\d{10}$/.test(v);}
+  function scope(c,state){var sem=state.semesters.find(function(x){return x.id===c.semesterId;});var y=sem&&state.years.find(function(x){return x.id===sem.yearId;});return sem&&y ? String(y.academic||'')+'|'+sem.kind : '';}
+  function secContains(v,sec){var m=String(v||'').match(/^(\d+)(?:\s*-\s*(\d+))?$/);return !!(m&&sec&&+sec>=+m[1]&&+sec<=+(m[2]||m[1]));}
+  function idMatches(text,id){
+    if(!validId(id))return false;
+    var chunks=String(text||'').trim().split(/\s*[,，]\s*/);
+    return chunks.some(function(p){
+      var m=p.match(/^(\d{3})\s+(\d{5})\s+(\d{2})(?:\s*[-–—]\s*(\d{3})\s+(\d{5})\s+(\d{2}))?$/);
+      if(!m)return false;
+      var a=m[1]+m[2]+m[3];
+      if(!m[4])return id===a;
+      var b=m[4]+m[5]+m[6];
+      // Do not extend a malformed range across cohort or faculty codes.
+      return m[1]===m[4]&&m[3]===m[6]&&id.slice(0,3)===m[1]&&id.slice(-2)===m[3]&&id>=a&&id<=b;
+    });
+  }
+  function cells(items,width){
+    // The CBS letter-sized notice uses seven fixed columns. Normalize to its 612pt reference.
+    var rows=[];
+    items.filter(function(i){return i.str&&i.str.trim()&&i.transform;}).forEach(function(i){
+      var x=i.transform[4]*612/width,y=i.transform[5]*612/width;
+      var row=rows.find(function(r){return Math.abs(r.y-y)<3;});
+      if(!row){row={y:y,items:[]};rows.push(row);}
+      row.items.push({x:x,s:i.str.trim()});
+    });
+    return rows.sort(function(a,b){return b.y-a.y;}).map(function(r){
+      var c=['','','','','','',''];
+      r.items.sort(function(a,b){return a.x-b.x;}).forEach(function(i){
+        var k=i.x<95?0:i.x<148?1:i.x<296?2:i.x<330?3:i.x<395?4:i.x<514?5:6;
+        c[k]+=(c[k]?' ':'')+i.s;
+      });return c;
+    });
+  }
+  function parse(pages,id,year,term){
+    if(!validId(id)||!/^25\d{2}$/.test(year))throw Error('input');
+    var first=pages[0]||[], heading=first.map(function(r){return r.join('');}).join('').replace(/\s/g,'');
+    if(heading.indexOf('พาณิชยศาสตร์')<0||heading.indexOf(year)<0||
+       (term==='s1'?heading.indexOf('ภาคการศึกษาต้น')<0:term==='s2'?heading.indexOf('ภาคการศึกษาปลาย')<0:true))throw Error('format');
+    var records=[],current=null, date='',time='',code='',sec='',room='', invalid=0;
+    function flush(){if(current){if(current.room&&current.date&&current.code&&(current.hit||current.sectionOnly))records.push(current);current=null;}}
+    pages.forEach(function(rows,page){
+      var start=rows.findIndex(function(r){return /^sec$/i.test(r[3].trim());});
+      if(start<0){invalid++;return;}
+      var r=rows.slice(start+1);
+      for(var i=0;i<r.length;i++){
+        var v=r[i], day=v[0].trim(), course=v[2].match(/^(\d{7})(?:\s|$)/), tm=v[1].match(/^(\d{1,2})[.:](\d{2})\s*[-–—]\s*(\d{1,2})[.:](\d{2})$/);
+        if(/^วัน/.test(day)){
+          var head=r.slice(i,i+5).map(function(z){return z[0];}).join(' '), dm=head.match(/(?:^|\s)(\d{1,2})(?:\s|$)/), mo=months.findIndex(function(m){return head.indexOf(m)>=0;});
+          if(dm&&mo>=0&&head.indexOf(year)>=0){
+            var candidate=String(+year-543)+'-'+String(mo+1).padStart(2,'0')+'-'+String(+dm[1]).padStart(2,'0');
+            var dt=new Date(candidate+'T00:00:00Z');
+            if(!isNaN(dt.getTime())&&dt.toISOString().slice(0,10)===candidate){if(candidate!==date){flush();code='';sec='';room='';time='';}date=candidate;}
+          }else{flush();date='';code='';sec='';room='';time='';invalid++;}
+        }
+        if(tm){
+          var t0=String(+tm[1]).padStart(2,'0')+':'+tm[2],t1=String(+tm[3]).padStart(2,'0')+':'+tm[4];
+          if(+tm[1]>23||+tm[3]>23||+tm[2]>59||+tm[4]>59||t1<=t0){time='';invalid++;}
+          else {var newTime=t0+'-'+t1;if(newTime!==time){flush();code='';sec='';room='';}time=newTime;}
+        }
+        if(course){if(course[1]!==code){flush();sec='';room='';}code=course[1];}
+        var sc=v[3].trim();
+        if(sc){if(/^\d+(?:\s*-\s*\d+)?$/.test(sc)){if(sc!==sec){flush();room='';}sec=sc.replace(/\s/g,'');}else{flush();sec='';room='';invalid++;}}
+        var rm=v[4].trim();
+        if(rm&&/^\d/.test(rm)){
+          if(rm!==room||!current){flush();room=rm;current={code:code,sec:sec,room:room,date:date,time:time,page:page+1,hit:false,sectionOnly:false};}
+        }else if(rm&&current&&current.room&&(/\/$/.test(current.room)||!current.room.includes('/'))){current.room+=' '+rm;room=current.room;}
+        var rule=v[5].trim();
+        if(rule&&current&&current.code&&current.date&&current.time){
+          if(/^เฉพาะ/.test(rule)&&current.sec)current.sectionOnly=true;
+          else if(idMatches(rule,id))current.hit=true;
+          else if(!/^\d{3}\s+\d{5}\s+\d{2}/.test(rule))invalid++;
+        }
+      }
+    });
+    flush();
+    if(!date||!records.length&&invalid===pages.length)throw Error('format');
+    return {rows:records,invalid:invalid,pages:pages.length};
+  }
+  function match(rows,c){
+    var code=String(c.code||'').trim().split('.')[0],sec=sectionOf(c);
+    var candidates=(rows||[]).filter(function(r){return r.code===code&&(r.hit||r.sectionOnly);});
+    var allowed=candidates.filter(function(r){return (r.hit&&(!sec||!r.sec||secContains(r.sec,sec)))||(r.sectionOnly&&secContains(r.sec,sec));});
+    var distinct=[];
+    allowed.forEach(function(r){if(!distinct.some(function(q){return q.date===r.date&&q.time===r.time&&q.room===r.room&&q.sec===r.sec;}))distinct.push(r);});
+    return {row:distinct.length===1?distinct[0]:null,ambiguous:distinct.length>1||(!distinct.length&&candidates.some(function(r){return r.hit;})),needsSec:!sec&&candidates.some(function(r){return r.sectionOnly;})};
+  }
+  var cacheKey='',cache=null;
+  function key(){return 'gradespace.examNotice.v1:'+(S.localKey||'guest');}
+  function load(){var k=key();if(cacheKey!==k||!cache){cacheKey=k;try{cache=JSON.parse(localStorage.getItem(k)||'null')||{id:'',sets:{}};}catch(e){cache={id:'',sets:{}};}}return cache;}
+  function save(d){var k=key();localStorage.setItem(k,JSON.stringify(d));cacheKey=k;cache=d;emit();}
+  function clear(){var k=key();localStorage.removeItem(k);cacheKey=k;cache={id:'',sets:{}};emit();}
+  function lookup(c,state,k){var d=load(),src=d.sets&&d.sets[scope(c,state)+'|'+k];return match(src&&src.rows,c);}
+  async function read(file,id,year,term){
+    if(!file||file.size>20*1024*1024)throw Error('file');
+    var pdfjs=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs');
+    pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs';
+    var doc=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,disableAutoFetch:true}).promise;
+    try{
+      if(doc.numPages>100)throw Error('file');
+      var pages=[];
+      for(var n=1;n<=doc.numPages;n++){var p=await doc.getPage(n);var txt=await p.getTextContent();pages.push(cells(txt.items,p.view[2]-p.view[0]));}
+      return parse(pages,id,year,term);
+    }finally{await doc.destroy();}
+  }
+  return {studentId:studentId,validId:validId,scope:scope,parse:parse,cells:cells,match:match,idMatches:idMatches,load:load,save:save,clear:clear,key:key,lookup:lookup,read:read};
+})();
+
 // Personal room assignments are stored separately from shared exam schedules.
 function examsFor(c,state) {
-  var ex=baseExamsFor(c,state);
-  if(!ex || !c || !c.exams || !c.exams.personalRooms)return ex;
-  var room=function(k){var e=ex[k]; if(!e)return null; var own=c.exams.personalRooms[k]; if(!own || own.date!==e.date || own.sec!==sectionOf(c) || own.code!==String(c.code||'') || own.semesterId!==c.semesterId)return e; return Object.assign({},e,{location:own.room||''});};
-  return Object.assign({},ex,{mid:room('mid'),fin:room('fin')});
+  var ex=baseExamsFor(c,state)||{};
+  if(!c)return null;
+  var room=function(k){
+    var e=ex[k]||null, found=ExamNotice.lookup(c,state,k).row;
+    if(found) e={date:found.date,time:found.time,location:found.room,source:'exam-notice',noticeSec:found.sec,noticePage:found.page};
+    var own=c.exams&&c.exams.personalRooms&&c.exams.personalRooms[k];
+    if(e&&own&&own.date===e.date&&own.sec===sectionOf(c)&&own.code===String(c.code||'')&&own.semesterId===c.semesterId)return Object.assign({},e,{location:own.room||'',source:'manual'});
+    return e;
+  };
+  var mid=room('mid'),fin=room('fin');return mid||fin?Object.assign({},ex,{mid:mid,fin:fin}):null;
 }
 // S/U (pass/fail) courses only need the pass mark: that is a fixed criterion, never relative grading.
 function isSUCourse(c) {
@@ -5717,6 +5837,50 @@ function ExamRoomModal(p) {
     ${ex.fin&&ex.fin.date&&html`<${Field} label=${t('exam.finRoom')} id="exam-fin-room"><input className="input" id="exam-fin-room" value=${fin} onChange=${function(e){setFin(e.target.value);}} /><//>`}
     <//>`;
 }
+
+function ExamNoticePage(p){
+  var state=p.state,stored=ExamNotice.load(),cur=curSemester(state);
+  var a=useState(stored.id||''),id=a[0],setId=a[1],b=useState(cur&&cur.id||''),sid=b[0],setSid=b[1];
+  var k=useState('fin'),kind=k[0],setKind=k[1],f=useState(null),file=f[0],setFile=f[1],q=useState(''),msg=q[0],setMsg=q[1],busyState=useState(false),busy=busyState[0],setBusy=busyState[1],errState=useState(false),err=errState[0],setErr=errState[1];
+  var sem=state.semesters.find(function(x){return x.id===sid;}),y=sem&&state.years.find(function(x){return x.id===sem.yearId;}),scope=y&&sem?String(y.academic||'')+'|'+sem.kind+'|'+kind:'',src=stored.sets&&stored.sets[scope];
+  var courses=state.courses.filter(function(c){return c.semesterId===sid&&!c.finalGrade;});
+  var rows=courses.map(function(c){return {c:c,m:ExamNotice.match(src&&src.rows,c)};}).sort(function(x,y){return ((x.m.row&&x.m.row.date+x.m.row.time)||'~').localeCompare((y.m.row&&y.m.row.date+y.m.row.time)||'~');});
+  var run=async function(){
+    var val=ExamNotice.studentId(id),account=ExamNotice.key();setErr(true);
+    if(!ExamNotice.validId(val)){setMsg(t('notice.badID'));return;}
+    if(!scope||!y||!/^25\d{2}$/.test(String(y.academic||''))){setMsg(t('notice.pickTerm'));return;}
+    if(stored.id&&stored.id!==val&&!window.confirm(t('notice.changed')))return;
+    if(!file){setMsg(t('notice.error'));return;}
+    setBusy(true);setErr(false);setMsg(t('notice.busy'));
+    try{var result=await ExamNotice.read(file,val,String(y.academic),sem.kind);
+      if(account!==ExamNotice.key())return;
+      var next=ExamNotice.load(),sets=next.id===val?Object.assign({},next.sets):{};
+      sets[scope]=result;ExamNotice.save({id:val,sets:sets});setMsg(t('notice.saved'));setErr(false);
+    }catch(e){setMsg(t('notice.error'));setErr(true);}finally{setBusy(false);}
+  };
+  return html`<div className="stack"><div className="page-head"><div><h1>${t('nav.exams')}</h1><p>${t('notice.subtitle')}</p></div><a className="btn" href="https://www2.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryExamScheduleNew.QueryExamScheduleServlet" target="_blank" rel="noopener noreferrer">${t('notice.openReg')}</a></div>
+    <section className="card pad stack">
+      <div className="grid2">
+        <${Field} label=${t('notice.id')} id="notice-id"><input id="notice-id" className="input" type="password" inputMode="numeric" autoComplete="off" maxLength="15" value=${id} disabled=${busy} onChange=${function(e){setId(e.target.value);}}/><//>
+        <${Field} label=${t('viewingSemester')} id="notice-sem"><${SemesterSelect} id="notice-sem" state=${state} value=${sid} onChange=${function(v){if(!busy)setSid(v);}} /><//>
+        <${Field} label=${t('notice.type')} id="notice-kind"><select id="notice-kind" className="select" value=${kind} disabled=${busy} onChange=${function(e){setKind(e.target.value);}}><option value="fin">${t('type.final')}</option><option value="mid">${t('type.midterm')}</option></select><//>
+        <${Field} label=${t('notice.file')} id="notice-file"><input className="input" id="notice-file" type="file" accept="application/pdf,.pdf" disabled=${busy} onChange=${function(e){setFile(e.target.files[0]||null);}}/><//>
+      </div>
+      <p className="small muted">${t('notice.support')}</p>
+      <div className="row wrap"><button className="btn primary" disabled=${busy||!file} onClick=${run}><${Icon} n="check" />${t('notice.run')}</button><button className="btn" disabled=${busy||!stored.id} onClick=${function(){if(window.confirm(t('notice.clearConfirm'))){try{ExamNotice.clear();setId('');setMsg('');}catch(e){setMsg(t('notice.error'));setErr(true);}}}}>${t('notice.clear')}</button></div>
+      ${msg&&html`<p role="status" className="small" style=${{color:err?'var(--bad)':'var(--muted)'}}>${msg}</p>`}
+      <p className="hint">${t('notice.privacy')}</p>
+    </section>
+    <section className="card pad stack">
+      <div className="row wrap between"><h2>${t('nav.exams')}</h2><span className="chip ok">${rows.filter(function(x){return x.m.row;}).length}/${courses.length}</span></div>
+      ${src?html`<p className="small muted">${t('notice.imported',{n:src.pages})} ${src.invalid?t('notice.warning'):''}</p>`:html`<p className="small muted">${t('notice.empty')}</p>`}
+      ${!rows.length&&html`<p className="small muted">${t('notice.noCourses')}</p>`}
+      ${rows.map(function(x){var m=x.m,r=m.row;return html`<div className="exam-notice-row" key=${x.c.id} style=${{'--cc':courseColor(x.c.color)}}><div className="grow"><a href=${'#course-'+x.c.id}><b>${courseDisplayTitle(x.c)}</b></a><div className="small muted">${x.c.code} ${sectionOf(x.c)?' · Sec '+sectionOf(x.c):''}</div>
+        ${r?html`<div className="row wrap"><span className="chip ok">${t('notice.found')}</span><span className="small">${fmtDate(r.date,true)} · ${r.time}</span></div><div><b>${t('notice.room')}: ${r.room}</b></div><div className="tiny muted">${r.sec?t('notice.secRange',{s:r.sec}):t('notice.secUnknown')} · ${t('notice.source',{n:r.page})}</div>`:html`<div className="small muted">${m.ambiguous?t('notice.ambiguous'):m.needsSec?t('notice.needSec'):t('notice.none')}</div>`}</div><a className="btn sm" href=${'#course-'+x.c.id}>${t('viewDetails')}</a></div>`;})}
+      <p className="hint">${t('notice.verify')}</p>
+    </section></div>`;
+}
+
 function CourseDetail(p) {
   var state = p.state, c = state.courses.find(function (x) { return x.id === p.id; });
   if (!c) return html`<div><a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a><div className="empty" style=${{ marginTop: 20 }}><h3>${t('courseNotFound')}</h3></div></div>`;
@@ -5735,7 +5899,7 @@ function CourseDetail(p) {
           ${examLine(examsFor(c, state), state.assessments.some(function (a) { return a.courseId === c.id && a.type === 'midterm' && C.isGraded(a); }))}
           <button className="btn sm" onClick=${function(){openModal('examRoom',{courseId:c.id});}}><${Icon} n="edit" s=${14} />${t('exam.editRoom')}</button>
           ${(function () { var ex = examsFor(c, state), e = ex && (ex.fin || ex.mid), src = (e && e.source) || (ex && ex.source) || '';
-            var note = src === 'reg' ? t('exam.srcReg') : src === 'user' || src === 'manual' ? t('exam.srcUser') : src === 'shared-all-secs' ? t('exam.srcAllSecs') : src === 'shared-verified' ? t('exam.srcSec') : src === 'syllabus' ? t('courseInfo.syllabusDates') : t('exam.calendarNote');
+            var note = src === 'exam-notice' ? t('notice.source',{n:e.noticePage}) : src === 'reg' ? t('exam.srcReg') : src === 'user' || src === 'manual' ? t('exam.srcUser') : src === 'shared-all-secs' ? t('exam.srcAllSecs') : src === 'shared-verified' ? t('exam.srcSec') : src === 'syllabus' ? t('courseInfo.syllabusDates') : t('exam.calendarNote');
             return html`<span className="exam-detail-note tiny muted">${note}</span>`; })()}</div>`}
         ${(function () { var sec = RegData.section(c, state); if (!sec) return null;
           return html`<div className="small muted reg-sec">${t('reg.secLine', { s: sec.sec, w: regSectionText(sec) })}${sec.teachers && sec.teachers.length ? ' · ' + t('reg.teachers', { t: sec.teachers.join(', ') }) : ''}</div>`; })()}
@@ -7269,7 +7433,7 @@ function SaveState() {
 }
 var NAV = [
   { id: 'courses', icon: 'book' }, { id: 'dashboard', icon: 'dashboard' }, { id: 'years', icon: 'calendar' },
-  { id: 'simulator', icon: 'calc' }, { id: 'gpa', icon: 'trend' },
+  { id: 'exams', icon: 'calendar' }, { id: 'simulator', icon: 'calc' }, { id: 'gpa', icon: 'trend' },
   { id: 'feedback', icon: 'message' }, { id: 'help', icon: 'info' }, { id: 'preferences', icon: 'sliders', key: 'settings' }
 ];
 function App() {
@@ -7291,6 +7455,7 @@ function App() {
   else if (route.page === 'courses') page = html`<${CoursesPage} state=${state} />`;
   else if (route.page === 'course') page = html`<${CourseDetail} state=${state} id=${route.id} />`;
   else if (route.page === 'simulator') page = html`<${SimulatorPage} state=${state} id=${route.id} />`;
+  else if (route.page === 'exams') page = html`<${ExamNoticePage} state=${state} />`;
   else if (route.page === 'gpa') page = html`<${GPAPage} state=${state} />`;
   else if (route.page === 'feedback') page = html`<${FeedbackPage} />`;
   else if (route.page === 'help') page = html`<${HelpPage} />`;
@@ -7399,7 +7564,7 @@ function makeScoreSnapshot(email, state) {
     var mode = gradingModeFor(c);
     var summary = Calc.courseSummary(c, state);
     var grade = Calc.courseGrade(c, state, summary);
-    var exams = examsFor(c, state) || {};
+    var exams = baseExamsFor(c, state) || {};
     var base = {
       id: String(c.id || ''), code: String(c.code || ''),
       name: String(c.name || ''), academicYear: String(year.academic || ''),
