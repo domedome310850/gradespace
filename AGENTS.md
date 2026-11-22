@@ -106,7 +106,7 @@ data and fails on any error or sideways scrolling. Also click through what you c
 
 ## Open work
 
-- **Paused by owner (2026-11-22):** university/OTP/Google login and individual exam-room lookup. Keep original email entry and original exam-date/calendar display; don't reactivate either experiment until requested. All eight experimental RPCs are revoked from browser roles; private tables retained. Email-only access is not verified authentication (anyone knowing an email can open that account).
+- **Exam rooms (owner requested on 2026-11-22):** `gs_room_data.rules` has 310 private room rules across 110 courses for 2569/s1/fin; `gs_exam_profiles` and `gs_exam_rooms_for_me` require verified Supabase Auth. PR #7 adds a separate, optional email verification flow for the exam-room panel only. The pre-existing email-only grade entry and all eight old experimental RPC revocations remain unchanged. Email-only grade access is not verified authentication. Before deploying the new panel, confirm browser smoke, configured email delivery and allowed redirect URL. One malformed range on PDF p.3 was omitted; confirm with faculty before correcting.
 - Installable app (PWA) and a privacy (PDPA) page.
 - Move the two Google Sheets into Supabase tables.
 - MyCourseVille: official API needs an app key from the MCV team; meanwhile "Paste from MCV" and
