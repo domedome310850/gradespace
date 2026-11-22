@@ -1,3 +1,20 @@
+## 2026-11-22 — ChatGPT: Remove exam-room email verification
+
+- Owner requested no email verification. Dashboard and Settings now accept a student ID immediately after the existing email-only login. Supabase stores the ID under that email and a random browser-specific secret; email alone cannot retrieve another browser's student ID. New browsers require entering the ID again. The grade store is unchanged.
+- `gs_exam_device` supports get/save/remove/lookup; private ranges and profiles are not directly readable by browser roles. SQL tests under the anonymous role passed save/reload/match/remove and isolation between two device secrets. Updated browser smoke test; production deployment and browser test results not yet verified.
+
+## 2026-11-22 — ChatGPT: Connect personal exam rooms to the website
+
+- `public/index.html`: bilingual My exam rooms panel in Dashboard and Settings, isolated verified-email Supabase client, private student ID save/remove, and automatic course/section matching for semester 1/2569. Legacy email-only grade entry and saved grade data are unchanged. The ID is not included in the grade JSON or score sheet.
+- `tests/smoke.mjs`: mock a verified email and exam-room response, assert saved profile and RPC payload in both languages and viewport widths. `.github/workflows/gradespace-browser-smoke.yml`: PR smoke test workflow.
+- All inline JavaScript parses; transactional live SQL checks passed profile isolation and correct course/section matches, with rollback. Browser smoke and actual email-delivery/redirect verification still pending; do not claim deployment until verified.
+
+## 2026-11-22 — ChatGPT: Private exam room database
+
+- Imported 310 room rules covering 110 courses and all 16 pages of the uploaded CBS final exam notice (2569, semester 1) directly into Supabase. Raw student-ID ranges remain private and are not committed to this public repository.
+- Added per-authenticated-user `gs_exam_profiles` with RLS and `gs_exam_rooms_for_me` for matching student ID, course code and section. The original email-only grade tracker is unchanged; verified auth is required before the web UI can use these APIs.
+- Verified import counts, ID/section match examples and role permissions. One malformed student-ID interval on page 3 (2601354) was omitted pending confirmation. No browser smoke test (no frontend changes).
+
 # Changelog
 
 Newest first. Each entry: date · who (which AI / person) · what changed · files.

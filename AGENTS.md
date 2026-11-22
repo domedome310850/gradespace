@@ -106,7 +106,7 @@ data and fails on any error or sideways scrolling. Also click through what you c
 
 ## Open work
 
-- **Paused by owner (2026-11-22):** university/OTP/Google login and individual exam-room lookup. Keep original email entry and original exam-date/calendar display; don't reactivate either experiment until requested. All eight experimental RPCs are revoked from browser roles; private tables retained. Email-only access is not verified authentication (anyone knowing an email can open that account).
+- **Exam rooms (owner requested on 2026-11-22):** 310 private rules covering 110 courses in `gs_room_data.rules` for 2569/s1/fin. PR #7 now uses `gs_exam_device` and `gs_room_data.device_profiles` with a random browser-specific secret stored per email; no email verification or extra login. Different browsers must re-enter the ID. The original grade store is unchanged (email-only access is not verified identity). One malformed PDF p.3 interval omitted pending faculty confirmation. SQL device-isolation tests passed, browser smoke and deployment pending.
 - Installable app (PWA) and a privacy (PDPA) page.
 - Move the two Google Sheets into Supabase tables.
 - MyCourseVille: official API needs an app key from the MCV team; meanwhile "Paste from MCV" and
