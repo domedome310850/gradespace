@@ -729,6 +729,8 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .gs-floating-tip { position: fixed; z-index: 2147483647; max-width: min(280px,calc(100vw - 24px)); background: var(--ink); color: var(--bg); padding: 8px 10px; border-radius: 9px; font-size: 12.5px; font-weight: 400; line-height: 1.5; white-space: normal; pointer-events: none; box-shadow: 0 4px 16px #0003; }
 .swatches input[type=color] { width: 36px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; }
 .swatch:disabled { opacity: .35; cursor: not-allowed; }
+.exam-event-detail { margin-top: 4px; font-size: 12px; color: var(--ink-2); line-height: 1.5; overflow-wrap: anywhere; }
+.exam-event-source { display: block; color: var(--muted); font-size: 10.5px; }
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -906,6 +908,14 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-s
       min-height: 34px;
     }
     .course-grid .ccard-slot { align-self: start; }
+    .course-grid .ccard-top { grid-row: 1 / 3; }
+    .course-grid .ccard-bar-slot { grid-row: 3; }
+    .course-grid .ccard-progress-slot { grid-row: 4; }
+    .course-grid .ccard-warning-slot { grid-row: 5; }
+    .course-grid .ccard-forecast-slot { grid-row: 6; }
+    .course-grid .ccard-goal-slot { grid-row: 7; }
+    .course-grid .ccard-exam-slot { grid-row: 8; }
+    .course-grid .ccard-foot { grid-row: 9; }
   }
 }
 @media (max-width: 640px) {
@@ -3217,8 +3227,8 @@ var C = Calc, fmt = C.fmt, fmtT = C.fmtT, toNum = C.toNum, isNum = C.isNum;
 
 /* ================= i18n ================= */
 
-Object.assign(I18N.en, {"examroom.title":"My exam rooms","examroom.intro":"CBS final exam notice · 23 Nov–2 Dec 2026 · Semester 1/2569","examroom.guest":"Enter your GradeSpace email first to save your student ID.","examroom.student":"Student ID (10 digits)","examroom.save":"Save student ID","examroom.remove":"Remove student ID","examroom.saved":"Student ID saved.","examroom.badId":"Enter exactly 10 digits.","examroom.error":"Exam room service unavailable. Please try again.","examroom.noTerm":"Select semester 1 of academic year 2569 to see this notice.","examroom.noYear":"Set the academic year to 2569 only if that is your actual academic year.","examroom.noCourses":"Add your registered courses and sections first.","examroom.none":"No matching exam rooms in this notice. Check your course codes, sections and student ID; not all courses are covered.","examroom.warning":"Matches are based on the student ID and sections you entered, not a verified enrollment record. Confirm with the official notice. One malformed ID interval was omitted.","examroom.secMissing":"Some courses have no section selected; room matches may be missing.","examroom.loading":"Loading exam rooms…","examroom.room":"Room","examroom.sec":"Sec","examroom.source":"Notice page {p}","examroom.ambiguous":"Multiple rooms match this course. Check the notice before going to the exam.","examroom.private":"Enter and save your student ID. No email verification is required. This browser remembers the ID for this email; enter it again on another device.","examroom.loginId":"Student ID (10 digits, optional)","examroom.loginHint":"Enter to find your exam rooms automatically, or add it later. No email verification needed.","examroom.loginError":"Could not save the student ID. Try again or leave it blank to continue.","examroom.saving":"Saving…","examroom.edit":"Edit student ID","examroom.linked":"Student ID saved"});
-Object.assign(I18N.th, {"examroom.title":"ห้องสอบของฉัน","examroom.intro":"ประกาศสอบปลายภาค คณะพาณิชยศาสตร์และการบัญชี · 23 พ.ย.–2 ธ.ค. 2569 · เทอม 1/2569","examroom.guest":"กรอกอีเมล GradeSpace ก่อนเพื่อบันทึกเลขนิสิต","examroom.student":"เลขนิสิต 10 หลัก","examroom.save":"บันทึกเลขนิสิต","examroom.remove":"ลบเลขนิสิต","examroom.saved":"บันทึกเลขนิสิตเรียบร้อยแล้ว","examroom.badId":"กรอกเลขนิสิต 10 หลัก","examroom.error":"เชื่อมต่อระบบห้องสอบไม่สำเร็จ กรุณาลองอีกครั้ง","examroom.noTerm":"เลือกเทอม 1 ปีการศึกษา 2569 เพื่อดูข้อมูลจากประกาศนี้","examroom.noYear":"ระบุปีการศึกษาเป็น 2569 เฉพาะเมื่อเป็นปีการศึกษาจริงของคุณ","examroom.noCourses":"เพิ่มรายวิชาที่ลงทะเบียนและ Section ก่อน","examroom.none":"ไม่พบห้องสอบที่ตรงกับประกาศนี้ โปรดตรวจรหัสวิชา Section และเลขนิสิต ประกาศนี้ไม่ได้ครอบคลุมทุกวิชา","examroom.warning":"ผลจับคู่จากเลขนิสิตและ Section ที่กรอกเอง ไม่ใช่ข้อมูลการลงทะเบียนที่ยืนยันแล้ว โปรดตรวจประกาศทางการอีกครั้ง มีหนึ่งช่วงเลขนิสิตผิดรูปแบบที่ยังไม่ได้นำมาใช้","examroom.secMissing":"บางวิชายังไม่ได้ระบุ Section จึงอาจไม่พบห้องสอบ","examroom.loading":"กำลังโหลดห้องสอบ…","examroom.room":"ห้องสอบ","examroom.sec":"Sec","examroom.source":"ประกาศหน้า {p}","examroom.ambiguous":"พบหลายห้องสอบที่ตรงกับวิชานี้ โปรดตรวจประกาศก่อนเข้าสอบ","examroom.private":"กรอกเลขนิสิตและบันทึกได้เลย ไม่ต้องยืนยันอีเมล ระบบจะจำเลขนิสิตของอีเมลนี้บนเบราว์เซอร์นี้ หากเปลี่ยนเครื่องให้กรอกใหม่","examroom.loginId":"เลขนิสิต 10 หลัก (ไม่บังคับ)","examroom.loginHint":"กรอกเพื่อดูห้องสอบของคุณอัตโนมัติ หรือบันทึกภายหลังก็ได้ ไม่ต้องยืนยันอีเมล","examroom.loginError":"บันทึกเลขนิสิตไม่สำเร็จ ลองอีกครั้ง หรือเว้นช่องเลขนิสิตเพื่อเข้าใช้งานก่อน","examroom.saving":"กำลังบันทึก…","examroom.edit":"แก้ไขเลขนิสิต","examroom.linked":"บันทึกเลขนิสิตแล้ว"});
+Object.assign(I18N.en, {"examroom.title":"My exam rooms","examroom.intro":"CBS final exam notice · 23 Nov–2 Dec 2026 · Semester 1/2569","examroom.guest":"Enter your GradeSpace email first to save your student ID.","examroom.student":"Student ID (10 digits)","examroom.save":"Save student ID","examroom.remove":"Remove student ID","examroom.saved":"Student ID saved.","examroom.badId":"Enter exactly 10 digits.","examroom.error":"Exam room service unavailable. Please try again.","examroom.noTerm":"Select semester 1 of academic year 2569 to see this notice.","examroom.noYear":"Set the academic year to 2569 only if that is your actual academic year.","examroom.noCourses":"Add your registered courses and sections first.","examroom.none":"No matching exam rooms in this notice. Check your course codes, sections and student ID; not all courses are covered.","examroom.warning":"Matches are based on the student ID and sections you entered, not a verified enrollment record. Confirm with the official notice. One malformed ID interval was omitted.","examroom.secMissing":"Some courses have no section selected; room matches may be missing.","examroom.loading":"Loading exam rooms…","examroom.room":"Room","examroom.sec":"Sec","examroom.source":"Notice page {p}","examroom.ambiguous":"Multiple room matches; check the notice","examroom.private":"Enter and save your student ID. No email verification is required. This browser remembers the ID for this email; enter it again on another device.","examroom.loginId":"Student ID (10 digits, optional)","examroom.loginHint":"Used to find your exam rooms in the faculty notice. Optional; no email verification.","examroom.loginError":"Could not save the student ID. Try again or leave it blank to continue.","examroom.saving":"Saving…","examroom.edit":"Edit student ID","examroom.linked":"Student ID saved","examroom.addId":"Add student ID for exam rooms","examroom.changeId":"Edit student ID","examroom.personal":"Matched to student ID and exam notice","examroom.general":"Course schedule · room not matched to student ID","examroom.lookupError":"Personal room lookup unavailable; showing course schedules","examroom.noMatch":"Some courses have no personal room match; check your section and the notice","examroom.roomUnknown":"Room to be announced","examroom.timeUnknown":"Time to be announced","examroom.calendarHint":"Select a date to see courses, times and rooms. Confirm with the official notice."});
+Object.assign(I18N.th, {"examroom.title":"ห้องสอบของฉัน","examroom.intro":"ประกาศสอบปลายภาค คณะพาณิชยศาสตร์และการบัญชี · 23 พ.ย.–2 ธ.ค. 2569 · เทอม 1/2569","examroom.guest":"กรอกอีเมล GradeSpace ก่อนเพื่อบันทึกเลขนิสิต","examroom.student":"เลขนิสิต 10 หลัก","examroom.save":"บันทึกเลขนิสิต","examroom.remove":"ลบเลขนิสิต","examroom.saved":"บันทึกเลขนิสิตเรียบร้อยแล้ว","examroom.badId":"กรอกเลขนิสิต 10 หลัก","examroom.error":"เชื่อมต่อระบบห้องสอบไม่สำเร็จ กรุณาลองอีกครั้ง","examroom.noTerm":"เลือกเทอม 1 ปีการศึกษา 2569 เพื่อดูข้อมูลจากประกาศนี้","examroom.noYear":"ระบุปีการศึกษาเป็น 2569 เฉพาะเมื่อเป็นปีการศึกษาจริงของคุณ","examroom.noCourses":"เพิ่มรายวิชาที่ลงทะเบียนและ Section ก่อน","examroom.none":"ไม่พบห้องสอบที่ตรงกับประกาศนี้ โปรดตรวจรหัสวิชา Section และเลขนิสิต ประกาศนี้ไม่ได้ครอบคลุมทุกวิชา","examroom.warning":"ผลจับคู่จากเลขนิสิตและ Section ที่กรอกเอง ไม่ใช่ข้อมูลการลงทะเบียนที่ยืนยันแล้ว โปรดตรวจประกาศทางการอีกครั้ง มีหนึ่งช่วงเลขนิสิตผิดรูปแบบที่ยังไม่ได้นำมาใช้","examroom.secMissing":"บางวิชายังไม่ได้ระบุ Section จึงอาจไม่พบห้องสอบ","examroom.loading":"กำลังโหลดห้องสอบ…","examroom.room":"ห้องสอบ","examroom.sec":"Sec","examroom.source":"ประกาศหน้า {p}","examroom.ambiguous":"พบห้องสอบหลายรายการ โปรดตรวจประกาศ","examroom.private":"กรอกเลขนิสิตและบันทึกได้เลย ไม่ต้องยืนยันอีเมล ระบบจะจำเลขนิสิตของอีเมลนี้บนเบราว์เซอร์นี้ หากเปลี่ยนเครื่องให้กรอกใหม่","examroom.loginId":"เลขนิสิต 10 หลัก (ไม่บังคับ)","examroom.loginHint":"ใช้ค้นหาห้องสอบตามประกาศของคณะ (กรอกหรือเว้นไว้ได้ ไม่ต้องยืนยันอีเมล)","examroom.loginError":"บันทึกเลขนิสิตไม่สำเร็จ ลองอีกครั้ง หรือเว้นช่องเลขนิสิตเพื่อเข้าใช้งานก่อน","examroom.saving":"กำลังบันทึก…","examroom.edit":"แก้ไขเลขนิสิต","examroom.linked":"บันทึกเลขนิสิตแล้ว","examroom.addId":"เพิ่มเลขนิสิตเพื่อดูห้องสอบ","examroom.changeId":"แก้ไขเลขนิสิต","examroom.personal":"ตามประกาศห้องสอบและเลขนิสิต","examroom.general":"กำหนดการรายวิชา · ยังไม่ได้ยืนยันห้องตามเลขนิสิต","examroom.lookupError":"ดึงห้องสอบส่วนตัวไม่สำเร็จ กำลังแสดงกำหนดการรายวิชา","examroom.noMatch":"ไม่พบห้องสอบส่วนตัวสำหรับบางวิชา โปรดตรวจ Section และประกาศ","examroom.roomUnknown":"รอประกาศห้องสอบ","examroom.timeUnknown":"รอประกาศเวลา","examroom.calendarHint":"แตะวันที่เพื่อดูวิชา เวลา และห้องสอบ · โปรดตรวจประกาศทางการ"});
 var LANG = 'th';
 function t(k, v) {
   var s = I18N[LANG] && I18N[LANG][k];
@@ -3366,7 +3376,7 @@ function parseHash() {
   var x = (location.hash || '').replace(/^#/, '');
   if (x.indexOf('course-') === 0) return { page: 'course', id: x.slice(7) };
   if (x.indexOf('simulator-') === 0) return { page: 'simulator', id: x.slice(10) };
-  return { page: PAGES.indexOf(x) >= 0 ? x : 'courses' };
+  return { page: PAGES.indexOf(x) >= 0 ? x : 'dashboard' };
 }
 function go(hash) { if (location.hash !== '#' + hash) location.hash = hash; else window.scrollTo(0, 0); }
 function useRoute() {
@@ -4125,11 +4135,11 @@ function icsDay(date, add) {
   var p = date.split('-').map(Number), d = new Date(Date.UTC(p[0], p[1] - 1, p[2] + (add || 0)));
   return d.toISOString().slice(0, 10).replace(/-/g, '');
 }
-function calendarEvents(state, semId) {
+function calendarEvents(state, semId, personal) {
   var courses = state.courses.filter(function (c) { return c.semesterId === semId && !c.finalGrade; });
   var ev = [];
   courses.forEach(function (c) {
-    var title = courseDisplayTitle(c), ex = examsFor(c, state) || {}, have = {};
+    var title = courseDisplayTitle(c), ex = displayExamsFor(c, state, personal) || {}, have = {};
     [['mid', 'midterm'], ['fin', 'final']].forEach(function (k) {
       var e = ex[k[0]];
       if (!e || !/^\d{4}-\d{2}-\d{2}$/.test(e.date || '')) return;
@@ -4160,8 +4170,8 @@ function buildICS(events) {
   L.push('END:VCALENDAR');
   return L.map(icsFold).join('\r\n') + '\r\n';
 }
-function downloadICS(state, semId) {
-  var ev = calendarEvents(state, semId);
+function downloadICS(state, semId, personal) {
+  var ev = calendarEvents(state, semId, personal);
   if (!ev.length) { toast(t('ics.none')); return; }
   var blob = new Blob([buildICS(ev)], { type: 'text/calendar;charset=utf-8' });
   var url = URL.createObjectURL(blob), a = document.createElement('a');
@@ -4773,6 +4783,7 @@ function nextExamText(x) {
 }
 function CourseCard(p) {
   var c = p.course, state = p.state;
+  var personal=React.useContext(PersonalExamContext);
   var sum = C.courseSummary(c, state), info = C.courseGrade(c, state, sum), grades = C.gradesFor(c, state);
   var mode = gradingModeFor(c);
   var tg = mode === 'criterion' ? (c.target ? grades.find(function (g) { return g.label === c.target; }) : null) :
@@ -4780,7 +4791,7 @@ function CourseCard(p) {
   var href = '#course-' + c.id;
   var manual = !sum.rows.length && c.finalGrade;
   var sec = sectionOf(c);
-  var nx = c.finalGrade ? null : nextExamOf(examsFor(c, state));
+  var nx = c.finalGrade ? null : nextExamOf(displayExamsFor(c, state, personal));
   var gl = c.finalGrade ? null : finalExamPassed(c, state) ? { tone: 'ok', text: t('gm.afterFinalCard') } : goalLine(c, state, sum);
   return html`<article className="card ccard" style=${{ '--cc': courseColor(c.color) }}>
     <div className="ccard-top">
@@ -5126,121 +5137,74 @@ function examDeviceKey(email) {
   }
   return key;
 }
-function ExamRoomsPanel(p) {
-  var email=String(p.email||'').trim().toLowerCase();
-  var client=S.web&&S.web.client;
-  var keyS=useState(''),device=keyS[0],setDevice=keyS[1];
-  var readyS=useState(false),ready=readyS[0],setReady=readyS[1];
-  var studentS=useState(''),student=studentS[0],setStudent=studentS[1];
-  var savedS=useState(''),saved=savedS[0],setSaved=savedS[1];
-  var profileS=useState(false),profileReady=profileS[0],setProfileReady=profileS[1];
-  var busyS=useState(false),busy=busyS[0],setBusy=busyS[1];
-  var msgS=useState(''),msg=msgS[0],setMsg=msgS[1];
-  var errS=useState(''),err=errS[0],setErr=errS[1];
-  var resultS=useState(null),result=resultS[0],setResult=resultS[1];
-  var active=useRef(true);
-  function request(key,action,args){
-    return client.rpc('gs_exam_device',Object.assign({p_email:email,p_device:key,p_action:action},args||{})).then(function(r){
-      if(r.error)throw r.error;return r.data;
-    });
-  }
+// Personal exam results are transient display data, never stored in grade JSON/score sheets.
+var PersonalExamContext = React.createContext({status:'guest',byId:{}});
+function personalExamInputs(state){
+  var semesters=state.semesters.filter(function(sem){
+    var y=state.years.find(function(x){return x.id===sem.yearId;});
+    return sem.kind==='s1' && y && String(y.academic)==='2569';
+  });
+  return state.courses.filter(function(c){
+    return !c.demo && semesters.some(function(sem){return sem.id===c.semesterId;});
+  }).map(function(c){return {id:c.id,code:String(c.code||'').split('.')[0].trim(),sec:sectionOf(c)};})
+    .filter(function(c){return /^\d{7}$/.test(c.code);});
+}
+function usePersonalExams(state){
+  var email=S.web&&S.web.user&&String(S.web.user.email||'').trim().toLowerCase(), client=S.web&&S.web.client;
+  var input=JSON.stringify(personalExamInputs(state)), key=JSON.stringify([email,input]);
+  var rs=useState(null), result=rs[0], setResult=rs[1];
   useEffect(function(){
-    active.current=true;
     var alive=true;
-    setReady(false);setProfileReady(false);setSaved('');setStudent('');setResult(null);setDevice('');setErr('');setMsg('');
-    if(!client||!email){setReady(true);return function(){alive=false;active.current=false;};}
+    if(!email||!client)return function(){alive=false;};
     (async function(){
       try{
-        var k=examDeviceKey(email);
-        var r=await request(k,'get');
-        if(alive){var id=r&&r.studentId||'';setDevice(k);setSaved(id);setStudent(id);setProfileReady(true);}
-      }catch(e){if(alive)setErr('error');}
-      finally{if(alive)setReady(true);}
-    })();
-    return function(){alive=false;active.current=false;};
-  },[client,email]);
-  var year=p.sem&&p.state.years.find(function(y){return y.id===p.sem.yearId;});
-  var academic=String(year&&year.academic||'');
-  var scope=academic==='2569'&&p.sem&&p.sem.kind==='s1';
-  var courses=(p.courses||[]).filter(function(c){return !c.demo;}).map(function(c){
-    return {code:String(c.code||'').split('.')[0].trim(),sec:sectionOf(c)};
-  }).filter(function(c){return /^\d{7}$/.test(c.code);});
-  var courseKey=JSON.stringify(courses);
-  var lookupKey=device&&saved&&scope&&courses.length?[device,saved,courseKey].join('|'):'';
-  useEffect(function(){
-    var alive=true;setResult(null);
-    if(!lookupKey)return function(){alive=false;};
-    (async function(){
-      try{
-        var rows=await request(device,'lookup',{p_year:'2569',p_term:'s1',p_round:'fin',p_courses:JSON.parse(courseKey)});
-        if(!Array.isArray(rows))throw new Error('invalid response');
-        if(alive)setResult({key:lookupKey,rows:rows});
-      }catch(e){if(alive)setResult({key:lookupKey,error:true});}
+        var device=examDeviceKey(email);
+        async function req(action,args){
+          var r=await client.rpc('gs_exam_device',Object.assign({p_email:email,p_device:device,p_action:action},args||{}));
+          if(r.error)throw r.error;return r.data;
+        }
+        var profile=await req('get');
+        if(!alive)return;
+        if(!profile||!profile.studentId){setResult({key:key,status:'missing',byId:{}});return;}
+        var courses=JSON.parse(input), rows=[];
+        // Keep below the RPC's course cap. Avoid exposing the ID to grade state.
+        for(var i=0;i<courses.length;i+=100){
+          var batch=courses.slice(i,i+100).map(function(c){return {code:c.code,sec:c.sec};});
+          var rr=await req('lookup',{p_year:'2569',p_term:'s1',p_round:'fin',p_courses:batch});
+          if(!Array.isArray(rr))throw new Error('invalid exam response');
+          rows=rows.concat(rr);
+        }
+        var byId={};
+        courses.forEach(function(c){
+          var hits=rows.filter(function(r){
+            if(r.code!==c.code)return false;
+            if(!r.sec)return true;
+            var bounds=String(r.sec).split('-').map(Number);
+            return /^\d+$/.test(c.sec)&&Number(c.sec)>=bounds[0]&&Number(c.sec)<=(bounds[1]||bounds[0]);
+          }).filter(function(r){return /^\d{4}-\d{2}-\d{2}$/.test(r.date||'')&&r.time&&r.room;});
+          var unique=hits.filter(function(r,i){return hits.findIndex(function(q){return q.date===r.date&&q.time===r.time&&q.room===r.room;})===i;});
+          if(unique.length===1)byId[c.id]={date:unique[0].date,time:unique[0].time,location:unique[0].room,source:'personal-notice'};
+          else if(unique.length>1)byId[c.id]={ambiguous:true};
+        });
+        if(alive)setResult({key:key,status:'ready',byId:byId,eligible:courses.map(function(c){return c.id;})});
+      }catch(e){if(alive)setResult({key:key,status:'error',byId:{}});}
     })();
     return function(){alive=false;};
-  },[client,lookupKey]);
-  async function action(fn){
-    setBusy(true);setErr('');setMsg('');
-    try{await fn();}catch(e){if(active.current)setErr('error');}
-    finally{if(active.current)setBusy(false);}
-  }
-  function saveId(){
-    if(!device||!profileReady||busy)return;
-    var id=student.replace(/\s/g,'');
-    if(!/^\d{10}$/.test(id)){setErr('badId');return;}
-    action(async function(){
-      var r=await request(device,'save',{p_student_id:id});
-      if(!r||r.saved!==true)throw new Error('save failed');
-      if(active.current){setStudent(id);setSaved(id);setMsg('saved');}
-    });
-  }
-  function removeId(){
-    if(!device||!profileReady||busy)return;
-    action(async function(){
-      await request(device,'remove');
-      if(active.current){setStudent('');setSaved('');setResult(null);}
-    });
-  }
-  var rec = result && result.key === lookupKey ? result : null;
-  var rows=rec && rec.rows || [];
-  return html`<section className="card pad stack" style=${{marginBottom:20,borderColor:"var(--accent)"}} aria-label=${t('examroom.title')}>
-    <div><h2 style=${{fontSize:18}}>${t('examroom.title')}</h2><p className="tiny muted">${t('examroom.intro')}</p></div>
-    ${!email ? html`<p className="small muted">${t('examroom.guest')}</p>` :
-      !ready ? html`<p className="small muted">${t('examroom.loading')}</p>` :
-      html`<div className="stack">
-        <p className="small muted">${t('examroom.private')}</p>
-        <label className="small" htmlFor="exam-student-id">${t('examroom.student')}</label>
-        <input id="exam-student-id" className="input" type="text" inputMode="numeric" autoComplete="off" maxLength=${12} value=${student} disabled=${!profileReady || busy} onChange=${e=>{setStudent(e.target.value);setErr('');}} />
-        <div className="row wrap"><button className="btn primary" type="button" disabled=${!profileReady || busy || !student.trim()} onClick=${saveId}>${t('examroom.save')}</button>
-          ${saved && html`<button className="btn" type="button" disabled=${busy} onClick=${removeId}>${t('examroom.remove')}</button>`}
-</div>
-        ${msg==='saved' && html`<p className="small" role="status">${t('examroom.saved')}</p>`}
-      </div>`}
-    ${err && html`<p className="small" role="alert">${t('examroom.'+err)}</p>`}
-    ${email && saved && html`<div className="stack">
-      ${!scope ? html`<p className="small muted">${t(academic?'examroom.noTerm':'examroom.noYear')}</p>` :
-        !courses.length ? html`<p className="small muted">${t('examroom.noCourses')}</p>` :
-        !rec ? html`<p className="small muted">${t('examroom.loading')}</p>` :
-        rec.error ? html`<p className="small" role="alert">${t('examroom.error')}</p>` :
-        !rows.length ? html`<p className="small muted">${t('examroom.none')}</p>` :
-        html`<div className="stack">${rows.map(function(r,i){
-          var c=(p.courses||[]).find(function(x){return String(x.code||'').split('.')[0].trim()===r.code;});
-          var multiple=rows.some(function(x){return x.code===r.code&&x.date===r.date&&x.room!==r.room;});
-          return html`<div key=${r.code+'-'+r.room+'-'+i} className="card pad">
-            <b>${r.code} · ${c ? upcomingCourseTitle(c) : ''}</b>
-            <div className="small">${fmtDate(r.date,true)} · ${r.time}</div>
-            <div>${t('examroom.room')}: <b>${r.room}</b> ${r.sec?' · '+t('examroom.sec')+' '+r.sec:''}</div>
-            <div className="tiny muted">${t('examroom.source',{p:r.page})}</div>
-            ${multiple && html`<p className="small" role="alert">${t('examroom.ambiguous')}</p>`}
-          </div>`;
-        })}</div>`}
-      ${scope && courses.some(c=>!c.sec) && html`<p className="tiny muted">${t('examroom.secMissing')}</p>`}
-      <p className="tiny muted">${t('examroom.warning')}</p>
-    </div>`}
-  </section>`;
+  },[client,key]);
+  return email ? result&&result.key===key?result:{status:'loading',byId:{}} : {status:'guest',byId:{}};
 }
-
-
+function displayExamsFor(c,state,personal){
+  var base=examsFor(c,state)||{}, match=personal&&personal.byId[c.id];
+  if(match&&!match.ambiguous)return Object.assign({},base,{fin:match});
+  if(match&&match.ambiguous)return Object.assign({},base,{fin:Object.assign({},base.fin||{},{location:'',source:'ambiguous-notice'})});
+  return examsFor(c,state);
+}
+function examEventDetail(x){
+  if(!x.exam)return null;
+  var e=x.examInfo||{};
+  return html`<div className="exam-event-detail"><span>${e.time||t('examroom.timeUnknown')}</span><span> · ${e.location?t('exam.room',{r:e.location}):t('examroom.roomUnknown')}</span>
+    <span className="exam-event-source">${t(e.source==='personal-notice'?'examroom.personal':e.source==='ambiguous-notice'?'examroom.ambiguous':'examroom.general')}</span></div>`;
+}
 function ExamCalendarPanel(p) {
   var exams = p.events.filter(function(x){ return (x.a.type === 'midterm' || x.a.type === 'final') && x.a.due && /^\d{4}-\d{2}-\d{2}$/.test(String(x.a.due)); });
   var now = new Date();
@@ -5248,7 +5212,8 @@ function ExamCalendarPanel(p) {
   var first = (exams.find(function(x){ return x.a.due >= isoNow; }) || exams[0]);
   var initial = first ? first.a.due.slice(0,7) : isoNow.slice(0,7);
   var ms = useState(initial), month = ms[0], setMonth = ms[1];
-  var ds = useState(''), selected = ds[0], setSelected = ds[1];
+  var ds = useState(''), chosen = ds[0], setSelected = ds[1];
+  var selected=chosen || (first&&first.a.due.slice(0,7)===month?first.a.due:'');
   var parts = month.split('-').map(Number), y = parts[0], m = parts[1];
   var monthDate = new Date(y,m-1,1);
   var title = new Intl.DateTimeFormat(LANG === 'th' ? 'th-TH' : 'en-US', {month:'long',year:'numeric'}).format(monthDate);
@@ -5281,7 +5246,7 @@ function ExamCalendarPanel(p) {
         return html`<button type="button" key=${date} className=${'dashboard-cal-cell'+(count?' has-exam':'')+(selected===date?' chosen':'')+(isToday?' today':'')+(past?' past':'')}
           style=${count?{'--cc':cols[0]}:null}
           aria-pressed=${selected===date} aria-current=${isToday?'date':null} aria-label=${fmtDate(date,true)+(isToday?' · '+t('today'):'')+(count?' · '+onDay.map(function(x){return upcomingCourseTitle(x.c);}).join(', '):'')}
-          onClick=${function(){setSelected(selected===date?'':date);}}><span className="cal-num">${day}</span>
+          onClick=${function(){setSelected(date);}}><span className="cal-num">${day}</span>
           ${count>0&&html`<span className="cal-dots" aria-hidden="true">${cols.slice(0,3).map(function(c,j){return html`<i key=${j} style=${{background:c}}></i>`;})}</span>`}</button>`;
       })}
     </div>
@@ -5289,14 +5254,15 @@ function ExamCalendarPanel(p) {
     <div className="dashboard-calendar-legend">${fmtDate(selected,true)}</div>
     ${show.length ? show.map(function(x){var q=String(x.a.due).split('-');return html`<div key=${x.a.id} className="dashboard-cal-event" style=${{ '--cc': courseColor(x.c.color) }}>
       <div className="date-pill cc"><b>${+q[2]}</b><small>${fmtDate(x.a.due).replace(/^\d+\s*/,'')}</small></div>
-      <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}</div></div>
+      <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}</div>${examEventDetail(x)}</div>
       <a className="btn sm" href=${'#course-'+x.c.id}>${t('viewCourse')}</a>
     </div>`;}) : html`<p className="muted small">${LANG==='th'?'ไม่มีรายการสอบที่บันทึกไว้ในช่วงนี้':'No recorded exams in this period'}</p>`}<//>`}
-    <p className="dashboard-calendar-note">${LANG==='th'?'วันสอบอ้างอิงจากข้อมูลของวิชาและ Sec ที่เลือก โปรดตรวจสอบประกาศของรายวิชาอีกครั้ง':'Exam dates are based on the selected course and section. Confirm with your syllabus.'}</p>
+    <p className="dashboard-calendar-note">${t('examroom.calendarHint')}</p>
   </div>`;
 }
 
 function Dashboard(p) {
+  var personal=React.useContext(PersonalExamContext);
   var state = p.state, cur = curSemester(state);
   if (!cur) return html`<div><div className="page-head"><div><h1>${t('nav.dashboard')}</h1><p>${t('tagline')}</p></div></div>
     <div className="empty"><h3>${t('start.title')}</h3><p className="no-wrap">${t('start.dashboard')}</p>
@@ -5308,23 +5274,29 @@ function Dashboard(p) {
   var ids = courses.map(function (c) { return c.id; });
   var items = state.assessments.filter(function (a) { return ids.indexOf(a.courseId) >= 0; });
   var graded = items.filter(C.isGraded).length, pending = items.length - graded;
-  // "Coming up" only lists the courses of the term being viewed, so other terms' (or planned) courses never show here.
-  var upcoming = items.filter(function (a) { return !C.isGraded(a) && a.due; })
-    .map(function (a) { return { a: a, d: daysUntil(a.due), c: courses.find(function (c) { return c.id === a.courseId; }) }; })
-    .filter(function (x) { return x.c && !x.c.finalGrade && x.d !== null && x.d >= -14; }).sort(function (x, y) { return x.d - y.d; }).slice(0, 5);
-  courses.forEach(function (c) {
-    var courseExams = examsFor(c, state);
-    if (!courseExams || c.finalGrade) return;
-    [['mid', 'midterm'], ['fin', 'final']].forEach(function (k) {
-      var e = courseExams[k[0]];
-      if (!e || !e.date) return;
-      var done = state.assessments.some(function (a) { return a.courseId === c.id && a.type === k[1] && (a.due || C.isGraded(a)); });
-      if (done) return;
-      var dd = daysUntil(e.date);
-      if (dd !== null && dd >= 0) upcoming.push({ a: { id: 'ex-' + c.id + k[0], type: k[1], name: '', due: e.date }, d: dd, c: c, exam: true });
+  // A single event per course/exam type. Personal dates supersede old assessment due dates
+  // for display only; past exams remain visible in the month calendar.
+  var examEvents=[];
+  courses.forEach(function(c){
+    var ex=displayExamsFor(c,state,personal)||{};
+    [['mid','midterm'],['fin','final']].forEach(function(k){
+      var related=items.filter(function(a){return a.courseId===c.id&&a.type===k[1];});
+      var assessment=related.find(function(a){return a.due&&!C.isGraded(a);})||related.find(function(a){return a.due;});
+      var e=ex[k[0]]||{};
+      var date=e.date||(assessment&&assessment.due);
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(date||''))return;
+      examEvents.push({a:{id:'ex-'+c.id+k[0],type:k[1],name:'',due:date},d:daysUntil(date),c:c,exam:true,examInfo:e,
+        completed:!!c.finalGrade||(related.length>0&&related.every(C.isGraded))});
     });
   });
-  upcoming.sort(function (x, y) { return x.d - y.d; }); var allUpcoming = upcoming; upcoming = upcoming.slice(0, 6);
+  function eventOrder(x,y){return x.a.due.localeCompare(y.a.due)||String(x.examInfo&&x.examInfo.time||'').localeCompare(String(y.examInfo&&y.examInfo.time||''));}
+  examEvents.sort(eventOrder);
+  var upcoming=items.filter(function(a){return a.type!=='midterm'&&a.type!=='final'&&!C.isGraded(a)&&a.due;})
+    .map(function(a){return {a:a,d:daysUntil(a.due),c:courses.find(function(c){return c.id===a.courseId;})};})
+    .filter(function(x){return x.c&&!x.c.finalGrade&&x.d!==null&&x.d>=-14;})
+    .concat(examEvents.filter(function(x){return !x.completed&&x.d!==null&&x.d>=0;}))
+    .sort(eventOrder).slice(0,6);
+  var allUpcoming=examEvents;
   var next = upcoming.find(function (x) { return x.d >= 0; });
   var tr = C.trend(state), maxPts = C.maxPoints(C.gradesFor(null, state)) || 4;
   var hasTrend = tr.some(function (x) { return x.cumE != null; });
@@ -5361,18 +5333,13 @@ function Dashboard(p) {
     ${showNextTerm(state, cur) && html`<div style=${{ marginTop: 16 }}><${StudyPlanPanel} state=${state} compact=${true} /></div>`}
     ${needRecord.length > 0 && html`<div style=${{ marginTop: 14 }}><${Banner} kind="ok">${t('recordPrompt', { n: needRecord.length })}${' '}
       ${needRecord.map(function (c, i) { return html`<span key=${c.id}>${i ? ', ' : ''}<a href=${'#course-' + c.id}>${courseDisplayTitle(c)}</a></span>`; })}<//></div>`}
-    <div className="section">
-      <div className="section-head"><h2>${t('coursesIn', { s: semFull(state, cur) })}</h2>
-        <a className="btn ghost sm" href="#courses">${t('allCourses')}</a></div>
-      ${courses.length ? html`<div className="course-grid">${courses.map(function (c) { return html`<${CourseCard} key=${c.id} course=${c} state=${state} />`; })}</div>`
-        : html`<div className="empty"><h3>${t('noCoursesSemT')}</h3><p>${t('noCoursesSemP')}</p>
-          ${semPlanButton(state, cur)}
-          <button className="btn primary" onClick=${function () { openModal('course', { semesterId: cur.id }); }}><${Icon} n="plus" />${t('addCourse')}</button></div>`}
-    </div>
     <div className="section dashboard-exam-layout">
       <div className="card pad dashboard-exam-panel">
         <div className="section-head"><h2>${t('upcoming')}</h2>
-          <button className="btn ghost sm" onClick=${function () { downloadICS(state, cur.id); }}><${Icon} n="calendar" s=${15} />${t('ics.btn')}</button></div>
+          <button className="btn ghost sm" onClick=${function () { downloadICS(state, cur.id, personal); }}><${Icon} n="calendar" s=${15} />${t('ics.btn')}</button></div>
+        ${personal.status==='missing' && html`<button className="btn sm ghost" onClick=${goAuth}>${t('examroom.addId')}</button>`}
+        ${personal.status==='error' && html`<p className="tiny muted">${t('examroom.lookupError')}</p>`}
+        ${personal.status==='ready' && courses.some(c=>personal.eligible.includes(c.id)&&!personal.byId[c.id]) && html`<p className="tiny muted">${t('examroom.noMatch')}</p>`}
         ${upcoming.length ? html`<ul className="dashboard-upcoming-list">${upcoming.map(function(x) {
           var p2 = String(x.a.due).split('-');
           return html`<li key=${x.a.id} className="dashboard-upcoming-row" style=${{ '--cc': courseColor(x.c.color) }}>
@@ -5383,6 +5350,7 @@ function Dashboard(p) {
                 ${upcomingItemDetail(x.a) && html`<span className="upcoming-detail">${upcomingItemDetail(x.a)}</span>`}
                 <span className="upcoming-due">${x.d < 0 ? t('pastDue') : x.d === 0 ? t('today') : t('inDays', { n: x.d })}</span>
               </div>
+              ${examEventDetail(x)}
             </div>
             ${x.exam || x.d >= 0 ? html`<a className="btn sm" href=${'#course-' + x.c.id}>${t('viewCourse')}</a>`
               : html`<button className="btn sm" onClick=${function () { openModal('quick', { courseId: x.c.id, assessId: x.a.id }); }}>${t('enterScore')}</button>`}
@@ -5390,6 +5358,14 @@ function Dashboard(p) {
         })}</ul>` : html`<p className="muted small">${t('upcomingEmpty')}</p>`}
       </div>
       <${ExamCalendarPanel} events=${allUpcoming} />
+    </div>
+    <div className="section">
+      <div className="section-head"><h2>${t('coursesIn', { s: semFull(state, cur) })}</h2>
+        <a className="btn ghost sm" href="#courses">${t('allCourses')}</a></div>
+      ${courses.length ? html`<div className="course-grid">${courses.map(function (c) { return html`<${CourseCard} key=${c.id} course=${c} state=${state} />`; })}</div>`
+        : html`<div className="empty"><h3>${t('noCoursesSemT')}</h3><p>${t('noCoursesSemP')}</p>
+          ${semPlanButton(state, cur)}
+          <button className="btn primary" onClick=${function () { openModal('course', { semesterId: cur.id }); }}><${Icon} n="plus" />${t('addCourse')}</button></div>`}
     </div>
     <${WeekTimetable} state=${state} semId=${cur.id} />
     <div className="section card pad">
@@ -5890,6 +5866,7 @@ function GradeSimulator(p) {
   </section>`;
 }
 function CourseDetail(p) {
+  var personal=React.useContext(PersonalExamContext);
   var state = p.state, c = state.courses.find(function (x) { return x.id === p.id; });
   if (!c) return html`<div><a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a><div className="empty" style=${{ marginTop: 20 }}><h3>${t('courseNotFound')}</h3></div></div>`;
   var sum = C.courseSummary(c, state), info = C.courseGrade(c, state, sum), grades = C.gradesFor(c, state);
@@ -5903,10 +5880,10 @@ function CourseDetail(p) {
           ${c.code && html`<span>${String(c.code).split('.')[0]}</span>`}${sectionOf(c) && html`<span>Sec ${sectionOf(c)}</span>`}<span>${t('nCredits', { n: fmtT(c.credits) })}</span><${KindChip} course=${c} />
           ${sem && html`<span>${semFull(state, sem)}</span>`}${c.instructor && html`<span>${t('instructor')}: ${c.instructor}</span>`}
         </div>
-        ${examsFor(c, state) && html`<div className="exam-detail small">
-          ${examLine(examsFor(c, state), state.assessments.some(function (a) { return a.courseId === c.id && a.type === 'midterm' && C.isGraded(a); }))}
-          ${(function () { var ex = examsFor(c, state), e = ex && (ex.fin || ex.mid), src = (e && e.source) || (ex && ex.source) || '';
-            var note = src === 'reg' ? t('exam.srcReg') : src === 'user' || src === 'manual' ? t('exam.srcUser') : src === 'shared-all-secs' ? t('exam.srcAllSecs') : src === 'shared-verified' ? t('exam.srcSec') : src === 'syllabus' ? t('courseInfo.syllabusDates') : t('exam.calendarNote');
+        ${displayExamsFor(c, state, personal) && html`<div className="exam-detail small">
+          ${examLine(displayExamsFor(c, state, personal), state.assessments.some(function (a) { return a.courseId === c.id && a.type === 'midterm' && C.isGraded(a); }))}
+          ${(function () { var ex = displayExamsFor(c, state, personal), e = ex && (ex.fin || ex.mid), src = (e && e.source) || (ex && ex.source) || '';
+            var note = src === 'personal-notice' ? t('examroom.personal') : src === 'ambiguous-notice' ? t('examroom.ambiguous') : src === 'reg' ? t('exam.srcReg') : src === 'user' || src === 'manual' ? t('exam.srcUser') : src === 'shared-all-secs' ? t('exam.srcAllSecs') : src === 'shared-verified' ? t('exam.srcSec') : src === 'syllabus' ? t('courseInfo.syllabusDates') : t('exam.calendarNote');
             return html`<span className="exam-detail-note tiny muted">${note}</span>`; })()}</div>`}
         ${(function () { var sec = RegData.section(c, state); if (!sec) return null;
           return html`<div className="small muted reg-sec">${t('reg.secLine', { s: sec.sec, w: regSectionText(sec) })}${sec.teachers && sec.teachers.length ? ' · ' + t('reg.teachers', { t: sec.teachers.join(', ') }) : ''}</div>`; })()}
@@ -7439,13 +7416,14 @@ function SaveState() {
   return html`<span className="save-state" title=${txt}><span className=${'save-dot' + (S.sync === 'saving' ? ' busy' : '')} style=${S.sync === 'error' ? { background: 'var(--bad)' } : null}></span><span className="save-label">${txt}</span></span>`;
 }
 var NAV = [
-  { id: 'courses', icon: 'book' }, { id: 'dashboard', icon: 'dashboard' }, { id: 'years', icon: 'calendar' },
+  { id: 'dashboard', icon: 'dashboard' }, { id: 'courses', icon: 'book' }, { id: 'years', icon: 'calendar' },
   { id: 'simulator', icon: 'calc' }, { id: 'gpa', icon: 'trend' },
   { id: 'feedback', icon: 'message' }, { id: 'help', icon: 'info' }, { id: 'preferences', icon: 'sliders', key: 'settings' }
 ];
 function App() {
   var state = useApp();
   var route = useRoute();
+  var personal = usePersonalExams(state);
   LANG = state.settings.lang || LANG;
   if (S.web) { try { localStorage.setItem('gradespace.lang', LANG); } catch (e) { /* ignore */ } }
   useEffect(function () {
@@ -7467,15 +7445,15 @@ function App() {
   else if (route.page === 'help') page = html`<${HelpPage} />`;
   else page = html`<${Preferences} state=${state} />`;
   var navLabel = function (n) { return t('nav.' + (n.key || n.id)); };
-  return html`<div className="shell">
+  return html`<${PersonalExamContext.Provider} value=${personal}><div className="shell">
     <aside className="side" aria-label=${t('mainNav')}>
-      <a className="brand" href="#courses"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div><div className="brand-tag">${t('taglineShort')}</div></div></a>
+      <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div><div className="brand-tag">${t('taglineShort')}</div></div></a>
       ${NAV.map(function (n) { return html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`; })}
       <div className="side-foot">${state.settings.university ? html`<div style=${{ fontWeight: 600, color: 'var(--ink-2)' }}>${state.settings.university}</div>` : null}${S.web && S.web.user ? S.web.user.email : (S.cloud ? t('store.accountShort') : t('store.deviceShort'))}</div>
     </aside>
     <div className="main">
       <header className="topbar">
-        <a className="brand" href="#courses"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div></a>
+        <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div></a>
         <div className="topbar-spacer"></div>
         <${SaveState} />
         <${Seg} label=${t('language')} value=${LANG} onChange=${function (v) { update(function (d) { d.settings.lang = v; }); }} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} />
@@ -7484,9 +7462,7 @@ function App() {
           : S.web ? html`<a className="btn ghost icon" href="#preferences" aria-label=${t('account')} title=${t('account')}><${Icon} n="user" /></a>`
           : html`<a className="btn ghost icon" href="#preferences" aria-label=${t('nav.settings')} title=${t('nav.settings')}><${Icon} n="sliders" /></a>`}
       </header>
-      <main className="page" id="main">
-        ${S.web && S.web.user && ['courses','dashboard','preferences'].includes(route.page) && html`<${ExamRoomsPanel} key=${S.web.user.email} email=${S.web.user.email} state=${state} sem=${curSemester(state)} courses=${state.courses.filter(c=>curSemester(state)&&c.semesterId===curSemester(state).id)} />`}
-        ${page}</main>
+      <main className="page" id="main">${page}</main>
     </div>
     <nav className="bottomnav" aria-label=${t('mainNav')}>
       ${NAV.filter(function (n) { return n.id !== 'preferences'; }).map(function (n) { return html`<a key=${n.id} href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} s=${20} /><span>${t('navShort.' + n.id)}</span></a>`; })}
@@ -7495,7 +7471,7 @@ function App() {
     <div className="toasts" role="status" aria-live="polite">${S.toasts.map(function (x) {
       return html`<div key=${x.id} className="toast"><span>${x.msg}</span>${x.undo && S.undo && html`<button onClick=${function () { doUndo(x.id); }}>${t('undo')}</button>`}</div>`;
     })}</div>
-  </div>`;
+  </div><//>`;
 }
 function Splash() {
   return html`<div style=${{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}><div className="row muted"><${Logo} /><span>${t('loading')}</span></div></div>`;
@@ -7773,7 +7749,8 @@ function signOut() {
 }
 function goAuth() { S.authScreen = true; emit(); }
 function AuthScreen() {
-  var es = useState(''), email = es[0], setEmail = es[1];
+  var existing = S.web && S.web.user;
+  var es = useState(existing ? existing.email : ''), email = es[0], setEmail = es[1];
   var ers = useState(null), err = ers[0], setErr = ers[1];
   var sidS=useState(''), sid=sidS[0], setSid=sidS[1];
   var savingS=useState(false), saving=savingS[0], setSaving=savingS[1];
@@ -7794,6 +7771,7 @@ function AuthScreen() {
       }catch(e){setErr(t('examroom.loginError'));return;}
       finally{pending.current=false;setSaving(false);}
     }
+    if(existing && existing.email===em){S.authScreen=false;emit();return;}
     startUser({ id: em, email: em });
   };
   var setLang = function (v) { LANG = v; try { localStorage.setItem('gradespace.lang', v); } catch (e) { /* ignore */ } emit(); };
@@ -7806,7 +7784,7 @@ function AuthScreen() {
       <h1 className="auth-title">${t('welcomeT')}</h1>
       <div className="stack" style=${{ marginTop: 8 }} onKeyDown=${function (e) { if (e.key === 'Enter' && e.target.tagName === 'INPUT') enter(); }}>
         <p className="muted" style=${{ margin: 0 }}>${t('auth.intro')}</p>
-        <${Field} label=${t('auth.email')} id="au-e"><input id="au-e" className="input" type="email" autoComplete="email" inputMode="email" autoFocus=${true} value=${email} disabled=${saving} onChange=${function (e) { setEmail(e.target.value); setErr(null); }} /><//>
+        <${Field} label=${t('auth.email')} id="au-e"><input id="au-e" className="input" type="email" autoComplete="email" inputMode="email" autoFocus=${true} value=${email} readOnly=${!!existing} disabled=${saving} onChange=${function (e) { setEmail(e.target.value); setErr(null); }} /><//>
         <${Field} label=${t('examroom.loginId')} id="au-student" hint=${t('examroom.loginHint')}><input id="au-student" className="input" type="text" inputMode="numeric" autoComplete="off" maxLength=${12} value=${sid} disabled=${saving} onChange=${e=>{setSid(e.target.value);setErr(null);}} /><//>
         ${err && html`<${Banner} kind="bad">${err}<//>`}
         <button className="btn primary" style=${{ padding: '11px 14px' }} disabled=${saving} onClick=${enter}>${t(saving?'examroom.saving':'auth.enter')}</button>
@@ -7815,8 +7793,7 @@ function AuthScreen() {
           : 'When using an email, your course and assessment scores are shared with the GradeSpace administrator.'}</p>
       </div>
       <div className="auth-divider"></div>
-      <button className="btn ghost" style=${{ width: '100%' }} disabled=${saving} onClick=${startGuest}>${t('auth.guest')}</button>
-      <p className="hint" style=${{ textAlign: 'center', margin: '6px 0 0' }}>${t('auth.guestHint')}</p>
+      ${existing ? html`<button className="btn ghost" style=${{width:"100%"}} disabled=${saving} onClick=${function(){S.authScreen=false;emit();}}>${t("cancel")}</button>` : html`<button className="btn ghost" style=${{ width: '100%' }} disabled=${saving} onClick=${startGuest}>${t('auth.guest')}</button><p className="hint" style=${{ textAlign: 'center', margin: '6px 0 0' }}>${t('auth.guestHint')}</p>`}
     </div>
   </div>`;
 }
@@ -7825,7 +7802,8 @@ function AccountSection() {
   return html`<section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('account')}</h2>
     ${u ? html`<div className="row wrap between">
         <div className="row"><span className="avatar lg">${initialOf(u)}</span><div className="small muted">${t('account.signedInAs', { e: u.email })}</div></div>
-        <button className="btn" onClick=${function () { confirmDialog({ title: t('account.signOutQ'), body: t('account.signOutBody'), confirmLabel: t('account.signOut'), onConfirm: signOut }); }}>${t('account.signOut')}</button>
+        <button className="btn ghost" onClick=${goAuth}>${t('examroom.changeId')}</button>
+         <button className="btn" onClick=${function () { confirmDialog({ title: t('account.signOutQ'), body: t('account.signOutBody'), confirmLabel: t('account.signOut'), onConfirm: signOut }); }}>${t('account.signOut')}</button>
       </div>`
       : html`<p className="small muted" style=${{ margin: 0 }}>${t('account.guestP')}</p><div><button className="btn primary" onClick=${goAuth}>${t('account.signInBtn')}</button></div>`}
   </section>`;
