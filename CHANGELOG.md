@@ -1,3 +1,8 @@
+## 2026-11-22 — ChatGPT: Remove exam-room email verification
+
+- Owner requested no email verification. Dashboard and Settings now accept a student ID immediately after the existing email-only login. Supabase stores the ID under that email and a random browser-specific secret; email alone cannot retrieve another browser's student ID. New browsers require entering the ID again. The grade store is unchanged.
+- `gs_exam_device` supports get/save/remove/lookup; private ranges and profiles are not directly readable by browser roles. SQL tests under the anonymous role passed save/reload/match/remove and isolation between two device secrets. Updated browser smoke test; production deployment and browser test results not yet verified.
+
 ## 2026-11-22 — ChatGPT: Connect personal exam rooms to the website
 
 - `public/index.html`: bilingual My exam rooms panel in Dashboard and Settings, isolated verified-email Supabase client, private student ID save/remove, and automatic course/section matching for semester 1/2569. Legacy email-only grade entry and saved grade data are unchanged. The ID is not included in the grade JSON or score sheet.
