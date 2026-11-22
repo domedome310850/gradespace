@@ -7,5 +7,7 @@
   "assets": {
     "directory": "./public",
     "not_found_handling": "single-page-application"
-  }
+  },
+  // Preview builds (`wrangler preview`) need this block; empty = previews use the settings above.
+  "previews": {}
 }

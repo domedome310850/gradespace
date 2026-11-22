@@ -3,6 +3,11 @@
 Newest first. Each entry: date · who (which AI / person) · what changed · files.
 Add yours at the top before you finish.
 
+## 2026-11-22 · Claude (claude.ai) · Fix Cloudflare preview builds
+- Added an empty top-level `"previews": {}` block to `wrangler.jsonc`: `npx wrangler preview` stops with
+  "Your Wrangler configuration is missing a `previews` block" without it. No other settings changed.
+- Files: `wrangler.jsonc`, `CHANGELOG.md`.
+
 ## 2026-11-22 · Codex · Cloudflare Auto Deploy retest
 - Added this `CHANGELOG.md` entry to retrigger the `gradespace-th` preview build on `test/cloudflare-auto-deploy`.
 
