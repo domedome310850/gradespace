@@ -1,0 +1,11 @@
+// Cloudflare Workers config: the site is static files in ./public served by the Worker "gradespace-th".
+// Connect this repository in Cloudflare (Workers & Pages → gradespace-th → Settings → Build → Connect Git)
+// so every push to the main branch deploys automatically.
+{
+  "name": "gradespace-th",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "single-page-application"
+  }
+}
