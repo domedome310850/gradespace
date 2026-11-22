@@ -125,7 +125,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .save-dot.busy { background: var(--warn); }
 .page { padding: 8px 28px 48px; max-width: 1160px; width: 100%; margin: 0 auto; }
 .bottomnav { display: none; }
-@media(max-width:900px){.bottomnav{grid-template-columns: repeat(7,minmax(48px,1fr)) !important;}}
+@media(max-width:900px){.bottomnav{grid-template-columns: repeat(8,minmax(0,1fr)) !important;}}
 
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; }
@@ -713,6 +713,27 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .gm-cut { display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 10px; padding: 6px 9px; }
 .gm-cut b { min-width: 24px; }
 .gm-cut .input { width: 56px; padding: 5px 7px; text-align: right; }
+/* UI polish: content-sized cards, consistent controls, readable timetable and portable tips. */
+.course-grid.course-grid { align-items: start; }
+.course-grid.course-grid > .ccard, .course-grid.course-grid > .sort-item { grid-row: auto; display: flex; flex-direction: column; }
+.course-grid.course-grid > .sort-item > .ccard { grid-row: auto; display: flex; flex-direction: column; }
+.course-grid.course-grid .ccard-foot { margin-top: auto; align-self: stretch; }
+select.select { appearance: none; -webkit-appearance: none; padding-right: 38px !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6' fill='none' stroke='%23838b9e' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-size: 16px; }
+.tt-days { grid-template-columns: repeat(auto-fit,minmax(min(100%,210px),1fr)); }
+.tt-slot { grid-template-columns: minmax(0,1fr); gap: 3px; border-left: 3px solid var(--cc,var(--accent)); }
+.tt-place { grid-column: 1; }
+.tt-name { overflow-wrap: normal; }
+.ccard-foot .btn, .head-actions .btn, .m-est { white-space: nowrap; }
+.metric.metric .m-label { min-height: 0; }
+.metric .m-value { margin-top: 8px; }
+.metric .m-sub { margin-top: 4px; }
+.metric .m-extra { margin-top: 12px; padding-top: 10px; border-top: 1px solid currentColor; font-size: 12px; opacity: .8; }
+.metric.hero .tip { color: inherit; }
+.sim-result .v.grade-summary-short { font-size: clamp(12px,1.6vw,16px); white-space: nowrap; }
+.gs-floating-tip { position: fixed; z-index: 2147483647; max-width: min(280px,calc(100vw - 24px)); background: var(--ink); color: var(--bg); padding: 8px 10px; border-radius: 9px; font-size: 12.5px; font-weight: 400; line-height: 1.5; white-space: normal; pointer-events: none; box-shadow: 0 4px 16px #0003; }
+.swatches input[type=color] { width: 36px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; }
+.swatch:disabled { opacity: .35; cursor: not-allowed; }
+.exam-notice-row { display:flex;align-items:center;gap:12px;min-width:0;border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));background:var(--surface-2);padding:12px;border-radius:12px; }.exam-notice-row .grow{min-width:0;display:grid;gap:4px;overflow-wrap:anywhere;}.exam-notice-row a.btn{flex:none;}@media(max-width:420px){.exam-notice-row{flex-wrap:wrap}.bottomnav a{font-size:9px;padding-inline:0;min-width:0;}.bottomnav a span{white-space:normal;overflow-wrap:anywhere;}}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -1163,6 +1184,8 @@ var Calc = (function () {
     var unassignedAssumed = false;
     if (unassigned > W_TOL && performance !== null) { exp += unassigned * performance / 100; unassignedAssumed = true; }
     var expected = (unknown > 0 || (gradedRows.length === 0 && nPred === 0)) ? null : exp;
+    // Do not present an impossible >100% estimate unless an explicit bonus item exists.
+    if (expected !== null && expected > 100 + W_TOL && !rows.some(function(r){return r.extra;})) expected = null;
     var basis = pendingRows.length === 0 && !unassignedAssumed ? 'complete'
       : (nAssumed === 0 && !unassignedAssumed ? 'predictions' : (nPred === 0 ? 'performance' : 'mixed'));
 
@@ -1225,7 +1248,7 @@ var Calc = (function () {
   /* ---- GPA ---- */
   // mode 'confirmed': recorded grades only. mode 'estimated': adds calculated + estimated grades.
   function gpaStats(courses, state, mode) {
-    var qp = 0, gpaCredits = 0, attempted = 0, earned = 0, included = 0, notIncluded = 0, confirmedCount = 0;
+    var qp = 0, gpaCredits = 0, attempted = 0, earned = 0, included = 0, notIncluded = 0, confirmedCount = 0, gpaCount = 0;
     courses.forEach(function (c) {
       var cr = toNum(c.credits) || 0;
       var info = courseGrade(c, state);
@@ -1233,12 +1256,12 @@ var Calc = (function () {
       if (info.kind === 'confirmed') confirmedCount++;
       if (!use || !info.meta) { notIncluded++; return; }
       included++;
-      if (info.meta.gpa && isNum(info.meta.points)) { qp += info.meta.points * cr; gpaCredits += cr; }
+      if (info.meta.gpa && isNum(info.meta.points)) { qp += info.meta.points * cr; gpaCredits += cr; if(cr>0)gpaCount++; }
       if (info.meta.attempted) attempted += cr;
       if (info.meta.earned) earned += cr;
     });
     return { gpa: gpaCredits > 0 ? qp / gpaCredits : null, qp: qp, gpaCredits: gpaCredits, attempted: attempted,
-      earned: earned, included: included, notIncluded: notIncluded, confirmedCount: confirmedCount };
+      earned: earned, included: included, notIncluded: notIncluded, confirmedCount: confirmedCount, gpaCount:gpaCount };
   }
 
   function coursesIn(state, semesterIds) {
@@ -1381,6 +1404,23 @@ var Calc = (function () {
 })();
 if (typeof module !== 'undefined') module.exports = Calc;
 
+/* Stable course colors, unique across all saved enrollments in an account. */
+var COURSE_COLOR_HEX = {indigo:'#5b55e8',blue:'#3b8beb',teal:'#14a39a',green:'#3e9b4f',amber:'#d99118',rose:'#e0567a',violet:'#9558e0',slate:'#6b7393'};
+function colorKey(v) { return Object.prototype.hasOwnProperty.call(COURSE_COLOR_HEX,v) ? COURSE_COLOR_HEX[v] : (/^#[0-9a-f]{6}$/i.test(v || '') ? v.toLowerCase() : ''); }
+function nextCourseColor(courses, exceptId) {
+  var used = new Set(courses.filter(function(c){return !exceptId || c.id!==exceptId;}).map(function(c){return colorKey(c.color);}));
+  var keys=Object.keys(COURSE_COLOR_HEX);
+  for(var i=0;i<keys.length;i++) if(!used.has(colorKey(keys[i]))) return keys[i];
+  for(var j=0;j<16777216;j++){
+    var hex='#'+((0x458bd1+j*0x9e3779)%16777216).toString(16).padStart(6,'0');
+    if(!used.has(hex))return hex;
+  }
+  return '#000000';
+}
+function ensureCourseColors(state) {
+  var seen=new Set(), unique=[];
+  state.courses.forEach(function(c){var k=colorKey(c.color);if(!k||seen.has(k))c.color=nextCourseColor(unique.concat(state.courses.filter(function(x){return x!==c;})));seen.add(colorKey(c.color));unique.push(c);});
+}
 /* ===== GradeSpace data layer ===== */
 var Store = (function () {
   'use strict';
@@ -1496,6 +1536,7 @@ var Store = (function () {
       if (c.targetPct !== null && (c.targetPct < 0 || c.targetPct > 100)) c.targetPct = null;
       if (['required', 'elective', 'gened'].indexOf(c.kind) < 0) c.kind = 'required';
     });
+    ensureCourseColors(s);
     // One-time: put GenEd last, keeping everything else in its order. After this the saved order is the student's.
     if (!s.settings.orderV) {
       var rank = function (c) { return c.kind === 'gened' ? 2 : c.kind === 'elective' ? 1 : 0; };
@@ -2200,7 +2241,7 @@ var SharedCatalog = (function () {
     var start = str(row[prefix + ' start']), end = str(row[prefix + ' end']);
     var validTime = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
     var time = validTime.test(start) && validTime.test(end) && start < end ? start + '-' + end : '';
-    return { date: day, time: time, location: str(row['Exam location']),
+    return { date: day, time: time, location: '', // section-wide room cannot establish an individual student's assignment
       source: 'shared-verified' };
   }
   function examsFor(c,state) {
@@ -2408,7 +2449,7 @@ en: {
   'pred.fromSaved': 'Estimate uses your saved predictions: {x}',
   'pred.fromPerf': 'Estimate assumes ungraded work scores like your work so far ({p}%)',
   'exam.srcUser': 'Exam dates and rooms you entered',
-  'exam.srcAllSecs': 'Same exam time for every section. Add your Sec to see your room.',
+  'exam.srcAllSecs': 'Same exam time across listed sections. Individual room assignment is not confirmed.',
   'exam.srcSec': 'Exam dates for your Sec from the course database',
   'exam.room': 'room {r}',
   'plan.stepFaculty': 'Choose faculty and major',
@@ -2443,7 +2484,7 @@ en: {
   'goal.examAverage':'Need {n}% average on remaining Midterm / Final exams', 'goal.examRaw': 'In points: at least {list}',
   'tt.title': 'Weekly timetable', 'tt.source': 'From Reg Chula, by your Sec',
   'tt.clash': 'Classes overlap: {list}. Check your registration.', 'tt.examClash': 'Exams overlap: {list}. Contact the faculty about a make-up slot.',
-  'tt.noSec': 'Set the Sec to see the times for: {list}', 'tt.noData': 'Reg Chula times not loaded yet for: {list}. They are fetched automatically; check back later.',
+  'tt.noSec': 'Set the Sec to see the times for: {list}', 'tt.noData': 'No matching timetable data for: {list}. Check your course code, section and term.',
   'gm.title': 'How this course is graded', 'gm.edit': 'Change', 'gm.kind': 'Grade type', 'gm.letter': 'Letter grades (A–F)', 'gm.su': 'S/U (pass/fail)',
   'gm.pass': 'Score needed to pass (S)', 'gm.passHint': 'From the syllabus. Reach it and you get S.',
   'gm.modeHint.criterion': 'Fixed cut-offs: the grade depends only on your own score.', 'gm.modeHint.norm': 'Grades depend on the class; the cut-offs below are only used as an estimate.', 'gm.modeHint.unknown': 'Not stated yet; the cut-offs below are used as an estimate.',
@@ -2566,7 +2607,8 @@ en: {
   'store.web': 'Your data saves automatically under your email. Type the same email on any device to see it. Anyone who knows your email can open it too.',
   'tagline': 'Know your grades. Plan your GPA.', 'taglineShort': 'Know your grades. Plan your GPA.',
   'loading': 'Loading your grades…', 'mainNav': 'Main navigation',
-  'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & Q&A',
+  "notice.subtitle":"Match your own student ID and registered courses against the faculty exam notice.","notice.id":"Student ID (10 digits)","notice.file":"Faculty exam notice (PDF)","notice.type":"Exam session","notice.run":"Find and remember my rooms","notice.clear":"Forget ID and imported rooms","notice.privacy":"Your ID and matching results stay in this browser. The PDF is read locally; no roster is uploaded. On a shared computer, clear this data when finished.","notice.support":"Supports text-based CBS exam notices with the same seven-column layout. Choose the correct academic term and exam session.","notice.empty":"No imported notice for this term and session.","notice.found":"Matched in notice","notice.none":"Not found in this notice","notice.ambiguous":"Multiple matches or section mismatch — verify with the faculty","notice.needSec":"Enter your enrolled section first","notice.saved":"Saved matching results on this device","notice.error":"Unable to read this notice. Check the faculty, PDF layout, academic year and semester. No old results were changed.","notice.badID":"Enter a valid 10-digit student ID.","notice.busy":"Reading PDF on your device…","notice.source":"Faculty exam notice · page {n}","notice.secRange":"Notice Sec {s}","notice.secUnknown":"Exact section not shown","notice.noCourses":"No active courses in this term.","notice.openReg":"Open official Chula exam lookup","notice.imported":"Imported {n} pages · review against the latest announcement","notice.warning":"Some lines could not be interpreted confidently. Check the original notice.","notice.verify":"A match is not proof of enrollment. Only saved active courses are checked; a section range does not identify an exact section. Confirm against the latest faculty notice/Reg.","notice.changed":"Changing the ID will replace previously imported results for this browser account.","notice.clearConfirm":"Remove the saved student ID and imported room results from this browser?","notice.pickTerm":"Select a term with its academic year first.","notice.room":"Exam room / venue",
+  'nav.exams': 'Exam rooms', 'navShort.exams': 'Exams', 'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & Q&A',
   'navShort.dashboard': 'Home', 'navShort.years': 'Years', 'navShort.courses': 'Courses', 'navShort.simulator': 'Simulator', 'navShort.gpa': 'GPA', 'navShort.feedback':'Ideas', 'navShort.help':'Help',
   'sync.device': 'Saved on this device', 'sync.account': 'Saved to your account', 'sync.saving': 'Saving…', 'sync.error': 'Saved on this device only',
   'store.device': 'Your data is saved in this browser on this device only. It doesn’t sync to other devices, so export a backup now and then.',
@@ -2664,7 +2706,7 @@ en: {
   'err.maxPos': 'Enter a full score greater than 0', 'err.gradedNeedsScore': 'Enter the score, or change the status to Pending', 'err.weightRange': 'Enter a weight from 0 to 100',
   'err.predRange': 'Prediction must be between 0 and the full score', 'err.pickGrade': 'Choose the grade', 'err.pickYear': 'Choose a year', 'err.credits': 'Enter the number of credits',
   'grading.noLetterPrediction': 'This course uses relative grading or has no confirmed cutoffs. Percentage scores are not an A–F prediction.',
-  'grading.noLetterPredictionShort': 'No grade prediction',
+  'grading.noLetterPredictionShort': 'Not yet known', 'exam.roomUnconfirmed': 'Room not confirmed', 'exam.editRoom': 'My exam rooms', 'exam.roomHint': 'Enter the room assigned to you in the official exam notice. Leave blank if unknown.', 'exam.midRoom': 'Midterm room', 'exam.finRoom': 'Final room', 'color.custom': 'Custom color', 'color.duplicate': 'This color is used by another course.', 'gpa.coverage': '{n} courses · {c} GPA credits',
   'grading.numericGoal': 'Target total score', 'grading.numericGoalHint': 'Choose a personal 0–100% score target; this is not a letter-grade cutoff.', 'grading.numericGoalError': 'Enter a score from 0 to 100%.',
   'grading.needPoints': 'Need {n} more percentage points to reach {p}%',
   'grading.pointsReached': 'Your earned points already meet the {p}% score target',
@@ -2779,7 +2821,7 @@ th: {
   'pred.fromSaved': 'คาดการณ์จากคะแนนที่คุณบันทึกไว้: {x}',
   'pred.fromPerf': 'คาดการณ์โดยให้งานที่ยังไม่มีคะแนนได้ตามผลงานตอนนี้ ({p}%)',
   'exam.srcUser': 'วันสอบและห้องสอบตามที่คุณใส่ไว้',
-  'exam.srcAllSecs': 'วันสอบนี้ตรงกันทุกตอนเรียน ใส่ Sec ของคุณเพื่อดูห้องสอบ',
+  'exam.srcAllSecs': 'วันสอบตรงกันในตอนเรียนที่มีข้อมูล แต่ยังไม่ยืนยันห้องสอบรายบุคคล',
   'exam.srcSec': 'วันสอบตาม Sec ของคุณจากฐานข้อมูลวิชา',
   'exam.room': 'ห้อง {r}',
   'plan.stepFaculty': 'เลือกคณะและสาขา',
@@ -2814,7 +2856,7 @@ th: {
   'goal.examAverage':'คะแนนสอบที่เหลือต้องเฉลี่ย {n}%', 'goal.examRaw': 'เป็นคะแนนดิบ: ต้องได้อย่างน้อย {list}',
   'tt.title': 'ตารางเรียนรายสัปดาห์', 'tt.source': 'จาก Reg Chula ตาม Sec ของคุณ',
   'tt.clash': 'เวลาเรียนชนกัน: {list} ตรวจการลงทะเบียนอีกครั้ง', 'tt.examClash': 'เวลาสอบชนกัน: {list} ติดต่อคณะเพื่อขอสอบนอกเวลา',
-  'tt.noSec': 'ใส่ Sec เพื่อดูเวลาเรียนของ: {list}', 'tt.noData': 'ยังไม่ได้ข้อมูลเวลาเรียนจาก Reg ของ: {list} ระบบจะดึงให้อัตโนมัติ ลองกลับมาดูภายหลัง',
+  'tt.noSec': 'ใส่ Sec เพื่อดูเวลาเรียนของ: {list}', 'tt.noData': 'ยังไม่พบตารางเรียนที่ตรงกับ: {list} โปรดตรวจรหัสวิชา Sec และเทอม',
   'gm.title': 'วิธีตัดเกรดของวิชานี้', 'gm.edit': 'แก้', 'gm.kind': 'ระบบเกรด', 'gm.letter': 'เกรด A–F', 'gm.su': 'S/U (ผ่าน/ไม่ผ่าน)',
   'gm.pass': 'คะแนนขั้นต่ำที่ผ่าน (ได้ S)', 'gm.passHint': 'ดูจากประมวลรายวิชา ได้ถึงเกณฑ์นี้ก็ได้ S',
   'gm.modeHint.criterion': 'เกณฑ์ตายตัว เกรดขึ้นกับคะแนนของคุณเท่านั้น', 'gm.modeHint.norm': 'เกรดขึ้นกับคะแนนทั้งห้อง เกณฑ์ด้านล่างใช้แค่ประมาณ', 'gm.modeHint.unknown': 'ยังไม่รู้วิธีตัดเกรด ใช้เกณฑ์ด้านล่างประมาณไปก่อน',
@@ -2937,7 +2979,8 @@ th: {
   'store.web': 'คะแนนจะบันทึกอัตโนมัติตามอีเมลที่กรอก ใช้อีเมลเดิมเพื่อเปิดข้อมูลจากเครื่องอื่นได้',
   'tagline': 'รู้เกรดตัวเอง วางแผน GPA ได้', 'taglineShort': 'รู้เกรดตัวเอง วางแผน GPA ได้',
   'loading': 'กำลังโหลดข้อมูลเกรด…', 'mainNav': 'เมนูหลัก',
-  'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'คู่มือ / ถามตอบ',
+  "notice.subtitle":"ค้นหาห้องสอบจากเลขนิสิตและวิชาที่ลงเรียน โดยเทียบกับประกาศของคณะ","notice.id":"เลขประจำตัวนิสิต (10 หลัก)","notice.file":"ประกาศตารางสอบคณะ (PDF)","notice.type":"รอบสอบ","notice.run":"ค้นหาและจำห้องสอบของฉัน","notice.clear":"ลืมเลขนิสิตและห้องสอบที่นำเข้า","notice.privacy":"เลขนิสิตและผลที่ตรงกันเก็บไว้ในเบราว์เซอร์นี้เท่านั้น อ่าน PDF บนเครื่อง ไม่อัปโหลดรายชื่อ หากใช้เครื่องร่วมกับคนอื่นควรล้างข้อมูลหลังใช้งาน","notice.support":"รองรับ PDF ตารางสอบคณะพาณิชย์ฯ แบบข้อความ 7 คอลัมน์ในรูปแบบเดียวกัน เลือกเทอมและรอบสอบให้ตรงกับประกาศ","notice.empty":"ยังไม่มีประกาศที่นำเข้าสำหรับเทอมและรอบสอบนี้","notice.found":"พบในประกาศ","notice.none":"ไม่พบในประกาศนี้","notice.ambiguous":"พบหลายรายการหรือ Sec ไม่ตรง — โปรดตรวจสอบกับคณะ","notice.needSec":"ระบุ Sec ที่ลงเรียนก่อน","notice.saved":"บันทึกผลที่ตรงกันบนอุปกรณ์นี้แล้ว","notice.error":"อ่านประกาศไม่สำเร็จ โปรดตรวจคณะ รูปแบบ PDF ปีและเทอม ข้อมูลเดิมไม่ถูกเปลี่ยน","notice.badID":"กรอกเลขนิสิตให้ครบ 10 หลัก","notice.busy":"กำลังอ่าน PDF บนอุปกรณ์ของคุณ…","notice.source":"ประกาศตารางสอบคณะ · หน้า {n}","notice.secRange":"Sec ตามประกาศ {s}","notice.secUnknown":"ประกาศไม่ระบุ Sec ที่แน่นอน","notice.noCourses":"ไม่มีวิชาที่กำลังเรียนในเทอมนี้","notice.openReg":"เปิดระบบสอบถามตารางสอบของ Reg","notice.imported":"นำเข้า {n} หน้า · โปรดตรวจสอบกับประกาศล่าสุด","notice.warning":"มีบางบรรทัดที่อ่านได้ไม่ชัดเจน โปรดตรวจสอบเอกสารต้นฉบับ","notice.verify":"ผลตรงช่วงเลขไม่ใช่หลักฐานการลงทะเบียน ระบบตรวจเฉพาะวิชาที่ยังเรียนอยู่ ช่วง Sec ไม่ได้บอก Sec ที่แน่นอน โปรดยืนยันกับประกาศล่าสุดหรือ Reg","notice.changed":"หากเปลี่ยนเลขนิสิต ผลที่เคยนำเข้าในบัญชีนี้บนเบราว์เซอร์จะถูกแทนที่","notice.clearConfirm":"ลบเลขนิสิตและข้อมูลห้องสอบที่นำเข้าออกจากเบราว์เซอร์นี้หรือไม่","notice.pickTerm":"เลือกเทอมที่ระบุปีการศึกษาแล้วก่อน","notice.room":"ห้องสอบ / สถานที่",
+  'nav.exams': 'ห้องสอบของฉัน', 'navShort.exams': 'ห้องสอบ', 'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'คู่มือ / ถามตอบ',
   'navShort.dashboard': 'ภาพรวม', 'navShort.years': 'ชั้นปี', 'navShort.courses': 'วิชา', 'navShort.simulator': 'จำลอง', 'navShort.gpa': 'GPA', 'navShort.feedback':'เสนอแนะ', 'navShort.help':'ช่วยเหลือ',
   'sync.device': 'บันทึกไว้ในเครื่องนี้', 'sync.account': 'บันทึกลงบัญชีแล้ว', 'sync.saving': 'กำลังบันทึก…', 'sync.error': 'บันทึกไว้ในเครื่องนี้เท่านั้น',
   'store.device': 'ข้อมูลถูกบันทึกไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ซิงก์ไปเครื่องอื่น ควรสำรองข้อมูลเก็บไว้เป็นระยะ',
@@ -3035,7 +3078,7 @@ th: {
   'err.maxPos': 'ใส่คะแนนเต็มที่มากกว่า 0', 'err.gradedNeedsScore': 'กรอกคะแนน หรือเปลี่ยนสถานะเป็นรอผลคะแนน', 'err.weightRange': 'ใส่น้ำหนักระหว่าง 0 ถึง 100',
   'err.predRange': 'คะแนนที่คาดต้องอยู่ระหว่าง 0 ถึงคะแนนเต็ม', 'err.pickGrade': 'เลือกเกรด', 'err.pickYear': 'เลือกชั้นปี', 'err.credits': 'ใส่จำนวนหน่วยกิต',
   'grading.noLetterPrediction': 'วิชานี้อิงกลุ่มหรือยังไม่ทราบเกณฑ์ตัดเกรด จึงไม่สามารถนำคะแนนเปอร์เซ็นต์มาคาดการณ์เกรด A–F ได้',
-  'grading.noLetterPredictionShort': 'ยังคาดการณ์เกรดไม่ได้',
+  'grading.noLetterPredictionShort': 'ยังไม่ทราบเกรด', 'exam.roomUnconfirmed': 'ยังไม่ยืนยันห้องสอบ', 'exam.editRoom': 'ห้องสอบของฉัน', 'exam.roomHint': 'กรอกห้องสอบของคุณตามประกาศอย่างเป็นทางการ ถ้ายังไม่ทราบให้เว้นว่าง', 'exam.midRoom': 'ห้องสอบกลางภาค', 'exam.finRoom': 'ห้องสอบปลายภาค', 'color.custom': 'เลือกสีเอง', 'color.duplicate': 'สีนี้ถูกใช้กับวิชาอื่นแล้ว', 'gpa.coverage': '{n} วิชา · {c} หน่วยกิต GPA',
   'grading.numericGoal': 'เป้าหมายคะแนนรวม', 'grading.numericGoalHint': 'ตั้งเป้าคะแนนรวม 0–100% เพื่อวางแผนเท่านั้น ไม่ใช่เกณฑ์ตัดเกรด', 'grading.numericGoalError': 'ใส่คะแนนระหว่าง 0 ถึง 100%',
   'grading.needPoints': 'ขาดอีก {n} คะแนนเปอร์เซ็นต์ถึงเป้า {p}%',
   'grading.pointsReached': 'คะแนนสะสมถึงเป้า {p}% แล้ว',
@@ -3221,6 +3264,7 @@ function daysUntil(d) {
 }
 var TYPES = ['midterm', 'final', 'assignment', 'homework', 'quiz', 'project', 'presentation', 'lab', 'participation', 'attendance', 'custom'];
 var COLORS = { indigo: 'var(--c-indigo)', blue: 'var(--c-blue)', teal: 'var(--c-teal)', green: 'var(--c-green)', amber: 'var(--c-amber)', rose: 'var(--c-rose)', violet: 'var(--c-violet)', slate: 'var(--c-slate)' };
+function courseColor(v) { return colorKey(v) || COLORS.indigo; }
 
 /* ================= runtime store ================= */
 var S = { state: null, version: 0, listeners: [], sync: 'device', cloud: null, undo: null, modal: null, toasts: [], downloads: null, ready: false };
@@ -3251,6 +3295,7 @@ window.addEventListener('pagehide', function () {
 });
 function commit(next, opts) {
   if (opts && opts.undo) S.undo = { prev: S.state };
+  ensureCourseColors(next);
   next.updatedAt = Date.now();
   S.state = next; persist(); emit();
 }
@@ -3275,7 +3320,7 @@ function doUndo(id) {
 function confirmDialog(o) { openModal('confirm', o); }
 
 /* ================= routing ================= */
-var PAGES = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences'];
+var PAGES = ['dashboard', 'years', 'courses', 'exams', 'simulator', 'gpa', 'feedback', 'help', 'preferences'];
 function parseHash() {
   var x = (location.hash || '').replace(/^#/, '');
   if (x.indexOf('course-') === 0) return { page: 'course', id: x.slice(7) };
@@ -3336,7 +3381,11 @@ function Logo() {
   return html`<span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"> <defs> <linearGradient id="gsGradient" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" stop-color="#8C71FE"/> <stop offset="55%" stop-color="#6654E8"/> <stop offset="100%" stop-color="#3F51C9"/> </linearGradient> </defs> <rect width="48" height="48" rx="14" fill="url(#gsGradient)"/> <path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke="#fff" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/> <circle cx="34.8" cy="12.6" r="3" fill="#C5ECFF"/> </svg></span>`;
 }
 function Tip(p) {
-  return html`<span className="tip" tabIndex="0" aria-label=${p.text}><${Icon} n="info" s=${14} /><span className="tip-body" role="tooltip">${p.text}</span></span>`;
+  var posState = useState(null), pos = posState[0], setPos = posState[1];
+  var show = function (e) { var r=e.currentTarget.getBoundingClientRect(); setPos({left:Math.max(12,Math.min(r.left,window.innerWidth-Math.min(280,window.innerWidth-24)-12)),top:r.bottom+8}); };
+  var hide = function () { setPos(null); };
+  useEffect(function () { if (!pos) return; window.addEventListener('scroll',hide,true); window.addEventListener('resize',hide); return function(){window.removeEventListener('scroll',hide,true);window.removeEventListener('resize',hide);}; },[pos]);
+  return html`<span className="tip" tabIndex="0" aria-label=${p.text} onMouseEnter=${show} onMouseLeave=${hide} onFocus=${show} onBlur=${hide} onKeyDown=${function(e){if(e.key==='Escape')hide();}}><${Icon} n="info" s=${14} />${pos && ReactDOM.createPortal(html`<span className="gs-floating-tip" role="tooltip" style=${{left:pos.left,top:pos.top > window.innerHeight-130 ? undefined : pos.top,bottom:pos.top > window.innerHeight-130 ? window.innerHeight-pos.top+24 : undefined}}>${p.text}</span>`,document.body)}</span>`;
 }
 function Field(p) {
   return html`<div className="field">
@@ -3655,7 +3704,7 @@ var RegData = (function () {
   function ctx(c, state) {
     var sem = state.semesters.find(function (x) { return x.id === c.semesterId; }); if (!sem) return null;
     var y = state.years.find(function (x) { return x.id === sem.yearId; });
-    var m = String(sem.kind || '').match(/^s([123])$/), code = String(c.code || '').split('.')[0];
+    var m = String(sem.kind || '').match(/^s([123])$/), code = String(c.code || '').trim().split('.')[0];
     if (!y || !m || !/^\d{7}$/.test(code) || !/^25\d\d$/.test(String(y.academic || ''))) return null;
     return { year: String(y.academic), term: m[1], code: code };
   }
@@ -3704,7 +3753,7 @@ var RegData = (function () {
   function section(c, state) {
     var o = get(c, state), sec = sectionOf(c);
     if (!o || !sec) return null;
-    return (o.sections || []).find(function (x) { return String(x.sec) === String(sec); }) || null;
+    return (o.sections || []).find(function (x) { return /^\d+$/.test(String(x.sec).trim()) && String(parseInt(x.sec,10)) === String(sec); }) || null;
   }
   return { refresh: refresh, get: get, exams: exams, section: section };
 })();
@@ -3730,11 +3779,12 @@ function timetableFor(state, semId) {
   courses.forEach(function (c) {
     if (!RegData.get(c, state)) { if (/^\d{7}/.test(String(c.code || ''))) noData.push(c); return; }
     var sec = RegData.section(c, state);
-    if (!sec) { noSec.push(c); return; }
+    if (!sec) { (sectionOf(c) ? noData : noSec).push(c); return; }
+    if (!(sec.classes || []).some(function(k){return TT_DAYS.indexOf(k.day)>=0 && hmToMin(k.start)!==null && hmToMin(k.end)!==null && hmToMin(k.end)>hmToMin(k.start);})) {noData.push(c);return;}
     (sec.classes || []).forEach(function (k) {
       var a = hmToMin(k.start), b = hmToMin(k.end);
       if (TT_DAYS.indexOf(k.day) < 0 || a === null || b === null || b <= a) return;
-      if (slots.some(function (x) { return x.c.id === c.id && x.day === k.day && x.a === a && x.b === b; })) return;
+      if (slots.some(function (x) { return x.c.id === c.id && x.day === k.day && x.a === a && x.b === b && x.type === (k.type || '') && x.place === [k.building,k.room].filter(Boolean).join(' '); })) return;
       slots.push({ c: c, day: k.day, a: a, b: b, start: k.start, end: k.end, type: k.type || '', place: [k.building, k.room].filter(Boolean).join(' ') });
     });
   });
@@ -3779,9 +3829,9 @@ function WeekTimetable(p) {
     ${days.length > 0 && html`<div className="tt-days">${days.map(function (d) {
       return html`<div key=${d} className="tt-day"><div className="tt-day-name">${ttDay(d)}</div><div className="tt-list">
         ${tt.slots.filter(function (x) { return x.day === d; }).map(function (x, i) {
-          return html`<a key=${i} href=${'#course-' + x.c.id} className=${'tt-slot' + (x.clash ? ' clash' : '')}>
+          return html`<a key=${i} href=${'#course-' + x.c.id} className=${'tt-slot' + (x.clash ? ' clash' : '')} style=${{ '--cc': courseColor(x.c.color) }}>
             <span className="tt-time">${x.start}–${x.end}</span>
-            <span className="tt-name">${short(x.c)}${x.type && html`<span className="tiny muted"> ${x.type}</span>`}</span>
+            <span className="tt-name">${short(x.c)}${sectionOf(x.c) && html`<span className="tiny muted"> · Sec ${sectionOf(x.c)}</span>`}${x.type && html`<span className="tiny muted"> · ${x.type}</span>`}</span>
             ${x.place && html`<span className="tt-place tiny muted">${x.place}</span>`}
           </a>`;
         })}</div></div>`;
@@ -3791,12 +3841,15 @@ function WeekTimetable(p) {
   </section>`;
 }
 
-function examsFor(c, state) {
+function baseExamsFor(c, state) {
   // Explicitly entered course dates may still be used for this saved enrollment.
   // Legacy built-in dates keyed only by course code must never leak across Secs.
   // Dates the student entered for their own section come first, then the shared course database.
   var entered=c && c.exams;
-  if(entered && (entered.source==='manual' || [entered.mid,entered.fin].some(function(x){return x && (x.source==='manual' || x.source==='user');})))return entered;
+  if(entered && (entered.source==='manual' || [entered.mid,entered.fin].some(function(x){return x && (x.source==='manual' || x.source==='user');}))) {
+    var personal=function(e){return e ? Object.assign({},e,{location: entered.source==='manual'||e.source==='manual'||e.source==='user' ? e.location : ''}) : null;};
+    return Object.assign({},entered,{mid:personal(entered.mid),fin:personal(entered.fin)});
+  }
   // Then a Sec-exact record from the course database (it can include the exam room), then Reg Chula's
   // official schedule, then dates that every Sec shares.
   var shared=SharedCatalog.examsFor(c,state);
@@ -3806,6 +3859,130 @@ function examsFor(c, state) {
   return shared||null;
 }
 
+/* Exam notice reader: CBS table format, client-side only. No roster or ID is sent to a server. */
+var ExamNotice=(function(){
+  var months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  function studentId(v){return String(v||'').replace(/[\s-]/g,'');}
+  function validId(v){return /^\d{10}$/.test(v);}
+  function scope(c,state){var sem=state.semesters.find(function(x){return x.id===c.semesterId;});var y=sem&&state.years.find(function(x){return x.id===sem.yearId;});return sem&&y ? String(y.academic||'')+'|'+sem.kind : '';}
+  function secContains(v,sec){var m=String(v||'').match(/^(\d+)(?:\s*-\s*(\d+))?$/);return !!(m&&sec&&+sec>=+m[1]&&+sec<=+(m[2]||m[1]));}
+  function idMatches(text,id){
+    if(!validId(id))return false;
+    var chunks=String(text||'').trim().split(/\s*[,，]\s*/);
+    return chunks.some(function(p){
+      var m=p.match(/^(\d{3})\s+(\d{5})\s+(\d{2})(?:\s*[-–—]\s*(\d{3})\s+(\d{5})\s+(\d{2}))?$/);
+      if(!m)return false;
+      var a=m[1]+m[2]+m[3];
+      if(!m[4])return id===a;
+      var b=m[4]+m[5]+m[6];
+      // Do not extend a malformed range across cohort or faculty codes.
+      return m[1]===m[4]&&m[3]===m[6]&&id.slice(0,3)===m[1]&&id.slice(-2)===m[3]&&id>=a&&id<=b;
+    });
+  }
+  function cells(items,width){
+    // The CBS letter-sized notice uses seven fixed columns. Normalize to its 612pt reference.
+    var rows=[];
+    items.filter(function(i){return i.str&&i.str.trim()&&i.transform;}).forEach(function(i){
+      var x=i.transform[4]*612/width,y=i.transform[5]*612/width;
+      var row=rows.find(function(r){return Math.abs(r.y-y)<3;});
+      if(!row){row={y:y,items:[]};rows.push(row);}
+      row.items.push({x:x,s:i.str.trim()});
+    });
+    return rows.sort(function(a,b){return b.y-a.y;}).map(function(r){
+      var c=['','','','','','',''];
+      r.items.sort(function(a,b){return a.x-b.x;}).forEach(function(i){
+        var k=i.x<95?0:i.x<148?1:i.x<296?2:i.x<330?3:i.x<395?4:i.x<514?5:6;
+        c[k]+=(c[k]?' ':'')+i.s;
+      });return c;
+    });
+  }
+  function parse(pages,id,year,term){
+    if(!validId(id)||!/^25\d{2}$/.test(year))throw Error('input');
+    var first=pages[0]||[], heading=first.map(function(r){return r.join('');}).join('').replace(/\s/g,'');
+    if(heading.indexOf('พาณิชยศาสตร์')<0||heading.indexOf(year)<0||
+       (term==='s1'?heading.indexOf('ภาคการศึกษาต้น')<0:term==='s2'?heading.indexOf('ภาคการศึกษาปลาย')<0:true))throw Error('format');
+    var records=[],current=null, date='',time='',code='',sec='',room='', invalid=0;
+    function flush(){if(current){if(current.room&&current.date&&current.code&&(current.hit||current.sectionOnly))records.push(current);current=null;}}
+    pages.forEach(function(rows,page){
+      var start=rows.findIndex(function(r){return /^sec$/i.test(r[3].trim());});
+      if(start<0){invalid++;return;}
+      var r=rows.slice(start+1);
+      for(var i=0;i<r.length;i++){
+        var v=r[i], day=v[0].trim(), course=v[2].match(/^(\d{7})(?:\s|$)/), tm=v[1].match(/^(\d{1,2})[.:](\d{2})\s*[-–—]\s*(\d{1,2})[.:](\d{2})$/);
+        if(/^วัน/.test(day)){
+          var head=r.slice(i,i+5).map(function(z){return z[0];}).join(' '), dm=head.match(/(?:^|\s)(\d{1,2})(?:\s|$)/), mo=months.findIndex(function(m){return head.indexOf(m)>=0;});
+          if(dm&&mo>=0&&head.indexOf(year)>=0){
+            var candidate=String(+year-543)+'-'+String(mo+1).padStart(2,'0')+'-'+String(+dm[1]).padStart(2,'0');
+            var dt=new Date(candidate+'T00:00:00Z');
+            if(!isNaN(dt.getTime())&&dt.toISOString().slice(0,10)===candidate){if(candidate!==date){flush();code='';sec='';room='';time='';}date=candidate;}
+          }else{flush();date='';code='';sec='';room='';time='';invalid++;}
+        }
+        if(tm){
+          var t0=String(+tm[1]).padStart(2,'0')+':'+tm[2],t1=String(+tm[3]).padStart(2,'0')+':'+tm[4];
+          if(+tm[1]>23||+tm[3]>23||+tm[2]>59||+tm[4]>59||t1<=t0){time='';invalid++;}
+          else {var newTime=t0+'-'+t1;if(newTime!==time){flush();code='';sec='';room='';}time=newTime;}
+        }
+        if(course){if(course[1]!==code){flush();sec='';room='';}code=course[1];}
+        var sc=v[3].trim();
+        if(sc){if(/^\d+(?:\s*-\s*\d+)?$/.test(sc)){if(sc!==sec){flush();room='';}sec=sc.replace(/\s/g,'');}else{flush();sec='';room='';invalid++;}}
+        var rm=v[4].trim();
+        if(rm&&/^\d/.test(rm)){
+          if(rm!==room||!current){flush();room=rm;current={code:code,sec:sec,room:room,date:date,time:time,page:page+1,hit:false,sectionOnly:false};}
+        }else if(rm&&current&&current.room&&(/\/$/.test(current.room)||!current.room.includes('/'))){current.room+=' '+rm;room=current.room;}
+        var rule=v[5].trim();
+        if(rule&&current&&current.code&&current.date&&current.time){
+          if(/^เฉพาะ/.test(rule)&&current.sec)current.sectionOnly=true;
+          else if(idMatches(rule,id))current.hit=true;
+          else if(!/^\d{3}\s+\d{5}\s+\d{2}/.test(rule))invalid++;
+        }
+      }
+    });
+    flush();
+    if(!date||!records.length&&invalid===pages.length)throw Error('format');
+    return {rows:records,invalid:invalid,pages:pages.length};
+  }
+  function match(rows,c){
+    var code=String(c.code||'').trim().split('.')[0],sec=sectionOf(c);
+    var candidates=(rows||[]).filter(function(r){return r.code===code&&(r.hit||r.sectionOnly);});
+    var allowed=candidates.filter(function(r){return (r.hit&&(!sec||!r.sec||secContains(r.sec,sec)))||(r.sectionOnly&&secContains(r.sec,sec));});
+    var distinct=[];
+    allowed.forEach(function(r){if(!distinct.some(function(q){return q.date===r.date&&q.time===r.time&&q.room===r.room&&q.sec===r.sec;}))distinct.push(r);});
+    return {row:distinct.length===1?distinct[0]:null,ambiguous:distinct.length>1||(!distinct.length&&candidates.some(function(r){return r.hit;})),needsSec:!sec&&candidates.some(function(r){return r.sectionOnly;})};
+  }
+  var cacheKey='',cache=null;
+  function key(){return 'gradespace.examNotice.v1:'+(S.localKey||'guest');}
+  function load(){var k=key();if(cacheKey!==k||!cache){cacheKey=k;try{cache=JSON.parse(localStorage.getItem(k)||'null')||{id:'',sets:{}};}catch(e){cache={id:'',sets:{}};}}return cache;}
+  function save(d){var k=key();localStorage.setItem(k,JSON.stringify(d));cacheKey=k;cache=d;emit();}
+  function clear(){var k=key();localStorage.removeItem(k);cacheKey=k;cache={id:'',sets:{}};emit();}
+  function lookup(c,state,k){var d=load(),src=d.sets&&d.sets[scope(c,state)+'|'+k];return match(src&&src.rows,c);}
+  async function read(file,id,year,term){
+    if(!file||file.size>20*1024*1024)throw Error('file');
+    var pdfjs=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs');
+    pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs';
+    var doc=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,disableAutoFetch:true}).promise;
+    try{
+      if(doc.numPages>100)throw Error('file');
+      var pages=[];
+      for(var n=1;n<=doc.numPages;n++){var p=await doc.getPage(n);var txt=await p.getTextContent();pages.push(cells(txt.items,p.view[2]-p.view[0]));}
+      return parse(pages,id,year,term);
+    }finally{await doc.destroy();}
+  }
+  return {studentId:studentId,validId:validId,scope:scope,parse:parse,cells:cells,match:match,idMatches:idMatches,load:load,save:save,clear:clear,key:key,lookup:lookup,read:read};
+})();
+
+// Personal room assignments are stored separately from shared exam schedules.
+function examsFor(c,state) {
+  var ex=baseExamsFor(c,state)||{};
+  if(!c)return null;
+  var room=function(k){
+    var e=ex[k]||null, found=ExamNotice.lookup(c,state,k).row;
+    if(found) e={date:found.date,time:found.time,location:found.room,source:'exam-notice',noticeSec:found.sec,noticePage:found.page};
+    var own=c.exams&&c.exams.personalRooms&&c.exams.personalRooms[k];
+    if(e&&own&&own.date===e.date&&own.sec===sectionOf(c)&&own.code===String(c.code||'')&&own.semesterId===c.semesterId)return Object.assign({},e,{location:own.room||'',source:'manual'});
+    return e;
+  };
+  var mid=room('mid'),fin=room('fin');return mid||fin?Object.assign({},ex,{mid:mid,fin:fin}):null;
+}
 // S/U (pass/fail) courses only need the pass mark: that is a fixed criterion, never relative grading.
 function isSUCourse(c) {
   if (!c) return false;
@@ -3849,7 +4026,7 @@ function GradingAndGap(p) {
   return html`<div className=${'goal-insight' + (p.compact ? ' compact' : '')}>
     <div className="row wrap" style=${{ gap: 7 }}><span className=${'chip ' + (mode === 'norm' ? 'warn' : mode === 'criterion' ? 'ok' : '')}>${t('grading.' + mode)}</span>
       ${mode === 'norm' && html`<span className="tiny muted">${t('grading.estimate')}</span>`}
-      ${!p.compact && html`<button type="button" className="linkish" onClick=${function () { openModal('grading', { courseId: c.id }); }}>${t('gm.edit')}</button>`}
+      ${!p.compact && html`<button type="button" className="btn sm" aria-label=${t('gm.edit')} onClick=${function () { openModal('grading', { courseId: c.id }); }}><${Icon} n="edit" s=${15} />${t('gm.edit')}</button>`}
     </div>
     ${target ? html`<div className="goal-gap"><b>${mode === 'criterion' ? t('goal.missing', { n: fmtT(short), g: target.label }) : (short <= 0.00001 ? t('grading.pointsReached', { p: fmtT(target.min) }) : t('grading.needPoints', { n: fmtT(short), p: fmtT(target.min) }))}</b>
       <span className="small muted">${short <= 0.00001 ? (mode === 'criterion' ? t('goal.reached') : t('grading.scoreOnly')) : average ? (average.pct > 100.00001 ? t('goal.examNotEnough') : t('goal.examAverage', { n: fmtT(Math.max(0, average.pct)) })) : t('goal.noPendingExams')}</span>
@@ -4054,7 +4231,7 @@ function downloadICS(state, semId) {
 function examText(e) {
   if (!e || !e.date) return t('exam.tbd');
   var past = daysUntil(e.date);
-  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : '') + (past !== null && past < 0 ? ' ' + t('exam.done') : '');
+  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : ' · ' + t('exam.roomUnconfirmed')) + (past !== null && past < 0 ? ' ' + t('exam.done') : '');
 }
 // skipMid: the midterm is already graded and its date was never recorded, so "to be announced" would mislead
 function examLine(ex, skipMid) {
@@ -4650,7 +4827,7 @@ function nextExamOf(ex) {
 function nextExamText(x) {
   if (!x.e || !x.e.date) return t('exam.' + x.k, { d: t('exam.tbd') });
   var d = daysUntil(x.e.date);
-  return t('exam.' + x.k, { d: fmtDate(x.e.date) + (x.e.time ? ' ' + x.e.time : '') }) + (x.e.location ? ' · ' + x.e.location : '') +
+  return t('exam.' + x.k, { d: fmtDate(x.e.date) + (x.e.time ? ' ' + x.e.time : '') }) + (x.e.location ? ' · ' + x.e.location : ' · ' + t('exam.roomUnconfirmed')) +
     ' · ' + (d === 0 ? t('today') : t('inDays', { n: d }));
 }
 function CourseCard(p) {
@@ -4664,7 +4841,7 @@ function CourseCard(p) {
   var sec = sectionOf(c);
   var nx = c.finalGrade ? null : nextExamOf(examsFor(c, state));
   var gl = c.finalGrade ? null : finalExamPassed(c, state) ? { tone: 'ok', text: t('gm.afterFinalCard') } : goalLine(c, state, sum);
-  return html`<article className="card ccard" style=${{ '--cc': COLORS[c.color] || COLORS.indigo }}>
+  return html`<article className="card ccard" style=${{ '--cc': courseColor(c.color) }}>
     <div className="ccard-top">
       <div className="grow">
         <a href=${href} className="ccard-name" style=${{ color: 'inherit', textDecoration: 'none' }}>${niceName(splitCourseSection(c.name).name) || c.code || t('course')}</a>
@@ -4681,6 +4858,8 @@ function CourseCard(p) {
       <div className="ccard-performance">
         <${GradeBar} sum=${sum} grades=${mode === 'criterion' ? grades : []} target=${tg} />
         <div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>
+        ${sum.issues.over && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.over",{n:fmtT(sum.totalWeight)})}</div>`}
+        ${sum.issues.overMax>0 && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.overMax")}</div>`}
         <${EstimateBasis} course=${c} sum=${sum} state=${state} collapsible=${true} />
       </div>`}
     ${(gl || nx) && html`<div className="ccard-lines">
@@ -4756,7 +4935,7 @@ function Metric(p) {
   return html`<div className=${'metric' + (p.hero ? ' hero' : '')}>
     <div className="m-label">${p.icon && html`<${Icon} n=${p.icon} s=${14} />`}<span>${p.label}</span>${p.tip && html`<${Tip} text=${p.tip} />`}</div>
     <div className="m-value">${p.value}</div>
-    ${p.sub && html`<div className="m-sub">${p.sub}</div>`}
+    ${p.sub && html`<div className="m-sub">${p.sub}</div>`}${p.extra && html`<div className="m-extra">${p.extra}</div>`}
   </div>`;
 }
 
@@ -5033,7 +5212,7 @@ function ExamCalendarPanel(p) {
         if (!day)return html`<span key=${'e'+i} className="dashboard-cal-cell" aria-hidden="true"></span>`;
         var date=month+'-'+String(day).padStart(2,'0');
         var onDay=monthly.filter(function(x){return x.a.due===date;}), count=onDay.length;
-        var cols=onDay.map(function(x){return COLORS[x.c.color]||COLORS.indigo;}).filter(function(v,j,a){return a.indexOf(v)===j;});
+        var cols=onDay.map(function(x){return courseColor(x.c.color);}).filter(function(v,j,a){return a.indexOf(v)===j;});
         var isToday=isoNow===date, past=date<isoNow;
         return html`<button type="button" key=${date} className=${'dashboard-cal-cell'+(count?' has-exam':'')+(selected===date?' chosen':'')+(isToday?' today':'')+(past?' past':'')}
           style=${count?{'--cc':cols[0]}:null}
@@ -5044,7 +5223,7 @@ function ExamCalendarPanel(p) {
     </div>
     ${!(selected && selected.slice(0,7)===month) ? html`<p className="tiny muted" style=${{ margin: '8px 0 0' }}>${monthly.length ? (LANG==='th'?'แตะวันที่มีจุดเพื่อดูว่าสอบวิชาอะไร':'Tap a marked day to see its exams') : (LANG==='th'?'ไม่มีรายการสอบที่บันทึกไว้ในเดือนนี้':'No recorded exams this month')}</p>` : html`<${React.Fragment}>
     <div className="dashboard-calendar-legend">${fmtDate(selected,true)}</div>
-    ${show.length ? show.map(function(x){var q=String(x.a.due).split('-');return html`<div key=${x.a.id} className="dashboard-cal-event" style=${{ '--cc': COLORS[x.c.color] || COLORS.indigo }}>
+    ${show.length ? show.map(function(x){var q=String(x.a.due).split('-');return html`<div key=${x.a.id} className="dashboard-cal-event" style=${{ '--cc': courseColor(x.c.color) }}>
       <div className="date-pill cc"><b>${+q[2]}</b><small>${fmtDate(x.a.due).replace(/^\d+\s*/,'')}</small></div>
       <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}</div></div>
       <a className="btn sm" href=${'#course-'+x.c.id}>${t('viewCourse')}</a>
@@ -5103,10 +5282,10 @@ function Dashboard(p) {
       </div>
     </div>
     <div className="metrics m2">
-      <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)}
+      <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).gpaCount,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
         sub=${semC.gpa == null ? (semE.gpa != null ? t('gpa.estOnly') : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length }))
           : semE.gpa != null && Math.abs(semE.gpa - semC.gpa) > 1e-9 ? t('estX', { x: fmt(semE.gpa) }) : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length })} />
-      <${Metric} label=${t('cumGPA')} tip=${t('tip.cumGPA')} value=${gpaValue(cumC.gpa, cumE.gpa)}
+      <${Metric} label=${t('cumGPA')} tip=${t('tip.cumGPA')} value=${gpaValue(cumC.gpa, cumE.gpa)} extra=${t('gpa.coverage', {n:(cumC.gpa == null ? cumE : cumC).gpaCount,c:fmtT((cumC.gpa == null ? cumE : cumC).gpaCredits)})}
         sub=${cumC.gpa == null ? (cumE.gpa != null ? t('gpa.estOnly') : t('officialOnly'))
           : cumE.gpa != null && Math.abs(cumE.gpa - cumC.gpa) > 1e-9 ? t('estX', { x: fmt(cumE.gpa) }) : t('officialOnly')} />
     </div>
@@ -5132,7 +5311,7 @@ function Dashboard(p) {
           <button className="btn ghost sm" onClick=${function () { downloadICS(state, cur.id); }}><${Icon} n="calendar" s=${15} />${t('ics.btn')}</button></div>
         ${upcoming.length ? html`<ul className="dashboard-upcoming-list">${upcoming.map(function(x) {
           var p2 = String(x.a.due).split('-');
-          return html`<li key=${x.a.id} className="dashboard-upcoming-row" style=${{ '--cc': COLORS[x.c.color] || COLORS.indigo }}>
+          return html`<li key=${x.a.id} className="dashboard-upcoming-row" style=${{ '--cc': courseColor(x.c.color) }}>
             <div className="date-pill cc"><b>${+p2[2]}</b><small>${fmtDate(x.a.due).replace(/^\d+\s*/, '')}</small></div>
             <div className="upcoming-info">
               <div className="upcoming-course-title"><span className="cc-dot" aria-hidden="true"></span>${upcomingCourseTitle(x.c)}</div>
@@ -5229,7 +5408,7 @@ function YearsPage(p) {
               </div>
               ${cs.length ? html`<div className="sem-courses">${cs.map(function (c) {
                 var info = C.courseGrade(c, state);
-                return html`<div key=${c.id} className="sem-course" style=${{ '--cc': COLORS[c.color] }}>
+                return html`<div key=${c.id} className="sem-course" style=${{ '--cc': courseColor(c.color)}}>
                   <span className="dot"></span>
                   <a className="grow" href=${'#course-' + c.id}>${courseDisplayTitle(c)}${c.code && html`<span className="muted small"> ${c.code}</span>`}</a><${KindChip} course=${c} />
                   <span className="small muted">${t('nCredits', { n: fmtT(c.credits) })}</span>
@@ -5295,7 +5474,7 @@ function CourseSearch(p) {
       onMouseDown: function (e) { e.preventDefault(); }, onMouseEnter: function () { setActive(i); }, onClick: function () { choose(it); } };
     if (it.kind === 'own') {
       return h('div', Object.assign({ key: it.id, className: 'cs-opt' + (on ? ' on' : '') }, common),
-        html`<span className="dot" style=${{ '--cc': COLORS[it.c.color] || COLORS.indigo }}></span>
+        html`<span className="dot" style=${{ '--cc': courseColor(it.c.color) }}></span>
           <span className="grow cs-text"><b>${courseDisplayTitle(it.c)}</b><span className="tiny muted">${[it.c.code, semOf(it.c)].filter(Boolean).join('  ')}</span></span>
           ${it.close && html`<span className="chip outline">${t('search.close')}</span>`}<span className="cs-act">${t('search.open')}</span>`);
     }
@@ -5638,7 +5817,7 @@ function GradeSimulator(p) {
     </div>
     <div className="sim-result">
       <div><div className="k">${t('predFinal')}</div><div className="v">${fmt(total)}%</div></div>
-      <div><div className="k">${t('predGrade')}</div><div className="v">${criterion ? (pg ? pg.label : '–') : t('grading.noLetterPredictionShort')}</div></div>
+      <div><div className="k">${t('predGrade')}</div><div className=${criterion ? "v" : "v grade-summary-short"} title=${criterion ? undefined : t("grading.noLetterPrediction")}>${criterion ? (pg ? pg.label : '–') : t('grading.noLetterPredictionShort')}</div></div>
       <div><div className="k">${t('predGPAContrib')}</div><div className="v">${meta && meta.gpa && isNum(meta.points) ? fmt(meta.points * credits) : '–'}</div>
         <div className="tiny muted">${meta && meta.gpa && isNum(meta.points) ? t('ptsXcr', { p: fmtT(meta.points), c: fmtT(credits) }) : ''}</div></div>
       <div><div className="k">${t('targetStatus')}</div><div className="v" style=${{ fontSize: 17, color: total >= targetPct - 1e-9 ? 'var(--ok)' : 'var(--bad)' }}>
@@ -5646,12 +5825,68 @@ function GradeSimulator(p) {
     </div>
   </section>`;
 }
+function ExamRoomModal(p) {
+  var state=useApp(), c=state.courses.find(function(x){return x.id===p.props.courseId;});
+  var ex=c ? examsFor(c,state) : null;
+  var ms=useState(ex&&ex.mid ? ex.mid.location||'' : ''), mid=ms[0], setMid=ms[1];
+  var fs=useState(ex&&ex.fin ? ex.fin.location||'' : ''), fin=fs[0], setFin=fs[1];
+  if(!c || !ex)return null;
+  var save=function(){update(function(d){var x=d.courses.find(function(y){return y.id===c.id;}); if(!x)return; x.exams=Object.assign({},x.exams||{},{personalRooms:{}}); [['mid',mid],['fin',fin]].forEach(function(q){var e=ex[q[0]];if(e&&e.date)x.exams.personalRooms[q[0]]={date:e.date,sec:sectionOf(c),code:String(c.code||''),semesterId:c.semesterId,room:q[1].trim()};});});toast(t('saved'));closeModal();};
+  return html`<${Modal} title=${t('exam.editRoom')} onClose=${closeModal} foot=${html`<button className="btn" onClick=${closeModal}>${t('cancel')}</button><button className="btn primary" onClick=${save}>${t('save')}</button>`}><p className="small muted">${t('exam.roomHint')}</p>
+    ${ex.mid&&ex.mid.date&&html`<${Field} label=${t('exam.midRoom')} id="exam-mid-room"><input className="input" id="exam-mid-room" value=${mid} onChange=${function(e){setMid(e.target.value);}} /><//>`}
+    ${ex.fin&&ex.fin.date&&html`<${Field} label=${t('exam.finRoom')} id="exam-fin-room"><input className="input" id="exam-fin-room" value=${fin} onChange=${function(e){setFin(e.target.value);}} /><//>`}
+    <//>`;
+}
+
+function ExamNoticePage(p){
+  var state=p.state,stored=ExamNotice.load(),cur=curSemester(state);
+  var a=useState(stored.id||''),id=a[0],setId=a[1],b=useState(cur&&cur.id||''),sid=b[0],setSid=b[1];
+  var k=useState('fin'),kind=k[0],setKind=k[1],f=useState(null),file=f[0],setFile=f[1],q=useState(''),msg=q[0],setMsg=q[1],busyState=useState(false),busy=busyState[0],setBusy=busyState[1],errState=useState(false),err=errState[0],setErr=errState[1];
+  var sem=state.semesters.find(function(x){return x.id===sid;}),y=sem&&state.years.find(function(x){return x.id===sem.yearId;}),scope=y&&sem?String(y.academic||'')+'|'+sem.kind+'|'+kind:'',src=stored.sets&&stored.sets[scope];
+  var courses=state.courses.filter(function(c){return c.semesterId===sid&&!c.finalGrade;});
+  var rows=courses.map(function(c){return {c:c,m:ExamNotice.match(src&&src.rows,c)};}).sort(function(x,y){return ((x.m.row&&x.m.row.date+x.m.row.time)||'~').localeCompare((y.m.row&&y.m.row.date+y.m.row.time)||'~');});
+  var run=async function(){
+    var val=ExamNotice.studentId(id),account=ExamNotice.key();setErr(true);
+    if(!ExamNotice.validId(val)){setMsg(t('notice.badID'));return;}
+    if(!scope||!y||!/^25\d{2}$/.test(String(y.academic||''))){setMsg(t('notice.pickTerm'));return;}
+    if(stored.id&&stored.id!==val&&!window.confirm(t('notice.changed')))return;
+    if(!file){setMsg(t('notice.error'));return;}
+    setBusy(true);setErr(false);setMsg(t('notice.busy'));
+    try{var result=await ExamNotice.read(file,val,String(y.academic),sem.kind);
+      if(account!==ExamNotice.key())return;
+      var next=ExamNotice.load(),sets=next.id===val?Object.assign({},next.sets):{};
+      sets[scope]=result;ExamNotice.save({id:val,sets:sets});setMsg(t('notice.saved'));setErr(false);
+    }catch(e){setMsg(t('notice.error'));setErr(true);}finally{setBusy(false);}
+  };
+  return html`<div className="stack"><div className="page-head"><div><h1>${t('nav.exams')}</h1><p>${t('notice.subtitle')}</p></div><a className="btn" href="https://www2.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryExamScheduleNew.QueryExamScheduleServlet" target="_blank" rel="noopener noreferrer">${t('notice.openReg')}</a></div>
+    <section className="card pad stack">
+      <div className="grid2">
+        <${Field} label=${t('notice.id')} id="notice-id"><input id="notice-id" className="input" type="password" inputMode="numeric" autoComplete="off" maxLength="15" value=${id} disabled=${busy} onChange=${function(e){setId(e.target.value);}}/><//>
+        <${Field} label=${t('viewingSemester')} id="notice-sem"><${SemesterSelect} id="notice-sem" state=${state} value=${sid} onChange=${function(v){if(!busy)setSid(v);}} /><//>
+        <${Field} label=${t('notice.type')} id="notice-kind"><select id="notice-kind" className="select" value=${kind} disabled=${busy} onChange=${function(e){setKind(e.target.value);}}><option value="fin">${t('type.final')}</option><option value="mid">${t('type.midterm')}</option></select><//>
+        <${Field} label=${t('notice.file')} id="notice-file"><input className="input" id="notice-file" type="file" accept="application/pdf,.pdf" disabled=${busy} onChange=${function(e){setFile(e.target.files[0]||null);}}/><//>
+      </div>
+      <p className="small muted">${t('notice.support')}</p>
+      <div className="row wrap"><button className="btn primary" disabled=${busy||!file} onClick=${run}><${Icon} n="check" />${t('notice.run')}</button><button className="btn" disabled=${busy||!stored.id} onClick=${function(){if(window.confirm(t('notice.clearConfirm'))){try{ExamNotice.clear();setId('');setMsg('');}catch(e){setMsg(t('notice.error'));setErr(true);}}}}>${t('notice.clear')}</button></div>
+      ${msg&&html`<p role="status" className="small" style=${{color:err?'var(--bad)':'var(--muted)'}}>${msg}</p>`}
+      <p className="hint">${t('notice.privacy')}</p>
+    </section>
+    <section className="card pad stack">
+      <div className="row wrap between"><h2>${t('nav.exams')}</h2><span className="chip ok">${rows.filter(function(x){return x.m.row;}).length}/${courses.length}</span></div>
+      ${src?html`<p className="small muted">${t('notice.imported',{n:src.pages})} ${src.invalid?t('notice.warning'):''}</p>`:html`<p className="small muted">${t('notice.empty')}</p>`}
+      ${!rows.length&&html`<p className="small muted">${t('notice.noCourses')}</p>`}
+      ${rows.map(function(x){var m=x.m,r=m.row;return html`<div className="exam-notice-row" key=${x.c.id} style=${{'--cc':courseColor(x.c.color)}}><div className="grow"><a href=${'#course-'+x.c.id}><b>${courseDisplayTitle(x.c)}</b></a><div className="small muted">${x.c.code} ${sectionOf(x.c)?' · Sec '+sectionOf(x.c):''}</div>
+        ${r?html`<div className="row wrap"><span className="chip ok">${t('notice.found')}</span><span className="small">${fmtDate(r.date,true)} · ${r.time}</span></div><div><b>${t('notice.room')}: ${r.room}</b></div><div className="tiny muted">${r.sec?t('notice.secRange',{s:r.sec}):t('notice.secUnknown')} · ${t('notice.source',{n:r.page})}</div>`:html`<div className="small muted">${m.ambiguous?t('notice.ambiguous'):m.needsSec?t('notice.needSec'):t('notice.none')}</div>`}</div><a className="btn sm" href=${'#course-'+x.c.id}>${t('viewDetails')}</a></div>`;})}
+      <p className="hint">${t('notice.verify')}</p>
+    </section></div>`;
+}
+
 function CourseDetail(p) {
   var state = p.state, c = state.courses.find(function (x) { return x.id === p.id; });
   if (!c) return html`<div><a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a><div className="empty" style=${{ marginTop: 20 }}><h3>${t('courseNotFound')}</h3></div></div>`;
   var sum = C.courseSummary(c, state), info = C.courseGrade(c, state, sum), grades = C.gradesFor(c, state);
   var sem = state.semesters.find(function (s) { return s.id === c.semesterId; });
-  return html`<div style=${{ '--cc': COLORS[c.color] }}>
+  return html`<div style=${{ '--cc': courseColor(c.color)}}>
     <a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a>
     <div className="course-head">
       <div className="grow">
@@ -5662,8 +5897,9 @@ function CourseDetail(p) {
         </div>
         ${examsFor(c, state) && html`<div className="exam-detail small">
           ${examLine(examsFor(c, state), state.assessments.some(function (a) { return a.courseId === c.id && a.type === 'midterm' && C.isGraded(a); }))}
+          <button className="btn sm" onClick=${function(){openModal('examRoom',{courseId:c.id});}}><${Icon} n="edit" s=${14} />${t('exam.editRoom')}</button>
           ${(function () { var ex = examsFor(c, state), e = ex && (ex.fin || ex.mid), src = (e && e.source) || (ex && ex.source) || '';
-            var note = src === 'reg' ? t('exam.srcReg') : src === 'user' || src === 'manual' ? t('exam.srcUser') : src === 'shared-all-secs' ? t('exam.srcAllSecs') : src === 'shared-verified' ? t('exam.srcSec') : src === 'syllabus' ? t('courseInfo.syllabusDates') : t('exam.calendarNote');
+            var note = src === 'exam-notice' ? t('notice.source',{n:e.noticePage}) : src === 'reg' ? t('exam.srcReg') : src === 'user' || src === 'manual' ? t('exam.srcUser') : src === 'shared-all-secs' ? t('exam.srcAllSecs') : src === 'shared-verified' ? t('exam.srcSec') : src === 'syllabus' ? t('courseInfo.syllabusDates') : t('exam.calendarNote');
             return html`<span className="exam-detail-note tiny muted">${note}</span>`; })()}</div>`}
         ${(function () { var sec = RegData.section(c, state); if (!sec) return null;
           return html`<div className="small muted reg-sec">${t('reg.secLine', { s: sec.sec, w: regSectionText(sec) })}${sec.teachers && sec.teachers.length ? ' · ' + t('reg.teachers', { t: sec.teachers.join(', ') }) : ''}</div>`; })()}
@@ -5682,7 +5918,7 @@ function CourseDetail(p) {
             <span className="tiny muted">%</span><//>`}
         </div>
       </div>
-      <div className="row head-actions" style=${{ alignItems: 'flex-start' }}>
+      <div className="row head-actions" style=${{ alignItems: 'center', flexWrap:'wrap', gap:10 }}>
         <${GradeBadge} info=${info} />
         <div className="row wrap" style=${{ gap: 6 }}>
           <button className="btn sm" onClick=${function () { openModal('final', { courseId: c.id }); }}><${Icon} n="check" s=${15} />${c.finalGrade ? t('changeGrade') : t('recordGrade')}</button>
@@ -6049,7 +6285,7 @@ function CourseModal(p) {
   var cur = curSemester(state);
   var initSem = c ? c.semesterId : (o.semesterId || (cur && cur.id) || '');
   var initYear = initSem ? (state.semesters.find(function (s) { return s.id === initSem; }) || {}).yearId : (state.years[0] && state.years[0].id);
-  var blank = function () { return { name: '', code: '', section: '', credits: 3, instructor: '', target: '', targetPct: null, color: 'indigo', finalGrade: '', hasFinal: false, kind: 'required', gradingMode: 'unknown', normMethod: 'unknown', normMean: null, normStdDev: null, gradingNotes: '', gradingSource: '' }; };
+  var blank = function () { return { name: '', code: '', section: '', credits: 3, instructor: '', target: '', targetPct: null, color: nextCourseColor(state.courses), finalGrade: '', hasFinal: false, kind: 'required', gradingMode: 'unknown', normMethod: 'unknown', normMean: null, normStdDev: null, gradingNotes: '', gradingSource: '' }; };
   var fs = useState(c ? { name: c.name, code: c.code || '', section: sectionOf(c), credits: c.credits, instructor: c.instructor || '', target: c.target || '', targetPct: c.targetPct == null ? null : c.targetPct, color: c.color || 'indigo',
     finalGrade: c.finalGrade || '', hasFinal: !!c.finalGrade, kind: kindOf(c), gradingMode: gradingModeFor(c),
     normMethod: c.normMethod || 'unknown', normMean: c.normMean == null ? null : c.normMean, normStdDev: c.normStdDev == null ? null : c.normStdDev,
@@ -6088,6 +6324,7 @@ function CourseModal(p) {
   var save = function (another) {
     var e = {};
     if (!f.name.trim()) e.name = t('err.required');
+    if (!colorKey(f.color) || state.courses.some(function(x){return (!c || x.id!==c.id) && colorKey(x.color)===colorKey(f.color);})) e.color=t('color.duplicate');
     if (f.section && !/^\d{1,4}$/.test(String(f.section).trim())) e.section = LANG === 'th' ? 'ใส่เลข Sec เช่น 4' : 'Enter a numeric Sec, e.g. 4';
     var cr = toNum(f.credits);
     if (cr === null) e.credits = t('err.required'); else if (cr < 0) e.credits = t('err.negative');
@@ -6148,7 +6385,7 @@ function CourseModal(p) {
       d.settings.onboarded = true;
     });
     toast(c ? t('saved') : t('courseSaved', { name: f.name.trim() }));
-    if (another) { setF(Object.assign(blank(), { credits: f.credits, color: f.color })); setErrs({}); setPicked(null); return; }
+    if (another) { setF(Object.assign(blank(), { credits: f.credits, color: nextCourseColor(S.state.courses) })); setErrs({}); setPicked(null); return; }
     closeModal();
     if (!c) go('course-' + newId);
   };
@@ -6236,9 +6473,9 @@ function CourseModal(p) {
     <${Field} label=${t('kind.label')} id="c-kind" hint=${t('kind.hint')}>
       <select id="c-kind" className="select" style=${{ maxWidth: 320 }} value=${f.kind || 'required'} onChange=${function (e) { set('kind', e.target.value); }}>
         ${KINDS.map(function (k) { return html`<option key=${k} value=${k}>${t('kind.' + k)}</option>`; })}</select><//>
-    <${Field} label=${t('color')}><div className="swatches" role="group" aria-label=${t('color')}>${Object.keys(COLORS).map(function (k) {
-      return html`<button key=${k} type="button" className="swatch" style=${{ background: COLORS[k] }} aria-label=${t('color.' + k)} aria-pressed=${f.color === k ? 'true' : 'false'} onClick=${function () { set('color', k); }}></button>`;
-    })}</div><//>
+    <${Field} label=${t('color')} error=${errs.color}><div className="swatches" role="group" aria-label=${t('color')}>${Object.keys(COLORS).map(function (k) {
+      return html`<button key=${k} type="button" className="swatch" style=${{ background: courseColor(k) }} aria-label=${t('color.' + k)} aria-pressed=${f.color === k ? 'true' : 'false'} disabled=${state.courses.some(function(x){return (!c||x.id!==c.id)&&colorKey(x.color)===colorKey(k);})} onClick=${function () { set('color', k); }}></button>`;
+    })}<input type="color" aria-label=${t('color.custom')} title=${t('color.custom')} value=${colorKey(f.color)||'#5b55e8'} onChange=${function(e){set('color',e.target.value);}} /></div><//>
     <label className="check"><input type="checkbox" checked=${f.hasFinal} onChange=${function (e) { set('hasFinal', e.target.checked); }} /><span>${t('hasFinalGrade')}<div className="hint">${t('hasFinalGradeHint')}</div></span></label>
     ${f.hasFinal && html`<${Field} label=${t('officialGrade')} id="c-fg" error=${errs.finalGrade}><select id="c-fg" className="select" style=${{ maxWidth: 260 }} value=${f.finalGrade} onChange=${function (e) { set('finalGrade', e.target.value); }}>
       <option value="">${t('pickGrade')}</option>
@@ -6956,7 +7193,7 @@ function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, examRoom: ExamRoomModal }[m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 
@@ -7196,7 +7433,7 @@ function SaveState() {
 }
 var NAV = [
   { id: 'courses', icon: 'book' }, { id: 'dashboard', icon: 'dashboard' }, { id: 'years', icon: 'calendar' },
-  { id: 'simulator', icon: 'calc' }, { id: 'gpa', icon: 'trend' },
+  { id: 'exams', icon: 'calendar' }, { id: 'simulator', icon: 'calc' }, { id: 'gpa', icon: 'trend' },
   { id: 'feedback', icon: 'message' }, { id: 'help', icon: 'info' }, { id: 'preferences', icon: 'sliders', key: 'settings' }
 ];
 function App() {
@@ -7218,6 +7455,7 @@ function App() {
   else if (route.page === 'courses') page = html`<${CoursesPage} state=${state} />`;
   else if (route.page === 'course') page = html`<${CourseDetail} state=${state} id=${route.id} />`;
   else if (route.page === 'simulator') page = html`<${SimulatorPage} state=${state} id=${route.id} />`;
+  else if (route.page === 'exams') page = html`<${ExamNoticePage} state=${state} />`;
   else if (route.page === 'gpa') page = html`<${GPAPage} state=${state} />`;
   else if (route.page === 'feedback') page = html`<${FeedbackPage} />`;
   else if (route.page === 'help') page = html`<${HelpPage} />`;
@@ -7326,7 +7564,7 @@ function makeScoreSnapshot(email, state) {
     var mode = gradingModeFor(c);
     var summary = Calc.courseSummary(c, state);
     var grade = Calc.courseGrade(c, state, summary);
-    var exams = examsFor(c, state) || {};
+    var exams = baseExamsFor(c, state) || {};
     var base = {
       id: String(c.id || ''), code: String(c.code || ''),
       name: String(c.name || ''), academicYear: String(year.academic || ''),

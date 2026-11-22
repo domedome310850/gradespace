@@ -3,6 +3,14 @@
 Newest first. Each entry: date · who (which AI / person) · what changed · files.
 Add yours at the top before you finish.
 
+## 2026-11-22 · ChatGPT · Course UI, unique course colors, timetable and personal exam rooms
+- `public/index.html`: compact withdrawn/completed course cards; inset dropdown chevrons; shorter grade labels; visible pencil edit action; viewport-clamped, portal-based tooltips; aligned course header; GPA contributing course/credit coverage.
+- Unique colors across saved course enrollments (including previous years/terms), with a custom hex color picker and duplicate validation. Existing duplicate colors are reassigned on normalization; no scores or grade records are altered.
+- Timetable: normalize numeric Sec labels; distinguish missing section from missing matching data; preserve simultaneous distinct class components/rooms; show Sec and course color. Owner's actual personal timetable remains unverified pending comparison with Reg Chula's personal schedule.
+- Exam dates remain sourced from existing Reg/shared sources; shared room values are not assumed to be personal assignments. Personal room editor stores explicitly entered rooms within the existing `exams` field, scoped to course/term/Sec/date; unknown rooms are labeled unconfirmed. Do not use real student data on a preview because the frontend still points to live Supabase.
+- Suppress impossible predicted totals above 100% (except explicit bonus items) and surface invalid weight/max-score warnings without changing saved scores.
+- Validation: all 3 inline JS scripts syntax-parsed; isolated JS checks passed for 100 unique course colors, normal/invalid predicted totals, timetable missing Sec/data and simultaneous class components, and personal room isolation. Playwright not run: execution environment cannot resolve GitHub/npm network; preview and browser smoke test still required before merge.
+
 ## 2026-11-22 · Owner · Cloudflare Auto Deploy test
 - Test GitHub integration without changing website functionality.
 
