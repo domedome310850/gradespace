@@ -713,6 +713,26 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .gm-cut { display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 10px; padding: 6px 9px; }
 .gm-cut b { min-width: 24px; }
 .gm-cut .input { width: 56px; padding: 5px 7px; text-align: right; }
+/* UI polish: content-sized cards, consistent controls, readable timetable and portable tips. */
+.course-grid { align-items: start; }
+.course-grid > .ccard, .course-grid > .sort-item { grid-row: auto; display: flex; flex-direction: column; }
+.course-grid > .sort-item > .ccard { grid-row: auto; display: flex; flex-direction: column; }
+.course-grid .ccard-foot { margin-top: auto; align-self: stretch; }
+select.select { appearance: none; -webkit-appearance: none; padding-right: 38px !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6' fill='none' stroke='%23838b9e' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-size: 16px; }
+.tt-days { grid-template-columns: repeat(auto-fit,minmax(min(100%,210px),1fr)); }
+.tt-slot { grid-template-columns: minmax(0,1fr); gap: 3px; border-left: 3px solid var(--cc,var(--accent)); }
+.tt-place { grid-column: 1; }
+.tt-name { overflow-wrap: normal; }
+.ccard-foot .btn, .head-actions .btn, .m-est { white-space: nowrap; }
+.metric .m-label { min-height: 0; }
+.metric .m-value { margin-top: 8px; }
+.metric .m-sub { margin-top: 4px; }
+.metric .m-extra { margin-top: 12px; padding-top: 10px; border-top: 1px solid currentColor; font-size: 12px; opacity: .8; }
+.metric.hero .tip { color: inherit; }
+.grade-summary-short { font-size: clamp(13px,2vw,17px); white-space: nowrap; }
+.gs-floating-tip { position: fixed; z-index: 2147483647; max-width: min(280px,calc(100vw - 24px)); background: var(--ink); color: var(--bg); padding: 8px 10px; border-radius: 9px; font-size: 12.5px; font-weight: 400; line-height: 1.5; white-space: normal; pointer-events: none; box-shadow: 0 4px 16px #0003; }
+.swatches input[type=color] { width: 36px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; }
+.swatch:disabled { opacity: .35; cursor: not-allowed; }
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -1381,6 +1401,23 @@ var Calc = (function () {
 })();
 if (typeof module !== 'undefined') module.exports = Calc;
 
+/* Stable course colors, unique across all saved enrollments in an account. */
+var COURSE_COLOR_HEX = {indigo:'#5955df',blue:'#3586e8',teal:'#109a9d',green:'#399148',amber:'#db941c',rose:'#df5077',violet:'#9253d9',slate:'#69738f'};
+function colorKey(v) { return COURSE_COLOR_HEX[v] || (/^#[0-9a-f]{6}$/i.test(v || '') ? v.toLowerCase() : ''); }
+function nextCourseColor(courses, exceptId) {
+  var used = new Set(courses.filter(function(c){return c.id!==exceptId;}).map(function(c){return colorKey(c.color);}));
+  var keys=Object.keys(COURSE_COLOR_HEX);
+  for(var i=0;i<keys.length;i++) if(!used.has(colorKey(keys[i]))) return keys[i];
+  for(var j=0;j<16777216;j++){
+    var hex='#'+((0x458bd1+j*0x9e3779)%16777216).toString(16).padStart(6,'0');
+    if(!used.has(hex))return hex;
+  }
+  return '#000000';
+}
+function ensureCourseColors(state) {
+  var seen=new Set(), unique=[];
+  state.courses.forEach(function(c){var k=colorKey(c.color);if(!k||seen.has(k))c.color=nextCourseColor(unique.concat(state.courses),c.id);seen.add(colorKey(c.color));unique.push(c);});
+}
 /* ===== GradeSpace data layer ===== */
 var Store = (function () {
   'use strict';
@@ -1496,6 +1533,7 @@ var Store = (function () {
       if (c.targetPct !== null && (c.targetPct < 0 || c.targetPct > 100)) c.targetPct = null;
       if (['required', 'elective', 'gened'].indexOf(c.kind) < 0) c.kind = 'required';
     });
+    ensureCourseColors(s);
     // One-time: put GenEd last, keeping everything else in its order. After this the saved order is the student's.
     if (!s.settings.orderV) {
       var rank = function (c) { return c.kind === 'gened' ? 2 : c.kind === 'elective' ? 1 : 0; };
@@ -2200,7 +2238,7 @@ var SharedCatalog = (function () {
     var start = str(row[prefix + ' start']), end = str(row[prefix + ' end']);
     var validTime = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
     var time = validTime.test(start) && validTime.test(end) && start < end ? start + '-' + end : '';
-    return { date: day, time: time, location: str(row['Exam location']),
+    return { date: day, time: time, location: '', // section-wide room cannot establish an individual student's assignment
       source: 'shared-verified' };
   }
   function examsFor(c,state) {
@@ -2664,7 +2702,7 @@ en: {
   'err.maxPos': 'Enter a full score greater than 0', 'err.gradedNeedsScore': 'Enter the score, or change the status to Pending', 'err.weightRange': 'Enter a weight from 0 to 100',
   'err.predRange': 'Prediction must be between 0 and the full score', 'err.pickGrade': 'Choose the grade', 'err.pickYear': 'Choose a year', 'err.credits': 'Enter the number of credits',
   'grading.noLetterPrediction': 'This course uses relative grading or has no confirmed cutoffs. Percentage scores are not an A–F prediction.',
-  'grading.noLetterPredictionShort': 'No grade prediction',
+  'grading.noLetterPredictionShort': 'Not yet known', 'exam.roomUnconfirmed': 'Room not confirmed', 'color.custom': 'Custom color', 'color.duplicate': 'This color is used by another course.', 'gpa.coverage': '{n} courses included · {c} GPA credits',
   'grading.numericGoal': 'Target total score', 'grading.numericGoalHint': 'Choose a personal 0–100% score target; this is not a letter-grade cutoff.', 'grading.numericGoalError': 'Enter a score from 0 to 100%.',
   'grading.needPoints': 'Need {n} more percentage points to reach {p}%',
   'grading.pointsReached': 'Your earned points already meet the {p}% score target',
@@ -3035,7 +3073,7 @@ th: {
   'err.maxPos': 'ใส่คะแนนเต็มที่มากกว่า 0', 'err.gradedNeedsScore': 'กรอกคะแนน หรือเปลี่ยนสถานะเป็นรอผลคะแนน', 'err.weightRange': 'ใส่น้ำหนักระหว่าง 0 ถึง 100',
   'err.predRange': 'คะแนนที่คาดต้องอยู่ระหว่าง 0 ถึงคะแนนเต็ม', 'err.pickGrade': 'เลือกเกรด', 'err.pickYear': 'เลือกชั้นปี', 'err.credits': 'ใส่จำนวนหน่วยกิต',
   'grading.noLetterPrediction': 'วิชานี้อิงกลุ่มหรือยังไม่ทราบเกณฑ์ตัดเกรด จึงไม่สามารถนำคะแนนเปอร์เซ็นต์มาคาดการณ์เกรด A–F ได้',
-  'grading.noLetterPredictionShort': 'ยังคาดการณ์เกรดไม่ได้',
+  'grading.noLetterPredictionShort': 'ยังไม่ทราบเกรด', 'exam.roomUnconfirmed': 'ยังไม่ยืนยันห้องสอบ', 'color.custom': 'เลือกสีเอง', 'color.duplicate': 'สีนี้ถูกใช้กับวิชาอื่นแล้ว', 'gpa.coverage': 'คำนวณจาก {n} วิชา · {c} หน่วยกิต GPA',
   'grading.numericGoal': 'เป้าหมายคะแนนรวม', 'grading.numericGoalHint': 'ตั้งเป้าคะแนนรวม 0–100% เพื่อวางแผนเท่านั้น ไม่ใช่เกณฑ์ตัดเกรด', 'grading.numericGoalError': 'ใส่คะแนนระหว่าง 0 ถึง 100%',
   'grading.needPoints': 'ขาดอีก {n} คะแนนเปอร์เซ็นต์ถึงเป้า {p}%',
   'grading.pointsReached': 'คะแนนสะสมถึงเป้า {p}% แล้ว',
@@ -3221,6 +3259,7 @@ function daysUntil(d) {
 }
 var TYPES = ['midterm', 'final', 'assignment', 'homework', 'quiz', 'project', 'presentation', 'lab', 'participation', 'attendance', 'custom'];
 var COLORS = { indigo: 'var(--c-indigo)', blue: 'var(--c-blue)', teal: 'var(--c-teal)', green: 'var(--c-green)', amber: 'var(--c-amber)', rose: 'var(--c-rose)', violet: 'var(--c-violet)', slate: 'var(--c-slate)' };
+function courseColor(v) { return COLORS[v] || colorKey(v) || COLORS.indigo; }
 
 /* ================= runtime store ================= */
 var S = { state: null, version: 0, listeners: [], sync: 'device', cloud: null, undo: null, modal: null, toasts: [], downloads: null, ready: false };
@@ -3251,6 +3290,7 @@ window.addEventListener('pagehide', function () {
 });
 function commit(next, opts) {
   if (opts && opts.undo) S.undo = { prev: S.state };
+  ensureCourseColors(next);
   next.updatedAt = Date.now();
   S.state = next; persist(); emit();
 }
@@ -3336,7 +3376,11 @@ function Logo() {
   return html`<span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"> <defs> <linearGradient id="gsGradient" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" stop-color="#8C71FE"/> <stop offset="55%" stop-color="#6654E8"/> <stop offset="100%" stop-color="#3F51C9"/> </linearGradient> </defs> <rect width="48" height="48" rx="14" fill="url(#gsGradient)"/> <path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke="#fff" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/> <circle cx="34.8" cy="12.6" r="3" fill="#C5ECFF"/> </svg></span>`;
 }
 function Tip(p) {
-  return html`<span className="tip" tabIndex="0" aria-label=${p.text}><${Icon} n="info" s=${14} /><span className="tip-body" role="tooltip">${p.text}</span></span>`;
+  var posState = useState(null), pos = posState[0], setPos = posState[1];
+  var show = function (e) { var r=e.currentTarget.getBoundingClientRect(); setPos({left:Math.max(12,Math.min(r.left,window.innerWidth-Math.min(280,window.innerWidth-24)-12)),top:r.bottom+8}); };
+  var hide = function () { setPos(null); };
+  useEffect(function () { if (!pos) return; window.addEventListener('scroll',hide,true); window.addEventListener('resize',hide); return function(){window.removeEventListener('scroll',hide,true);window.removeEventListener('resize',hide);}; },[pos]);
+  return html`<span className="tip" tabIndex="0" aria-label=${p.text} onMouseEnter=${show} onMouseLeave=${hide} onFocus=${show} onBlur=${hide} onKeyDown=${function(e){if(e.key==='Escape')hide();}}><${Icon} n="info" s=${14} />${pos && ReactDOM.createPortal(html`<span className="gs-floating-tip" role="tooltip" style=${{left:pos.left,top:pos.top > window.innerHeight-130 ? undefined : pos.top,bottom:pos.top > window.innerHeight-130 ? window.innerHeight-pos.top+24 : undefined}}>${p.text}</span>`,document.body)}</span>`;
 }
 function Field(p) {
   return html`<div className="field">
@@ -3655,7 +3699,7 @@ var RegData = (function () {
   function ctx(c, state) {
     var sem = state.semesters.find(function (x) { return x.id === c.semesterId; }); if (!sem) return null;
     var y = state.years.find(function (x) { return x.id === sem.yearId; });
-    var m = String(sem.kind || '').match(/^s([123])$/), code = String(c.code || '').split('.')[0];
+    var m = String(sem.kind === 'summer' ? 's3' : sem.kind || '').match(/^s([123])$/), code = String(c.code || '').trim().split('.')[0];
     if (!y || !m || !/^\d{7}$/.test(code) || !/^25\d\d$/.test(String(y.academic || ''))) return null;
     return { year: String(y.academic), term: m[1], code: code };
   }
@@ -3704,7 +3748,7 @@ var RegData = (function () {
   function section(c, state) {
     var o = get(c, state), sec = sectionOf(c);
     if (!o || !sec) return null;
-    return (o.sections || []).find(function (x) { return String(x.sec) === String(sec); }) || null;
+    return (o.sections || []).find(function (x) { return /^\d+$/.test(String(x.sec).trim()) && String(parseInt(x.sec,10)) === String(sec); }) || null;
   }
   return { refresh: refresh, get: get, exams: exams, section: section };
 })();
@@ -3730,11 +3774,11 @@ function timetableFor(state, semId) {
   courses.forEach(function (c) {
     if (!RegData.get(c, state)) { if (/^\d{7}/.test(String(c.code || ''))) noData.push(c); return; }
     var sec = RegData.section(c, state);
-    if (!sec) { noSec.push(c); return; }
+    if (!sec) { (sectionOf(c) ? noData : noSec).push(c); return; }
     (sec.classes || []).forEach(function (k) {
       var a = hmToMin(k.start), b = hmToMin(k.end);
       if (TT_DAYS.indexOf(k.day) < 0 || a === null || b === null || b <= a) return;
-      if (slots.some(function (x) { return x.c.id === c.id && x.day === k.day && x.a === a && x.b === b; })) return;
+      if (slots.some(function (x) { return x.c.id === c.id && x.day === k.day && x.a === a && x.b === b && x.type === (k.type || '') && x.place === [k.building,k.room].filter(Boolean).join(' '); })) return;
       slots.push({ c: c, day: k.day, a: a, b: b, start: k.start, end: k.end, type: k.type || '', place: [k.building, k.room].filter(Boolean).join(' ') });
     });
   });
@@ -3779,9 +3823,9 @@ function WeekTimetable(p) {
     ${days.length > 0 && html`<div className="tt-days">${days.map(function (d) {
       return html`<div key=${d} className="tt-day"><div className="tt-day-name">${ttDay(d)}</div><div className="tt-list">
         ${tt.slots.filter(function (x) { return x.day === d; }).map(function (x, i) {
-          return html`<a key=${i} href=${'#course-' + x.c.id} className=${'tt-slot' + (x.clash ? ' clash' : '')}>
+          return html`<a key=${i} href=${'#course-' + x.c.id} className=${'tt-slot' + (x.clash ? ' clash' : '')} style=${{ '--cc': courseColor(x.c.color) }}>
             <span className="tt-time">${x.start}–${x.end}</span>
-            <span className="tt-name">${short(x.c)}${x.type && html`<span className="tiny muted"> ${x.type}</span>`}</span>
+            <span className="tt-name">${short(x.c)}${sectionOf(x.c) && html`<span className="tiny muted"> · Sec ${sectionOf(x.c)}</span>`}${x.type && html`<span className="tiny muted"> · ${x.type}</span>`}</span>
             ${x.place && html`<span className="tt-place tiny muted">${x.place}</span>`}
           </a>`;
         })}</div></div>`;
@@ -3849,7 +3893,7 @@ function GradingAndGap(p) {
   return html`<div className=${'goal-insight' + (p.compact ? ' compact' : '')}>
     <div className="row wrap" style=${{ gap: 7 }}><span className=${'chip ' + (mode === 'norm' ? 'warn' : mode === 'criterion' ? 'ok' : '')}>${t('grading.' + mode)}</span>
       ${mode === 'norm' && html`<span className="tiny muted">${t('grading.estimate')}</span>`}
-      ${!p.compact && html`<button type="button" className="linkish" onClick=${function () { openModal('grading', { courseId: c.id }); }}>${t('gm.edit')}</button>`}
+      ${!p.compact && html`<button type="button" className="btn sm" aria-label=${t('gm.edit')} onClick=${function () { openModal('grading', { courseId: c.id }); }}><${Icon} n="edit" s=${15} />${t('gm.edit')}</button>`}
     </div>
     ${target ? html`<div className="goal-gap"><b>${mode === 'criterion' ? t('goal.missing', { n: fmtT(short), g: target.label }) : (short <= 0.00001 ? t('grading.pointsReached', { p: fmtT(target.min) }) : t('grading.needPoints', { n: fmtT(short), p: fmtT(target.min) }))}</b>
       <span className="small muted">${short <= 0.00001 ? (mode === 'criterion' ? t('goal.reached') : t('grading.scoreOnly')) : average ? (average.pct > 100.00001 ? t('goal.examNotEnough') : t('goal.examAverage', { n: fmtT(Math.max(0, average.pct)) })) : t('goal.noPendingExams')}</span>
@@ -4054,7 +4098,7 @@ function downloadICS(state, semId) {
 function examText(e) {
   if (!e || !e.date) return t('exam.tbd');
   var past = daysUntil(e.date);
-  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : '') + (past !== null && past < 0 ? ' ' + t('exam.done') : '');
+  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : ' · ' + t('exam.roomUnconfirmed')) + (past !== null && past < 0 ? ' ' + t('exam.done') : '');
 }
 // skipMid: the midterm is already graded and its date was never recorded, so "to be announced" would mislead
 function examLine(ex, skipMid) {
@@ -4664,7 +4708,7 @@ function CourseCard(p) {
   var sec = sectionOf(c);
   var nx = c.finalGrade ? null : nextExamOf(examsFor(c, state));
   var gl = c.finalGrade ? null : finalExamPassed(c, state) ? { tone: 'ok', text: t('gm.afterFinalCard') } : goalLine(c, state, sum);
-  return html`<article className="card ccard" style=${{ '--cc': COLORS[c.color] || COLORS.indigo }}>
+  return html`<article className="card ccard" style=${{ '--cc': courseColor(c.color) }}>
     <div className="ccard-top">
       <div className="grow">
         <a href=${href} className="ccard-name" style=${{ color: 'inherit', textDecoration: 'none' }}>${niceName(splitCourseSection(c.name).name) || c.code || t('course')}</a>
@@ -4756,7 +4800,7 @@ function Metric(p) {
   return html`<div className=${'metric' + (p.hero ? ' hero' : '')}>
     <div className="m-label">${p.icon && html`<${Icon} n=${p.icon} s=${14} />`}<span>${p.label}</span>${p.tip && html`<${Tip} text=${p.tip} />`}</div>
     <div className="m-value">${p.value}</div>
-    ${p.sub && html`<div className="m-sub">${p.sub}</div>`}
+    ${p.sub && html`<div className="m-sub">${p.sub}</div>`}${p.extra && html`<div className="m-extra">${p.extra}</div>`}
   </div>`;
 }
 
@@ -5033,7 +5077,7 @@ function ExamCalendarPanel(p) {
         if (!day)return html`<span key=${'e'+i} className="dashboard-cal-cell" aria-hidden="true"></span>`;
         var date=month+'-'+String(day).padStart(2,'0');
         var onDay=monthly.filter(function(x){return x.a.due===date;}), count=onDay.length;
-        var cols=onDay.map(function(x){return COLORS[x.c.color]||COLORS.indigo;}).filter(function(v,j,a){return a.indexOf(v)===j;});
+        var cols=onDay.map(function(x){return courseColor(x.c.color);}).filter(function(v,j,a){return a.indexOf(v)===j;});
         var isToday=isoNow===date, past=date<isoNow;
         return html`<button type="button" key=${date} className=${'dashboard-cal-cell'+(count?' has-exam':'')+(selected===date?' chosen':'')+(isToday?' today':'')+(past?' past':'')}
           style=${count?{'--cc':cols[0]}:null}
@@ -5044,7 +5088,7 @@ function ExamCalendarPanel(p) {
     </div>
     ${!(selected && selected.slice(0,7)===month) ? html`<p className="tiny muted" style=${{ margin: '8px 0 0' }}>${monthly.length ? (LANG==='th'?'แตะวันที่มีจุดเพื่อดูว่าสอบวิชาอะไร':'Tap a marked day to see its exams') : (LANG==='th'?'ไม่มีรายการสอบที่บันทึกไว้ในเดือนนี้':'No recorded exams this month')}</p>` : html`<${React.Fragment}>
     <div className="dashboard-calendar-legend">${fmtDate(selected,true)}</div>
-    ${show.length ? show.map(function(x){var q=String(x.a.due).split('-');return html`<div key=${x.a.id} className="dashboard-cal-event" style=${{ '--cc': COLORS[x.c.color] || COLORS.indigo }}>
+    ${show.length ? show.map(function(x){var q=String(x.a.due).split('-');return html`<div key=${x.a.id} className="dashboard-cal-event" style=${{ '--cc': courseColor(x.c.color) }}>
       <div className="date-pill cc"><b>${+q[2]}</b><small>${fmtDate(x.a.due).replace(/^\d+\s*/,'')}</small></div>
       <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}</div></div>
       <a className="btn sm" href=${'#course-'+x.c.id}>${t('viewCourse')}</a>
@@ -5103,10 +5147,10 @@ function Dashboard(p) {
       </div>
     </div>
     <div className="metrics m2">
-      <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)}
+      <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).included,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
         sub=${semC.gpa == null ? (semE.gpa != null ? t('gpa.estOnly') : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length }))
           : semE.gpa != null && Math.abs(semE.gpa - semC.gpa) > 1e-9 ? t('estX', { x: fmt(semE.gpa) }) : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length })} />
-      <${Metric} label=${t('cumGPA')} tip=${t('tip.cumGPA')} value=${gpaValue(cumC.gpa, cumE.gpa)}
+      <${Metric} label=${t('cumGPA')} tip=${t('tip.cumGPA')} value=${gpaValue(cumC.gpa, cumE.gpa)} extra=${t('gpa.coverage', {n:(cumC.gpa == null ? cumE : cumC).included,c:fmtT((cumC.gpa == null ? cumE : cumC).gpaCredits)})}
         sub=${cumC.gpa == null ? (cumE.gpa != null ? t('gpa.estOnly') : t('officialOnly'))
           : cumE.gpa != null && Math.abs(cumE.gpa - cumC.gpa) > 1e-9 ? t('estX', { x: fmt(cumE.gpa) }) : t('officialOnly')} />
     </div>
@@ -5132,7 +5176,7 @@ function Dashboard(p) {
           <button className="btn ghost sm" onClick=${function () { downloadICS(state, cur.id); }}><${Icon} n="calendar" s=${15} />${t('ics.btn')}</button></div>
         ${upcoming.length ? html`<ul className="dashboard-upcoming-list">${upcoming.map(function(x) {
           var p2 = String(x.a.due).split('-');
-          return html`<li key=${x.a.id} className="dashboard-upcoming-row" style=${{ '--cc': COLORS[x.c.color] || COLORS.indigo }}>
+          return html`<li key=${x.a.id} className="dashboard-upcoming-row" style=${{ '--cc': courseColor(x.c.color) }}>
             <div className="date-pill cc"><b>${+p2[2]}</b><small>${fmtDate(x.a.due).replace(/^\d+\s*/, '')}</small></div>
             <div className="upcoming-info">
               <div className="upcoming-course-title"><span className="cc-dot" aria-hidden="true"></span>${upcomingCourseTitle(x.c)}</div>
@@ -5229,7 +5273,7 @@ function YearsPage(p) {
               </div>
               ${cs.length ? html`<div className="sem-courses">${cs.map(function (c) {
                 var info = C.courseGrade(c, state);
-                return html`<div key=${c.id} className="sem-course" style=${{ '--cc': COLORS[c.color] }}>
+                return html`<div key=${c.id} className="sem-course" style=${{ '--cc': courseColor(c.color)}}>
                   <span className="dot"></span>
                   <a className="grow" href=${'#course-' + c.id}>${courseDisplayTitle(c)}${c.code && html`<span className="muted small"> ${c.code}</span>`}</a><${KindChip} course=${c} />
                   <span className="small muted">${t('nCredits', { n: fmtT(c.credits) })}</span>
@@ -5295,7 +5339,7 @@ function CourseSearch(p) {
       onMouseDown: function (e) { e.preventDefault(); }, onMouseEnter: function () { setActive(i); }, onClick: function () { choose(it); } };
     if (it.kind === 'own') {
       return h('div', Object.assign({ key: it.id, className: 'cs-opt' + (on ? ' on' : '') }, common),
-        html`<span className="dot" style=${{ '--cc': COLORS[it.c.color] || COLORS.indigo }}></span>
+        html`<span className="dot" style=${{ '--cc': courseColor(it.c.color) }}></span>
           <span className="grow cs-text"><b>${courseDisplayTitle(it.c)}</b><span className="tiny muted">${[it.c.code, semOf(it.c)].filter(Boolean).join('  ')}</span></span>
           ${it.close && html`<span className="chip outline">${t('search.close')}</span>`}<span className="cs-act">${t('search.open')}</span>`);
     }
@@ -5638,7 +5682,7 @@ function GradeSimulator(p) {
     </div>
     <div className="sim-result">
       <div><div className="k">${t('predFinal')}</div><div className="v">${fmt(total)}%</div></div>
-      <div><div className="k">${t('predGrade')}</div><div className="v">${criterion ? (pg ? pg.label : '–') : t('grading.noLetterPredictionShort')}</div></div>
+      <div><div className="k">${t('predGrade')}</div><div className=${criterion ? "v" : "v grade-summary-short"} title=${criterion ? undefined : t("grading.noLetterPrediction")}>${criterion ? (pg ? pg.label : '–') : t('grading.noLetterPredictionShort')}</div></div>
       <div><div className="k">${t('predGPAContrib')}</div><div className="v">${meta && meta.gpa && isNum(meta.points) ? fmt(meta.points * credits) : '–'}</div>
         <div className="tiny muted">${meta && meta.gpa && isNum(meta.points) ? t('ptsXcr', { p: fmtT(meta.points), c: fmtT(credits) }) : ''}</div></div>
       <div><div className="k">${t('targetStatus')}</div><div className="v" style=${{ fontSize: 17, color: total >= targetPct - 1e-9 ? 'var(--ok)' : 'var(--bad)' }}>
@@ -5651,7 +5695,7 @@ function CourseDetail(p) {
   if (!c) return html`<div><a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a><div className="empty" style=${{ marginTop: 20 }}><h3>${t('courseNotFound')}</h3></div></div>`;
   var sum = C.courseSummary(c, state), info = C.courseGrade(c, state, sum), grades = C.gradesFor(c, state);
   var sem = state.semesters.find(function (s) { return s.id === c.semesterId; });
-  return html`<div style=${{ '--cc': COLORS[c.color] }}>
+  return html`<div style=${{ '--cc': courseColor(c.color)}}>
     <a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a>
     <div className="course-head">
       <div className="grow">
@@ -6049,7 +6093,7 @@ function CourseModal(p) {
   var cur = curSemester(state);
   var initSem = c ? c.semesterId : (o.semesterId || (cur && cur.id) || '');
   var initYear = initSem ? (state.semesters.find(function (s) { return s.id === initSem; }) || {}).yearId : (state.years[0] && state.years[0].id);
-  var blank = function () { return { name: '', code: '', section: '', credits: 3, instructor: '', target: '', targetPct: null, color: 'indigo', finalGrade: '', hasFinal: false, kind: 'required', gradingMode: 'unknown', normMethod: 'unknown', normMean: null, normStdDev: null, gradingNotes: '', gradingSource: '' }; };
+  var blank = function () { return { name: '', code: '', section: '', credits: 3, instructor: '', target: '', targetPct: null, color: nextCourseColor(state.courses), finalGrade: '', hasFinal: false, kind: 'required', gradingMode: 'unknown', normMethod: 'unknown', normMean: null, normStdDev: null, gradingNotes: '', gradingSource: '' }; };
   var fs = useState(c ? { name: c.name, code: c.code || '', section: sectionOf(c), credits: c.credits, instructor: c.instructor || '', target: c.target || '', targetPct: c.targetPct == null ? null : c.targetPct, color: c.color || 'indigo',
     finalGrade: c.finalGrade || '', hasFinal: !!c.finalGrade, kind: kindOf(c), gradingMode: gradingModeFor(c),
     normMethod: c.normMethod || 'unknown', normMean: c.normMean == null ? null : c.normMean, normStdDev: c.normStdDev == null ? null : c.normStdDev,
@@ -6088,6 +6132,7 @@ function CourseModal(p) {
   var save = function (another) {
     var e = {};
     if (!f.name.trim()) e.name = t('err.required');
+    if (!colorKey(f.color) || state.courses.some(function(x){return (!c || x.id!==c.id) && colorKey(x.color)===colorKey(f.color);})) e.color=t('color.duplicate');
     if (f.section && !/^\d{1,4}$/.test(String(f.section).trim())) e.section = LANG === 'th' ? 'ใส่เลข Sec เช่น 4' : 'Enter a numeric Sec, e.g. 4';
     var cr = toNum(f.credits);
     if (cr === null) e.credits = t('err.required'); else if (cr < 0) e.credits = t('err.negative');
@@ -6148,7 +6193,7 @@ function CourseModal(p) {
       d.settings.onboarded = true;
     });
     toast(c ? t('saved') : t('courseSaved', { name: f.name.trim() }));
-    if (another) { setF(Object.assign(blank(), { credits: f.credits, color: f.color })); setErrs({}); setPicked(null); return; }
+    if (another) { setF(Object.assign(blank(), { credits: f.credits, color: nextCourseColor(S.state.courses) })); setErrs({}); setPicked(null); return; }
     closeModal();
     if (!c) go('course-' + newId);
   };
@@ -6236,9 +6281,9 @@ function CourseModal(p) {
     <${Field} label=${t('kind.label')} id="c-kind" hint=${t('kind.hint')}>
       <select id="c-kind" className="select" style=${{ maxWidth: 320 }} value=${f.kind || 'required'} onChange=${function (e) { set('kind', e.target.value); }}>
         ${KINDS.map(function (k) { return html`<option key=${k} value=${k}>${t('kind.' + k)}</option>`; })}</select><//>
-    <${Field} label=${t('color')}><div className="swatches" role="group" aria-label=${t('color')}>${Object.keys(COLORS).map(function (k) {
-      return html`<button key=${k} type="button" className="swatch" style=${{ background: COLORS[k] }} aria-label=${t('color.' + k)} aria-pressed=${f.color === k ? 'true' : 'false'} onClick=${function () { set('color', k); }}></button>`;
-    })}</div><//>
+    <${Field} label=${t('color')} error=${errs.color}><div className="swatches" role="group" aria-label=${t('color')}>${Object.keys(COLORS).map(function (k) {
+      return html`<button key=${k} type="button" className="swatch" style=${{ background: COLORS[k] }} aria-label=${t('color.' + k)} aria-pressed=${f.color === k ? 'true' : 'false'} disabled=${state.courses.some(function(x){return (!c||x.id!==c.id)&&colorKey(x.color)===colorKey(k);})} onClick=${function () { set('color', k); }}></button>`;
+    })}<input type="color" aria-label=${t('color.custom')} title=${t('color.custom')} value=${colorKey(f.color)||'#5955df'} onChange=${function(e){set('color',e.target.value);}} /></div><//>
     <label className="check"><input type="checkbox" checked=${f.hasFinal} onChange=${function (e) { set('hasFinal', e.target.checked); }} /><span>${t('hasFinalGrade')}<div className="hint">${t('hasFinalGradeHint')}</div></span></label>
     ${f.hasFinal && html`<${Field} label=${t('officialGrade')} id="c-fg" error=${errs.finalGrade}><select id="c-fg" className="select" style=${{ maxWidth: 260 }} value=${f.finalGrade} onChange=${function (e) { set('finalGrade', e.target.value); }}>
       <option value="">${t('pickGrade')}</option>
