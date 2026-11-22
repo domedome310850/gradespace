@@ -9,10 +9,10 @@ Add yours at the top before you finish.
 - Not applied to Supabase: connector authorization, Auth email-OTP configuration, singleton admin bootstrap, actual notice import/review and SQL access-control tests remain pending. The supplied PDF is not committed to GitHub. Full central coverage and automatic official notice discovery are not enabled yet. Existing grades login is still legacy email-only.
 - Validation: all inline JS parsed; synthetic admin parser tests confirmed multi-range extraction and no full ranges retained in personal import. Browser/PDF and SQL integration tests still required.
 
-## 2026-11-22 · ChatGPT · Default course order by grading method
-- `public/index.html`: default order within each semester is required criterion-graded courses, relative-graded courses with at least one recorded actual assessment score or a recorded final grade, relative-graded courses without actual scores, other/unknown grading methods, non-GenEd S/U, then GenEd. Predicted scores are not actual scores; a recorded zero counts. Stable ordering within each group.
-- Keep drag/keyboard reordering as a per-semester manual override; show a restore-default button. The dashboard and course lists share the sorting helper. Existing course data and grades are unchanged.
-- Validation: inline JS scripts parsed successfully; isolated tests passed for priority, zero vs prediction, transition after score entry, manual override and reset. Browser smoke test not run here.
+## 2026-11-22 · ChatGPT · Revised course priority and type labels
+- `public/index.html`: per-semester automatic priority is relative grading (all score states), required criterion courses with actual scores/recorded grades, criterion courses without actual scores, non-GenEd S/U, GenEd, then other courses (including scored criterion electives and unknown grading methods). GenEd and S/U take category precedence. Stable within groups. Actual zero counts; predictions do not. Manual override and reset retained.
+- Show compact Required / Elective / GenEd badges on all course cards and details in Thai and English. Updated GenEd ordering hint.
+- Validation: all three inline scripts parsed; isolated tests passed for all six priorities, score transition, zero and predicted scores, manual override and reset. Browser layout testing pending.
 
 ## 2026-11-22 · ChatGPT · Automatic exam rounds and aligned cards
 - `public/index.html`: save a visible, editable 10-digit student ID locally; optional hide/show; default exam session to automatic using Bangkok date and the official Chula semester calendar for 2569, with manual override. For other terms use recorded exam dates or ask the user to select the session.
