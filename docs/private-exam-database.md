@@ -1,0 +1,33 @@
+# Staged rollout
+
+After PR #5 merges, the normal production entry remains unchanged while the named Cloudflare preview or an explicitly opted-in tab (`?school_preview=1`) uses school sign-in. `?school_preview=0` exits that preview mode. For the preview host, configure the exact callback `/?exam_oauth=1`. A successful preview is required before enforcing university-only sign-in in production. The backend migration is already installed; legacy RPCs remain accessible exclusively for compatibility with the current UI, and are not secure until revoked. No production cutover or automatic publication of exam notices is authorized by this staged merge.
+
+# Updated deployment note: verified Chula login
+
+The latest school sign-in migration supersedes the separate OTP setup below. It is applied to Supabase. Configure Google OAuth for the preview and eventual production domain, with the Supabase callback and exact `/?exam_oauth=1` redirect allowlist. Test with a real Chula Google Workspace account and the designated owner Gmail: the server checks provider-verified email and hosted domain, automatically extracts the student ID, and assigns the private singleton admin only to the preconfigured owner. If Chula blocks third-party OAuth or the trusted domain claim is absent, stop; do not relax the domain check. Admin role is not activated until real sign-in. Existing grade accounts remain intact; account transfer requires separate verified ownership, not a typed email.
+
+Before production access is considered secure: coordinate rollout, confirm working verified grade load/save and exam lookup, protect/migrate existing accounts, then remove direct browser execution of old grade RPCs (`revoke execute on function public.gs_load(text), public.gs_save(text,jsonb,bigint) from public,anon,authenticated;`). New security-definer wrappers call these internally. This revocation is intentionally NOT applied while old production UI relies on them. Test anon and cross-account access after cutover. Do not merge draft until verified. The earlier OTP/manual bootstrap instructions below are historical, not the current procedure.
+
+---
+
+# Private central exam database — setup and review
+
+This branch is not a production migration. Do not publish student ID ranges in the public repo. The supplied PDF lives outside GitHub. The legacy GradeSpace grade tracker still uses email-only access; the exam subsystem uses a separate Supabase Auth OTP session. This does not fix the legacy grade-data authorization problem.
+
+## Deployment sequence
+1. Merge the prerequisite UI branch (PR #4), review this stacked PR, and retarget it to main. Apply the migration in the intended Supabase project after testing on a non-production database; update the schema reference only after it is applied.
+2. Enable email OTP in Supabase Auth, configure a suitable SMTP provider and the email template with the OTP Token variable. The admin signs in with their usual GradeSpace email, opens Exam rooms, and verifies that mailbox with OTP. No administrator menu appears until private bootstrap.
+3. The project database owner checks the specified administrator's confirmed Auth user record and inserts the single admin record into gs_exam_private.admin. Use the exact owner-designated verified email, not an email supplied by a browser or guessed from a grade profile. Do not commit that address or personal roster to GitHub. Example for SQL editor, replace the local placeholder privately:
+```sql
+insert into gs_exam_private.admin (singleton,user_id,email)
+select true,id,lower(email) from auth.users
+where lower(email) = '<owner-designated verified email>'
+  and email_confirmed_at is not null;
+```
+Confirm exactly one row exists and the correct Auth ID. The singleton check and primary key prevent a second admin. No public RPC can change this table.
+4. Reverify the administrator email, open Exam database admin, choose year/term/round/faculty, and load the official notice. Compare extracted rows and ranges against every PDF page; correct incomplete rows, ambiguous sessions or section splits before ticking the review checkbox and publishing. Review failures must not be silently accepted. Publication replaces one faculty/scope atomically but keeps prior versions for history. Never use production student records in a public preview. No raw roster is returned by normal lookup.
+5. A student verifies email by OTP and the administrator confirms evidence of ownership of the stated student number before binding the verified Auth account. No self-claiming arbitrary student IDs. Link once; subsequent verified sessions retrieve their own matching rooms for enrolled courses. Unmatched/ambiguous items retain an unconfirmed state. Do not upload proof documents to GitHub.
+6. Test with synthetic identities: anonymous should be denied all new public RPCs; an ordinary authenticated user cannot publish, bind, read history or select private tables; a confirmed student cannot supply another ID; a revoked link fails lookup; admin can publish and history shows the active version; duplicate student links fail. Verify the PDF format and date/round selection and compare every displayed room with the actual notice before production release.
+
+## Source update
+Official publication discovery is not configured in this branch. A verified reachable notice URL and permission to process the published document are prerequisites. Future scheduled ingestion must create a review draft, not automatically overwrite an approved notice with unverified extracted rules. New faculties may require different parsers. Until then the owner uploads an official PDF once per notice; end users need no upload when their authorized assignments are present.
