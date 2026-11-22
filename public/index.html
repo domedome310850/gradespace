@@ -1247,7 +1247,7 @@ var Calc = (function () {
   /* ---- GPA ---- */
   // mode 'confirmed': recorded grades only. mode 'estimated': adds calculated + estimated grades.
   function gpaStats(courses, state, mode) {
-    var qp = 0, gpaCredits = 0, attempted = 0, earned = 0, included = 0, notIncluded = 0, confirmedCount = 0;
+    var qp = 0, gpaCredits = 0, attempted = 0, earned = 0, included = 0, notIncluded = 0, confirmedCount = 0, gpaCount = 0;
     courses.forEach(function (c) {
       var cr = toNum(c.credits) || 0;
       var info = courseGrade(c, state);
@@ -1255,12 +1255,12 @@ var Calc = (function () {
       if (info.kind === 'confirmed') confirmedCount++;
       if (!use || !info.meta) { notIncluded++; return; }
       included++;
-      if (info.meta.gpa && isNum(info.meta.points)) { qp += info.meta.points * cr; gpaCredits += cr; }
+      if (info.meta.gpa && isNum(info.meta.points)) { qp += info.meta.points * cr; gpaCredits += cr; if(cr>0)gpaCount++; }
       if (info.meta.attempted) attempted += cr;
       if (info.meta.earned) earned += cr;
     });
     return { gpa: gpaCredits > 0 ? qp / gpaCredits : null, qp: qp, gpaCredits: gpaCredits, attempted: attempted,
-      earned: earned, included: included, notIncluded: notIncluded, confirmedCount: confirmedCount };
+      earned: earned, included: included, notIncluded: notIncluded, confirmedCount: confirmedCount, gpaCount:gpaCount };
   }
 
   function coursesIn(state, semesterIds) {
@@ -1405,7 +1405,7 @@ if (typeof module !== 'undefined') module.exports = Calc;
 
 /* Stable course colors, unique across all saved enrollments in an account. */
 var COURSE_COLOR_HEX = {indigo:'#5b55e8',blue:'#3b8beb',teal:'#14a39a',green:'#3e9b4f',amber:'#d99118',rose:'#e0567a',violet:'#9558e0',slate:'#6b7393'};
-function colorKey(v) { return COURSE_COLOR_HEX[v] || (/^#[0-9a-f]{6}$/i.test(v || '') ? v.toLowerCase() : ''); }
+function colorKey(v) { return Object.prototype.hasOwnProperty.call(COURSE_COLOR_HEX,v) ? COURSE_COLOR_HEX[v] : (/^#[0-9a-f]{6}$/i.test(v || '') ? v.toLowerCase() : ''); }
 function nextCourseColor(courses, exceptId) {
   var used = new Set(courses.filter(function(c){return !exceptId || c.id!==exceptId;}).map(function(c){return colorKey(c.color);}));
   var keys=Object.keys(COURSE_COLOR_HEX);
@@ -2483,7 +2483,7 @@ en: {
   'goal.examAverage':'Need {n}% average on remaining Midterm / Final exams', 'goal.examRaw': 'In points: at least {list}',
   'tt.title': 'Weekly timetable', 'tt.source': 'From Reg Chula, by your Sec',
   'tt.clash': 'Classes overlap: {list}. Check your registration.', 'tt.examClash': 'Exams overlap: {list}. Contact the faculty about a make-up slot.',
-  'tt.noSec': 'Set the Sec to see the times for: {list}', 'tt.noData': 'Reg Chula times not loaded yet for: {list}. They are fetched automatically; check back later.',
+  'tt.noSec': 'Set the Sec to see the times for: {list}', 'tt.noData': 'No matching timetable data for: {list}. Check your course code, section and term.',
   'gm.title': 'How this course is graded', 'gm.edit': 'Change', 'gm.kind': 'Grade type', 'gm.letter': 'Letter grades (A–F)', 'gm.su': 'S/U (pass/fail)',
   'gm.pass': 'Score needed to pass (S)', 'gm.passHint': 'From the syllabus. Reach it and you get S.',
   'gm.modeHint.criterion': 'Fixed cut-offs: the grade depends only on your own score.', 'gm.modeHint.norm': 'Grades depend on the class; the cut-offs below are only used as an estimate.', 'gm.modeHint.unknown': 'Not stated yet; the cut-offs below are used as an estimate.',
@@ -2704,7 +2704,7 @@ en: {
   'err.maxPos': 'Enter a full score greater than 0', 'err.gradedNeedsScore': 'Enter the score, or change the status to Pending', 'err.weightRange': 'Enter a weight from 0 to 100',
   'err.predRange': 'Prediction must be between 0 and the full score', 'err.pickGrade': 'Choose the grade', 'err.pickYear': 'Choose a year', 'err.credits': 'Enter the number of credits',
   'grading.noLetterPrediction': 'This course uses relative grading or has no confirmed cutoffs. Percentage scores are not an A–F prediction.',
-  'grading.noLetterPredictionShort': 'Not yet known', 'exam.roomUnconfirmed': 'Room not confirmed', 'exam.editRoom': 'My exam rooms', 'exam.roomHint': 'Enter the room assigned to you in the official exam notice. Leave blank if unknown.', 'exam.midRoom': 'Midterm room', 'exam.finRoom': 'Final room', 'color.custom': 'Custom color', 'color.duplicate': 'This color is used by another course.', 'gpa.coverage': '{c} GPA credits included',
+  'grading.noLetterPredictionShort': 'Not yet known', 'exam.roomUnconfirmed': 'Room not confirmed', 'exam.editRoom': 'My exam rooms', 'exam.roomHint': 'Enter the room assigned to you in the official exam notice. Leave blank if unknown.', 'exam.midRoom': 'Midterm room', 'exam.finRoom': 'Final room', 'color.custom': 'Custom color', 'color.duplicate': 'This color is used by another course.', 'gpa.coverage': '{n} courses · {c} GPA credits',
   'grading.numericGoal': 'Target total score', 'grading.numericGoalHint': 'Choose a personal 0–100% score target; this is not a letter-grade cutoff.', 'grading.numericGoalError': 'Enter a score from 0 to 100%.',
   'grading.needPoints': 'Need {n} more percentage points to reach {p}%',
   'grading.pointsReached': 'Your earned points already meet the {p}% score target',
@@ -2854,7 +2854,7 @@ th: {
   'goal.examAverage':'คะแนนสอบที่เหลือต้องเฉลี่ย {n}%', 'goal.examRaw': 'เป็นคะแนนดิบ: ต้องได้อย่างน้อย {list}',
   'tt.title': 'ตารางเรียนรายสัปดาห์', 'tt.source': 'จาก Reg Chula ตาม Sec ของคุณ',
   'tt.clash': 'เวลาเรียนชนกัน: {list} ตรวจการลงทะเบียนอีกครั้ง', 'tt.examClash': 'เวลาสอบชนกัน: {list} ติดต่อคณะเพื่อขอสอบนอกเวลา',
-  'tt.noSec': 'ใส่ Sec เพื่อดูเวลาเรียนของ: {list}', 'tt.noData': 'ยังไม่ได้ข้อมูลเวลาเรียนจาก Reg ของ: {list} ระบบจะดึงให้อัตโนมัติ ลองกลับมาดูภายหลัง',
+  'tt.noSec': 'ใส่ Sec เพื่อดูเวลาเรียนของ: {list}', 'tt.noData': 'ยังไม่พบตารางเรียนที่ตรงกับ: {list} โปรดตรวจรหัสวิชา Sec และเทอม',
   'gm.title': 'วิธีตัดเกรดของวิชานี้', 'gm.edit': 'แก้', 'gm.kind': 'ระบบเกรด', 'gm.letter': 'เกรด A–F', 'gm.su': 'S/U (ผ่าน/ไม่ผ่าน)',
   'gm.pass': 'คะแนนขั้นต่ำที่ผ่าน (ได้ S)', 'gm.passHint': 'ดูจากประมวลรายวิชา ได้ถึงเกณฑ์นี้ก็ได้ S',
   'gm.modeHint.criterion': 'เกณฑ์ตายตัว เกรดขึ้นกับคะแนนของคุณเท่านั้น', 'gm.modeHint.norm': 'เกรดขึ้นกับคะแนนทั้งห้อง เกณฑ์ด้านล่างใช้แค่ประมาณ', 'gm.modeHint.unknown': 'ยังไม่รู้วิธีตัดเกรด ใช้เกณฑ์ด้านล่างประมาณไปก่อน',
@@ -3075,7 +3075,7 @@ th: {
   'err.maxPos': 'ใส่คะแนนเต็มที่มากกว่า 0', 'err.gradedNeedsScore': 'กรอกคะแนน หรือเปลี่ยนสถานะเป็นรอผลคะแนน', 'err.weightRange': 'ใส่น้ำหนักระหว่าง 0 ถึง 100',
   'err.predRange': 'คะแนนที่คาดต้องอยู่ระหว่าง 0 ถึงคะแนนเต็ม', 'err.pickGrade': 'เลือกเกรด', 'err.pickYear': 'เลือกชั้นปี', 'err.credits': 'ใส่จำนวนหน่วยกิต',
   'grading.noLetterPrediction': 'วิชานี้อิงกลุ่มหรือยังไม่ทราบเกณฑ์ตัดเกรด จึงไม่สามารถนำคะแนนเปอร์เซ็นต์มาคาดการณ์เกรด A–F ได้',
-  'grading.noLetterPredictionShort': 'ยังไม่ทราบเกรด', 'exam.roomUnconfirmed': 'ยังไม่ยืนยันห้องสอบ', 'exam.editRoom': 'ห้องสอบของฉัน', 'exam.roomHint': 'กรอกห้องสอบของคุณตามประกาศอย่างเป็นทางการ ถ้ายังไม่ทราบให้เว้นว่าง', 'exam.midRoom': 'ห้องสอบกลางภาค', 'exam.finRoom': 'ห้องสอบปลายภาค', 'color.custom': 'เลือกสีเอง', 'color.duplicate': 'สีนี้ถูกใช้กับวิชาอื่นแล้ว', 'gpa.coverage': 'ใช้ {c} หน่วยกิตคำนวณ GPA',
+  'grading.noLetterPredictionShort': 'ยังไม่ทราบเกรด', 'exam.roomUnconfirmed': 'ยังไม่ยืนยันห้องสอบ', 'exam.editRoom': 'ห้องสอบของฉัน', 'exam.roomHint': 'กรอกห้องสอบของคุณตามประกาศอย่างเป็นทางการ ถ้ายังไม่ทราบให้เว้นว่าง', 'exam.midRoom': 'ห้องสอบกลางภาค', 'exam.finRoom': 'ห้องสอบปลายภาค', 'color.custom': 'เลือกสีเอง', 'color.duplicate': 'สีนี้ถูกใช้กับวิชาอื่นแล้ว', 'gpa.coverage': '{n} วิชา · {c} หน่วยกิต GPA',
   'grading.numericGoal': 'เป้าหมายคะแนนรวม', 'grading.numericGoalHint': 'ตั้งเป้าคะแนนรวม 0–100% เพื่อวางแผนเท่านั้น ไม่ใช่เกณฑ์ตัดเกรด', 'grading.numericGoalError': 'ใส่คะแนนระหว่าง 0 ถึง 100%',
   'grading.needPoints': 'ขาดอีก {n} คะแนนเปอร์เซ็นต์ถึงเป้า {p}%',
   'grading.pointsReached': 'คะแนนสะสมถึงเป้า {p}% แล้ว',
@@ -3859,8 +3859,8 @@ function baseExamsFor(c, state) {
 // Personal room assignments are stored separately from shared exam schedules.
 function examsFor(c,state) {
   var ex=baseExamsFor(c,state);
-  if(!ex || !c || !c.examRooms)return ex;
-  var room=function(k){var e=ex[k]; if(!e)return null; var own=c.examRooms[k]; if(!own || own.date!==e.date || own.sec!==sectionOf(c))return e; return Object.assign({},e,{location:own.room||''});};
+  if(!ex || !c || !c.exams || !c.exams.personalRooms)return ex;
+  var room=function(k){var e=ex[k]; if(!e)return null; var own=c.exams.personalRooms[k]; if(!own || own.date!==e.date || own.sec!==sectionOf(c) || own.code!==String(c.code||'') || own.semesterId!==c.semesterId)return e; return Object.assign({},e,{location:own.room||''});};
   return Object.assign({},ex,{mid:room('mid'),fin:room('fin')});
 }
 // S/U (pass/fail) courses only need the pass mark: that is a fixed criterion, never relative grading.
@@ -4738,6 +4738,8 @@ function CourseCard(p) {
       <div className="ccard-performance">
         <${GradeBar} sum=${sum} grades=${mode === 'criterion' ? grades : []} target=${tg} />
         <div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>
+        ${sum.issues.over && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.over",{n:fmtT(sum.totalWeight)})}</div>`}
+        ${sum.issues.overMax>0 && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.overMax")}</div>`}
         <${EstimateBasis} course=${c} sum=${sum} state=${state} collapsible=${true} />
       </div>`}
     ${(gl || nx) && html`<div className="ccard-lines">
@@ -5160,10 +5162,10 @@ function Dashboard(p) {
       </div>
     </div>
     <div className="metrics m2">
-      <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).included,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
+      <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).gpaCount,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
         sub=${semC.gpa == null ? (semE.gpa != null ? t('gpa.estOnly') : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length }))
           : semE.gpa != null && Math.abs(semE.gpa - semC.gpa) > 1e-9 ? t('estX', { x: fmt(semE.gpa) }) : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length })} />
-      <${Metric} label=${t('cumGPA')} tip=${t('tip.cumGPA')} value=${gpaValue(cumC.gpa, cumE.gpa)} extra=${t('gpa.coverage', {n:(cumC.gpa == null ? cumE : cumC).included,c:fmtT((cumC.gpa == null ? cumE : cumC).gpaCredits)})}
+      <${Metric} label=${t('cumGPA')} tip=${t('tip.cumGPA')} value=${gpaValue(cumC.gpa, cumE.gpa)} extra=${t('gpa.coverage', {n:(cumC.gpa == null ? cumE : cumC).gpaCount,c:fmtT((cumC.gpa == null ? cumE : cumC).gpaCredits)})}
         sub=${cumC.gpa == null ? (cumE.gpa != null ? t('gpa.estOnly') : t('officialOnly'))
           : cumE.gpa != null && Math.abs(cumE.gpa - cumC.gpa) > 1e-9 ? t('estX', { x: fmt(cumE.gpa) }) : t('officialOnly')} />
     </div>
@@ -5709,11 +5711,11 @@ function ExamRoomModal(p) {
   var ms=useState(ex&&ex.mid ? ex.mid.location||'' : ''), mid=ms[0], setMid=ms[1];
   var fs=useState(ex&&ex.fin ? ex.fin.location||'' : ''), fin=fs[0], setFin=fs[1];
   if(!c || !ex)return null;
-  var save=function(){update(function(d){var x=d.courses.find(function(y){return y.id===c.id;}); if(!x)return; x.examRooms={}; [['mid',mid],['fin',fin]].forEach(function(q){var e=ex[q[0]];if(e&&e.date)x.examRooms[q[0]]={date:e.date,sec:sectionOf(c),room:q[1].trim()};});});toast(t('saved'));closeModal();};
-  return html`<div className="stack"><p className="small muted">${t('exam.roomHint')}</p>
+  var save=function(){update(function(d){var x=d.courses.find(function(y){return y.id===c.id;}); if(!x)return; x.exams=Object.assign({},x.exams||{},{personalRooms:{}}); [['mid',mid],['fin',fin]].forEach(function(q){var e=ex[q[0]];if(e&&e.date)x.exams.personalRooms[q[0]]={date:e.date,sec:sectionOf(c),code:String(c.code||''),semesterId:c.semesterId,room:q[1].trim()};});});toast(t('saved'));closeModal();};
+  return html`<${Modal} title=${t('exam.editRoom')} onClose=${closeModal} foot=${html`<button className="btn" onClick=${closeModal}>${t('cancel')}</button><button className="btn primary" onClick=${save}>${t('save')}</button>`}><p className="small muted">${t('exam.roomHint')}</p>
     ${ex.mid&&ex.mid.date&&html`<${Field} label=${t('exam.midRoom')} id="exam-mid-room"><input className="input" id="exam-mid-room" value=${mid} onChange=${function(e){setMid(e.target.value);}} /><//>`}
     ${ex.fin&&ex.fin.date&&html`<${Field} label=${t('exam.finRoom')} id="exam-fin-room"><input className="input" id="exam-fin-room" value=${fin} onChange=${function(e){setFin(e.target.value);}} /><//>`}
-    <button className="btn primary" onClick=${save}>${t('save')}</button></div>`;
+    <//>`;
 }
 function CourseDetail(p) {
   var state = p.state, c = state.courses.find(function (x) { return x.id === p.id; });
@@ -5752,7 +5754,7 @@ function CourseDetail(p) {
             <span className="tiny muted">%</span><//>`}
         </div>
       </div>
-      <div className="row head-actions" style=${{ alignItems: 'flex-start' }}>
+      <div className="row head-actions" style=${{ alignItems: 'center', flexWrap:'wrap', gap:10 }}>
         <${GradeBadge} info=${info} />
         <div className="row wrap" style=${{ gap: 6 }}>
           <button className="btn sm" onClick=${function () { openModal('final', { courseId: c.id }); }}><${Icon} n="check" s=${15} />${c.finalGrade ? t('changeGrade') : t('recordGrade')}</button>
