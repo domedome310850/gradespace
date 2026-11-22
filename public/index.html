@@ -756,6 +756,8 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .exam-detail .exam-lines { gap: 6px; }
 .exam-detail-note { display: block; margin-top: 5px; }
 
+.chip.course-kind-chip { font-size: 10.5px; font-weight: 550; line-height: 1.4; white-space: nowrap; padding: 2px 7px; }
+.chip.kind-required { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
 .chip.kind-gened { background: var(--sky-soft); color: var(--sky); }
 .chip.kind-elective { background: var(--warn-soft); color: var(--warn); }
 .credit-row { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
@@ -2535,8 +2537,8 @@ en: {
   'scan.setupLink': 'open Edge Function secrets', 'scan.setup3': 'Close this window and open it again.',
   'scan.err.bad_key': 'The AI key was rejected. Check that the whole key was copied into the GEMINI_API_KEY secret.',
   'kind.label': 'Course type', 'kind.required': 'Required / major', 'kind.elective': 'Elective', 'kind.gened': 'General education (GenEd)',
-  'kind.hint': 'GenEd courses are listed last and count toward the GenEd credits you need to graduate.',
-  'kindChip.elective': 'Elective', 'kindChip.gened': 'GenEd',
+  'kind.hint': 'GenEd courses have their own group near the end of the default order and count toward the GenEd credits you need to graduate.',
+  'kindChip.required': 'Required', 'kindChip.elective': 'Elective', 'kindChip.gened': 'GenEd',
   'credits.title': 'Credits toward graduation', 'credits.sub': 'Only official passing grades count as earned. Courses in progress are shown striped.',
   'credits.program': 'Whole programme', 'credits.of': '{e} of {r} credits', 'credits.earned': '{e} credits earned', 'credits.inprog': '{n} credits in progress',
   'credits.left': '{n} credits to go', 'credits.done': 'Requirement met', 'credits.setReq': 'Set the required credits in Settings to track this.',
@@ -2909,7 +2911,7 @@ th: {
   'scan.err.bad_key': 'AI key ใช้ไม่ได้ เช็กว่าคัดลอก key มาครบ แล้ววางใน secret ชื่อ GEMINI_API_KEY',
   'kind.label': 'ประเภทวิชา', 'kind.required': 'วิชาบังคับ / วิชาเอก', 'kind.elective': 'วิชาเลือก', 'kind.gened': 'วิชาศึกษาทั่วไป (GenEd)',
   'kind.hint': 'วิชาศึกษาทั่วไปจะเรียงไว้ท้ายสุด และนับรวมเป็นหน่วยกิต GenEd ที่ต้องเก็บให้ครบก่อนจบ',
-  'kindChip.elective': 'วิชาเลือก', 'kindChip.gened': 'GenEd',
+  'kindChip.required': 'วิชาบังคับ', 'kindChip.elective': 'วิชาเลือก', 'kindChip.gened': 'GenEd',
   'credits.title': 'หน่วยกิตสะสมเพื่อจบการศึกษา', 'credits.sub': 'นับเป็นหน่วยกิตที่ได้แล้วเฉพาะวิชาที่บันทึกเกรดจริงและผ่าน วิชาที่กำลังเรียนแสดงเป็นแถบลาย',
   'credits.program': 'ทั้งหลักสูตร', 'credits.of': '{e} จาก {r} หน่วยกิต', 'credits.earned': 'ได้แล้ว {e} หน่วยกิต', 'credits.inprog': 'กำลังเรียน {n} หน่วยกิต',
   'credits.left': 'เหลืออีก {n} หน่วยกิต', 'credits.done': 'ครบแล้ว', 'credits.setReq': 'ใส่จำนวนหน่วยกิตที่ต้องเก็บในหน้าตั้งค่า เพื่อดูว่าเหลืออีกเท่าไร',
@@ -3651,16 +3653,18 @@ var KINDS = ['required', 'elective', 'gened'];
 function kindOf(c) { return KINDS.indexOf(c && c.kind) >= 0 ? c.kind : 'required'; }
 // Default priority within each semester. A drag creates an explicit manual override for that term.
 function courseOrderRank(c,state) {
-  if(kindOf(c)==='gened')return 5;
-  if(isSUCourse(c)||c.finalGrade==='S'||c.finalGrade==='U')return 4;
+  // GenEd and S/U keep their own categories, regardless of their grading method.
+  if(kindOf(c)==='gened')return 4;
+  if(isSUCourse(c)||c.finalGrade==='S'||c.finalGrade==='U')return 3;
   var mode=gradingModeFor(c);
-  if(mode==='criterion'&&kindOf(c)==='required')return 0;
-  if(mode==='norm'){
-    var known=!!c.finalGrade&&!['W','I','IP'].includes(c.finalGrade) || state.assessments.some(function(a){return a.courseId===c.id&&C.isGraded(a);});
-    return known?1:2;
+  if(mode==='norm')return 0;
+  if(mode==='criterion'){
+    var known=(!!c.finalGrade&&!['W','I','IP'].includes(c.finalGrade)) || state.assessments.some(function(a){return a.courseId===c.id&&C.isGraded(a);});
+    if(kindOf(c)==='required'&&known)return 1;
+    if(!known)return 2;
   }
-  // Electives and unspecified grading methods are not mislabelled as relative grading.
-  return 3;
+  // Other courses: e.g. scored criterion electives or unspecified grading methods.
+  return 5;
 }
 function isManualCourseOrder(state,semId){return !!(state.settings.manualCourseOrder&&state.settings.manualCourseOrder[semId]===true);}
 function sortCourses(list,state) {
@@ -3695,8 +3699,7 @@ function reorderSemester(semId, ids) {
 }
 function KindChip(p) {
   var k = kindOf(p.course);
-  if (k === 'required') return null;
-  return html`<span className=${'chip ' + (k === 'gened' ? 'kind-gened' : 'kind-elective')} title=${t('kind.' + k)}>${t('kindChip.' + k)}</span>`;
+  return html`<span className=${'chip course-kind-chip kind-' + k} title=${t('kind.' + k)}>${t('kindChip.' + k)}</span>`;
 }
 // Credits per kind: earned = official passing grade; inProgress = no official grade yet.
 function creditsByKind(state) {
