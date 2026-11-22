@@ -1,3 +1,9 @@
+## 2026-11-22 — ChatGPT: Private exam room database
+
+- Imported 310 room rules covering 110 courses and all 16 pages of the uploaded CBS final exam notice (2569, semester 1) directly into Supabase. Raw student-ID ranges remain private and are not committed to this public repository.
+- Added per-authenticated-user `gs_exam_profiles` with RLS and `gs_exam_rooms_for_me` for matching student ID, course code and section. The original email-only grade tracker is unchanged; verified auth is required before the web UI can use these APIs.
+- Verified import counts, ID/section match examples and role permissions. One malformed student-ID interval on page 3 (2601354) was omitted pending confirmation. No browser smoke test (no frontend changes).
+
 # Changelog
 
 Newest first. Each entry: date · who (which AI / person) · what changed · files.
