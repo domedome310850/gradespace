@@ -853,69 +853,57 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-s
 .ccard-foot { margin-top: auto; min-width: 0; padding-top: 8px; border-top: 1px solid var(--line); }
 .ccard-foot > .row { min-width: 0; }
 .ccard-foot > .btn { flex: none; }
-/* Nine shared tracks: title, metadata, bar, progress, warnings, forecast, goal, exam, footer.
-   The sortable wrapper must also be a subgrid so dragging retains the same card geometry. */
+/* Compact shared tracks: natural title + metadata, bar, progress + warnings,
+   forecast, goal, exam and footer. Only the row's longest header sets bar position. */
 .ccard-slot { min-width: 0; }
 .ccard-slot:empty { display: none; }
 .ccard-top > .grow { min-width: 0; overflow-wrap: anywhere; }
+.ccard-top .ccard-name { display: block; }
+.ccard-top .ccard-meta { margin-top: 2px; line-height: 1.45; }
+.ccard-meta .chip { padding: 1px 6px; font-size: 11px; }
+.ccard-progress-slot .ccard-warning-slot:not(:empty) { margin-top: 4px; }
 .ccard-foot { align-self: stretch; }
 @supports (grid-template-rows: subgrid) {
   @media (min-width: 641px) {
     .course-grid > .ccard,
-    .course-grid > .sort-item { grid-row: span 9; }
+    .course-grid > .sort-item { grid-row: span 7; }
     .course-grid > .sort-item { display: grid; grid-template-rows: subgrid; }
     .course-grid > .ccard,
     .course-grid > .sort-item > .ccard {
       display: grid;
       grid-template-rows: subgrid;
-      row-gap: 9px;
+      row-gap: 5px;
       align-content: stretch;
       min-width: 0;
       width: 100%;
+      padding: 13px 14px 12px;
     }
     .course-grid > .sort-item > .ccard { grid-row: 1 / -1; }
     .course-grid .ccard-top {
-      display: grid;
-      grid-row: span 2;
-      grid-template-rows: subgrid;
-      grid-template-columns: minmax(0,1fr) auto;
-      column-gap: 12px;
-      row-gap: 3px;
-      align-items: start;
-    }
-    .course-grid .ccard-top > .grow {
-      display: grid;
-      grid-column: 1;
-      grid-row: 1 / -1;
-      grid-template-rows: subgrid;
-      align-items: start;
-    }
-    .course-grid .ccard-top > .grade-badge {
-      grid-column: 2;
-      grid-row: 1 / -1;
+      display: flex;
       align-self: start;
+      gap: 8px;
+      align-items: flex-start;
     }
+    .course-grid .ccard-top > .grow { flex: 1; min-width: 0; }
     .course-grid .ccard-slot:empty { display: block; }
-    /* Fill the entire shared footer track, even when a course has no goal picker.
-       Bottom-aligning an intrinsically shorter footer offsets its top border. */
+    .course-grid .ccard-progress-slot .ccard-warning-slot:empty { display: none; }
     .course-grid .ccard-foot {
       margin-top: 0;
+      padding-top: 6px;
       align-self: stretch;
       align-items: center;
     }
     .course-grid .ccard-foot > .btn,
-    .course-grid .ccard-foot .goal-pick-button {
-      min-height: 34px;
-    }
+    .course-grid .ccard-foot .goal-pick-button { min-height: 34px; }
     .course-grid .ccard-slot { align-self: start; }
-    .course-grid .ccard-top { grid-row: 1 / 3; }
-    .course-grid .ccard-bar-slot { grid-row: 3; }
-    .course-grid .ccard-progress-slot { grid-row: 4; }
-    .course-grid .ccard-warning-slot { grid-row: 5; }
-    .course-grid .ccard-forecast-slot { grid-row: 6; }
-    .course-grid .ccard-goal-slot { grid-row: 7; }
-    .course-grid .ccard-exam-slot { grid-row: 8; }
-    .course-grid .ccard-foot { grid-row: 9; }
+    .course-grid .ccard-top { grid-row: 1; }
+    .course-grid .ccard-bar-slot { grid-row: 2; }
+    .course-grid .ccard-progress-slot { grid-row: 3; }
+    .course-grid .ccard-forecast-slot { grid-row: 4; }
+    .course-grid .ccard-goal-slot { grid-row: 5; }
+    .course-grid .ccard-exam-slot { grid-row: 6; }
+    .course-grid .ccard-foot { grid-row: 7; }
   }
 }
 @media (max-width: 640px) {
@@ -4801,14 +4789,14 @@ function CourseCard(p) {
           ${[c.code && String(c.code).split('.')[0], sec && 'Sec ' + sec, t('nCredits', { n: fmtT(c.credits) })].filter(Boolean).join(' · ')}
           ${p.showSem ? ' · ' + semFull(state, state.semesters.find(function (s) { return s.id === c.semesterId; }) || {}) : ''}
           ${' '}<${KindChip} course=${c} />
-          ${mode === 'norm' && !c.finalGrade && html`<span className="chip warn" title=${t('grading.estimate')}>${t('grading.norm')}</span>`}
+          ${mode === 'norm' && !c.finalGrade && !(info.needsGradingRule && info.gradingMethod==='norm') && html`<span className="chip warn" title=${t('grading.estimate')}>${t('grading.norm')}</span>`}
         </div>
       </div>
       <${GradeBadge} info=${info} />
     </div>
     <div className="ccard-slot ccard-bar-slot">${!c.finalGrade && html`<${GradeBar} sum=${sum} grades=${mode === 'criterion' ? grades : []} target=${tg} />`}</div>
-    <div className="ccard-slot ccard-progress-slot">${manual || c.finalGrade ? html`<p className="small muted" style=${{ margin: 0 }}>${c.finalGrade ? officialNote(c, state) : t('manualGradeNote')}</p>` : html`<div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>`}</div>
-    <div className="ccard-slot ccard-warning-slot">${!c.finalGrade && sum.issues.over && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.over",{n:fmtT(sum.totalWeight)})}</div>`}${!c.finalGrade && sum.issues.overMax>0 && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.overMax")}</div>`}</div>
+    <div className="ccard-slot ccard-progress-slot">${manual || c.finalGrade ? html`<p className="small muted" style=${{ margin: 0 }}>${c.finalGrade ? officialNote(c, state) : t('manualGradeNote')}</p>` : html`<div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>`}
+      <div className="ccard-slot ccard-warning-slot">${!c.finalGrade && sum.issues.over && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.over",{n:fmtT(sum.totalWeight)})}</div>`}${!c.finalGrade && sum.issues.overMax>0 && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.overMax")}</div>`}</div></div>
     <div className="ccard-slot ccard-forecast-slot">${!c.finalGrade && html`<${EstimateBasis} course=${c} sum=${sum} state=${state} collapsible=${true} />`}</div>
     <div className="ccard-slot ccard-goal-slot">${gl && html`<div className=${'ccard-line ' + gl.tone}><${Icon} n="target" s=${14} /><span>${gl.text}</span></div>`}</div>
     <div className="ccard-slot ccard-exam-slot">${nx && html`<div className="ccard-line"><${Icon} n="calendar" s=${14} /><span>${nextExamText(nx)}</span></div>`}</div>
