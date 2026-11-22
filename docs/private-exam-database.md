@@ -1,3 +1,9 @@
+# PAUSED — 2026-11-22
+
+At the owner's request, the individual exam-room and university sign-in experiments are paused. The UI has been reverted and all eight experimental RPCs have been denied to browser roles. Retain the following notes for history only; do not follow them or reactivate these features unless the owner requests it. Existing data remains intact. Google provider settings, if configured, are not changed by the SQL pause.
+
+---
+
 # Staged rollout
 
 After PR #5 merges, the normal production entry remains unchanged while the named Cloudflare preview or an explicitly opted-in tab (`?school_preview=1`) uses school sign-in. `?school_preview=0` exits that preview mode. For the preview host, configure the exact callback `/?exam_oauth=1`. A successful preview is required before enforcing university-only sign-in in production. The backend migration is already installed; legacy RPCs remain accessible exclusively for compatibility with the current UI, and are not secure until revoked. No production cutover or automatic publication of exam notices is authorized by this staged merge.
