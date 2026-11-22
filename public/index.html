@@ -1640,12 +1640,12 @@ var Store = (function () {
   }
 
   // Email-only adapter for the hosted website: data is stored under the email via gs_load / gs_save.
-  function makeEmailStore(client, email) {
+  function makeEmailStore(client, email, verified) {
     var busy = false, queued = null;
     function write(state) {
       if (busy) { queued = state; return Promise.resolve('queued'); }
       busy = true;
-      return Promise.resolve(client.rpc('gs_school_save', { p_data: state, p_updated: state.updatedAt }))
+      return Promise.resolve(verified ? client.rpc('gs_school_save', { p_data: state, p_updated: state.updatedAt }) : client.rpc('gs_save', { p_email: email, p_data: state, p_updated: state.updatedAt }))
         .then(function (r) { return r && r.error ? 'error' : 'ok'; }, function () { return 'unavailable'; })
         .then(function (r) {
           busy = false;
@@ -1654,7 +1654,7 @@ var Store = (function () {
         });
     }
     function load() {
-      return Promise.resolve(client.rpc('gs_school_load')).then(function (r) {
+      return Promise.resolve(verified ? client.rpc('gs_school_load') : client.rpc('gs_load', { p_email: email })).then(function (r) {
         if (r.error) throw r.error;
         var row = Array.isArray(r.data) ? r.data[0] : r.data;
         if (!row || !row.data) return null;
@@ -6005,7 +6005,7 @@ function ExamNoticePage(p){
     }catch(e){setMsg(t('notice.error'));setErr(true);}finally{setBusy(false);}
   };
   return html`<div className="stack"><div className="page-head"><div><h1>${t('nav.exams')}</h1><p>${t('notice.subtitle')}</p></div><a className="btn" href="https://www2.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryExamScheduleNew.QueryExamScheduleServlet" target="_blank" rel="noopener noreferrer">${t('notice.openReg')}</a></div>
-    <${ExamVerifyPanel} state=${state} />
+    ${S.web&&S.web.schoolMode&&html`<${ExamVerifyPanel} state=${state} />`}
     <section className="card pad stack">
       <div className="grid2">
         <${Field} label=${t('notice.id')} id="notice-id"><div className="row" style=${{gap:8}}><input id="notice-id" className="input" type=${visible?"text":"password"} inputMode="numeric" autoComplete="off" maxLength="10" value=${verifiedId||id} disabled=${busy||!!verifiedId} onChange=${function(e){setId(e.target.value.replace(/[^0-9]/g,"").slice(0,10));}}/><button className="btn sm" type="button" aria-pressed=${!visible} onClick=${function(){setVisible(!visible);}}>${t(visible?"notice.hideId":"notice.showId")}</button></div><//>
@@ -7688,6 +7688,7 @@ function stopSync() {
   S.cloud = null;
 }
 function startGuest() {
+  if(S.web&&S.web.schoolMode)return;
   stopSync();
   S.web.user = null;
   try { localStorage.setItem('gradespace.mode', 'guest'); localStorage.removeItem(EMAIL_KEY); } catch (e) { /* ignore */ }
@@ -7845,16 +7846,59 @@ function logRegistration(email) {
   catch (e) { /* ignore network error: sign-in must remain instant */ }
 }
 // Email-only access: no password, no code, no authentication message.
-function startUser(user,admission) {
-  if(!admission||!S.web||!S.web.verifiedUser||S.web.verifiedUser.id!==user.id)return;
+function startLegacyUser(user) {
+  if(!S.web||S.web.schoolMode)return;
   logRegistration(user.email);
   stopSync();
   var w = S.web; w.user = user;
   try { localStorage.removeItem('gradespace.mode'); localStorage.setItem(EMAIL_KEY, user.email); } catch (e) { /* ignore */ }
+  S.localKey = Store.KEY + ':' + user.email;
+  S.state = Store.Local.load(S.localKey) || freshState();
+  S.sync = 'saving'; S.authScreen = false; S.ready = true; emit();
+  var cloud = Store.makeEmailStore(w.client, user.email);
+  var attempt = function () {
+    if (w.user !== user) return;
+    cloud.load().then(function (remote) {
+      if (w.user !== user) return;
+      var cur = S.state, curHas = cur.courses.length || cur.years.length;
+      if (remote && (!curHas || remote.updatedAt >= cur.updatedAt)) {
+        S.state = remote; Store.Local.save(remote, S.localKey);
+      } else if (!remote && !curHas) {
+        var guest = Store.Local.load();
+        if (guest && (guest.courses.length || guest.years.length)) {
+          guest.settings.onboarded = true; S.state = guest; Store.Local.save(guest, S.localKey); toast(t('auth.migrated'));
+        }
+      }
+      S.cloud = cloud;
+      S.unwatch = cloud.watch(function (fresh) {
+        if (w.user === user && fresh.updatedAt > S.state.updatedAt) {
+          S.state = fresh; Store.Local.save(fresh, S.localKey); S.sync = 'account';
+          scheduleScoreSheetSync(); emit();
+        }
+      });
+      scheduleScoreSheetSync();
+      if (S.state === remote) { S.sync = 'account'; emit(); return; }
+      if (!S.state.updatedAt) S.state.updatedAt = Date.now();
+      emit();
+      cloud.save(S.state).then(function (r) { S.sync = r === 'ok' ? 'account' : 'error'; emit(); });
+    }, function () {
+      if (w.user !== user) return;
+      S.sync = 'error'; emit();
+      setTimeout(attempt, 20000);
+    });
+  };
+  attempt();
+}
+function startUser(user,admission) {
+  if(!S.web||!S.web.schoolMode)return;
+  if(!admission||!S.web||!S.web.verifiedUser||S.web.verifiedUser.id!==user.id)return;
+  logRegistration(user.email);
+  stopSync();
+  var w = S.web; w.user = user;
   S.localKey = Store.KEY + ':verified:' + user.id;
   S.state = Store.Local.load(S.localKey) || freshState();
   S.sync = 'saving'; S.authScreen = false; S.ready = true; ExamCentral.attach(admission); emit();
-  var cloud = Store.makeEmailStore(w.client, user.email);
+  var cloud = Store.makeEmailStore(w.client, user.email, true);
   var attempt = function () {
     if (w.user !== user) return;
     cloud.load().then(function (remote) {
@@ -7887,7 +7931,7 @@ function resetToAuth() {
   var key = S.localKey;
   stopSync();
   if (key) Store.Local.clear(key);
-  try { localStorage.removeItem(EMAIL_KEY); } catch (e) { /* ignore */ }
+  if(!S.web.schoolMode)try { localStorage.removeItem(EMAIL_KEY); } catch (e) { /* ignore */ }
   S.web.user = null; S.web.verifiedUser=null; S.localKey = undefined;
   S.state = freshState(); S.sync = 'device'; S.authScreen = true; S.modal = null;
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
@@ -7907,6 +7951,7 @@ function signOut() {
         'Your latest changes are not confirmed online. Please try signing out again.');
       return;
     }
+    if(!S.web.schoolMode){resetToAuth();toast(t('account.signedOut'));return;}
     S.web.client.auth.signOut({scope:'local'}).then(function(r){if(r.error){toast(t('school.signoutFailed'));return;}if(S.web.user)resetToAuth();toast(t('account.signedOut'));},function(){toast(t('school.signoutFailed'));});
   }, function () {
     toast(LANG === 'th' ? 'เชื่อมต่อไม่สำเร็จ เก็บข้อมูลล่าสุดไว้ในเครื่องนี้แล้ว' :
@@ -7914,7 +7959,50 @@ function signOut() {
   });
 }
 function goAuth() { S.authScreen = true; emit(); }
-function AuthScreen() {
+function AuthScreen(){return S.web&&S.web.schoolMode?html`<${SchoolAuthScreen}/>`:html`<${LegacyAuthScreen}/>`;}
+function LegacyAuthScreen() {
+  var es = useState(''), email = es[0], setEmail = es[1];
+  var ers = useState(null), err = ers[0], setErr = ers[1];
+  useEffect(function () { document.documentElement.lang = LANG; document.title = 'GradeSpace – ' + t('taglineShort'); });
+  var enter = function () {
+    var em = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { setErr(t('auth.err.email')); return; }
+    startLegacyUser({ id: em, email: em });
+  };
+  var setLang = function (v) { LANG = v; try { localStorage.setItem('gradespace.lang', v); } catch (e) { /* ignore */ } emit(); };
+  return html`<div className="auth-wrap">
+    <div className="auth-card card">
+      <div className="row between" style=${{ marginBottom: 18 }}>
+        <div className="brand" style=${{ padding: 0 }}><${Logo} /><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div>
+        <${Seg} label=${t('language')} value=${LANG} onChange=${setLang} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} />
+      </div>
+      <h1 className="auth-title">${t('welcomeT')}</h1>
+      <div className="stack" style=${{ marginTop: 8 }} onKeyDown=${function (e) { if (e.key === 'Enter' && e.target.tagName === 'INPUT') enter(); }}>
+        <p className="muted" style=${{ margin: 0 }}>${t('auth.intro')}</p>
+        <${Field} label=${t('auth.email')} id="au-e"><input id="au-e" className="input" type="email" autoComplete="email" inputMode="email" autoFocus=${true} value=${email} onChange=${function (e) { setEmail(e.target.value); setErr(null); }} /><//>
+        ${err && html`<${Banner} kind="bad">${err}<//>`}
+        <button className="btn primary" style=${{ padding: '11px 14px' }} onClick=${enter}>${t('auth.enter')}</button>
+        <p className="auth-privacy" style=${{ margin: '0' }}>${LANG === 'th'
+          ? 'เมื่อเข้าใช้ด้วยอีเมล ข้อมูลวิชาและคะแนนที่บันทึกจะถูกส่งให้ผู้ดูแล GradeSpace'
+          : 'When using an email, your course and assessment scores are shared with the GradeSpace administrator.'}</p>
+      </div>
+      <div className="auth-divider"></div>
+      <button className="btn ghost" style=${{ width: '100%' }} onClick=${startGuest}>${t('auth.guest')}</button>
+      <p className="hint" style=${{ textAlign: 'center', margin: '6px 0 0' }}>${t('auth.guestHint')}</p>
+    </div>
+  </div>`;
+}
+function AccountSection() {
+  var u = S.web.user;
+  return html`<section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('account')}</h2>
+    ${u ? html`<div className="row wrap between">
+        <div className="row"><span className="avatar lg">${initialOf(u)}</span><div className="small muted">${t('account.signedInAs', { e: u.email })}</div></div>
+        <button className="btn" onClick=${function () { confirmDialog({ title: t('account.signOutQ'), body: t('account.signOutBody'), confirmLabel: t('account.signOut'), onConfirm: signOut }); }}>${t('account.signOut')}</button>
+      </div>`
+      : html`<p className="small muted" style=${{ margin: 0 }}>${t('account.guestP')}</p><div><button className="btn primary" onClick=${goAuth}>${t('account.signInBtn')}</button></div>`}
+  </section>`;
+}
+function SchoolAuthScreen() {
   var a=useState(false),busy=a[0],setBusy=a[1],b=useState(''),err=b[0],setErr=b[1];
   useEffect(function(){document.documentElement.lang=LANG;document.title='GradeSpace – '+t('taglineShort');});
   var enter=async function(admin){
@@ -7951,9 +8039,40 @@ function AccountSection() {
       : html`<p className="small muted" style=${{ margin: 0 }}>${t('account.guestP')}</p><div><button className="btn primary" onClick=${goAuth}>${t('account.signInBtn')}</button></div>`}
   </section>`;
 }
-function webBoot() {
+// Staged rollout: production root keeps the existing entry until real school OAuth is verified.
+function schoolLoginMode(url,previous){
+  var u=new URL(url);
+  if(u.searchParams.get('school_preview')==='0')return false;
+  return u.hostname==='feat-private-exam-database-gradespace-th.dome-dome310850.workers.dev' ||
+    u.searchParams.get('school_preview')==='1' || u.searchParams.get('exam_oauth')==='1' || previous==='1';
+}
+function webBoot(){
+  var prior='';try{prior=sessionStorage.getItem('gs-school-preview')||'';}catch(e){}
+  var school=schoolLoginMode(location.href,prior);
+  try{if(school)sessionStorage.setItem('gs-school-preview','1');else sessionStorage.removeItem('gs-school-preview');}catch(e){}
+  if(school)schoolWebBoot();else legacyWebBoot();
+}
+function legacyWebBoot() {
+  var cfg = window.GS_WEB;
+  S.web = { client: window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: false, autoRefreshToken: false } }), user: null, schoolMode:false };
+  var saved = null, guestPref = false;
+  try {
+    if (localStorage.getItem('gradespace.th-default-v1') !== '1') { localStorage.setItem('gradespace.th-default-v1', '1'); localStorage.setItem('gradespace.lang', 'th'); }
+    var l = localStorage.getItem('gradespace.lang');
+    if (l === 'th' || l === 'en') LANG = l; else LANG = 'th';
+    saved = localStorage.getItem(EMAIL_KEY);
+    guestPref = localStorage.getItem('gradespace.mode') === 'guest';
+  } catch (e) { /* ignore */ }
+  S.state = freshState();
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Root));
+  if (saved) startLegacyUser({ id: saved, email: saved });
+  else if (guestPref) startGuest();
+  else { S.authScreen = true; S.ready = true; emit(); }
+}
+
+function schoolWebBoot() {
   var cfg=window.GS_WEB;
-  S.web={client:window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:true,storage:sessionStorage,storageKey:'gradespace-school-auth',flowType:'pkce',autoRefreshToken:true,detectSessionInUrl:false}}),user:null,verifiedUser:null,loginError:''};
+  S.web={client:window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:true,storage:sessionStorage,storageKey:'gradespace-school-auth',flowType:'pkce',autoRefreshToken:true,detectSessionInUrl:false}}),user:null,verifiedUser:null,loginError:'',schoolMode:true};
   try{
     if(localStorage.getItem('gradespace.th-default-v1')!=='1'){localStorage.setItem('gradespace.th-default-v1','1');localStorage.setItem('gradespace.lang','th');}
     var l=localStorage.getItem('gradespace.lang');LANG=l==='en'?'en':'th';
