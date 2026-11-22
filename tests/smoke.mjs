@@ -23,7 +23,7 @@ const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{},functions:{},
     if(args.p_action==='get')return {data:{studentId:window.__studentId||null},error:null};
     if(args.p_action==='save'){window.__studentId=args.p_student_id;return {data:{saved:true},error:null};}
     if(args.p_action==='remove'){window.__studentId=null;return {data:{saved:false},error:null};}
-    if(args.p_action==='lookup'){window.__examRequest=args;return {data:[{code:args.p_courses[0].code,sec:args.p_courses[0].sec,date:'2026-11-23',time:'08:30-10:30',room:'TEST-ROOM',page:1}],error:null};}
+    if(args.p_action==='lookup'){window.__examRequest=args;const c=args.p_courses.find(c=>c.code==='2900111'&&c.sec==='4');const second=window.__studentId==='6940102526';return {data:c?[{code:c.code,sec:c.sec,date:second?'2026-11-24':'2026-11-23',time:second?'13:00-16:00':'08:30-10:30',room:second?'TEST-ROOM-B':'TEST-ROOM-A',page:1}]:[],error:null};}
   }
   if(fn==='gs_reg_offerings'||fn==='gs_gened_list')return {data:[],error:null};
   return {data:0,error:null};}})};
@@ -44,31 +44,37 @@ async function run(browser, lang, width) {
   });
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('Failed to load resource')) errors.push('console: ' + m.text()); });
+  await page.clock.setFixedTime(new Date('2026-11-22T07:00:00Z'));
   await page.goto(PAGE);
   await page.locator('#au-e').fill('test@example.com');
   await page.locator('#au-student').fill('6940102426');
   await page.locator('#au-student').press('Enter');
-  await page.locator('#exam-student-id').waitFor();
-  await page.waitForFunction(()=>document.querySelector('#exam-student-id')?.value==='6940102426');
+  await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-A',{exact:false}).waitFor();
   if(await page.evaluate(()=>window.__studentId!=='6940102426')) errors.push('login did not save student ID');
-  const atTop=await page.locator('#exam-student-id').evaluate(el=>el.getBoundingClientRect().top<window.innerHeight);
-  if(!atTop)errors.push('exam student ID below first viewport');
-  await page.waitForTimeout(1500);
-  if (lang === 'en') { await page.locator('button', { hasText: 'EN' }).first().click(); await page.waitForTimeout(300); }
-  // Save and lookup without email verification, using the browser-scoped device key.
-  await page.evaluate(() => {
-    const s=GradeSpace.S.state, sem=s.semesters.find(x=>x.id===s.settings.currentSemesterId)||s.semesters[s.semesters.length-1];
-    if(!sem)throw Error('fixture needs semester');
-    const year=s.years.find(x=>x.id===sem.yearId);
-    GradeSpace.update(d=>{d.years.find(x=>x.id===year.id).academic='2569'; d.semesters.find(x=>x.id===sem.id).kind='s1';d.settings.currentSemesterId=sem.id;const c=d.courses.find(x=>x.semesterId===sem.id);if(c){c.code='5500111';c.section='72';}});
-  });
-  await page.locator('#exam-student-id').waitFor();
-  await page.locator('#exam-student-id').fill('6940102526');
-  await page.getByRole('button',{name:lang==='th'?'บันทึกเลขนิสิต':'Save student ID',exact:true}).click();
-  if(await page.locator('#exam-student-id').inputValue()!=='6940102526') errors.push('exam profile not saved');
-  await page.getByText('TEST-ROOM',{exact:true}).waitFor();
+  if(await page.locator('.side .nav-item').first().getAttribute('href')!=='#dashboard') errors.push('overview is not first menu');
+  if(await page.locator('.side .nav-item[aria-current="page"]').getAttribute('href')!=='#dashboard') errors.push('overview is not default');
+  if(await page.locator('#exam-student-id').count()) errors.push('student ID form leaked into dashboard');
+  if(lang==='en'){await page.locator('button',{hasText:'EN'}).first().click();await page.waitForTimeout(300);}
   const lookup=await page.evaluate(()=>window.__examRequest);
-  if(lookup.p_year!=='2569'||lookup.p_term!=='s1'||lookup.p_round!=='fin'||!lookup.p_courses.some(c=>c.code==='5500111'&&c.sec==='72')) errors.push('incorrect exam lookup payload');
+  if(lookup.p_year!=='2569'||lookup.p_term!=='s1'||lookup.p_round!=='fin'||!lookup.p_courses.some(c=>c.code==='2900111'&&c.sec==='4')) errors.push('incorrect exam lookup payload');
+  const upcoming=page.locator('.dashboard-upcoming-row').filter({hasText:'TEST-ROOM-A'});
+  if(!(await upcoming.innerText()).includes('08:30-10:30')||await upcoming.locator('.date-pill b').innerText()!=='23') errors.push('personal upcoming date/time not used');
+  await page.locator('.dashboard-cal-cell.has-exam').filter({has:page.locator('.cal-num',{hasText:/^23$/})}).click();
+  await page.locator('.dashboard-cal-event').getByText('TEST-ROOM-A',{exact:false}).waitFor();
+  // Update the saved ID via the email-entry screen only, and verify both calendar and upcoming change.
+  await page.evaluate(()=>location.hash='preferences');
+  await page.getByRole('button',{name:lang==='th'?'แก้ไขเลขนิสิต':'Edit student ID',exact:true}).click();
+  await page.locator('#au-student').fill('6940102526');
+  await page.locator('#au-student').press('Enter');
+  await page.locator('#au-student').waitFor({state:'detached'});
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-B',{exact:false}).waitFor();
+  const changed=page.locator('.dashboard-upcoming-row').filter({hasText:'TEST-ROOM-B'});
+  if(!(await changed.innerText()).includes('13:00-16:00')||await changed.locator('.date-pill b').innerText()!=='24') errors.push('changed ID date/time not used');
+  await page.locator('.dashboard-cal-cell.has-exam').filter({has:page.locator('.cal-num',{hasText:/^24$/})}).click();
+  await page.locator('.dashboard-cal-event').getByText('TEST-ROOM-B',{exact:false}).waitFor();
+  if(await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-A',{exact:false}).count()) errors.push('stale personal room');
+  if(await page.locator('#exam-student-id').count()) errors.push('old exam profile form still visible');
   // Deliberately vary titles and confirm every shared track lines up in each desktop row.
   await page.evaluate(()=>{
     GradeSpace.update(d=>{
@@ -81,7 +87,7 @@ async function run(browser, lang, width) {
       await page.evaluate(h=>{location.hash=h;},hash);
       await page.waitForTimeout(350);
       const layout=await page.evaluate(()=>{
-        const selectors=['.ccard-name','.ccard-meta','.ccard-bar-slot','.ccard-progress-slot','.ccard-warning-slot','.ccard-forecast-slot','.ccard-goal-slot','.ccard-exam-slot','.ccard-foot'];
+        const selectors=['.ccard-name','.ccard-meta','.ccard-bar-slot','.ccard-progress-slot','.ccard-warning-slot','.ccard-forecast-slot','.ccard-goal-slot','.ccard-exam-slot','.ccard-foot','.gbar-track','.ccard-forecast-slot .basis-box','.ccard-goal-slot .ccard-line','.ccard-exam-slot .ccard-line','.ccard-foot > .btn','.goal-pick-button'];
         let compared=0;const failures=[];
         document.querySelectorAll('.course-grid').forEach(grid=>{
           const cards=[...grid.querySelectorAll('.ccard')],groups=[];
@@ -123,7 +129,7 @@ async function run(browser, lang, width) {
 
 const browser = await chromium.launch();
 let bad = 0;
-for (const lang of ['th', 'en']) for (const w of [390, 1280]) bad += await run(browser, lang, w);
+for (const lang of ['th', 'en']) for (const w of [390, 1280, 1800]) bad += await run(browser, lang, w);
 await browser.close();
 if (bad) { console.error('FAILED'); process.exit(1); }
 console.log('OK');
