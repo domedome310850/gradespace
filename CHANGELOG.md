@@ -1,3 +1,8 @@
+## 2026-11-22 — ChatGPT: Personal exam schedule in the existing overview
+
+- `public/index.html`: remove the oversized separate exam-room form. Student ID is only entered on the email-entry screen; missing-ID and account edit actions open that same screen without losing saved grades. Overview is the default route and first navigation item. Fetch device-scoped personal rooms into transient React context, keyed by entered account and courses/sections; keep grade state and score export unchanged. Personal final exam date/time/room supersede general schedule for display, course cards/details, and calendar export. Unmatched or ambiguous rooms are labeled; calendar shows all recorded exam dates independent of the six-item upcoming list. Place upcoming/calendar above course cards. Explicit shared track positions for course cards.
+- `tests/smoke.mjs`: test two student IDs yield distinct dates/rooms in overview and selected calendar dates; confirm default route and navigation, absence of oversized form, and geometry of inner card elements at 1280px and 1800px. Inline JavaScript parsed; CI pending.
+
 ## 2026-11-22 — ChatGPT: Align course card content row by row
 
 - `public/index.html`: remove the higher-specificity flex override that disabled subgrid. Share nine intrinsic row tracks across direct and drag-sort course cards: name, metadata, score bar, progress, warnings, forecast, goal, exam, and footer. Long titles and expanded forecasts remain readable, and mobile cards retain natural height.
