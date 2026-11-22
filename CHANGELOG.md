@@ -3,6 +3,9 @@
 Newest first. Each entry: date · who (which AI / person) · what changed · files.
 Add yours at the top before you finish.
 
+## 2026-11-22 · Codex · First Cloudflare Auto Deploy test
+- Added this `CHANGELOG.md` entry to test Cloudflare Auto Deploy for `gradespace-th` when the pull request is merged into `main`.
+
 ## 2026-11-22 · Claude (claude.ai) · Repository set up for multi-AI work
 - Moved the project into this repository: `public/index.html`, edge functions, `supabase/schema.sql`
   (exported from the live database), smoke test, `AGENTS.md` handoff rules.
