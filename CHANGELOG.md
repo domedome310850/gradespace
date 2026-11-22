@@ -1,3 +1,8 @@
+## 2026-11-22 — ChatGPT: Make exam rooms immediately visible
+
+- `public/index.html`: optional student ID at the email entry screen, saved via the existing device-scoped RPC before entering. No email verification. Existing users see the exam-room panel above the content on the default My Courses page and Dashboard; Settings retains access. No changes to grade storage or database schema.
+- `tests/smoke.mjs`: exercise email + ID entry and confirm the ID field is visible in the first viewport; retain existing lookup and layout coverage. Inline JavaScript syntax checked; browser CI pending.
+
 ## 2026-11-22 — ChatGPT: Remove exam-room email verification
 
 - Owner requested no email verification. Dashboard and Settings now accept a student ID immediately after the existing email-only login. Supabase stores the ID under that email and a random browser-specific secret; email alone cannot retrieve another browser's student ID. New browsers require entering the ID again. The grade store is unchanged.
