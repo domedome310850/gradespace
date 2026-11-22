@@ -3,6 +3,10 @@
 Newest first. Each entry: date · who (which AI / person) · what changed · files.
 Add yours at the top before you finish.
 
+## 2026-11-22 · ChatGPT · Private exam migration applied
+- Applied private exam migration to GradeSpace Supabase; verified RLS on all three private tables, no direct anon/authenticated SELECT, and no anonymous EXECUTE on five new RPCs. Authenticated RPCs have explicit identity/role checks; full end-to-end tests pending.
+- Updated schema reference. Admin Auth user does not yet exist; OTP setup/verification, singleton bootstrap, notice import and role-based integration tests remain pending. No changes to legacy grade RPCs or saved grades. Existing anonymous grade RPCs remain a separate security issue.
+
 ## 2026-11-22 · ChatGPT · Private central exam database (deployment pending)
 - Added `supabase/migrations/20261122_private_exam_notices.sql`: private schema, exactly one administrator slot tied to a confirmed Supabase Auth user ID and verified email, unique admin-approved student identity bindings, versioned notice publishing, and own-ID-only lookup RPCs. Anonymous callers and authenticated users cannot read the private tables. All admin RPCs independently check administrator identity.
 - `public/index.html`: OTP verification isolated from legacy grades login; conditional admin page, PDF extraction and row/range review, publication history, identity approval/revocation, central results shared via the exam lookup helper. Verified session and central lookup results stay in memory; no other student's ID rules are returned to students.
