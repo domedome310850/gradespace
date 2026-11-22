@@ -1,3 +1,7 @@
+# Staged rollout
+
+After PR #5 merges, the normal production entry remains unchanged while the named Cloudflare preview or an explicitly opted-in tab (`?school_preview=1`) uses school sign-in. `?school_preview=0` exits that preview mode. For the preview host, configure the exact callback `/?exam_oauth=1`. A successful preview is required before enforcing university-only sign-in in production. The backend migration is already installed; legacy RPCs remain accessible exclusively for compatibility with the current UI, and are not secure until revoked. No production cutover or automatic publication of exam notices is authorized by this staged merge.
+
 # Updated deployment note: verified Chula login
 
 The latest school sign-in migration supersedes the separate OTP setup below. It is applied to Supabase. Configure Google OAuth for the preview and eventual production domain, with the Supabase callback and exact `/?exam_oauth=1` redirect allowlist. Test with a real Chula Google Workspace account and the designated owner Gmail: the server checks provider-verified email and hosted domain, automatically extracts the student ID, and assigns the private singleton admin only to the preconfigured owner. If Chula blocks third-party OAuth or the trusted domain claim is absent, stop; do not relax the domain check. Admin role is not activated until real sign-in. Existing grade accounts remain intact; account transfer requires separate verified ownership, not a typed email.
