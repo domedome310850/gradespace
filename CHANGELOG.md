@@ -1,3 +1,8 @@
+## 2026-11-22 — ChatGPT: Compact overview summary
+
+- `public/index.html`: combine semester GPA, cumulative GPA and next-term plan into one responsive desktop row with smaller metric typography and padding. Keep GPA coverage and estimation status, study-plan editing, major selection, GenEd and full-plan access. On mobile the GPA tiles remain side by side with the plan below. Full Years-page plan remains unchanged. No data or computation changes.
+- `tests/smoke.mjs`: assert three tiles share a compact desktop row and the plan wraps below the GPA tiles on mobile. Inline JavaScript syntax checked; browser CI pending.
+
 ## 2026-11-22 — ChatGPT: Personal exam schedule in the existing overview
 
 - `public/index.html`: remove the oversized separate exam-room form. Student ID is only entered on the email-entry screen; missing-ID and account edit actions open that same screen without losing saved grades. Overview is the default route and first navigation item. Fetch device-scoped personal rooms into transient React context, keyed by entered account and courses/sections; keep grade state and score export unchanged. Personal final exam date/time/room supersede general schedule for display, course cards/details, and calendar export. Unmatched or ambiguous rooms are labeled; calendar shows all recorded exam dates independent of the six-item upcoming list. Place upcoming/calendar above course cards. Explicit shared track positions for course cards.
