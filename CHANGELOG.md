@@ -3,6 +3,11 @@
 Newest first. Each entry: date · who (which AI / person) · what changed · files.
 Add yours at the top before you finish.
 
+## 2026-11-22 · ChatGPT · Google sign-in alternative for private exam verification
+- `public/index.html`: add Google OAuth with PKCE, explicit callback exchange, verified Google email match to the current GradeSpace account, and memory-only access/refresh tokens. Only temporary PKCE verifier and expected account persist in sessionStorage during redirect. Email OTP remains optional.
+- Gmail SMTP repeatedly returned 535 and 504; Google provider setup is pending in Google Cloud and Supabase. Add the exact app origin and the callback redirect URL (`/?exam_oauth=1`) to their respective allowlists. Supabase callback: `https://jecdbhfnuudmngpqmrrq.supabase.co/auth/v1/callback`. Never commit OAuth secrets.
+- Three inline JS scripts syntax parsed. Real OAuth, browser and admin authorization tests pending. No existing grade login, data, or database policy changes. PR #5 stays draft.
+
 ## 2026-11-22 · ChatGPT · Private exam migration applied
 - Applied private exam migration to GradeSpace Supabase; verified RLS on all three private tables, no direct anon/authenticated SELECT, and no anonymous EXECUTE on five new RPCs. Authenticated RPCs have explicit identity/role checks; full end-to-end tests pending.
 - Updated schema reference. Admin Auth user does not yet exist; OTP setup/verification, singleton bootstrap, notice import and role-based integration tests remain pending. No changes to legacy grade RPCs or saved grades. Existing anonymous grade RPCs remain a separate security issue.
