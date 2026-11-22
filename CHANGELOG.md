@@ -1,3 +1,8 @@
+## 2026-11-22 — ChatGPT: Align course card content row by row
+
+- `public/index.html`: remove the higher-specificity flex override that disabled subgrid. Share nine intrinsic row tracks across direct and drag-sort course cards: name, metadata, score bar, progress, warnings, forecast, goal, exam, and footer. Long titles and expanded forecasts remain readable, and mobile cards retain natural height.
+- `tests/smoke.mjs`: vary course name lengths and check vertical alignment of each slot and card bottoms on My Courses and Dashboard. Initial CI passed mobile and all desktop tracks except the footer. Follow-up: stretch `.ccard-foot` across the shared row track and give its action buttons the same minimum height; keep the original geometry assertions unchanged. Inline JavaScript syntax checked; rerun browser CI.
+
 ## 2026-11-22 — ChatGPT: Make exam rooms immediately visible
 
 - `public/index.html`: optional student ID at the email entry screen, saved via the existing device-scoped RPC before entering. No email verification. Existing users see the exam-room panel above the content on the default My Courses page and Dashboard; Settings retains access. No changes to grade storage or database schema.

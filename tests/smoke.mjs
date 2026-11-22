@@ -69,6 +69,45 @@ async function run(browser, lang, width) {
   await page.getByText('TEST-ROOM',{exact:true}).waitFor();
   const lookup=await page.evaluate(()=>window.__examRequest);
   if(lookup.p_year!=='2569'||lookup.p_term!=='s1'||lookup.p_round!=='fin'||!lookup.p_courses.some(c=>c.code==='5500111'&&c.sec==='72')) errors.push('incorrect exam lookup payload');
+  // Deliberately vary titles and confirm every shared track lines up in each desktop row.
+  await page.evaluate(()=>{
+    GradeSpace.update(d=>{
+      const sem=d.settings.currentSemesterId, cs=d.courses.filter(c=>c.semesterId===sem);
+      if(cs.length>1){cs[0].name='Short';cs[1].name='Introduction to Extended International Business Statistics and Applied Financial Management';}
+    });
+  });
+  if(width>=641){
+    for(const hash of ['courses','dashboard']){
+      await page.evaluate(h=>{location.hash=h;},hash);
+      await page.waitForTimeout(350);
+      const layout=await page.evaluate(()=>{
+        const selectors=['.ccard-name','.ccard-meta','.ccard-bar-slot','.ccard-progress-slot','.ccard-warning-slot','.ccard-forecast-slot','.ccard-goal-slot','.ccard-exam-slot','.ccard-foot'];
+        let compared=0;const failures=[];
+        document.querySelectorAll('.course-grid').forEach(grid=>{
+          const cards=[...grid.querySelectorAll('.ccard')],groups=[];
+          for(const c of cards){
+            const top=c.getBoundingClientRect().top;
+            let group=groups.find(g=>Math.abs(g.top-top)<2);
+            if(!group){group={top,cards:[]};groups.push(group);}
+            group.cards.push(c);
+          }
+          for(const group of groups){
+            if(group.cards.length<2)continue;
+            compared++;
+            const bottoms=group.cards.map(c=>c.getBoundingClientRect().bottom);
+            if(Math.max(...bottoms)-Math.min(...bottoms)>2)failures.push('card bottom');
+            for(const sel of selectors){
+              const positions=group.cards.map(c=>c.querySelector(sel)).filter(el=>el&&getComputedStyle(el).display!=='none').map(el=>el.getBoundingClientRect().top);
+              if(positions.length>1&&Math.max(...positions)-Math.min(...positions)>2)failures.push(sel);
+            }
+          }
+        });
+        return {compared,failures};
+      });
+      if(!layout.compared)errors.push(hash+' no multi-card rows tested');
+      if(layout.failures.length)errors.push(hash+' unaligned '+layout.failures.join(', '));
+    }
+  }
   const ids = await page.evaluate(() => GradeSpace.S.state.courses.map((c) => c.id));
   const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', ...ids.map((i) => 'course-' + i)];
   for (const h of hashes) {
