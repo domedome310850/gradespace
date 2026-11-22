@@ -3178,8 +3178,8 @@ var C = Calc, fmt = C.fmt, fmtT = C.fmtT, toNum = C.toNum, isNum = C.isNum;
 
 /* ================= i18n ================= */
 
-Object.assign(I18N.en, {"examroom.title":"My exam rooms","examroom.intro":"CBS final exam notice · 23 Nov–2 Dec 2026 · Semester 1/2569","examroom.guest":"Enter your GradeSpace email first to link your student ID.","examroom.verify":"Verify email for exam rooms","examroom.verifyHint":"Confirm ownership of your current email once to save your student ID privately. This does not change your normal GradeSpace login.","examroom.sent":"Check your inbox for a verification link or code. Return to GradeSpace with the same email.","examroom.otp":"Verification code (if provided)","examroom.confirm":"Confirm code","examroom.student":"Student ID (10 digits)","examroom.save":"Save student ID","examroom.remove":"Remove student ID","examroom.saved":"Student ID saved for this verified email.","examroom.badId":"Enter exactly 10 digits.","examroom.error":"Exam room service unavailable. Please try again.","examroom.noTerm":"Select semester 1 of academic year 2569 to see this notice.","examroom.noYear":"Set the academic year to 2569 only if that is your actual academic year.","examroom.noCourses":"Add your registered courses and sections first.","examroom.none":"No matching exam rooms in this notice. Check your course codes, sections and student ID; not all courses are covered.","examroom.warning":"Matches are based on the student ID and sections you entered, not a verified enrollment record. Confirm with the official notice. One malformed ID interval was omitted.","examroom.secMissing":"Some courses have no section selected; room matches may be missing.","examroom.loading":"Loading exam rooms…","examroom.room":"Room","examroom.sec":"Sec","examroom.source":"Notice page {p}","examroom.ambiguous":"Multiple rooms match this course. Check the notice before going to the exam.","examroom.private":"The ID is saved in your verified account, not in your grade record or shared score sheet.","examroom.cancel":"Sign out of exam verification"});
-Object.assign(I18N.th, {"examroom.title":"ห้องสอบของฉัน","examroom.intro":"ประกาศสอบปลายภาค คณะพาณิชยศาสตร์และการบัญชี · 23 พ.ย.–2 ธ.ค. 2569 · เทอม 1/2569","examroom.guest":"กรอกอีเมล GradeSpace ก่อนเพื่อผูกเลขนิสิต","examroom.verify":"ยืนยันอีเมลสำหรับห้องสอบ","examroom.verifyHint":"ยืนยันว่าเป็นเจ้าของอีเมลปัจจุบันเพื่อบันทึกเลขนิสิตอย่างเป็นส่วนตัว ไม่เปลี่ยนวิธีเข้า GradeSpace ปกติ","examroom.sent":"ตรวจสอบอีเมลเพื่อเปิดลิงก์หรือกรอกรหัสยืนยัน แล้วกลับเข้า GradeSpace ด้วยอีเมลเดิม","examroom.otp":"รหัสยืนยัน (หากได้รับ)","examroom.confirm":"ยืนยันรหัส","examroom.student":"เลขนิสิต 10 หลัก","examroom.save":"บันทึกเลขนิสิต","examroom.remove":"ลบเลขนิสิต","examroom.saved":"บันทึกเลขนิสิตกับอีเมลที่ยืนยันแล้ว","examroom.badId":"กรอกเลขนิสิต 10 หลัก","examroom.error":"เชื่อมต่อระบบห้องสอบไม่สำเร็จ กรุณาลองอีกครั้ง","examroom.noTerm":"เลือกเทอม 1 ปีการศึกษา 2569 เพื่อดูข้อมูลจากประกาศนี้","examroom.noYear":"ระบุปีการศึกษาเป็น 2569 เฉพาะเมื่อเป็นปีการศึกษาจริงของคุณ","examroom.noCourses":"เพิ่มรายวิชาที่ลงทะเบียนและ Section ก่อน","examroom.none":"ไม่พบห้องสอบที่ตรงกับประกาศนี้ โปรดตรวจรหัสวิชา Section และเลขนิสิต ประกาศนี้ไม่ได้ครอบคลุมทุกวิชา","examroom.warning":"ผลจับคู่จากเลขนิสิตและ Section ที่กรอกเอง ไม่ใช่ข้อมูลการลงทะเบียนที่ยืนยันแล้ว โปรดตรวจประกาศทางการอีกครั้ง มีหนึ่งช่วงเลขนิสิตผิดรูปแบบที่ยังไม่ได้นำมาใช้","examroom.secMissing":"บางวิชายังไม่ได้ระบุ Section จึงอาจไม่พบห้องสอบ","examroom.loading":"กำลังโหลดห้องสอบ…","examroom.room":"ห้องสอบ","examroom.sec":"Sec","examroom.source":"ประกาศหน้า {p}","examroom.ambiguous":"พบหลายห้องสอบที่ตรงกับวิชานี้ โปรดตรวจประกาศก่อนเข้าสอบ","examroom.private":"เลขนิสิตจะบันทึกไว้กับบัญชีที่ยืนยันแล้ว ไม่เก็บในข้อมูลเกรดหรือชีตคะแนน","examroom.cancel":"ออกจากการยืนยันอีเมลห้องสอบ"});
+Object.assign(I18N.en, {"examroom.title":"My exam rooms","examroom.intro":"CBS final exam notice · 23 Nov–2 Dec 2026 · Semester 1/2569","examroom.guest":"Enter your GradeSpace email first to save your student ID.","examroom.student":"Student ID (10 digits)","examroom.save":"Save student ID","examroom.remove":"Remove student ID","examroom.saved":"Student ID saved.","examroom.badId":"Enter exactly 10 digits.","examroom.error":"Exam room service unavailable. Please try again.","examroom.noTerm":"Select semester 1 of academic year 2569 to see this notice.","examroom.noYear":"Set the academic year to 2569 only if that is your actual academic year.","examroom.noCourses":"Add your registered courses and sections first.","examroom.none":"No matching exam rooms in this notice. Check your course codes, sections and student ID; not all courses are covered.","examroom.warning":"Matches are based on the student ID and sections you entered, not a verified enrollment record. Confirm with the official notice. One malformed ID interval was omitted.","examroom.secMissing":"Some courses have no section selected; room matches may be missing.","examroom.loading":"Loading exam rooms…","examroom.room":"Room","examroom.sec":"Sec","examroom.source":"Notice page {p}","examroom.ambiguous":"Multiple rooms match this course. Check the notice before going to the exam.","examroom.private":"Enter and save your student ID. No email verification is required. This browser remembers the ID for this email; enter it again on another device."});
+Object.assign(I18N.th, {"examroom.title":"ห้องสอบของฉัน","examroom.intro":"ประกาศสอบปลายภาค คณะพาณิชยศาสตร์และการบัญชี · 23 พ.ย.–2 ธ.ค. 2569 · เทอม 1/2569","examroom.guest":"กรอกอีเมล GradeSpace ก่อนเพื่อบันทึกเลขนิสิต","examroom.student":"เลขนิสิต 10 หลัก","examroom.save":"บันทึกเลขนิสิต","examroom.remove":"ลบเลขนิสิต","examroom.saved":"บันทึกเลขนิสิตเรียบร้อยแล้ว","examroom.badId":"กรอกเลขนิสิต 10 หลัก","examroom.error":"เชื่อมต่อระบบห้องสอบไม่สำเร็จ กรุณาลองอีกครั้ง","examroom.noTerm":"เลือกเทอม 1 ปีการศึกษา 2569 เพื่อดูข้อมูลจากประกาศนี้","examroom.noYear":"ระบุปีการศึกษาเป็น 2569 เฉพาะเมื่อเป็นปีการศึกษาจริงของคุณ","examroom.noCourses":"เพิ่มรายวิชาที่ลงทะเบียนและ Section ก่อน","examroom.none":"ไม่พบห้องสอบที่ตรงกับประกาศนี้ โปรดตรวจรหัสวิชา Section และเลขนิสิต ประกาศนี้ไม่ได้ครอบคลุมทุกวิชา","examroom.warning":"ผลจับคู่จากเลขนิสิตและ Section ที่กรอกเอง ไม่ใช่ข้อมูลการลงทะเบียนที่ยืนยันแล้ว โปรดตรวจประกาศทางการอีกครั้ง มีหนึ่งช่วงเลขนิสิตผิดรูปแบบที่ยังไม่ได้นำมาใช้","examroom.secMissing":"บางวิชายังไม่ได้ระบุ Section จึงอาจไม่พบห้องสอบ","examroom.loading":"กำลังโหลดห้องสอบ…","examroom.room":"ห้องสอบ","examroom.sec":"Sec","examroom.source":"ประกาศหน้า {p}","examroom.ambiguous":"พบหลายห้องสอบที่ตรงกับวิชานี้ โปรดตรวจประกาศก่อนเข้าสอบ","examroom.private":"กรอกเลขนิสิตและบันทึกได้เลย ไม่ต้องยืนยันอีเมล ระบบจะจำเลขนิสิตของอีเมลนี้บนเบราว์เซอร์นี้ หากเปลี่ยนเครื่องให้กรอกใหม่"});
 var LANG = 'th';
 function t(k, v) {
   var s = I18N[LANG] && I18N[LANG][k];
@@ -5080,109 +5080,91 @@ function EmptyStart() {
   </section>`;
 }
 
-/* Exam room lookup is separate from the legacy email-only grade store. */
+/* Email is only a label; a secret per-browser capability protects each saved student ID. */
+function examDeviceKey(email) {
+  var name='gradespace.exam-device:'+email;
+  var key=localStorage.getItem(name);
+  if(!/^[0-9a-f]{64}$/.test(key||'')){
+    var bytes=new Uint8Array(32);
+    window.crypto.getRandomValues(bytes);
+    key=Array.from(bytes,function(b){return b.toString(16).padStart(2,'0');}).join('');
+    localStorage.setItem(name,key);
+    if(localStorage.getItem(name)!==key) throw new Error('browser storage unavailable');
+  }
+  return key;
+}
 function ExamRoomsPanel(p) {
-  var email = String(p.email || '').trim().toLowerCase();
-  var client = S.web && S.web.examClient;
-  var ss = useState(null), session = ss[0], setSession = ss[1];
-  var readyS = useState(false), ready = readyS[0], setReady = readyS[1];
-  var studentS = useState(''), student = studentS[0], setStudent = studentS[1];
-  var savedS = useState(null), saved = savedS[0], setSaved = savedS[1];
-  var profileS = useState(false), profileReady = profileS[0], setProfileReady = profileS[1];
-  var busyS = useState(false), busy = busyS[0], setBusy = busyS[1];
-  var msgS = useState(''), msg = msgS[0], setMsg = msgS[1];
-  var errS = useState(''), err = errS[0], setErr = errS[1];
-  var otpS = useState(''), otp = otpS[0], setOtp = otpS[1];
-  var resultS = useState(null), result = resultS[0], setResult = resultS[1];
-  var user = session && session.user;
-  var uid = user && String(user.email || '').toLowerCase() === email && user.email_confirmed_at ? user.id : null;
-  var active = useRef(true);
-  useEffect(function () {
-    active.current = true;
-    if (!client || !client.auth || typeof client.auth.getSession !== 'function') { setReady(true); return function(){active.current=false;}; }
-    var alive = true, subscription, changed = false;
-    if (typeof client.auth.onAuthStateChange === 'function') {
-      var listener = client.auth.onAuthStateChange(function (event, s) {
-        if (alive) { changed = true; setSession(s || null); setReady(true); }
-      });
-      subscription = listener && listener.data && listener.data.subscription;
-    }
-    Promise.resolve(client.auth.getSession()).then(function(r){
-      if (alive) { if (!changed) setSession(r && r.data && r.data.session || null); setReady(true); }
-    },function(){ if(alive) setReady(true); });
-    return function(){ alive=false; active.current=false; if(subscription) subscription.unsubscribe(); };
-  }, [client, email]);
-  useEffect(function () {
-    var alive = true;
-    setSaved(null); setStudent(''); setProfileReady(false); setResult(null);
-    if (!uid || !client) return function(){ alive=false; };
-    (async function(){
-      try {
-        var r = await client.from('gs_exam_profiles').select('student_id').eq('user_id',uid).maybeSingle();
-        if (r.error) throw r.error;
-        if (alive) { var id = r.data && r.data.student_id || ''; setSaved(id); setStudent(id); setProfileReady(true); }
-      } catch(e){ if(alive) setErr('error'); }
-    })();
-    return function(){alive=false;};
-  }, [client, uid]);
-  var year = p.sem && p.state.years.find(function(y){return y.id===p.sem.yearId;});
-  var academic = String(year && year.academic || '');
-  var scope = academic === '2569' && p.sem && p.sem.kind === 's1';
-  var courses = (p.courses || []).filter(function(c){return !c.demo;}).map(function(c){
-    var code = String(c.code || '').split('.')[0].trim();
-    return {code:code, sec:sectionOf(c)};
-  }).filter(function(c){return /\b\d{7}\b/.test(c.code) && c.code.length===7;});
-  var courseKey = JSON.stringify(courses);
-  var lookupKey = uid && saved && scope && courses.length ? [uid,saved,courseKey].join('|') : '';
+  var email=String(p.email||'').trim().toLowerCase();
+  var client=S.web&&S.web.client;
+  var keyS=useState(''),device=keyS[0],setDevice=keyS[1];
+  var readyS=useState(false),ready=readyS[0],setReady=readyS[1];
+  var studentS=useState(''),student=studentS[0],setStudent=studentS[1];
+  var savedS=useState(''),saved=savedS[0],setSaved=savedS[1];
+  var profileS=useState(false),profileReady=profileS[0],setProfileReady=profileS[1];
+  var busyS=useState(false),busy=busyS[0],setBusy=busyS[1];
+  var msgS=useState(''),msg=msgS[0],setMsg=msgS[1];
+  var errS=useState(''),err=errS[0],setErr=errS[1];
+  var resultS=useState(null),result=resultS[0],setResult=resultS[1];
+  var active=useRef(true);
+  function request(key,action,args){
+    return client.rpc('gs_exam_device',Object.assign({p_email:email,p_device:key,p_action:action},args||{})).then(function(r){
+      if(r.error)throw r.error;return r.data;
+    });
+  }
   useEffect(function(){
+    active.current=true;
     var alive=true;
-    setResult(null);
-    if(!lookupKey) return function(){alive=false;};
+    setReady(false);setProfileReady(false);setSaved('');setStudent('');setResult(null);setDevice('');setErr('');setMsg('');
+    if(!client||!email){setReady(true);return function(){alive=false;active.current=false;};}
     (async function(){
-      try {
-        var r=await client.rpc('gs_exam_rooms_for_me',{p_year:'2569',p_term:'s1',p_round:'fin',p_courses:JSON.parse(courseKey)});
-        if(r.error || !Array.isArray(r.data)) throw r.error || new Error('invalid response');
-        if(alive) setResult({key:lookupKey,rows:r.data});
-      } catch(e){if(alive) setResult({key:lookupKey,error:true});}
+      try{
+        var k=examDeviceKey(email);
+        var r=await request(k,'get');
+        if(alive){var id=r&&r.studentId||'';setDevice(k);setSaved(id);setStudent(id);setProfileReady(true);}
+      }catch(e){if(alive)setErr('error');}
+      finally{if(alive)setReady(true);}
+    })();
+    return function(){alive=false;active.current=false;};
+  },[client,email]);
+  var year=p.sem&&p.state.years.find(function(y){return y.id===p.sem.yearId;});
+  var academic=String(year&&year.academic||'');
+  var scope=academic==='2569'&&p.sem&&p.sem.kind==='s1';
+  var courses=(p.courses||[]).filter(function(c){return !c.demo;}).map(function(c){
+    return {code:String(c.code||'').split('.')[0].trim(),sec:sectionOf(c)};
+  }).filter(function(c){return /^\d{7}$/.test(c.code);});
+  var courseKey=JSON.stringify(courses);
+  var lookupKey=device&&saved&&scope&&courses.length?[device,saved,courseKey].join('|'):'';
+  useEffect(function(){
+    var alive=true;setResult(null);
+    if(!lookupKey)return function(){alive=false;};
+    (async function(){
+      try{
+        var rows=await request(device,'lookup',{p_year:'2569',p_term:'s1',p_round:'fin',p_courses:JSON.parse(courseKey)});
+        if(!Array.isArray(rows))throw new Error('invalid response');
+        if(alive)setResult({key:lookupKey,rows:rows});
+      }catch(e){if(alive)setResult({key:lookupKey,error:true});}
     })();
     return function(){alive=false;};
   },[client,lookupKey]);
   async function action(fn){
-    setBusy(true); setErr(''); setMsg('');
-    try { await fn(); } catch(e) { if(active.current) setErr('error'); }
-    finally { if(active.current) setBusy(false); }
-  }
-  function sendLink(){
-    if(!client || !email || busy) return;
-    action(async function(){
-      var r=await client.auth.signInWithOtp({email:email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
-      if(r.error) throw r.error;
-      if(active.current) setMsg('sent');
-    });
-  }
-  function verifyCode(){
-    if(!client || !email || !otp.trim() || busy) return;
-    action(async function(){
-      var r=await client.auth.verifyOtp({email:email,token:otp.trim(),type:'email'});
-      if(r.error) throw r.error;
-      if(active.current) {setOtp('');setMsg('');}
-    });
+    setBusy(true);setErr('');setMsg('');
+    try{await fn();}catch(e){if(active.current)setErr('error');}
+    finally{if(active.current)setBusy(false);}
   }
   function saveId(){
-    if(!uid || !profileReady || busy) return;
+    if(!device||!profileReady||busy)return;
     var id=student.replace(/\s/g,'');
     if(!/^\d{10}$/.test(id)){setErr('badId');return;}
     action(async function(){
-      var r=await client.from('gs_exam_profiles').upsert({user_id:uid,student_id:id},{onConflict:'user_id'});
-      if(r.error) throw r.error;
+      var r=await request(device,'save',{p_student_id:id});
+      if(!r||r.saved!==true)throw new Error('save failed');
       if(active.current){setStudent(id);setSaved(id);setMsg('saved');}
     });
   }
   function removeId(){
-    if(!uid || !profileReady || busy) return;
+    if(!device||!profileReady||busy)return;
     action(async function(){
-      var r=await client.from('gs_exam_profiles').delete().eq('user_id',uid);
-      if(r.error)throw r.error;
+      await request(device,'remove');
       if(active.current){setStudent('');setSaved('');setResult(null);}
     });
   }
@@ -5192,24 +5174,17 @@ function ExamRoomsPanel(p) {
     <div><h2 style=${{fontSize:18}}>${t('examroom.title')}</h2><p className="tiny muted">${t('examroom.intro')}</p></div>
     ${!email ? html`<p className="small muted">${t('examroom.guest')}</p>` :
       !ready ? html`<p className="small muted">${t('examroom.loading')}</p>` :
-      !uid ? html`<div className="stack">
-        <p className="small muted">${t('examroom.verifyHint')}</p>
-        <div className="row wrap"><button type="button" className="btn" disabled=${busy || !client} onClick=${sendLink}>${t('examroom.verify')}</button></div>
-        ${msg==='sent' && html`<div className="stack"><p className="small">${t('examroom.sent')}</p>
-          <label className="small" htmlFor="exam-otp">${t('examroom.otp')}</label><input id="exam-otp" className="input" inputMode="numeric" autoComplete="one-time-code" value=${otp} onChange=${e=>setOtp(e.target.value)} />
-          <div><button className="btn" type="button" disabled=${busy || !otp.trim()} onClick=${verifyCode}>${t('examroom.confirm')}</button></div></div>`}
-      </div>` :
       html`<div className="stack">
         <p className="small muted">${t('examroom.private')}</p>
         <label className="small" htmlFor="exam-student-id">${t('examroom.student')}</label>
         <input id="exam-student-id" className="input" type="text" inputMode="numeric" autoComplete="off" maxLength=${12} value=${student} disabled=${!profileReady || busy} onChange=${e=>{setStudent(e.target.value);setErr('');}} />
         <div className="row wrap"><button className="btn primary" type="button" disabled=${!profileReady || busy || !student.trim()} onClick=${saveId}>${t('examroom.save')}</button>
           ${saved && html`<button className="btn" type="button" disabled=${busy} onClick=${removeId}>${t('examroom.remove')}</button>`}
-          <button className="btn ghost" type="button" disabled=${busy} onClick=${()=>action(async function(){var r=await client.auth.signOut({scope:'local'});if(r.error)throw r.error;})}>${t('examroom.cancel')}</button></div>
+</div>
         ${msg==='saved' && html`<p className="small" role="status">${t('examroom.saved')}</p>`}
       </div>`}
     ${err && html`<p className="small" role="alert">${t('examroom.'+err)}</p>`}
-    ${uid && saved && html`<div className="stack">
+    ${email && saved && html`<div className="stack">
       ${!scope ? html`<p className="small muted">${t(academic?'examroom.noTerm':'examroom.noYear')}</p>` :
         !courses.length ? html`<p className="small muted">${t('examroom.noCourses')}</p>` :
         !rec ? html`<p className="small muted">${t('examroom.loading')}</p>` :
@@ -5231,6 +5206,7 @@ function ExamRoomsPanel(p) {
     </div>`}
   </section>`;
 }
+
 
 function ExamCalendarPanel(p) {
   var exams = p.events.filter(function(x){ return (x.a.type === 'midterm' || x.a.type === 'final') && x.a.due && /^\d{4}-\d{2}-\d{2}$/.test(String(x.a.due)); });
@@ -7533,7 +7509,6 @@ function stopSync() {
   S.cloud = null;
 }
 function startGuest() {
-  if(S.web.examClient && S.web.examClient.auth && typeof S.web.examClient.auth.signOut==='function') Promise.resolve(S.web.examClient.auth.signOut({scope:'local'})).catch(function(){});
   stopSync();
   S.web.user = null;
   try { localStorage.setItem('gradespace.mode', 'guest'); localStorage.removeItem(EMAIL_KEY); } catch (e) { /* ignore */ }
@@ -7734,7 +7709,6 @@ function startUser(user) {
   attempt();
 }
 function resetToAuth() {
-  if(S.web.examClient && S.web.examClient.auth && typeof S.web.examClient.auth.signOut==='function') Promise.resolve(S.web.examClient.auth.signOut({scope:'local'})).catch(function(){});
   var key = S.localKey;
   stopSync();
   if (key) Store.Local.clear(key);
@@ -7810,8 +7784,6 @@ function AccountSection() {
 function webBoot() {
   var cfg = window.GS_WEB;
   S.web = { client: window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }), user: null };
-  // Only exam-room profiles use verified auth; grade storage stays on the original client.
-  try { S.web.examClient = window.supabase.createClient(cfg.url, cfg.key, { auth: { storageKey: 'gradespace.exam-auth', persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }); } catch(e) { S.web.examClient = null; }
   var saved = null, guestPref = false;
   try {
     if (localStorage.getItem('gradespace.th-default-v1') !== '1') { localStorage.setItem('gradespace.th-default-v1', '1'); localStorage.setItem('gradespace.lang', 'th'); }
