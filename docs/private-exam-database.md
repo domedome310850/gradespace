@@ -1,3 +1,11 @@
+# Updated deployment note: verified Chula login
+
+The latest school sign-in migration supersedes the separate OTP setup below. It is applied to Supabase. Configure Google OAuth for the preview and eventual production domain, with the Supabase callback and exact `/?exam_oauth=1` redirect allowlist. Test with a real Chula Google Workspace account and the designated owner Gmail: the server checks provider-verified email and hosted domain, automatically extracts the student ID, and assigns the private singleton admin only to the preconfigured owner. If Chula blocks third-party OAuth or the trusted domain claim is absent, stop; do not relax the domain check. Admin role is not activated until real sign-in. Existing grade accounts remain intact; account transfer requires separate verified ownership, not a typed email.
+
+Before production access is considered secure: coordinate rollout, confirm working verified grade load/save and exam lookup, protect/migrate existing accounts, then remove direct browser execution of old grade RPCs (`revoke execute on function public.gs_load(text), public.gs_save(text,jsonb,bigint) from public,anon,authenticated;`). New security-definer wrappers call these internally. This revocation is intentionally NOT applied while old production UI relies on them. Test anon and cross-account access after cutover. Do not merge draft until verified. The earlier OTP/manual bootstrap instructions below are historical, not the current procedure.
+
+---
+
 # Private central exam database — setup and review
 
 This branch is not a production migration. Do not publish student ID ranges in the public repo. The supplied PDF lives outside GitHub. The legacy GradeSpace grade tracker still uses email-only access; the exam subsystem uses a separate Supabase Auth OTP session. This does not fix the legacy grade-data authorization problem.
