@@ -16,10 +16,17 @@ const LIBS = {
   'htm.umd': resolve(here, 'node_modules/htm/dist/htm.umd.js'),
 };
 // Stand-in for supabase-js: gs_load returns the fixture, every other call succeeds with nothing.
-const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{},functions:{},rpc:async(fn)=>{
-  if(fn==='gs_load')return {data:[{data:window.__D,client_updated_at:Date.now()}],error:null};
-  if(fn==='gs_reg_offerings'||fn==='gs_gened_list')return {data:[],error:null};
-  return {data:0,error:null};}})};`;
+const FAKE_SUPABASE = `window.supabase={createClient:(url,key,opts)=>{
+  const isExam=opts?.auth?.storageKey==='gradespace.exam-auth';
+  const verified={user:{id:'test-user',email:'test@example.com',email_confirmed_at:'2026-11-22T00:00:00Z'}};
+  return {auth:isExam?{getSession:async()=>({data:{session:verified}})}:{},functions:{},
+    from:(name)=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:{student_id:'6940102426'},error:null})})}),upsert:async()=>({error:null})}),
+    rpc:async(fn,args)=>{
+      if(fn==='gs_load')return {data:[{data:window.__D,client_updated_at:Date.now()}],error:null};
+      if(fn==='gs_exam_rooms_for_me'){window.__examRequest=args;return {data:[{code:args.p_courses[0].code,sec:args.p_courses[0].sec,date:'2026-11-23',time:'08:30-10:30',room:'TEST-ROOM',page:1}],error:null};}
+      if(fn==='gs_reg_offerings'||fn==='gs_gened_list')return {data:[],error:null};
+      return {data:0,error:null};}};
+}};`;
 
 async function run(browser, lang, width) {
   const errors = [], overflow = [];
@@ -39,6 +46,18 @@ async function run(browser, lang, width) {
   await page.goto(PAGE + '#dashboard');
   await page.waitForTimeout(1500);
   if (lang === 'en') { await page.locator('button', { hasText: 'EN' }).first().click(); await page.waitForTimeout(300); }
+  // The new profile is visible only for an authenticated session matching the current grade account.
+  await page.evaluate(() => {
+    const s=GradeSpace.S.state, sem=s.semesters.find(x=>x.id===s.settings.currentSemesterId)||s.semesters[s.semesters.length-1];
+    if(!sem)throw Error('fixture needs semester');
+    const year=s.years.find(x=>x.id===sem.yearId);
+    GradeSpace.update(d=>{d.years.find(x=>x.id===year.id).academic='2569'; d.semesters.find(x=>x.id===sem.id).kind='s1';d.settings.currentSemesterId=sem.id;const c=d.courses.find(x=>x.semesterId===sem.id);if(c){c.code='5500111';c.section='72';}});
+  });
+  await page.locator('#exam-student-id').waitFor();
+  if(await page.locator('#exam-student-id').inputValue()!=='6940102426') errors.push('exam profile not loaded');
+  await page.getByText('TEST-ROOM',{exact:true}).waitFor();
+  const lookup=await page.evaluate(()=>window.__examRequest);
+  if(lookup.p_year!=='2569'||lookup.p_term!=='s1'||lookup.p_round!=='fin'||!lookup.p_courses.some(c=>c.code==='5500111'&&c.sec==='72')) errors.push('incorrect exam lookup payload');
   const ids = await page.evaluate(() => GradeSpace.S.state.courses.map((c) => c.id));
   const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', ...ids.map((i) => 'course-' + i)];
   for (const h of hashes) {
