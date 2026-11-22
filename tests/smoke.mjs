@@ -75,6 +75,16 @@ async function run(browser, lang, width) {
   await page.locator('.dashboard-cal-event').getByText('TEST-ROOM-B',{exact:false}).waitFor();
   if(await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-A',{exact:false}).count()) errors.push('stale personal room');
   if(await page.locator('#exam-student-id').count()) errors.push('old exam profile form still visible');
+  // Summary is a single compact row on desktop, with two GPA tiles and a full-width plan on mobile.
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.locator('.dashboard-summary.has-plan .sp-card').waitFor();
+  const summary=await page.locator('.dashboard-summary').evaluate(el=>{
+    const cards=[...el.children].map(c=>{const r=c.getBoundingClientRect();return {top:r.top,bottom:r.bottom,height:r.height};});
+    return {cards,height:el.getBoundingClientRect().height};
+  });
+  if(summary.cards.length!==3)errors.push('overview summary missing tiles');
+  if(width>950&&(Math.max(...summary.cards.map(c=>c.top))-Math.min(...summary.cards.map(c=>c.top))>2||summary.height>150))errors.push('overview summary not compact single row');
+  if(width<=950&&summary.cards[2].top<summary.cards[0].bottom-1)errors.push('mobile plan must follow GPA tiles');
   // Deliberately vary titles and confirm every shared track lines up in each desktop row.
   await page.evaluate(()=>{
     GradeSpace.update(d=>{

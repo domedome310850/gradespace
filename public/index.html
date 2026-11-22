@@ -731,6 +731,31 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .swatch:disabled { opacity: .35; cursor: not-allowed; }
 .exam-event-detail { margin-top: 4px; font-size: 12px; color: var(--ink-2); line-height: 1.5; overflow-wrap: anywhere; }
 .exam-event-source { display: block; color: var(--muted); font-size: 10.5px; }
+/* Compact overview: GPA, cumulative GPA and next-term plan in one responsive strip. */
+.metrics.dashboard-summary { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; align-items: stretch; }
+.metrics.dashboard-summary.has-plan { grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1.7fr); }
+.dashboard-summary .metric, .dashboard-summary .sp-card { padding: 10px 12px; border-radius: var(--r-lg); min-width: 0; box-shadow: none; }
+.dashboard-summary .metric .m-label { min-height: 0; font-size: 12px; }
+.dashboard-summary .metric .m-value { font-size: 24px; line-height: 1.15; margin-top: 4px; display:flex; align-items:baseline; flex-wrap:wrap; gap: 3px 5px; }
+.dashboard-summary .m-est { font-size: 10px; margin-left: 0; padding: 1px 6px; vertical-align: baseline; }
+.dashboard-summary .metric .m-sub, .dashboard-summary .metric .m-extra { font-size: 11px; line-height: 1.4; margin-top: 3px; }
+.dashboard-summary .metric .m-extra { border: 0; padding-top: 0; }
+.dashboard-summary .sp-card { display:flex; flex-direction:column; justify-content:center; gap: 5px; }
+.dashboard-summary .sp-title { font-size: 14px; line-height: 1.35; }
+.dashboard-summary .sp-card .small { font-size: 11px; line-height:1.4; }
+.dashboard-summary .sp-mini-actions { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+.dashboard-summary .sp-mini-actions .btn { font-size: 11px; min-height: 28px; padding: 4px 7px; white-space: normal; line-height:1.35; }
+.dashboard-summary .sp-mini-actions .btn svg { width:12px;height:12px;flex:none; }
+.dashboard-summary + .dash-facts { margin-top: 7px; font-size: 12px; gap: 4px 14px; }
+@media (max-width: 950px) {
+  .metrics.dashboard-summary.has-plan { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .dashboard-summary .sp-card { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .dashboard-summary .metric, .dashboard-summary .sp-card { padding: 9px 10px; }
+  .dashboard-summary .metric .m-value { font-size: 22px; }
+  .dashboard-summary .metric .m-label { font-size: 11px; }
+}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -4521,10 +4546,10 @@ function StudyPlanPanel(p) {
         <div className="small muted">${sp ? summary + (sp.inferred ? ' ' + t('sp.guessed') : '') : t('sp.noneYet')}</div></div>
       <button className="btn ghost sm" onClick=${function () { openModal('studyplan', {}); }}><${Icon} n="edit" s=${15} />${sp ? t('sp.change') : t('sp.setupShort')}</button>
     </div>
-    ${nx && nextPlan && html`<p className="small sp-next">${planCourseNames(nextPlan)}${(LANG === 'th' ? nextPlan.xth : nextPlan.xen) ? html`<span className="muted"> · ${LANG === 'th' ? nextPlan.xth : nextPlan.xen}</span>` : ''}</p>`}
-    ${nx && nextSem && !nextPlan && html`<p className="small muted sp-next">${t('sp.semExists')}</p>`}
-    ${cta && html`<div className="row wrap" style=${{ gap: 8, marginTop: 10 }}><button className="btn primary" onClick=${cta.go}><${Icon} n="plus" />${cta.label}</button>
-      ${latestSemester(state) && html`<button className="btn" onClick=${function () { openGenEd(state); }}>${t('ge.btnFor', { s: semFull(state, latestSemester(state)) })}</button>`}
+    ${!p.compact && nx && nextPlan && html`<p className="small sp-next">${planCourseNames(nextPlan)}${(LANG === 'th' ? nextPlan.xth : nextPlan.xen) ? html`<span className="muted"> · ${LANG === 'th' ? nextPlan.xth : nextPlan.xen}</span>` : ''}</p>`}
+    ${!p.compact && nx && nextSem && !nextPlan && html`<p className="small muted sp-next">${t('sp.semExists')}</p>`}
+    ${cta && html`<div className=${p.compact ? "sp-mini-actions" : "row wrap"} style=${p.compact ? {} : { gap: 8, marginTop: 10 }}><button className="btn primary" onClick=${cta.go}><${Icon} n="plus" />${cta.label}</button>
+      ${latestSemester(state) && html`<button className="btn" title=${t('ge.btnFor', { s: semFull(state, latestSemester(state)) })} aria-label=${t('ge.btnFor', { s: semFull(state, latestSemester(state)) })} onClick=${function () { openGenEd(state); }}>${p.compact ? t('ge.btn') : t('ge.btnFor', { s: semFull(state, latestSemester(state)) })}</button>`}
       ${p.compact && html`<a className="btn ghost" href="#years">${t('sp.seeAll')}</a>`}</div>`}
     ${!p.compact && sp && html`<details className="sp-all"><summary className="small">${t('sp.allYears')}</summary>
       <div className="sp-terms">${PLAN_SEQ.map(function (yt) {
@@ -5318,20 +5343,20 @@ function Dashboard(p) {
         <button className="btn primary" onClick=${function () { openModal('quick', {}); }}><${Icon} n="edit" /><span className="lbl-l">${t('quickScore')}</span><span className="lbl-s">${t('quickScoreShort')}</span></button>
       </div>
     </div>
-    <div className="metrics m2">
+    <div className=${"metrics dashboard-summary" + (showNextTerm(state,cur) ? " has-plan" : "")}>
       <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).gpaCount,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
         sub=${semC.gpa == null ? (semE.gpa != null ? t('gpa.estOnly') : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length }))
           : semE.gpa != null && Math.abs(semE.gpa - semC.gpa) > 1e-9 ? t('estX', { x: fmt(semE.gpa) }) : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length })} />
       <${Metric} label=${t('cumGPA')} tip=${t('tip.cumGPA')} value=${gpaValue(cumC.gpa, cumE.gpa)} extra=${t('gpa.coverage', {n:(cumC.gpa == null ? cumE : cumC).gpaCount,c:fmtT((cumC.gpa == null ? cumE : cumC).gpaCredits)})}
         sub=${cumC.gpa == null ? (cumE.gpa != null ? t('gpa.estOnly') : t('officialOnly'))
           : cumE.gpa != null && Math.abs(cumE.gpa - cumC.gpa) > 1e-9 ? t('estX', { x: fmt(cumE.gpa) }) : t('officialOnly')} />
+      ${showNextTerm(state, cur) && html`<${StudyPlanPanel} state=${state} compact=${true} />`}
     </div>
     <div className="dash-facts">
       <span>${t('dash.courses', { n: courses.length, p: inProg })}</span>
       <span>${t('dash.graded', { g: graded, n: items.length })}</span>
       <span>${t('dash.credits', { n: fmtT(cumC.earned) })}<${Tip} text=${t('tip.earned')} /></span>
     </div>
-    ${showNextTerm(state, cur) && html`<div style=${{ marginTop: 16 }}><${StudyPlanPanel} state=${state} compact=${true} /></div>`}
     ${needRecord.length > 0 && html`<div style=${{ marginTop: 14 }}><${Banner} kind="ok">${t('recordPrompt', { n: needRecord.length })}${' '}
       ${needRecord.map(function (c, i) { return html`<span key=${c.id}>${i ? ', ' : ''}<a href=${'#course-' + c.id}>${courseDisplayTitle(c)}</a></span>`; })}<//></div>`}
     <div className="section dashboard-exam-layout">
