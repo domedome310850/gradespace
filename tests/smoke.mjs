@@ -33,7 +33,7 @@ async function run(browser, lang, width) {
   const errors = [], overflow = [];
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
   const page = await ctx.newPage();
-  await page.addInitScript(([d]) => { window.__D = d; localStorage.setItem('gradespace.email', 'test@example.com'); }, [state]);
+  await page.addInitScript(([d]) => { window.__D = d; localStorage.removeItem('gradespace.email'); localStorage.removeItem('gradespace.mode'); }, [state]);
   await page.route('**/*', (route) => {
     const u = route.request().url();
     if (u.startsWith('file:') || u.startsWith('data:') || u.startsWith('blob:')) return route.continue();
@@ -44,7 +44,15 @@ async function run(browser, lang, width) {
   });
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('Failed to load resource')) errors.push('console: ' + m.text()); });
-  await page.goto(PAGE + '#dashboard');
+  await page.goto(PAGE);
+  await page.locator('#au-e').fill('test@example.com');
+  await page.locator('#au-student').fill('6940102426');
+  await page.locator('#au-student').press('Enter');
+  await page.locator('#exam-student-id').waitFor();
+  await page.waitForFunction(()=>document.querySelector('#exam-student-id')?.value==='6940102426');
+  if(await page.evaluate(()=>window.__studentId!=='6940102426')) errors.push('login did not save student ID');
+  const atTop=await page.locator('#exam-student-id').evaluate(el=>el.getBoundingClientRect().top<window.innerHeight);
+  if(!atTop)errors.push('exam student ID below first viewport');
   await page.waitForTimeout(1500);
   if (lang === 'en') { await page.locator('button', { hasText: 'EN' }).first().click(); await page.waitForTimeout(300); }
   // Save and lookup without email verification, using the browser-scoped device key.
@@ -55,9 +63,9 @@ async function run(browser, lang, width) {
     GradeSpace.update(d=>{d.years.find(x=>x.id===year.id).academic='2569'; d.semesters.find(x=>x.id===sem.id).kind='s1';d.settings.currentSemesterId=sem.id;const c=d.courses.find(x=>x.semesterId===sem.id);if(c){c.code='5500111';c.section='72';}});
   });
   await page.locator('#exam-student-id').waitFor();
-  await page.locator('#exam-student-id').fill('6940102426');
+  await page.locator('#exam-student-id').fill('6940102526');
   await page.getByRole('button',{name:lang==='th'?'บันทึกเลขนิสิต':'Save student ID',exact:true}).click();
-  if(await page.locator('#exam-student-id').inputValue()!=='6940102426') errors.push('exam profile not saved');
+  if(await page.locator('#exam-student-id').inputValue()!=='6940102526') errors.push('exam profile not saved');
   await page.getByText('TEST-ROOM',{exact:true}).waitFor();
   const lookup=await page.evaluate(()=>window.__examRequest);
   if(lookup.p_year!=='2569'||lookup.p_term!=='s1'||lookup.p_round!=='fin'||!lookup.p_courses.some(c=>c.code==='5500111'&&c.sec==='72')) errors.push('incorrect exam lookup payload');
