@@ -5211,7 +5211,7 @@ function ExamCalendarPanel(p) {
   var isoNow = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
   var first = (exams.find(function(x){ return x.a.due >= isoNow; }) || exams[0]);
   var initial = first ? first.a.due.slice(0,7) : isoNow.slice(0,7);
-  var ms = useState(initial), month = ms[0], setMonth = ms[1];
+  var ms = useState(''), month = ms[0] || initial, setMonth = ms[1];
   var ds = useState(''), chosen = ds[0], setSelected = ds[1];
   var selected=chosen || (first&&first.a.due.slice(0,7)===month?first.a.due:'');
   var parts = month.split('-').map(Number), y = parts[0], m = parts[1];
@@ -5246,7 +5246,7 @@ function ExamCalendarPanel(p) {
         return html`<button type="button" key=${date} className=${'dashboard-cal-cell'+(count?' has-exam':'')+(selected===date?' chosen':'')+(isToday?' today':'')+(past?' past':'')}
           style=${count?{'--cc':cols[0]}:null}
           aria-pressed=${selected===date} aria-current=${isToday?'date':null} aria-label=${fmtDate(date,true)+(isToday?' · '+t('today'):'')+(count?' · '+onDay.map(function(x){return upcomingCourseTitle(x.c);}).join(', '):'')}
-          onClick=${function(){setSelected(date);}}><span className="cal-num">${day}</span>
+          onClick=${function(){setMonth(month);setSelected(date);}}><span className="cal-num">${day}</span>
           ${count>0&&html`<span className="cal-dots" aria-hidden="true">${cols.slice(0,3).map(function(c,j){return html`<i key=${j} style=${{background:c}}></i>`;})}</span>`}</button>`;
       })}
     </div>
@@ -5278,6 +5278,7 @@ function Dashboard(p) {
   // for display only; past exams remain visible in the month calendar.
   var examEvents=[];
   courses.forEach(function(c){
+    if(c.finalGrade)return;
     var ex=displayExamsFor(c,state,personal)||{};
     [['mid','midterm'],['fin','final']].forEach(function(k){
       var related=items.filter(function(a){return a.courseId===c.id&&a.type===k[1];});
