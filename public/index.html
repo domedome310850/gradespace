@@ -2528,7 +2528,7 @@ en: {
   'goal.noPending':'No remaining scored work; verify the grade weights', 'goal.unassigned':'Some course weight is not allocated yet',
   'goal.notSet':'Choose a target grade to see the points still needed',
   'exam.calendarNote': 'Exam dates come from the faculty’s registration plan. Check your own section’s exam schedule.',
-  'sort.handle': 'Move {name}', 'sort.hint': 'Drag ⠿ on a card to change the order. Or tap ⠿ and use the arrow keys.',
+  'sort.autoOrder':'Automatic order','sort.manualOrder':'Custom order','sort.resetOrder':'Restore default order','sort.handle': 'Move {name}', 'sort.hint': 'Default order follows grading type and recorded scores. Drag ⠿ or use arrow keys to customize a term; restore the default at any time.',
   'sort.moved': 'Moved {name} to position {i} of {n}', 'sort.searchOff': 'Clear the search to rearrange courses.',
   'scan.setupT': 'AI isn’t switched on yet. The site owner does this once:',
   'scan.setup1': 'Get a free key from Google AI Studio:', 'scan.setup2': 'In Supabase, add a secret named GEMINI_API_KEY with that key:',
@@ -2901,7 +2901,7 @@ th: {
   'goal.noPending':'ไม่มีงานที่รอคะแนนแล้ว โปรดตรวจสัดส่วนคะแนน', 'goal.unassigned':'ยังมีสัดส่วนคะแนนที่ไม่ได้ใส่รายการ',
   'goal.notSet':'เลือกเกรดเป้าหมายก่อน เพื่อดูคะแนนที่ยังขาด',
   'exam.calendarNote': 'วันสอบอ้างอิงจากแผนลงทะเบียนของคณะ ตรวจตารางสอบของตอนเรียนตัวเองอีกครั้ง',
-  'sort.handle': 'ย้าย {name}', 'sort.hint': 'ลากที่ ⠿ บนการ์ดเพื่อสลับลำดับวิชา หรือแตะ ⠿ แล้วใช้ปุ่มลูกศร',
+  'sort.autoOrder':'เรียงอัตโนมัติ','sort.manualOrder':'เรียงเอง','sort.resetOrder':'กลับไปเรียงตามค่าเริ่มต้น','sort.handle': 'ย้าย {name}', 'sort.hint': 'ค่าเริ่มต้นเรียงตามวิธีตัดเกรดและคะแนนที่บันทึก ลาก ⠿ หรือใช้ปุ่มลูกศรเพื่อเรียงเองเฉพาะเทอม และคืนค่าเริ่มต้นได้ทุกเมื่อ',
   'sort.moved': 'ย้าย {name} ไปลำดับที่ {i} จาก {n}', 'sort.searchOff': 'ล้างคำค้นหาก่อน จึงจะสลับลำดับวิชาได้',
   'scan.setupT': 'ยังไม่ได้เปิดใช้ AI เจ้าของเว็บต้องตั้งค่าครั้งเดียว:',
   'scan.setup1': 'ขอ key ฟรีจาก Google AI Studio:', 'scan.setup2': 'ใน Supabase เพิ่ม secret ชื่อ GEMINI_API_KEY แล้ววาง key:',
@@ -3649,12 +3649,36 @@ function SemesterSelect(p) {
 /* ================= course kinds (required / elective / GenEd) ================= */
 var KINDS = ['required', 'elective', 'gened'];
 function kindOf(c) { return KINDS.indexOf(c && c.kind) >= 0 ? c.kind : 'required'; }
-// Courses show in their saved order. New courses are placed with GenEd last (Store.placeCourse),
-// and the student can rearrange them by dragging on My courses.
-function sortCourses(list) { return list; }
+// Default priority within each semester. A drag creates an explicit manual override for that term.
+function courseOrderRank(c,state) {
+  if(kindOf(c)==='gened')return 5;
+  if(isSUCourse(c)||c.finalGrade==='S'||c.finalGrade==='U')return 4;
+  var mode=gradingModeFor(c);
+  if(mode==='criterion'&&kindOf(c)==='required')return 0;
+  if(mode==='norm'){
+    var known=!!c.finalGrade&&!['W','I','IP'].includes(c.finalGrade) || state.assessments.some(function(a){return a.courseId===c.id&&C.isGraded(a);});
+    return known?1:2;
+  }
+  // Electives and unspecified grading methods are not mislabelled as relative grading.
+  return 3;
+}
+function isManualCourseOrder(state,semId){return !!(state.settings.manualCourseOrder&&state.settings.manualCourseOrder[semId]===true);}
+function sortCourses(list,state) {
+  state=state||S.state;
+  if(!state||!list.length)return list;
+  var groups=new Map(),offsets=new Map();
+  list.forEach(function(c){if(!groups.has(c.semesterId))groups.set(c.semesterId,[]);groups.get(c.semesterId).push(c);});
+  groups.forEach(function(cs,id){
+    if(!isManualCourseOrder(state,id))groups.set(id,cs.map(function(c,i){return {c:c,i:i,rank:courseOrderRank(c,state)};}).sort(function(a,b){return a.rank-b.rank||a.i-b.i;}).map(function(x){return x.c;}));
+  });
+  return list.map(function(c){var i=offsets.get(c.semesterId)||0;offsets.set(c.semesterId,i+1);return groups.get(c.semesterId)[i];});
+}
+function resetCourseOrder(semId){
+  update(function(d){if(d.settings.manualCourseOrder)delete d.settings.manualCourseOrder[semId];});
+}
 function reorderSemester(semId, ids) {
   var existing = S.state.courses.filter(function (c) { return c.semesterId === semId; });
-  var wanted = existing.map(function (c) { return c.id; });
+  var wanted = sortCourses(existing,S.state).map(function (c) { return c.id; });
   if (!Array.isArray(ids) || ids.length !== wanted.length ||
       new Set(ids).size !== ids.length ||
       ids.some(function (id) { return wanted.indexOf(id) < 0; }) ||
@@ -3665,6 +3689,8 @@ function reorderSemester(semId, ids) {
     if (slots.length !== ids.length) return;
     slots.forEach(function (pos, i) { d.courses[pos] = byId.get(ids[i]); });
     d.settings.orderV = 1;
+    d.settings.manualCourseOrder = Object.assign({},d.settings.manualCourseOrder||{});
+    d.settings.manualCourseOrder[semId]=true;
   });
 }
 function KindChip(p) {
@@ -5546,7 +5572,7 @@ function CoursesPage(p) {
       if (!cs.length) return null;
       any = true;
       return html`<section key=${s.id} className="section" style=${{ marginTop: 22 }}>
-        <div className="section-head"><h2>${semFull(state, s)}</h2></div>
+        <div className="section-head"><h2>${semFull(state, s)}</h2><div className="row wrap"><span className="tiny muted">${t(isManualCourseOrder(state,s.id)?"sort.manualOrder":"sort.autoOrder")}</span>${isManualCourseOrder(state,s.id)&&html`<button type="button" className="btn sm ghost" onClick=${function(){resetCourseOrder(s.id);}}>${t("sort.resetOrder")}</button>`}</div></div>
         <${SortableGrid} ids=${cs.map(function (c) { return c.id; })} disabled=${!!q.trim()}
           label=${function (id) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? c.name : ''; }}
           onReorder=${function (ids) { reorderSemester(s.id, ids); }}
