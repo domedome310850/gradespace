@@ -125,7 +125,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .save-dot.busy { background: var(--warn); }
 .page { padding: 8px 28px 48px; max-width: 1160px; width: 100%; margin: 0 auto; }
 .bottomnav { display: none; }
-@media(max-width:900px){.bottomnav{grid-template-columns: repeat(8,minmax(0,1fr)) !important;}}
+@media(max-width:900px){.bottomnav{grid-template-columns: repeat(7,minmax(48px,1fr)) !important;}}
 
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; }
@@ -718,8 +718,6 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .course-grid.course-grid > .ccard, .course-grid.course-grid > .sort-item { grid-row: auto; display: flex; flex-direction: column; }
 .course-grid.course-grid > .sort-item > .ccard { grid-row: auto; display: flex; flex-direction: column; flex: 1; width: 100%; }
 .course-grid.course-grid .ccard-foot { margin-top: auto; align-self: stretch; }
-.dashboard-exam-location { font-size:12px; line-height:1.45; color:var(--ink-2); overflow-wrap:anywhere; margin-top:4px; }
-.dashboard-exam-location svg { vertical-align:-2px; margin-right:4px; }
 select.select { appearance: none; -webkit-appearance: none; padding-right: 38px !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6' fill='none' stroke='%23838b9e' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-size: 16px; }
 .tt-days { grid-template-columns: repeat(auto-fit,minmax(min(100%,210px),1fr)); }
 .tt-slot { grid-template-columns: minmax(0,1fr); gap: 3px; border-left: 3px solid var(--cc,var(--accent)); }
@@ -735,7 +733,6 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .gs-floating-tip { position: fixed; z-index: 2147483647; max-width: min(280px,calc(100vw - 24px)); background: var(--ink); color: var(--bg); padding: 8px 10px; border-radius: 9px; font-size: 12.5px; font-weight: 400; line-height: 1.5; white-space: normal; pointer-events: none; box-shadow: 0 4px 16px #0003; }
 .swatches input[type=color] { width: 36px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; }
 .swatch:disabled { opacity: .35; cursor: not-allowed; }
-.exam-notice-row { display:flex;align-items:center;gap:12px;min-width:0;border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));background:var(--surface-2);padding:12px;border-radius:12px; }.exam-notice-row .grow{min-width:0;display:grid;gap:4px;overflow-wrap:anywhere;}.exam-notice-row a.btn{flex:none;}@media(max-width:420px){.exam-notice-row{flex-wrap:wrap}.bottomnav a{font-size:9px;padding-inline:0;min-width:0;}.bottomnav a span{white-space:normal;overflow-wrap:anywhere;}}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -1640,12 +1637,12 @@ var Store = (function () {
   }
 
   // Email-only adapter for the hosted website: data is stored under the email via gs_load / gs_save.
-  function makeEmailStore(client, email, verified) {
+  function makeEmailStore(client, email) {
     var busy = false, queued = null;
     function write(state) {
       if (busy) { queued = state; return Promise.resolve('queued'); }
       busy = true;
-      return Promise.resolve(verified ? client.rpc('gs_school_save', { p_data: state, p_updated: state.updatedAt }) : client.rpc('gs_save', { p_email: email, p_data: state, p_updated: state.updatedAt }))
+      return Promise.resolve(client.rpc('gs_save', { p_email: email, p_data: state, p_updated: state.updatedAt }))
         .then(function (r) { return r && r.error ? 'error' : 'ok'; }, function () { return 'unavailable'; })
         .then(function (r) {
           busy = false;
@@ -1654,7 +1651,7 @@ var Store = (function () {
         });
     }
     function load() {
-      return Promise.resolve(verified ? client.rpc('gs_school_load') : client.rpc('gs_load', { p_email: email })).then(function (r) {
+      return Promise.resolve(client.rpc('gs_load', { p_email: email })).then(function (r) {
         if (r.error) throw r.error;
         var row = Array.isArray(r.data) ? r.data[0] : r.data;
         if (!row || !row.data) return null;
@@ -2245,7 +2242,7 @@ var SharedCatalog = (function () {
     var start = str(row[prefix + ' start']), end = str(row[prefix + ' end']);
     var validTime = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
     var time = validTime.test(start) && validTime.test(end) && start < end ? start + '-' + end : '';
-    return { date: day, time: time, location: '', // section-wide room cannot establish an individual student's assignment
+    return { date: day, time: time, location: str(row['Exam location']),
       source: 'shared-verified' };
   }
   function examsFor(c,state) {
@@ -2453,7 +2450,7 @@ en: {
   'pred.fromSaved': 'Estimate uses your saved predictions: {x}',
   'pred.fromPerf': 'Estimate assumes ungraded work scores like your work so far ({p}%)',
   'exam.srcUser': 'Exam dates and rooms you entered',
-  'exam.srcAllSecs': 'Same exam time across listed sections. Individual room assignment is not confirmed.',
+  'exam.srcAllSecs': 'Same exam time for every section. Add your Sec to see your room.',
   'exam.srcSec': 'Exam dates for your Sec from the course database',
   'exam.room': 'room {r}',
   'plan.stepFaculty': 'Choose faculty and major',
@@ -2611,10 +2608,7 @@ en: {
   'store.web': 'Your data saves automatically under your email. Type the same email on any device to see it. Anyone who knows your email can open it too.',
   'tagline': 'Know your grades. Plan your GPA.', 'taglineShort': 'Know your grades. Plan your GPA.',
   'loading': 'Loading your grades…', 'mainNav': 'Main navigation',
-  "notice.subtitle":"Match your own student ID and registered courses against the faculty exam notice.","notice.id":"Student ID (10 digits)","notice.file":"Faculty exam notice (PDF)","notice.type":"Exam session","notice.run":"Find and remember my rooms","notice.clear":"Forget ID and imported rooms","notice.privacy":"Your ID and matching results stay in this browser. The PDF is read locally; no roster is uploaded. On a shared computer, clear this data when finished.","notice.support":"Supports text-based CBS exam notices with the same seven-column layout. Choose the correct academic term and exam session.","notice.empty":"No imported notice for this term and session.","notice.found":"Matched in notice","notice.none":"Not found in this notice","notice.ambiguous":"Multiple matches or section mismatch — verify with the faculty","notice.needSec":"Enter your enrolled section first","notice.saved":"Saved matching results on this device","notice.error":"Unable to read this notice. Check the faculty, PDF layout, academic year and semester. No old results were changed.","notice.badID":"Enter a valid 10-digit student ID.","notice.busy":"Reading PDF on your device…","notice.source":"Faculty exam notice · page {n}","notice.secRange":"Notice Sec {s}","notice.secUnknown":"Exact section not shown","notice.noCourses":"No active courses in this term.","notice.openReg":"Open official Chula exam lookup","notice.imported":"Imported {n} pages · review against the latest announcement","notice.warning":"Some lines could not be interpreted confidently. Check the original notice.","notice.verify":"A match is not proof of enrollment. Only saved active courses are checked; a section range does not identify an exact section. Confirm against the latest faculty notice/Reg.","notice.changed":"Changing the ID will replace previously imported results for this browser account.","notice.clearConfirm":"Remove the saved student ID and imported room results from this browser?","notice.pickTerm":"Select a term with its academic year first.","notice.room":"Exam room / venue",
-  "notice.auto":"Automatic (by exam date)","notice.autoUnknown":"No verified round dates yet; choose Midterm or Final.","notice.showId":"Show ID","notice.hideId":"Hide ID","notice.saveId":"Save student ID","notice.idSaved":"Student ID saved on this device.","notice.sectionSource":"Faculty notice: room for the entire section · page {n}","notice.sectionFound":"Room assigned to entire section","notice.noCentral":"No verified public student-number lookup source is connected for this round yet. Section-wide rooms are available where announced; use Reg for other rooms.","notice.lookupOfficial":"Look up from published notice","notice.optionalPdf":"Optional: import your own copy of the notice","notice.automaticLabel":"Selected automatically: {round}","notice.pendingId":"Confirm the changed ID before searching or saving.",
-  'notice.timeUnknown':'Time not confirmed', "central.google":"Sign in with Google","central.googleFail":"Google verification failed. Check provider configuration and try again.","central.googleMismatch":"Select the same Google email as your GradeSpace account.","school.intro":"Sign in using your Chula student Google Workspace account.","school.enter":"Continue with Chula account","school.privacy":"Enter your password only on Google's or the university's genuine sign-in page. GradeSpace never receives your CUNET password.","school.adminEnter":"Administrator sign-in","school.legacy":"Existing data remains saved under its original email. Moving data from a personal email needs a separately verified transfer.","school.denied":"Access requires a verified 10-digit Chula student Workspace email or the designated administrator account.","school.accessFailed":"Account verification succeeded but GradeSpace access could not be checked. Try again later.","school.loginFailed":"Cannot sign in. Check the Google provider setup and university sign-in permissions.","school.signoutFailed":"Could not sign out. Please try again.","school.autoId":"Your student ID comes from your verified university email.","school.dataNotice":"Your course and assessment data is synced to GradeSpace and its existing administrator records.", "central.title":"Central exam database","central.verify":"Verify email to access your own exam assignment","central.send":"Send email OTP","central.code":"Email verification code","central.confirm":"Verify code","central.signed":"Email verified for this session","central.notLinked":"Student ID has not been approved yet. Contact the administrator with proof of ownership.","central.linked":"Verified student ID","central.refresh":"Refresh my exam rooms","central.disconnect":"End verified session","central.failure":"Unable to complete the secure request. Check the connection, OTP and database setup.","central.sent":"Check your email for the code.","central.admin":"Exam database admin","central.adminOnly":"Administrator authorization required.","central.source":"Verified central faculty notice","central.publish":"Publish reviewed notice","central.read":"Read PDF for review","central.review":"Review every row against the original PDF before publishing. Incomplete or ambiguous data must be corrected; do not guess.","central.reviewCheck":"I checked the full notice, including all student-number ranges, dates, rooms and sections.","central.scope":"Academic year / term / round","central.faculty":"Faculty code/name","central.file":"Official notice PDF","central.sourceName":"Notice title / source","central.approved":"Published","central.history":"Publication history","central.bind":"Approve student identity","central.revoke":"Revoke link","central.email":"Verified student email","central.id":"Verified student ID","central.evidence":"Approve only after checking official evidence that the email holder owns this student ID. Never approve based on a typed number alone.","central.done":"Saved","central.rows":"Parsed rows","central.errors":"Unrecognized lines","central.noDb":"Central lookup needs email verification and an approved student ID. Local import remains optional.","central.adminPending":"Admin access will appear only after the database owner configures the verified account.",
-  'central.editData':'Advanced: correct structured rows','central.active':'Active','nav.exams': 'Exam rooms', 'navShort.exams': 'Exams', 'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & Q&A',
+  'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & Q&A',
   'navShort.dashboard': 'Home', 'navShort.years': 'Years', 'navShort.courses': 'Courses', 'navShort.simulator': 'Simulator', 'navShort.gpa': 'GPA', 'navShort.feedback':'Ideas', 'navShort.help':'Help',
   'sync.device': 'Saved on this device', 'sync.account': 'Saved to your account', 'sync.saving': 'Saving…', 'sync.error': 'Saved on this device only',
   'store.device': 'Your data is saved in this browser on this device only. It doesn’t sync to other devices, so export a backup now and then.',
@@ -2712,7 +2706,7 @@ en: {
   'err.maxPos': 'Enter a full score greater than 0', 'err.gradedNeedsScore': 'Enter the score, or change the status to Pending', 'err.weightRange': 'Enter a weight from 0 to 100',
   'err.predRange': 'Prediction must be between 0 and the full score', 'err.pickGrade': 'Choose the grade', 'err.pickYear': 'Choose a year', 'err.credits': 'Enter the number of credits',
   'grading.noLetterPrediction': 'This course uses relative grading or has no confirmed cutoffs. Percentage scores are not an A–F prediction.',
-  'grading.noLetterPredictionShort': 'Not yet known', 'exam.roomUnconfirmed': 'Room not confirmed', 'exam.editRoom': 'My exam rooms', 'exam.roomHint': 'Enter the room assigned to you in the official exam notice. Leave blank if unknown.', 'exam.midRoom': 'Midterm room', 'exam.finRoom': 'Final room', 'color.custom': 'Custom color', 'color.duplicate': 'This color is used by another course.', 'gpa.coverage': '{n} courses · {c} GPA credits',
+  'grading.noLetterPredictionShort': 'Not yet known', 'color.custom': 'Custom color', 'color.duplicate': 'This color is used by another course.', 'gpa.coverage': '{n} courses · {c} GPA credits',
   'grading.numericGoal': 'Target total score', 'grading.numericGoalHint': 'Choose a personal 0–100% score target; this is not a letter-grade cutoff.', 'grading.numericGoalError': 'Enter a score from 0 to 100%.',
   'grading.needPoints': 'Need {n} more percentage points to reach {p}%',
   'grading.pointsReached': 'Your earned points already meet the {p}% score target',
@@ -2827,7 +2821,7 @@ th: {
   'pred.fromSaved': 'คาดการณ์จากคะแนนที่คุณบันทึกไว้: {x}',
   'pred.fromPerf': 'คาดการณ์โดยให้งานที่ยังไม่มีคะแนนได้ตามผลงานตอนนี้ ({p}%)',
   'exam.srcUser': 'วันสอบและห้องสอบตามที่คุณใส่ไว้',
-  'exam.srcAllSecs': 'วันสอบตรงกันในตอนเรียนที่มีข้อมูล แต่ยังไม่ยืนยันห้องสอบรายบุคคล',
+  'exam.srcAllSecs': 'วันสอบนี้ตรงกันทุกตอนเรียน ใส่ Sec ของคุณเพื่อดูห้องสอบ',
   'exam.srcSec': 'วันสอบตาม Sec ของคุณจากฐานข้อมูลวิชา',
   'exam.room': 'ห้อง {r}',
   'plan.stepFaculty': 'เลือกคณะและสาขา',
@@ -2985,10 +2979,7 @@ th: {
   'store.web': 'คะแนนจะบันทึกอัตโนมัติตามอีเมลที่กรอก ใช้อีเมลเดิมเพื่อเปิดข้อมูลจากเครื่องอื่นได้',
   'tagline': 'รู้เกรดตัวเอง วางแผน GPA ได้', 'taglineShort': 'รู้เกรดตัวเอง วางแผน GPA ได้',
   'loading': 'กำลังโหลดข้อมูลเกรด…', 'mainNav': 'เมนูหลัก',
-  "notice.subtitle":"ค้นหาห้องสอบจากเลขนิสิตและวิชาที่ลงเรียน โดยเทียบกับประกาศของคณะ","notice.id":"เลขประจำตัวนิสิต (10 หลัก)","notice.file":"ประกาศตารางสอบคณะ (PDF)","notice.type":"รอบสอบ","notice.run":"ค้นหาและจำห้องสอบของฉัน","notice.clear":"ลืมเลขนิสิตและห้องสอบที่นำเข้า","notice.privacy":"เลขนิสิตและผลที่ตรงกันเก็บไว้ในเบราว์เซอร์นี้เท่านั้น อ่าน PDF บนเครื่อง ไม่อัปโหลดรายชื่อ หากใช้เครื่องร่วมกับคนอื่นควรล้างข้อมูลหลังใช้งาน","notice.support":"รองรับ PDF ตารางสอบคณะพาณิชย์ฯ แบบข้อความ 7 คอลัมน์ในรูปแบบเดียวกัน เลือกเทอมและรอบสอบให้ตรงกับประกาศ","notice.empty":"ยังไม่มีประกาศที่นำเข้าสำหรับเทอมและรอบสอบนี้","notice.found":"พบในประกาศ","notice.none":"ไม่พบในประกาศนี้","notice.ambiguous":"พบหลายรายการหรือ Sec ไม่ตรง — โปรดตรวจสอบกับคณะ","notice.needSec":"ระบุ Sec ที่ลงเรียนก่อน","notice.saved":"บันทึกผลที่ตรงกันบนอุปกรณ์นี้แล้ว","notice.error":"อ่านประกาศไม่สำเร็จ โปรดตรวจคณะ รูปแบบ PDF ปีและเทอม ข้อมูลเดิมไม่ถูกเปลี่ยน","notice.badID":"กรอกเลขนิสิตให้ครบ 10 หลัก","notice.busy":"กำลังอ่าน PDF บนอุปกรณ์ของคุณ…","notice.source":"ประกาศตารางสอบคณะ · หน้า {n}","notice.secRange":"Sec ตามประกาศ {s}","notice.secUnknown":"ประกาศไม่ระบุ Sec ที่แน่นอน","notice.noCourses":"ไม่มีวิชาที่กำลังเรียนในเทอมนี้","notice.openReg":"เปิดระบบสอบถามตารางสอบของ Reg","notice.imported":"นำเข้า {n} หน้า · โปรดตรวจสอบกับประกาศล่าสุด","notice.warning":"มีบางบรรทัดที่อ่านได้ไม่ชัดเจน โปรดตรวจสอบเอกสารต้นฉบับ","notice.verify":"ผลตรงช่วงเลขไม่ใช่หลักฐานการลงทะเบียน ระบบตรวจเฉพาะวิชาที่ยังเรียนอยู่ ช่วง Sec ไม่ได้บอก Sec ที่แน่นอน โปรดยืนยันกับประกาศล่าสุดหรือ Reg","notice.changed":"หากเปลี่ยนเลขนิสิต ผลที่เคยนำเข้าในบัญชีนี้บนเบราว์เซอร์จะถูกแทนที่","notice.clearConfirm":"ลบเลขนิสิตและข้อมูลห้องสอบที่นำเข้าออกจากเบราว์เซอร์นี้หรือไม่","notice.pickTerm":"เลือกเทอมที่ระบุปีการศึกษาแล้วก่อน","notice.room":"ห้องสอบ / สถานที่",
-  "notice.auto":"อัตโนมัติ (ตามกำหนดการสอบ)","notice.autoUnknown":"ยังไม่พบกำหนดการรอบสอบที่ยืนยันได้ เลือกกลางภาคหรือปลายภาคเองได้","notice.showId":"แสดงเลขนิสิต","notice.hideId":"ซ่อนเลขนิสิต","notice.saveId":"บันทึกเลขนิสิต","notice.idSaved":"บันทึกเลขนิสิตบนอุปกรณ์นี้แล้ว","notice.sectionSource":"ประกาศคณะ: ห้องสำหรับทั้ง Sec · หน้า {n}","notice.sectionFound":"ห้องสอบของทั้ง Sec","notice.noCentral":"รอบนี้ยังไม่มีแหล่งค้นหาตามเลขนิสิตสาธารณะที่ยืนยันได้ ระบบแสดงห้องของทั้ง Sec ตามประกาศเท่าที่มี ส่วนห้องที่แบ่งตามเลขนิสิตให้ตรวจใน Reg","notice.lookupOfficial":"ค้นหาจากประกาศที่เผยแพร่","notice.optionalPdf":"ทางเลือก: นำเข้าประกาศที่คุณมี","notice.automaticLabel":"ระบบเลือกรอบให้: {round}","notice.pendingId":"ยืนยันเลขนิสิตที่แก้ไขก่อนค้นหาหรือบันทึก",
-  'notice.timeUnknown':'ยังไม่ยืนยันเวลา', "central.google":"เข้าสู่ระบบด้วย Google","central.googleFail":"ยืนยันผ่าน Google ไม่สำเร็จ โปรดตรวจการตั้งค่าและลองอีกครั้ง","central.googleMismatch":"เลือกบัญชี Google ที่ตรงกับอีเมล GradeSpace ของคุณ","school.intro":"เข้าสู่ระบบด้วยบัญชี Google Workspace ของนิสิตจุฬาฯ","school.enter":"เข้าสู่ระบบด้วยบัญชีจุฬาฯ","school.privacy":"กรอกรหัสผ่านเฉพาะในหน้าลงชื่อเข้าใช้ของ Google หรือจุฬาฯ เท่านั้น GradeSpace ไม่ได้รับรหัสผ่าน CUNET ของคุณ","school.adminEnter":"เข้าสู่ระบบสำหรับผู้ดูแล","school.legacy":"ข้อมูลเดิมยังอยู่ตามอีเมลเดิม การย้ายข้อมูลจากอีเมลส่วนตัวต้องยืนยันเจ้าของทั้งสองบัญชีก่อน","school.denied":"อนุญาตเฉพาะอีเมลนิสิตจุฬาฯ แบบเลข 10 หลักที่ยืนยันผ่าน Workspace แล้ว หรือบัญชีผู้ดูแลที่กำหนดไว้","school.accessFailed":"ยืนยันบัญชีแล้วแต่ตรวจสิทธิ์ GradeSpace ไม่สำเร็จ โปรดลองอีกครั้ง","school.loginFailed":"เข้าสู่ระบบไม่ได้ โปรดตรวจการตั้งค่า Google และสิทธิ์ลงชื่อเข้าใช้ของมหาวิทยาลัย","school.signoutFailed":"ออกจากระบบไม่สำเร็จ โปรดลองอีกครั้ง","school.autoId":"ระบบได้เลขนิสิตจากอีเมลมหาวิทยาลัยที่ยืนยันแล้ว","school.dataNotice":"ข้อมูลรายวิชาและคะแนนจะซิงก์กับ GradeSpace และระบบบันทึกของผู้ดูแลที่มีอยู่เดิม", "central.title":"ฐานข้อมูลห้องสอบส่วนกลาง","central.verify":"ยืนยันอีเมลเพื่อเข้าถึงห้องสอบของตนเอง","central.send":"ส่งรหัส OTP ทางอีเมล","central.code":"รหัสยืนยันจากอีเมล","central.confirm":"ยืนยันรหัส","central.signed":"ยืนยันอีเมลแล้วสำหรับการใช้งานครั้งนี้","central.notLinked":"เลขนิสิตยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลพร้อมหลักฐานว่าเป็นเลขของคุณ","central.linked":"เลขนิสิตที่ยืนยันแล้ว","central.refresh":"อัปเดตห้องสอบของฉัน","central.disconnect":"ออกจากระบบยืนยันตัวตน","central.failure":"ดำเนินการไม่สำเร็จ โปรดตรวจการเชื่อมต่อ รหัส OTP และการตั้งค่าฐานข้อมูล","central.sent":"ตรวจสอบรหัสในอีเมลของคุณ","central.admin":"จัดการฐานข้อมูลห้องสอบ","central.adminOnly":"ต้องมีสิทธิ์ผู้ดูแลระบบ","central.source":"ประกาศคณะจากฐานข้อมูลส่วนกลาง","central.publish":"เผยแพร่ประกาศที่ตรวจสอบแล้ว","central.read":"อ่าน PDF เพื่อตรวจสอบ","central.review":"ตรวจทุกรายการกับ PDF ต้นฉบับก่อนเผยแพร่ แก้ไขข้อมูลที่อ่านไม่ครบหรือไม่ชัดเจน ห้ามเดา","central.reviewCheck":"ตรวจประกาศครบทุกหน้า รวมช่วงเลขนิสิต วัน เวลา ห้อง และ Sec แล้ว","central.scope":"ปีการศึกษา / เทอม / รอบสอบ","central.faculty":"รหัสหรือชื่อคณะ","central.file":"ประกาศตารางสอบ PDF","central.sourceName":"ชื่อหรือแหล่งที่มาประกาศ","central.approved":"เผยแพร่แล้ว","central.history":"ประวัติการเผยแพร่","central.bind":"อนุมัติเลขนิสิต","central.revoke":"ยกเลิกการผูกเลขนิสิต","central.email":"อีเมลนิสิตที่ยืนยันแล้ว","central.id":"เลขนิสิตที่ตรวจสอบแล้ว","central.evidence":"อนุมัติหลังตรวจหลักฐานจากมหาวิทยาลัยว่าเจ้าของอีเมลเป็นเจ้าของเลขนิสิตจริงเท่านั้น ห้ามอนุมัติจากเลขที่พิมพ์เพียงอย่างเดียว","central.done":"บันทึกแล้ว","central.rows":"จำนวนรายการที่อ่านได้","central.errors":"บรรทัดที่อ่านไม่ชัดเจน","central.noDb":"การค้นหาส่วนกลางต้องยืนยันอีเมลและอนุมัติเลขนิสิต การนำเข้าเองเป็นทางเลือกสำรอง","central.adminPending":"เมนูผู้ดูแลจะปรากฏเมื่อเจ้าของฐานข้อมูลตั้งสิทธิ์ให้บัญชีที่ยืนยันแล้วเท่านั้น",
-  'central.editData':'ขั้นสูง: แก้ข้อมูลรายการ','central.active':'ใช้งานอยู่','nav.exams': 'ห้องสอบของฉัน', 'navShort.exams': 'ห้องสอบ', 'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'คู่มือ / ถามตอบ',
+  'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'คู่มือ / ถามตอบ',
   'navShort.dashboard': 'ภาพรวม', 'navShort.years': 'ชั้นปี', 'navShort.courses': 'วิชา', 'navShort.simulator': 'จำลอง', 'navShort.gpa': 'GPA', 'navShort.feedback':'เสนอแนะ', 'navShort.help':'ช่วยเหลือ',
   'sync.device': 'บันทึกไว้ในเครื่องนี้', 'sync.account': 'บันทึกลงบัญชีแล้ว', 'sync.saving': 'กำลังบันทึก…', 'sync.error': 'บันทึกไว้ในเครื่องนี้เท่านั้น',
   'store.device': 'ข้อมูลถูกบันทึกไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ซิงก์ไปเครื่องอื่น ควรสำรองข้อมูลเก็บไว้เป็นระยะ',
@@ -3086,7 +3077,7 @@ th: {
   'err.maxPos': 'ใส่คะแนนเต็มที่มากกว่า 0', 'err.gradedNeedsScore': 'กรอกคะแนน หรือเปลี่ยนสถานะเป็นรอผลคะแนน', 'err.weightRange': 'ใส่น้ำหนักระหว่าง 0 ถึง 100',
   'err.predRange': 'คะแนนที่คาดต้องอยู่ระหว่าง 0 ถึงคะแนนเต็ม', 'err.pickGrade': 'เลือกเกรด', 'err.pickYear': 'เลือกชั้นปี', 'err.credits': 'ใส่จำนวนหน่วยกิต',
   'grading.noLetterPrediction': 'วิชานี้อิงกลุ่มหรือยังไม่ทราบเกณฑ์ตัดเกรด จึงไม่สามารถนำคะแนนเปอร์เซ็นต์มาคาดการณ์เกรด A–F ได้',
-  'grading.noLetterPredictionShort': 'ยังไม่ทราบเกรด', 'exam.roomUnconfirmed': 'ยังไม่ยืนยันห้องสอบ', 'exam.editRoom': 'ห้องสอบของฉัน', 'exam.roomHint': 'กรอกห้องสอบของคุณตามประกาศอย่างเป็นทางการ ถ้ายังไม่ทราบให้เว้นว่าง', 'exam.midRoom': 'ห้องสอบกลางภาค', 'exam.finRoom': 'ห้องสอบปลายภาค', 'color.custom': 'เลือกสีเอง', 'color.duplicate': 'สีนี้ถูกใช้กับวิชาอื่นแล้ว', 'gpa.coverage': '{n} วิชา · {c} หน่วยกิต GPA',
+  'grading.noLetterPredictionShort': 'ยังไม่ทราบเกรด', 'color.custom': 'เลือกสีเอง', 'color.duplicate': 'สีนี้ถูกใช้กับวิชาอื่นแล้ว', 'gpa.coverage': '{n} วิชา · {c} หน่วยกิต GPA',
   'grading.numericGoal': 'เป้าหมายคะแนนรวม', 'grading.numericGoalHint': 'ตั้งเป้าคะแนนรวม 0–100% เพื่อวางแผนเท่านั้น ไม่ใช่เกณฑ์ตัดเกรด', 'grading.numericGoalError': 'ใส่คะแนนระหว่าง 0 ถึง 100%',
   'grading.needPoints': 'ขาดอีก {n} คะแนนเปอร์เซ็นต์ถึงเป้า {p}%',
   'grading.pointsReached': 'คะแนนสะสมถึงเป้า {p}% แล้ว',
@@ -3328,7 +3319,7 @@ function doUndo(id) {
 function confirmDialog(o) { openModal('confirm', o); }
 
 /* ================= routing ================= */
-var PAGES = ['dashboard', 'years', 'courses', 'exams', 'exam-admin', 'simulator', 'gpa', 'feedback', 'help', 'preferences'];
+var PAGES = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences'];
 function parseHash() {
   var x = (location.hash || '').replace(/^#/, '');
   if (x.indexOf('course-') === 0) return { page: 'course', id: x.slice(7) };
@@ -3876,15 +3867,12 @@ function WeekTimetable(p) {
   </section>`;
 }
 
-function baseExamsFor(c, state) {
+function examsFor(c, state) {
   // Explicitly entered course dates may still be used for this saved enrollment.
   // Legacy built-in dates keyed only by course code must never leak across Secs.
   // Dates the student entered for their own section come first, then the shared course database.
   var entered=c && c.exams;
-  if(entered && (entered.source==='manual' || [entered.mid,entered.fin].some(function(x){return x && (x.source==='manual' || x.source==='user');}))) {
-    var personal=function(e){return e ? Object.assign({},e,{location: entered.source==='manual'||e.source==='manual'||e.source==='user' ? e.location : ''}) : null;};
-    return Object.assign({},entered,{mid:personal(entered.mid),fin:personal(entered.fin)});
-  }
+  if(entered && (entered.source==='manual' || [entered.mid,entered.fin].some(function(x){return x && (x.source==='manual' || x.source==='user');})))return entered;
   // Then a Sec-exact record from the course database (it can include the exam room), then Reg Chula's
   // official schedule, then dates that every Sec shares.
   var shared=SharedCatalog.examsFor(c,state);
@@ -3894,186 +3882,6 @@ function baseExamsFor(c, state) {
   return shared||null;
 }
 
-/* Exam notice reader: CBS table format, client-side only. No roster or ID is sent to a server. */
-// Public section-wide rules extracted from the owner's CBS final notice, pp. 1–16.
-// No student numbers, ranges or individually assigned rooms are stored in GitHub.
-var EXAM_SECTION_NOTICES={'2569|s1|fin':[{"code":"2602344","sec":"1","room":"1/205","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2602344","sec":"2","room":"1/204","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2602344","sec":"3","room":"3/308","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2602344","sec":"5","room":"3/308","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2603434","sec":"1","room":"3/208","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2604467","sec":"1","room":"2/205A","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2605481","sec":"1","room":"1/104","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2605481","sec":"2","room":"1/104","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2900151","sec":"1","room":"1/108","date":"2026-11-23","time":"08:30-11:30","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2601212","sec":"1","room":"8/309","date":"2026-11-23","time":"13:00-16:00","page":1,"sectionOnly":true,"source":"section-notice"},{"code":"2603278","sec":"1","room":"8/307","date":"2026-11-23","time":"13:00-16:00","page":2,"sectionOnly":true,"source":"section-notice"},{"code":"2603351","sec":"1","room":"8/309","date":"2026-11-23","time":"13:00-16:00","page":2,"sectionOnly":true,"source":"section-notice"},{"code":"2602121","sec":"1","room":"1/104","date":"2026-11-24","time":"08:30-11:30","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2602121","sec":"2","room":"2/201","date":"2026-11-24","time":"08:30-11:30","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2602121","sec":"71","room":"1/104","date":"2026-11-24","time":"08:30-11:30","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2602121","sec":"72","room":"2/201","date":"2026-11-24","time":"08:30-11:30","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2603614","sec":"1","room":"1/109","date":"2026-11-24","time":"08:30-11:30","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2603636","sec":"1","room":"1/109","date":"2026-11-24","time":"08:30-11:30","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2604477","sec":"1","room":"1/108","date":"2026-11-24","time":"08:30-11:30","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2601411","sec":"1","room":"3/305","date":"2026-11-24","time":"13:00-16:00","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2602333","sec":"1","room":"2/201","date":"2026-11-24","time":"13:00-16:00","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2602418","sec":"1","room":"1/108","date":"2026-11-24","time":"13:00-16:00","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2603468","sec":"1","room":"1/104","date":"2026-11-24","time":"13:00-16:00","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2604294","sec":"1","room":"3/308","date":"2026-11-24","time":"13:00-16:00","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2604361","sec":"1","room":"2/205A","date":"2026-11-24","time":"13:00-16:00","page":3,"sectionOnly":true,"source":"section-notice"},{"code":"2605419","sec":"1","room":"3/208","date":"2026-11-24","time":"13:00-16:00","page":4,"sectionOnly":true,"source":"section-notice"},{"code":"2605419","sec":"2","room":"3/208","date":"2026-11-24","time":"13:00-16:00","page":4,"sectionOnly":true,"source":"section-notice"},{"code":"2601111","sec":"71","room":"1/104","date":"2026-11-25","time":"08:30-11:30","page":4,"sectionOnly":true,"source":"section-notice"},{"code":"2604491","sec":"1-2","room":"3/308","date":"2026-11-25","time":"08:30-11:30","page":5,"sectionOnly":true,"source":"section-notice"},{"code":"2601118","sec":"1","room":"905/จุฬาพัฒน์ 13","date":"2026-11-25","time":"13:00-16:00","page":5,"sectionOnly":true,"source":"section-notice"},{"code":"2602380","sec":"1","room":"1/109","date":"2026-11-25","time":"13:00-16:00","page":5,"sectionOnly":true,"source":"section-notice"},{"code":"2605311","sec":"2","room":"2/205A","date":"2026-11-25","time":"13:00-16:00","page":6,"sectionOnly":true,"source":"section-notice"},{"code":"2605311","sec":"3","room":"3/308","date":"2026-11-25","time":"13:00-16:00","page":6,"sectionOnly":true,"source":"section-notice"},{"code":"2605311","sec":"5","room":"3/308","date":"2026-11-25","time":"13:00-16:00","page":6,"sectionOnly":true,"source":"section-notice"},{"code":"2605311","sec":"6","room":"1/205","date":"2026-11-25","time":"13:00-16:00","page":6,"sectionOnly":true,"source":"section-notice"},{"code":"2605311","sec":"73","room":"3/308","date":"2026-11-25","time":"13:00-16:00","page":7,"sectionOnly":true,"source":"section-notice"},{"code":"2605452","sec":"2","room":"2/201","date":"2026-11-25","time":"13:00-16:00","page":7,"sectionOnly":true,"source":"section-notice"},{"code":"2601115","sec":"3","room":"408/MAHIT","date":"2026-11-26","time":"08:30-11:30","page":8,"sectionOnly":true,"source":"section-notice"},{"code":"2601115","sec":"5","room":"1/104","date":"2026-11-26","time":"08:30-11:30","page":8,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"1","room":"402/MAHIT","date":"2026-11-26","time":"08:30-11:30","page":8,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"3","room":"402/MAHIT","date":"2026-11-26","time":"08:30-11:30","page":8,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"5","room":"208/MAHIT","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"6","room":"208/MAHIT","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"7","room":"208/MAHIT","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"8","room":"3/208","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"9","room":"3/208","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"10","room":"8/306","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2602416","sec":"11","room":"8/307","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2603275","sec":"1","room":"204/9","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2603615","sec":"1","room":"1003/MAHIT","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2603663","sec":"1","room":"1003/MAHIT","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2604362","sec":"1","room":"3/207","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2604362","sec":"71","room":"2/205A","date":"2026-11-26","time":"08:30-11:30","page":9,"sectionOnly":true,"source":"section-notice"},{"code":"2601366","sec":"1","room":"8/305","date":"2026-11-26","time":"13:00-16:00","page":10,"sectionOnly":true,"source":"section-notice"},{"code":"2602371","sec":"1","room":"3/208","date":"2026-11-26","time":"13:00-16:00","page":10,"sectionOnly":true,"source":"section-notice"},{"code":"2603210","sec":"4","room":"905/จุฬาพัฒน์ 13","date":"2026-11-26","time":"13:00-16:00","page":10,"sectionOnly":true,"source":"section-notice"},{"code":"2602214","sec":"1","room":"3/208","date":"2026-11-27","time":"08:30-11:30","page":10,"sectionOnly":true,"source":"section-notice"},{"code":"2602330","sec":"1","room":"1/305","date":"2026-11-27","time":"08:30-11:30","page":10,"sectionOnly":true,"source":"section-notice"},{"code":"2602330","sec":"2","room":"1/104","date":"2026-11-27","time":"08:30-11:30","page":10,"sectionOnly":true,"source":"section-notice"},{"code":"2603282","sec":"2","room":"408/OSOT","date":"2026-11-27","time":"08:30-11:30","page":11,"sectionOnly":true,"source":"section-notice"},{"code":"2603644","sec":"1","room":"3/208","date":"2026-11-27","time":"08:30-11:30","page":11,"sectionOnly":true,"source":"section-notice"},{"code":"2605314","sec":"2","room":"1/109","date":"2026-11-27","time":"08:30-11:30","page":11,"sectionOnly":true,"source":"section-notice"},{"code":"2602377","sec":"1","room":"8/307","date":"2026-11-27","time":"13:00-16:00","page":12,"sectionOnly":true,"source":"section-notice"},{"code":"2602422","sec":"1","room":"8/309","date":"2026-11-27","time":"13:00-16:00","page":12,"sectionOnly":true,"source":"section-notice"},{"code":"2603373","sec":"1","room":"1/104","date":"2026-11-27","time":"13:00-16:00","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2603664","sec":"1","room":"1/104","date":"2026-11-27","time":"13:00-16:00","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2604332","sec":"1","room":"207/MAHIT","date":"2026-11-27","time":"13:00-16:00","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2604332","sec":"2","room":"208/MAHIT","date":"2026-11-27","time":"13:00-16:00","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2601363","sec":"1","room":"1/204","date":"2026-11-30","time":"08:30-10:30","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2603272","sec":"1","room":"1/205","date":"2026-11-30","time":"08:30-11:30","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2601368","sec":"1","room":"3/308","date":"2026-11-30","time":"13:00-15:00","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2603240","sec":"1","room":"1/204","date":"2026-11-30","time":"13:00-16:00","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2603674","sec":"1","room":"1/205","date":"2026-11-30","time":"13:00-16:00","page":13,"sectionOnly":true,"source":"section-notice"},{"code":"2603691","sec":"1","room":"1/205","date":"2026-11-30","time":"13:00-16:00","page":14,"sectionOnly":true,"source":"section-notice"},{"code":"2604433","sec":"1","room":"1/205","date":"2026-11-30","time":"13:00-16:00","page":14,"sectionOnly":true,"source":"section-notice"},{"code":"2601417","sec":"1","room":"1/104","date":"2026-12-01","time":"08:30-11:30","page":14,"sectionOnly":true,"source":"section-notice"},{"code":"2603341","sec":"1","room":"3/305","date":"2026-12-01","time":"08:30-11:30","page":14,"sectionOnly":true,"source":"section-notice"},{"code":"2604161","sec":"1","room":"103/วิชชาคาม 1","date":"2026-12-01","time":"08:30-11:30","page":14,"sectionOnly":true,"source":"section-notice"},{"code":"2602242","sec":"1","room":"1/204","date":"2026-12-01","time":"13:00-16:00","page":15,"sectionOnly":true,"source":"section-notice"},{"code":"2602350","sec":"1","room":"1/204","date":"2026-12-01","time":"13:00-16:00","page":15,"sectionOnly":true,"source":"section-notice"},{"code":"2603312","sec":"1","room":"1/104","date":"2026-12-01","time":"13:00-16:00","page":15,"sectionOnly":true,"source":"section-notice"},{"code":"2603313","sec":"1","room":"2/205A","date":"2026-12-01","time":"13:00-16:00","page":15,"sectionOnly":true,"source":"section-notice"},{"code":"2603372","sec":"1","room":"2/201","date":"2026-12-02","time":"08:30-11:30","page":15,"sectionOnly":true,"source":"section-notice"},{"code":"2603372","sec":"2","room":"2/205A","date":"2026-12-02","time":"08:30-11:30","page":15,"sectionOnly":true,"source":"section-notice"},{"code":"2603705","sec":"1","room":"3/208","date":"2026-12-02","time":"08:30-11:30","page":15,"sectionOnly":true,"source":"section-notice"},{"code":"2604495","sec":"1","room":"3/208","date":"2026-12-02","time":"08:30-11:30","page":16,"sectionOnly":true,"source":"section-notice"},{"code":"2605410","sec":"1","room":"8/309","date":"2026-12-02","time":"08:30-11:30","page":16,"sectionOnly":true,"source":"section-notice"},{"code":"2602313","sec":"1","room":"8/307","date":"2026-12-02","time":"13:00-16:00","page":16,"sectionOnly":true,"source":"section-notice"},{"code":"2602385","sec":"1","room":"3/305","date":"2026-12-02","time":"13:00-16:00","page":16,"sectionOnly":true,"source":"section-notice"},{"code":"2602432","sec":"1","room":"8/309","date":"2026-12-02","time":"13:00-16:00","page":16,"sectionOnly":true,"source":"section-notice"},{"code":"2603706","sec":"1","room":"1/109","date":"2026-12-02","time":"13:00-16:00","page":16,"sectionOnly":true,"source":"section-notice"}]};
-// Add only verified, authorized, publicly published faculty PDF URLs here. Never commit a private roster.
-var EXAM_PUBLIC_PDF_SOURCES={};
-// Source: https://www.reg.chula.ac.th/StartEndDates2569_SEM_Thai.pdf (semester system).
-const EXAM_CALENDAR={'2569|s1':{start:'2026-08-03',midStart:'2026-09-21',midEnd:'2026-09-25',finalStart:'2026-11-23',finalEnd:'2026-12-04'},'2569|s2':{start:'2027-01-04',midStart:'2027-02-23',midEnd:'2027-03-01',finalStart:'2027-04-26',finalEnd:'2027-05-11'}};
-function examToday(){var parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());return ['year','month','day'].map(function(k){return parts.find(function(p){return p.type===k;}).value;}).join('-');}
-function examRoundFor(scope,dates,today){var c=EXAM_CALENDAR[scope];if(c)return today<=c.midEnd?'mid':'fin';var mids=dates.map(function(x){return x&&x.mid&&x.mid.date;}).filter(Boolean).sort(),fins=dates.map(function(x){return x&&x.fin&&x.fin.date;}).filter(Boolean).sort();if(mids.length)return today<=mids[mids.length-1]?'mid':'fin';if(fins.length)return 'fin';return '';}
-/* Private central exam database. Auth session and lookup results are memory-only. */
-var ExamCentral=(function(){
-  var owner='',status=null,cache={},epoch=0,refreshEpoch=0,error='',loading=false;
-  function account(){return String(S.web&&S.web.user&&S.web.user.email||'').trim().toLowerCase();}
-  function reset(){epoch++;owner='';status=null;cache={};error='';loading=false;}
-  function attach(admission){reset();owner=account();status=admission;emit();}
-  async function rpc(name,args){
-    var c=S.web&&S.web.client,g=epoch;
-    if(!c||!owner||owner!==account())throw Error('account');
-    var r=await c.rpc(name,args||{});
-    if(g!==epoch||account()!==owner)throw Error('account changed');
-    if(r.error)throw Error('rpc');
-    return r.data;
-  }
-  function current(){return owner===account()?status:null;}
-  function rows(key){return current()&&current().studentId?cache[key]||null:null;}
-  async function refresh(state){
-    if(!current()||!current().studentId)return;
-    var g=epoch,request=++refreshEpoch,groups={};loading=true;emit();
-    state.courses.filter(function(c){return !c.finalGrade;}).forEach(function(c){
-      var scope=ExamNotice.scope(c,state),code=String(c.code||'').split('.')[0];
-      if(!/^\d{7}$/.test(code)||!/^25\d{2}\|(s1|s2|summer)$/.test(scope))return;
-      (groups[scope]||(groups[scope]=new Set())).add(code);
-    });
-    var next={};
-    try{
-      var latest=await rpc('gs_exam_status');if(g!==epoch||request!==refreshEpoch)return;status=latest;if(!latest.studentId){cache={};return;}
-      for(var scope of Object.keys(groups)){
-        var parts=scope.split('|'),codes=Array.from(groups[scope]);
-        for(var k of ['mid','fin']){
-          var result=[];
-          for(var i=0;i<codes.length;i+=100){
-            var chunk=await rpc('gs_exam_lookup',{p_year:parts[0],p_term:parts[1],p_round:k,p_courses:codes.slice(i,i+100).map(function(c){return {code:c};})});
-            result=result.concat(Array.isArray(chunk)?chunk:[]);
-          }
-          next[scope+'|'+k]=result;
-        }
-      }
-      if(g===epoch&&request===refreshEpoch){cache=next;error='';}
-    }catch(e){if(g===epoch&&request===refreshEpoch){cache={};status=null;error='central';}}
-    finally{if(g===epoch&&request===refreshEpoch){loading=false;emit();}}
-  }
-  async function reconnect(){var result=await rpc('gs_school_access');status=result;error='';emit();return result;}
-  function flags(){return {loading:loading,error:error};}
-  return {account:account,current:current,rows:rows,attach:attach,reconnect:reconnect,rpc:rpc,refresh:refresh,reset:reset,flags:flags};
-})();
-
-var ExamNotice=(function(){
-  var months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  function studentId(v){return String(v||'').replace(/[\s-]/g,'');}
-  function validId(v){return /^\d{10}$/.test(v);}
-  function scope(c,state){var sem=state.semesters.find(function(x){return x.id===c.semesterId;});var y=sem&&state.years.find(function(x){return x.id===sem.yearId;});return sem&&y ? String(y.academic||'')+'|'+sem.kind : '';}
-  function secContains(v,sec){var m=String(v||'').match(/^(\d+)(?:\s*-\s*(\d+))?$/);return !!(m&&sec&&+sec>=+m[1]&&+sec<=+(m[2]||m[1]));}
-  function parseRanges(text){
-    return String(text||'').trim().split(/\s*[,，]\s*/).map(function(p){
-      var m=p.match(/^(\d{3})\s+(\d{5})\s+(\d{2})(?:\s*[-–—]\s*(\d{3})\s+(\d{5})\s+(\d{2}))?$/);
-      if(!m)return null;
-      var a=m[1]+m[2]+m[3],b=m[4]?m[4]+m[5]+m[6]:a;
-      if(a.slice(0,3)!==b.slice(0,3)||a.slice(-2)!==b.slice(-2)||a>b)return null;
-      return {first:a,last:b};
-    });
-  }
-  function idMatches(text,id){
-    return validId(id)&&parseRanges(text).some(function(r){return r&&id.slice(0,3)===r.first.slice(0,3)&&id.slice(-2)===r.first.slice(-2)&&id>=r.first&&id<=r.last;});
-  }
-  function cells(items,width){
-    // The CBS letter-sized notice uses seven fixed columns. Normalize to its 612pt reference.
-    var rows=[];
-    items.filter(function(i){return i.str&&i.str.trim()&&i.transform;}).forEach(function(i){
-      var x=i.transform[4]*612/width,y=i.transform[5]*612/width;
-      var row=rows.find(function(r){return Math.abs(r.y-y)<3;});
-      if(!row){row={y:y,items:[]};rows.push(row);}
-      row.items.push({x:x,s:i.str.trim()});
-    });
-    return rows.sort(function(a,b){return b.y-a.y;}).map(function(r){
-      var c=['','','','','','',''];
-      r.items.sort(function(a,b){return a.x-b.x;}).forEach(function(i){
-        var k=i.x<95?0:i.x<148?1:i.x<296?2:i.x<330?3:i.x<395?4:i.x<514?5:6;
-        c[k]+=(c[k]?' ':'')+i.s;
-      });return c;
-    });
-  }
-  function parse(pages,id,year,term,admin){
-    if((!admin&&!validId(id))||!/^25\d{2}$/.test(year))throw Error('input');
-    var first=pages[0]||[], heading=first.map(function(r){return r.join('');}).join('').replace(/\s/g,'');
-    if(heading.indexOf('พาณิชยศาสตร์')<0||heading.indexOf(year)<0||
-       (term==='s1'?heading.indexOf('ภาคการศึกษาต้น')<0:term==='s2'?heading.indexOf('ภาคการศึกษาปลาย')<0:true))throw Error('format');
-    var records=[],current=null, date='',time='',code='',sec='',room='', invalid=0;
-    function flush(){if(current){if(current.room&&current.date&&current.time&&current.code&&(current.hit||current.sectionOnly||(admin&&current.ranges.length))){if(admin){delete current.hit;if(current.sectionOnly&&current.ranges.length){invalid++;current.sectionOnly=false;} }else delete current.ranges;records.push(current);}current=null;}}
-    pages.forEach(function(rows,page){
-      var start=rows.findIndex(function(r){return /^sec$/i.test(r[3].trim());});
-      if(start<0){invalid++;return;}
-      var r=rows.slice(start+1);
-      for(var i=0;i<r.length;i++){
-        var v=r[i], day=v[0].trim(), course=v[2].match(/^(\d{7})(?:\s|$)/), tm=v[1].match(/^(\d{1,2})[.:](\d{2})\s*[-–—]\s*(\d{1,2})[.:](\d{2})$/);
-        if(/^วัน/.test(day)){
-          var head=r.slice(i,i+5).map(function(z){return z[0];}).join(' '), dm=head.match(/(?:^|\s)(\d{1,2})(?:\s|$)/), mo=months.findIndex(function(m){return head.indexOf(m)>=0;});
-          if(dm&&mo>=0&&head.indexOf(year)>=0){
-            var candidate=String(+year-543)+'-'+String(mo+1).padStart(2,'0')+'-'+String(+dm[1]).padStart(2,'0');
-            var dt=new Date(candidate+'T00:00:00Z');
-            if(!isNaN(dt.getTime())&&dt.toISOString().slice(0,10)===candidate){if(candidate!==date){flush();code='';sec='';room='';time='';}date=candidate;}
-          }else{flush();date='';code='';sec='';room='';time='';invalid++;}
-        }
-        if(tm){
-          var t0=String(+tm[1]).padStart(2,'0')+':'+tm[2],t1=String(+tm[3]).padStart(2,'0')+':'+tm[4];
-          if(+tm[1]>23||+tm[3]>23||+tm[2]>59||+tm[4]>59||t1<=t0){time='';invalid++;}
-          else {var newTime=t0+'-'+t1;if(newTime!==time){flush();code='';sec='';room='';}time=newTime;}
-        }
-        if(course){if(course[1]!==code){flush();sec='';room='';}code=course[1];}
-        var sc=v[3].trim();
-        if(sc){if(/^\d+(?:\s*-\s*\d+)?$/.test(sc)){if(sc!==sec){flush();room='';}sec=sc.replace(/\s/g,'');}else{flush();sec='';room='';invalid++;}}
-        var rm=v[4].trim();
-        if(rm&&/^\d/.test(rm)){
-          if(rm!==room||!current){flush();room=rm;current={code:code,sec:sec,room:room,date:date,time:time,page:page+1,hit:false,sectionOnly:false,ranges:[]};}
-        }else if(rm&&current&&current.room&&(/\/$/.test(current.room)||!current.room.includes('/'))){current.room+=' '+rm;room=current.room;}
-        var rule=v[5].trim();
-        if(rule&&current&&current.code&&current.date&&current.time){
-          if(/^เฉพาะนิสิตตอนเรียน/.test(rule)&&current.sec)current.sectionOnly=true;
-          else if(admin){var rr=parseRanges(rule);rr.forEach(function(v){if(v)current.ranges.push(v);else invalid++;});}
-          else if(idMatches(rule,id))current.hit=true;
-          else if(!/^\d{3}\s+\d{5}\s+\d{2}/.test(rule))invalid++;
-        }
-      }
-    });
-    flush();
-    if(!date||!records.length&&invalid===pages.length)throw Error('format');
-    return {rows:records,invalid:invalid,pages:pages.length};
-  }
-  function match(rows,c){
-    var code=String(c.code||'').trim().split('.')[0],sec=sectionOf(c);
-    var candidates=(rows||[]).filter(function(r){return r.code===code&&(r.hit||r.sectionOnly);});
-    var allowed=candidates.filter(function(r){return (r.hit&&(!sec||!r.sec||secContains(r.sec,sec)))||(r.sectionOnly&&secContains(r.sec,sec));});
-    var distinct=[];
-    allowed.forEach(function(r){if(!distinct.some(function(q){return q.date===r.date&&q.time===r.time&&q.room===r.room&&q.sec===r.sec;}))distinct.push(r);});
-    return {row:distinct.length===1?distinct[0]:null,ambiguous:distinct.length>1||(!distinct.length&&candidates.some(function(r){return r.hit;})),needsSec:!sec&&candidates.some(function(r){return r.sectionOnly;})};
-  }
-  var cacheKey='',cache=null;
-  function key(){return 'gradespace.examNotice.v1:'+(S.localKey||'guest');}
-  function load(){var k=key();if(cacheKey!==k||!cache){cacheKey=k;try{cache=JSON.parse(localStorage.getItem(k)||'null')||{id:'',sets:{}};}catch(e){cache={id:'',sets:{}};}}return cache;}
-  function save(d){var k=key();localStorage.setItem(k,JSON.stringify(d));cacheKey=k;cache=d;emit();}
-  function clear(){var k=key();localStorage.removeItem(k);cacheKey=k;cache={id:'',sets:{}};emit();}
-  function lookup(c,state,k){var d=load(),key=scope(c,state)+'|'+k,src=d.sets&&d.sets[key];var central=ExamCentral.rows(key);var m=match(central,c);if(ExamCentral.current()&&ExamCentral.current().studentId)return m.row||m.ambiguous||m.needsSec?m:match(EXAM_SECTION_NOTICES[key],c); m=match(src&&src.rows,c);return m.row||m.ambiguous||m.needsSec?m:match(EXAM_SECTION_NOTICES[key],c);}
-  async function read(file,id,year,term,admin){
-    if(!file||file.size>20*1024*1024)throw Error('file');
-    var pdfjs=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs');
-    pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs';
-    var doc=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,disableAutoFetch:true}).promise;
-    try{
-      if(doc.numPages>100)throw Error('file');
-      var pages=[];
-      for(var n=1;n<=doc.numPages;n++){var p=await doc.getPage(n);var txt=await p.getTextContent();pages.push(cells(txt.items,p.view[2]-p.view[0]));}
-      return parse(pages,id,year,term,admin);
-    }finally{await doc.destroy();}
-  }
-  return {studentId:studentId,validId:validId,scope:scope,parse:parse,cells:cells,match:match,idMatches:idMatches,load:load,save:save,clear:clear,key:key,lookup:lookup,read:read};
-})();
-
-// Personal room assignments are stored separately from shared exam schedules.
-function examsFor(c,state) {
-  var ex=baseExamsFor(c,state)||{};
-  if(!c)return null;
-  var room=function(k){
-    var e=ex[k]||null, found=ExamNotice.lookup(c,state,k).row;
-    if(found) e={date:found.date,time:found.time,location:found.room,source:found.source||'exam-notice',noticeSec:found.sec,noticePage:found.page};
-    var own=c.exams&&c.exams.personalRooms&&c.exams.personalRooms[k];
-    if(e&&own&&own.date===e.date&&own.sec===sectionOf(c)&&own.code===String(c.code||'')&&own.semesterId===c.semesterId)return Object.assign({},e,{location:own.room||'',source:'manual'});
-    return e;
-  };
-  var mid=room('mid'),fin=room('fin');return mid||fin?Object.assign({},ex,{mid:mid,fin:fin}):null;
-}
 // S/U (pass/fail) courses only need the pass mark: that is a fixed criterion, never relative grading.
 function isSUCourse(c) {
   if (!c) return false;
@@ -4322,7 +4130,7 @@ function downloadICS(state, semId) {
 function examText(e) {
   if (!e || !e.date) return t('exam.tbd');
   var past = daysUntil(e.date);
-  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : ' · ' + t('exam.roomUnconfirmed')) + (past !== null && past < 0 ? ' ' + t('exam.done') : '');
+  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : '') + (past !== null && past < 0 ? ' ' + t('exam.done') : '');
 }
 // skipMid: the midterm is already graded and its date was never recorded, so "to be announced" would mislead
 function examLine(ex, skipMid) {
@@ -4918,7 +4726,7 @@ function nextExamOf(ex) {
 function nextExamText(x) {
   if (!x.e || !x.e.date) return t('exam.' + x.k, { d: t('exam.tbd') });
   var d = daysUntil(x.e.date);
-  return t('exam.' + x.k, { d: fmtDate(x.e.date) + (x.e.time ? ' ' + x.e.time : '') }) + (x.e.location ? ' · ' + x.e.location : ' · ' + t('exam.roomUnconfirmed')) +
+  return t('exam.' + x.k, { d: fmtDate(x.e.date) + (x.e.time ? ' ' + x.e.time : '') }) + (x.e.location ? ' · ' + x.e.location : '') +
     ' · ' + (d === 0 ? t('today') : t('inDays', { n: d }));
 }
 function CourseCard(p) {
@@ -5316,36 +5124,13 @@ function ExamCalendarPanel(p) {
     <div className="dashboard-calendar-legend">${fmtDate(selected,true)}</div>
     ${show.length ? show.map(function(x){var q=String(x.a.due).split('-');return html`<div key=${x.a.id} className="dashboard-cal-event" style=${{ '--cc': courseColor(x.c.color) }}>
       <div className="date-pill cc"><b>${+q[2]}</b><small>${fmtDate(x.a.due).replace(/^\d+\s*/,'')}</small></div>
-      <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}</div><${DashboardExamLocation} event=${x} /></div>
+      <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}</div></div>
       <a className="btn sm" href=${'#course-'+x.c.id}>${t('viewCourse')}</a>
     </div>`;}) : html`<p className="muted small">${LANG==='th'?'ไม่มีรายการสอบที่บันทึกไว้ในช่วงนี้':'No recorded exams in this period'}</p>`}<//>`}
-    <p className="dashboard-calendar-note">${LANG==='th'?'ใช้ข้อมูลเดียวกับหน้าห้องสอบของฉัน หากยังไม่ยืนยันห้อง ระบบจะไม่เดาสถานที่':'Uses the same data as My exam rooms. Unconfirmed rooms are never guessed.'}</p>
+    <p className="dashboard-calendar-note">${LANG==='th'?'วันสอบอ้างอิงจากข้อมูลของวิชาและ Sec ที่เลือก โปรดตรวจสอบประกาศของรายวิชาอีกครั้ง':'Exam dates are based on the selected course and section. Confirm with your syllabus.'}</p>
   </div>`;
 }
 
-function dashboardEvents(state,courses,items){
-  var events=[];
-  courses.forEach(function(c){
-    if(c.finalGrade)return;
-    var ex=examsFor(c,state)||{},seen={};
-    [['mid','midterm'],['fin','final']].forEach(function(k){
-      var e=ex[k[0]], aa=items.filter(function(a){return a.courseId===c.id&&a.type===k[1];});
-      var due=aa.find(function(a){return a.due&&!C.isGraded(a);})||aa.find(function(a){return a.due;});
-      var date=e&&e.date||due&&due.due;
-      if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date))return;
-      var a=Object.assign({},due||{id:'ex-'+c.id+k[0],type:k[1],name:''},{due:date});
-      events.push({a:a,c:c,d:daysUntil(date),exam:true,examData:e||{date:date,time:'',location:''},done:aa.length>0&&aa.every(C.isGraded)});
-      seen[k[1]]=true;
-    });
-    items.filter(function(a){return a.courseId===c.id&&!C.isGraded(a)&&a.due&&!seen[a.type];}).forEach(function(a){events.push({a:a,c:c,d:daysUntil(a.due),exam:false});});
-  });
-  return events.filter(function(x){return x.d!==null;}).sort(function(x,y){return x.a.due.localeCompare(y.a.due)||String(x.examData&&x.examData.time||'').localeCompare(String(y.examData&&y.examData.time||''));});
-}
-function DashboardExamLocation(p){
-  var e=p.event.examData;
-  if(!e)return null;
-  return html`<div className="dashboard-exam-location"><${Icon} n="calendar" s=${13} />${fmtDate(e.date,true)} · ${e.time||t('notice.timeUnknown')} · ${e.location||t('exam.roomUnconfirmed')}${!e.location&&html` · <a href="#exams">${t('navShort.exams')}</a>`}</div>`;
-}
 function Dashboard(p) {
   var state = p.state, cur = curSemester(state);
   if (!cur) return html`<div><div className="page-head"><div><h1>${t('nav.dashboard')}</h1><p>${t('tagline')}</p></div></div>
@@ -5358,9 +5143,23 @@ function Dashboard(p) {
   var ids = courses.map(function (c) { return c.id; });
   var items = state.assessments.filter(function (a) { return ids.indexOf(a.courseId) >= 0; });
   var graded = items.filter(C.isGraded).length, pending = items.length - graded;
-  // Shared exam data wins over an assessment's stale due date; the calendar sees all exams, not just six upcoming tasks.
-  var allUpcoming=dashboardEvents(state,courses,items);
-  var upcoming=allUpcoming.filter(function(x){return x.d!==null && x.d >= (x.exam ? 0 : -14) && !x.done;}).slice(0,6);
+  // "Coming up" only lists the courses of the term being viewed, so other terms' (or planned) courses never show here.
+  var upcoming = items.filter(function (a) { return !C.isGraded(a) && a.due; })
+    .map(function (a) { return { a: a, d: daysUntil(a.due), c: courses.find(function (c) { return c.id === a.courseId; }) }; })
+    .filter(function (x) { return x.c && !x.c.finalGrade && x.d !== null && x.d >= -14; }).sort(function (x, y) { return x.d - y.d; }).slice(0, 5);
+  courses.forEach(function (c) {
+    var courseExams = examsFor(c, state);
+    if (!courseExams || c.finalGrade) return;
+    [['mid', 'midterm'], ['fin', 'final']].forEach(function (k) {
+      var e = courseExams[k[0]];
+      if (!e || !e.date) return;
+      var done = state.assessments.some(function (a) { return a.courseId === c.id && a.type === k[1] && (a.due || C.isGraded(a)); });
+      if (done) return;
+      var dd = daysUntil(e.date);
+      if (dd !== null && dd >= 0) upcoming.push({ a: { id: 'ex-' + c.id + k[0], type: k[1], name: '', due: e.date }, d: dd, c: c, exam: true });
+    });
+  });
+  upcoming.sort(function (x, y) { return x.d - y.d; }); var allUpcoming = upcoming; upcoming = upcoming.slice(0, 6);
   var next = upcoming.find(function (x) { return x.d >= 0; });
   var tr = C.trend(state), maxPts = C.maxPoints(C.gradesFor(null, state)) || 4;
   var hasTrend = tr.some(function (x) { return x.cumE != null; });
@@ -5407,7 +5206,7 @@ function Dashboard(p) {
     </div>
     <div className="section dashboard-exam-layout">
       <div className="card pad dashboard-exam-panel">
-        <div className="section-head"><h2>${t('upcoming')}</h2><a className="btn ghost sm" href="#exams">${t("navShort.exams")}</a>
+        <div className="section-head"><h2>${t('upcoming')}</h2>
           <button className="btn ghost sm" onClick=${function () { downloadICS(state, cur.id); }}><${Icon} n="calendar" s=${15} />${t('ics.btn')}</button></div>
         ${upcoming.length ? html`<ul className="dashboard-upcoming-list">${upcoming.map(function(x) {
           var p2 = String(x.a.due).split('-');
@@ -5418,7 +5217,7 @@ function Dashboard(p) {
               <div className="upcoming-meta"><span className="upcoming-type">${upcomingTypeShort(x.a)}</span>
                 ${upcomingItemDetail(x.a) && html`<span className="upcoming-detail">${upcomingItemDetail(x.a)}</span>`}
                 <span className="upcoming-due">${x.d < 0 ? t('pastDue') : x.d === 0 ? t('today') : t('inDays', { n: x.d })}</span>
-              </div><${DashboardExamLocation} event=${x} />
+              </div>
             </div>
             ${x.exam || x.d >= 0 ? html`<a className="btn sm" href=${'#course-' + x.c.id}>${t('viewCourse')}</a>`
               : html`<button className="btn sm" onClick=${function () { openModal('quick', { courseId: x.c.id, assessId: x.a.id }); }}>${t('enterScore')}</button>`}
@@ -5925,110 +5724,6 @@ function GradeSimulator(p) {
     </div>
   </section>`;
 }
-function ExamRoomModal(p) {
-  var state=useApp(), c=state.courses.find(function(x){return x.id===p.props.courseId;});
-  var ex=c ? examsFor(c,state) : null;
-  var ms=useState(ex&&ex.mid ? ex.mid.location||'' : ''), mid=ms[0], setMid=ms[1];
-  var fs=useState(ex&&ex.fin ? ex.fin.location||'' : ''), fin=fs[0], setFin=fs[1];
-  if(!c || !ex)return null;
-  var save=function(){update(function(d){var x=d.courses.find(function(y){return y.id===c.id;}); if(!x)return; x.exams=Object.assign({},x.exams||{},{personalRooms:{}}); [['mid',mid],['fin',fin]].forEach(function(q){var e=ex[q[0]];if(e&&e.date)x.exams.personalRooms[q[0]]={date:e.date,sec:sectionOf(c),code:String(c.code||''),semesterId:c.semesterId,room:q[1].trim()};});});toast(t('saved'));closeModal();};
-  return html`<${Modal} title=${t('exam.editRoom')} onClose=${closeModal} foot=${html`<button className="btn" onClick=${closeModal}>${t('cancel')}</button><button className="btn primary" onClick=${save}>${t('save')}</button>`}><p className="small muted">${t('exam.roomHint')}</p>
-    ${ex.mid&&ex.mid.date&&html`<${Field} label=${t('exam.midRoom')} id="exam-mid-room"><input className="input" id="exam-mid-room" value=${mid} onChange=${function(e){setMid(e.target.value);}} /><//>`}
-    ${ex.fin&&ex.fin.date&&html`<${Field} label=${t('exam.finRoom')} id="exam-fin-room"><input className="input" id="exam-fin-room" value=${fin} onChange=${function(e){setFin(e.target.value);}} /><//>`}
-    <//>`;
-}
-
-
-function ExamVerifyPanel(p){
-  var st=ExamCentral.current(),a=useState(''),msg=a[0],setMsg=a[1],b=useState(false),busy=b[0],setBusy=b[1];
-  var run=async function(){setBusy(true);setMsg('');try{if(!ExamCentral.current())await ExamCentral.reconnect();await ExamCentral.refresh(p.state);}catch(e){setMsg(t('central.failure'));}finally{setBusy(false);}};
-  return html`<section className="card pad stack"><h2>${t('central.title')}</h2>
-    ${st?html`<div className="row wrap"><span className="chip ok">${t('central.signed')}</span>${st.admin&&html`<a className="btn" href="#exam-admin">${t('central.admin')}</a>`}</div>
-    ${st.studentId?html`<p className="small muted">${t('school.autoId')}</p>`:html`<p className="small muted">${t('central.notLinked')}</p>`}`:html`<p className="small muted">${t('central.failure')}</p>`}
-    <button className="btn primary" disabled=${busy||ExamCentral.flags().loading} onClick=${run}>${t('central.refresh')}</button>
-    ${(msg||ExamCentral.flags().error)&&html`<p role="status" className="small muted">${msg||t('central.failure')}</p>`}</section>`;
-}
-function ExamAdminPage(){
-  var st=ExamCentral.current(),a=useState('2569'),year=a[0],setYear=a[1],b=useState('s1'),term=b[0],setTerm=b[1],c=useState('fin'),round=c[0],setRound=c[1],d=useState('CBS'),faculty=d[0],setFaculty=d[1],e=useState(''),source=e[0],setSource=e[1],f=useState(null),file=f[0],setFile=f[1],g=useState(''),data=g[0],setData=g[1],h2=useState(null),parsed=h2[0],setParsed=h2[1],j=useState(false),checked=j[0],setChecked=j[1],l=useState(''),email=l[0],setEmail=l[1],m=useState(''),id=m[0],setId=m[1],n=useState(''),msg=n[0],setMsg=n[1],o=useState(false),busy=o[0],setBusy=o[1],z=useState([]),history=z[0],setHistory=z[1];
-  var hist=async function(){try{setHistory(await ExamCentral.rpc('gs_exam_admin_history'));}catch(e){setMsg(t('central.failure'));}};
-  useEffect(function(){if(st&&st.admin)hist();},[!!(st&&st.admin)]);
-  if(!st||!st.admin)return html`<div className="card pad stack"><h1>${t('central.adminOnly')}</h1><a className="btn" href="#exams">${t('nav.exams')}</a></div>`;
-  var task=async function(op){setBusy(true);setMsg('');try{
-    if(op==='read'){var p=await ExamNotice.read(file,'',year,term,true);setParsed(p);setData(JSON.stringify(p.rows,null,2));setChecked(false);if(!source)setSource(file.name);}
-    else if(op==='publish'){if(!checked)throw Error('review');await ExamCentral.rpc('gs_exam_publish',{p_year:year,p_term:term,p_round:round,p_faculty:faculty,p_source:source,p_rows:JSON.parse(data)});setMsg(t('central.approved'));setData('');setParsed(null);setChecked(false);await hist();}
-    else {if(!window.confirm(t('central.evidence'))){setBusy(false);return;}await ExamCentral.rpc('gs_exam_bind_student',{p_email:email,p_student_id:op==='revoke'?null:id});setMsg(t('central.done'));setId('');}
-  }catch(e){setMsg(t('central.failure'));}finally{setBusy(false);}};
-  var clearReview=function(){setChecked(false);setData('');setParsed(null);};
-  return html`<div className="stack"><div className="page-head"><h1>${t('central.admin')}</h1></div><section className="card pad stack">
-    <div className="grid2"><${Field} label=${t('central.scope')}><input className="input" value=${year} onChange=${function(e){setYear(e.target.value);clearReview();}}/><//>
-    <select className="select" aria-label=${t('viewingSemester')} value=${term} onChange=${function(e){setTerm(e.target.value);clearReview();}}><option value="s1">1</option><option value="s2">2</option><option value="summer">Summer</option></select>
-    <select className="select" aria-label=${t('notice.type')} value=${round} onChange=${function(e){setRound(e.target.value);clearReview();}}><option value="mid">${t('type.midterm')}</option><option value="fin">${t('type.final')}</option></select>
-    <${Field} label=${t('central.faculty')}><input className="input" value=${faculty} onChange=${function(e){setFaculty(e.target.value);setChecked(false);}}/><//>
-    <${Field} label=${t('central.sourceName')}><input className="input" value=${source} onChange=${function(e){setSource(e.target.value);setChecked(false);}}/><//>
-    <${Field} label=${t('central.file')}><input className="input" type="file" accept=".pdf,application/pdf" onChange=${function(e){setFile(e.target.files[0]||null);clearReview();}}/><//></div>
-    <button className="btn" disabled=${busy||!file} onClick=${function(){task('read');}}>${t('central.read')}</button>
-    ${parsed&&html`<p className="small muted">${t('central.rows')}: ${parsed.rows.length} · ${t('central.errors')}: ${parsed.invalid} · ${parsed.pages} pages</p>`}
-    <p className="small muted">${t('central.review')}</p>
-    ${parsed&&html`<div style=${{maxHeight:420,overflow:'auto'}}>${parsed.rows.map(function(r,i){return html`<details key=${i} style=${{padding:'8px',borderBottom:'1px solid var(--line)'}}><summary>${r.code} · Sec ${r.sec||'–'} · ${r.date} ${r.time} · ${r.room} · p.${r.page}</summary><div className="small muted">${r.sectionOnly?t('notice.sectionFound'):r.ranges.map(function(q){return q.first===q.last?q.first:q.first+' – '+q.last;}).join(', ')}</div></details>`;})}</div>`}
-    <details><summary>${t('central.editData')}</summary><textarea className="input" rows="9" aria-label=${t('central.rows')} value=${data} onChange=${function(e){setData(e.target.value);setParsed(null);setChecked(false);}}></textarea></details>
-    <label className="row small"><input type="checkbox" checked=${checked} onChange=${function(e){setChecked(e.target.checked);}}/>${t('central.reviewCheck')}</label>
-    <button className="btn primary" disabled=${busy||!checked||!data||!source||!faculty} onClick=${function(){task('publish');}}>${t('central.publish')}</button>
-    </section><section className="card pad stack"><h2>${t('central.bind')}</h2><p className="small muted">${t('central.evidence')}</p><div className="grid2"><${Field} label=${t('central.email')}><input className="input" type="email" value=${email} onChange=${function(e){setEmail(e.target.value);}}/><//>
-    <${Field} label=${t('central.id')}><input className="input" inputMode="numeric" maxLength="10" value=${id} onChange=${function(e){setId(e.target.value.replace(/[^0-9]/g,''));}}/><//></div><div className="row wrap"><button className="btn primary" disabled=${busy||!email||!ExamNotice.validId(id)} onClick=${function(){task('bind');}}>${t('central.bind')}</button><button className="btn" disabled=${busy||!email} onClick=${function(){task('revoke');}}>${t('central.revoke')}</button></div></section>
-    <section className="card pad stack"><h2>${t('central.history')}</h2>${history.map(function(r){return html`<div key=${r.id} className="row wrap"><span>${r.source} · ${r.academic_year}/${r.term}/${r.round} · ${r.row_count}</span>${r.active&&html`<span className="chip ok">${t("central.active")}</span>`}</div>`;})}</section>${msg&&html`<p role="status" className="small muted">${msg}</p>`}</div>`;
-}
-
-function ExamNoticePage(p){
-  var state=p.state,stored=ExamNotice.load(),cur=curSemester(state);
-  var a=useState(stored.id||''),id=a[0],setId=a[1],b=useState(cur&&cur.id||''),sid=b[0],setSid=b[1];
-  var k=useState('auto'),mode=k[0],setKind=k[1],vis=useState(true),visible=vis[0],setVisible=vis[1],clock=useState(examToday()),today=clock[0],setToday=clock[1],f=useState(null),file=f[0],setFile=f[1],q=useState(''),msg=q[0],setMsg=q[1],busyState=useState(false),busy=busyState[0],setBusy=busyState[1],errState=useState(false),err=errState[0],setErr=errState[1];
-  useEffect(function(){var tick=function(){setToday(examToday());};var timer=setInterval(tick,30000);window.addEventListener('focus',tick);return function(){clearInterval(timer);window.removeEventListener('focus',tick);};},[]);
-  var sem=state.semesters.find(function(x){return x.id===sid;}),y=sem&&state.years.find(function(x){return x.id===sem.yearId;});
-  var courses=state.courses.filter(function(c){return c.semesterId===sid&&!c.finalGrade;});
-  var termScope=y&&sem?String(y.academic||'')+'|'+sem.kind:'';
-  var kind=mode==='auto'?examRoundFor(termScope,courses.map(function(c){return examsFor(c,state);}),today):mode;
-  var scope=termScope&&kind?termScope+'|'+kind:'',src=stored.sets&&stored.sets[scope],central=EXAM_PUBLIC_PDF_SOURCES[scope],sectionRows=EXAM_SECTION_NOTICES[scope]||[];
-  var verified=ExamCentral.current(),verifiedId=verified&&verified.studentId;var dirty=verifiedId?false:ExamNotice.studentId(id)!==stored.id;
-  var rows=courses.map(function(c){return {c:c,m:dirty?ExamNotice.match(sectionRows,c):ExamNotice.lookup(c,state,kind)};}).sort(function(x,y){return ((x.m.row&&x.m.row.date+x.m.row.time)||'~').localeCompare((y.m.row&&y.m.row.date+y.m.row.time)||'~');});
-  var saveId=function(){var val=ExamNotice.studentId(id);if(!ExamNotice.validId(val)){setMsg(t('notice.badID'));setErr(true);return false;}if(stored.id&&stored.id!==val&&!window.confirm(t('notice.changed')))return false;try{ExamNotice.save({id:val,sets:stored.id===val?stored.sets:{}});setId(val);setMsg(t('notice.idSaved'));setErr(false);return true;}catch(e){setMsg(t('notice.error'));setErr(true);return false;}};
-  var run=async function(){
-    var val=ExamNotice.studentId(id),account=ExamNotice.key();setErr(true);
-    if(!ExamNotice.validId(val)){setMsg(t('notice.badID'));return;}
-    if(!scope||!y||!/^25\d{2}$/.test(String(y.academic||''))){setMsg(t('notice.pickTerm'));return;}
-    if(stored.id&&stored.id!==val&&!window.confirm(t('notice.changed')))return;
-    if(!file&&!central){saveId();return;}
-    setBusy(true);setErr(false);setMsg(t('notice.busy'));
-    try{var inputFile=file;if(!inputFile&&central){var res=await fetch(central,{credentials:'omit',referrerPolicy:'no-referrer'});if(!res.ok)throw Error('source');inputFile=await res.blob();}var result=await ExamNotice.read(inputFile,val,String(y.academic),sem.kind);
-      if(account!==ExamNotice.key())return;
-      var next=ExamNotice.load(),sets=next.id===val?Object.assign({},next.sets):{};
-      sets[scope]=result;ExamNotice.save({id:val,sets:sets});setMsg(t('notice.saved'));setErr(false);
-    }catch(e){setMsg(t('notice.error'));setErr(true);}finally{setBusy(false);}
-  };
-  return html`<div className="stack"><div className="page-head"><div><h1>${t('nav.exams')}</h1><p>${t('notice.subtitle')}</p></div><a className="btn" href="https://www2.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryExamScheduleNew.QueryExamScheduleServlet" target="_blank" rel="noopener noreferrer">${t('notice.openReg')}</a></div>
-    ${S.web&&S.web.schoolMode&&html`<${ExamVerifyPanel} state=${state} />`}
-    <section className="card pad stack">
-      <div className="grid2">
-        <${Field} label=${t('notice.id')} id="notice-id"><div className="row" style=${{gap:8}}><input id="notice-id" className="input" type=${visible?"text":"password"} inputMode="numeric" autoComplete="off" maxLength="10" value=${verifiedId||id} disabled=${busy||!!verifiedId} onChange=${function(e){setId(e.target.value.replace(/[^0-9]/g,"").slice(0,10));}}/><button className="btn sm" type="button" aria-pressed=${!visible} onClick=${function(){setVisible(!visible);}}>${t(visible?"notice.hideId":"notice.showId")}</button></div><//>
-        <${Field} label=${t('viewingSemester')} id="notice-sem"><${SemesterSelect} id="notice-sem" state=${state} value=${sid} onChange=${function(v){if(!busy)setSid(v);}} /><//>
-        <${Field} label=${t('notice.type')} id="notice-kind"><select id="notice-kind" className="select" value=${mode} disabled=${busy} onChange=${function(e){setKind(e.target.value);}}><option value="auto">${t("notice.auto")}</option><option value="fin">${t('type.final')}</option><option value="mid">${t('type.midterm')}</option></select><//>
-      </div>
-      ${mode==="auto"&&html`<p className="small muted">${kind?t("notice.automaticLabel",{round:t(kind==="mid"?"type.midterm":"type.final")}):t("notice.autoUnknown")}</p>`}
-      <details><summary className="small muted">${t("notice.optionalPdf")}</summary><${Field} label=${t("notice.file")} id="notice-file"><input className="input" id="notice-file" type="file" accept="application/pdf,.pdf" disabled=${busy} onChange=${function(e){setFile(e.target.files[0]||null);}}/><//></details>
-      <p className="small muted">${t('notice.support')}</p>
-      <div className="row wrap"><button className="btn primary" disabled=${busy||!!verifiedId||!ExamNotice.validId(ExamNotice.studentId(id))} onClick=${run}><${Icon} n="check" />${t(file||central?"notice.lookupOfficial":"notice.saveId")}</button><button className="btn" disabled=${busy||!!verifiedId||!stored.id} onClick=${function(){if(window.confirm(t('notice.clearConfirm'))){try{ExamNotice.clear();setId('');setMsg('');}catch(e){setMsg(t('notice.error'));setErr(true);}}}}>${t('notice.clear')}</button></div>
-      ${msg&&html`<p role="status" className="small" style=${{color:err?'var(--bad)':'var(--muted)'}}>${msg}</p>`}
-      <p className="hint">${t('notice.privacy')}</p>
-    </section>
-    <section className="card pad stack">
-      <div className="row wrap between"><h2>${t('nav.exams')}</h2><span className="chip ok">${rows.filter(function(x){return x.m.row;}).length}/${courses.length}</span></div>
-      ${dirty&&html`<p className="small muted">${t("notice.pendingId")}</p>`}${src&&!dirty?html`<p className="small muted">${t("notice.imported",{n:src.pages})} ${src.invalid?t("notice.warning"):""}</p>`:null}${!ExamCentral.current()&&html`<p className="small muted">${t("central.noDb")}</p>`}
-      ${!rows.length&&html`<p className="small muted">${t('notice.noCourses')}</p>`}
-      ${rows.map(function(x){var m=x.m,r=m.row;return html`<div className="exam-notice-row" key=${x.c.id} style=${{'--cc':courseColor(x.c.color)}}><div className="grow"><a href=${'#course-'+x.c.id}><b>${courseDisplayTitle(x.c)}</b></a><div className="small muted">${x.c.code} ${sectionOf(x.c)?' · Sec '+sectionOf(x.c):''}</div>
-        ${r?html`<div className="row wrap"><span className="chip ok">${t(r.sectionOnly?"notice.sectionFound":"notice.found")}</span><span className="small">${fmtDate(r.date,true)} · ${r.time}</span></div><div><b>${t('notice.room')}: ${r.room}</b></div><div className="tiny muted">${r.sec?t('notice.secRange',{s:r.sec}):t('notice.secUnknown')} · ${r.source==="central-notice"?t("central.source"):t(r.sectionOnly?"notice.sectionSource":"notice.source",{n:r.page})}</div>`:html`<div className="small muted">${m.ambiguous?t('notice.ambiguous'):m.needsSec?t('notice.needSec'):t('notice.none')}</div>`}</div><a className="btn sm" href=${'#course-'+x.c.id}>${t('viewDetails')}</a></div>`;})}
-      <p className="hint">${t('notice.verify')}</p>
-    </section></div>`;
-}
-
 function CourseDetail(p) {
   var state = p.state, c = state.courses.find(function (x) { return x.id === p.id; });
   if (!c) return html`<div><a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a><div className="empty" style=${{ marginTop: 20 }}><h3>${t('courseNotFound')}</h3></div></div>`;
@@ -6045,9 +5740,8 @@ function CourseDetail(p) {
         </div>
         ${examsFor(c, state) && html`<div className="exam-detail small">
           ${examLine(examsFor(c, state), state.assessments.some(function (a) { return a.courseId === c.id && a.type === 'midterm' && C.isGraded(a); }))}
-          <button className="btn sm" onClick=${function(){openModal('examRoom',{courseId:c.id});}}><${Icon} n="edit" s=${14} />${t('exam.editRoom')}</button>
           ${(function () { var ex = examsFor(c, state), e = ex && (ex.fin || ex.mid), src = (e && e.source) || (ex && ex.source) || '';
-            var note = src === 'central-notice' ? t('central.source') : src === 'section-notice' ? t('notice.sectionSource',{n:e.noticePage}) : src === 'exam-notice' ? t('notice.source',{n:e.noticePage}) : src === 'reg' ? t('exam.srcReg') : src === 'user' || src === 'manual' ? t('exam.srcUser') : src === 'shared-all-secs' ? t('exam.srcAllSecs') : src === 'shared-verified' ? t('exam.srcSec') : src === 'syllabus' ? t('courseInfo.syllabusDates') : t('exam.calendarNote');
+            var note = src === 'reg' ? t('exam.srcReg') : src === 'user' || src === 'manual' ? t('exam.srcUser') : src === 'shared-all-secs' ? t('exam.srcAllSecs') : src === 'shared-verified' ? t('exam.srcSec') : src === 'syllabus' ? t('courseInfo.syllabusDates') : t('exam.calendarNote');
             return html`<span className="exam-detail-note tiny muted">${note}</span>`; })()}</div>`}
         ${(function () { var sec = RegData.section(c, state); if (!sec) return null;
           return html`<div className="small muted reg-sec">${t('reg.secLine', { s: sec.sec, w: regSectionText(sec) })}${sec.teachers && sec.teachers.length ? ' · ' + t('reg.teachers', { t: sec.teachers.join(', ') }) : ''}</div>`; })()}
@@ -7341,7 +7035,7 @@ function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, examRoom: ExamRoomModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal }[m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 
@@ -7581,7 +7275,7 @@ function SaveState() {
 }
 var NAV = [
   { id: 'courses', icon: 'book' }, { id: 'dashboard', icon: 'dashboard' }, { id: 'years', icon: 'calendar' },
-  { id: 'exams', icon: 'calendar' }, { id: 'simulator', icon: 'calc' }, { id: 'gpa', icon: 'trend' },
+  { id: 'simulator', icon: 'calc' }, { id: 'gpa', icon: 'trend' },
   { id: 'feedback', icon: 'message' }, { id: 'help', icon: 'info' }, { id: 'preferences', icon: 'sliders', key: 'settings' }
 ];
 function App() {
@@ -7603,21 +7297,15 @@ function App() {
   else if (route.page === 'courses') page = html`<${CoursesPage} state=${state} />`;
   else if (route.page === 'course') page = html`<${CourseDetail} state=${state} id=${route.id} />`;
   else if (route.page === 'simulator') page = html`<${SimulatorPage} state=${state} id=${route.id} />`;
-  else if (route.page === 'exams') page = html`<${ExamNoticePage} state=${state} />`;
-  else if (route.page === 'exam-admin') page = html`<${ExamAdminPage} />`;
   else if (route.page === 'gpa') page = html`<${GPAPage} state=${state} />`;
   else if (route.page === 'feedback') page = html`<${FeedbackPage} />`;
   else if (route.page === 'help') page = html`<${HelpPage} />`;
   else page = html`<${Preferences} state=${state} />`;
-  var examStatus=ExamCentral.current();
-  var refreshKey=JSON.stringify(state.courses.map(function(c){return [c.id,c.semesterId,c.code,c.finalGrade];}))+JSON.stringify(state.years.map(function(y){return [y.id,y.academic];}))+JSON.stringify(state.semesters.map(function(q){return [q.id,q.yearId,q.kind];}));
-  useEffect(function(){if(!examStatus||!examStatus.studentId)return;ExamCentral.refresh(state);var timer=setInterval(function(){ExamCentral.refresh(S.state);},300000);return function(){clearInterval(timer);};},[examStatus&&examStatus.studentId,refreshKey]);
   var navLabel = function (n) { return t('nav.' + (n.key || n.id)); };
   return html`<div className="shell">
     <aside className="side" aria-label=${t('mainNav')}>
       <a className="brand" href="#courses"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div><div className="brand-tag">${t('taglineShort')}</div></div></a>
       ${NAV.map(function (n) { return html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`; })}
-      ${examStatus&&examStatus.admin&&html`<a className="nav-item" href="#exam-admin" aria-current=${active==="exam-admin"?"page":null}><${Icon} n="sliders" />${t("central.admin")}</a>`}
       <div className="side-foot">${state.settings.university ? html`<div style=${{ fontWeight: 600, color: 'var(--ink-2)' }}>${state.settings.university}</div>` : null}${S.web && S.web.user ? S.web.user.email : (S.cloud ? t('store.accountShort') : t('store.deviceShort'))}</div>
     </aside>
     <div className="main">
@@ -7678,7 +7366,6 @@ var EMAIL_KEY = 'gradespace.email';
 function initialOf(user) { return ((user && user.email) || '?').trim().charAt(0).toUpperCase(); }
 function freshState() { var e = Store.emptyState(); e.settings.lang = LANG; return e; }
 function stopSync() {
-  ExamCentral.reset();
   // Flush the last pending local edit before changing identity/storage keys.
   if (localTimer && S.state) Store.Local.save(S.state, S.localKey);
   clearTimeout(localTimer); localTimer = null;
@@ -7688,7 +7375,6 @@ function stopSync() {
   S.cloud = null;
 }
 function startGuest() {
-  if(S.web&&S.web.schoolMode)return;
   stopSync();
   S.web.user = null;
   try { localStorage.setItem('gradespace.mode', 'guest'); localStorage.removeItem(EMAIL_KEY); } catch (e) { /* ignore */ }
@@ -7719,7 +7405,7 @@ function makeScoreSnapshot(email, state) {
     var mode = gradingModeFor(c);
     var summary = Calc.courseSummary(c, state);
     var grade = Calc.courseGrade(c, state, summary);
-    var exams = baseExamsFor(c, state) || {};
+    var exams = examsFor(c, state) || {};
     var base = {
       id: String(c.id || ''), code: String(c.code || ''),
       name: String(c.name || ''), academicYear: String(year.academic || ''),
@@ -7846,8 +7532,7 @@ function logRegistration(email) {
   catch (e) { /* ignore network error: sign-in must remain instant */ }
 }
 // Email-only access: no password, no code, no authentication message.
-function startLegacyUser(user) {
-  if(!S.web||S.web.schoolMode)return;
+function startUser(user) {
   logRegistration(user.email);
   stopSync();
   var w = S.web; w.user = user;
@@ -7889,50 +7574,12 @@ function startLegacyUser(user) {
   };
   attempt();
 }
-function startUser(user,admission) {
-  if(!S.web||!S.web.schoolMode)return;
-  if(!admission||!S.web||!S.web.verifiedUser||S.web.verifiedUser.id!==user.id)return;
-  logRegistration(user.email);
-  stopSync();
-  var w = S.web; w.user = user;
-  S.localKey = Store.KEY + ':verified:' + user.id;
-  S.state = Store.Local.load(S.localKey) || freshState();
-  S.sync = 'saving'; S.authScreen = false; S.ready = true; ExamCentral.attach(admission); emit();
-  var cloud = Store.makeEmailStore(w.client, user.email, true);
-  var attempt = function () {
-    if (w.user !== user) return;
-    cloud.load().then(function (remote) {
-      if (w.user !== user) return;
-      var cur = S.state, curHas = cur.courses.length || cur.years.length;
-      if (remote && (!curHas || remote.updatedAt >= cur.updatedAt)) {
-        S.state = remote; Store.Local.save(remote, S.localKey);
-      }
-      S.cloud = cloud;
-      S.unwatch = cloud.watch(function (fresh) {
-        if (w.user === user && fresh.updatedAt > S.state.updatedAt) {
-          S.state = fresh; Store.Local.save(fresh, S.localKey); S.sync = 'account';
-          scheduleScoreSheetSync(); emit();
-        }
-      });
-      scheduleScoreSheetSync();
-      if (S.state === remote) { S.sync = 'account'; emit(); return; }
-      if (!S.state.updatedAt) S.state.updatedAt = Date.now();
-      emit();
-      cloud.save(S.state).then(function (r) { S.sync = r === 'ok' ? 'account' : 'error'; emit(); });
-    }, function () {
-      if (w.user !== user) return;
-      S.sync = 'error'; emit();
-      setTimeout(attempt, 20000);
-    });
-  };
-  attempt();
-}
 function resetToAuth() {
   var key = S.localKey;
   stopSync();
   if (key) Store.Local.clear(key);
-  if(!S.web.schoolMode)try { localStorage.removeItem(EMAIL_KEY); } catch (e) { /* ignore */ }
-  S.web.user = null; S.web.verifiedUser=null; S.localKey = undefined;
+  try { localStorage.removeItem(EMAIL_KEY); } catch (e) { /* ignore */ }
+  S.web.user = null; S.localKey = undefined;
   S.state = freshState(); S.sync = 'device'; S.authScreen = true; S.modal = null;
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   emit();
@@ -7951,23 +7598,21 @@ function signOut() {
         'Your latest changes are not confirmed online. Please try signing out again.');
       return;
     }
-    if(!S.web.schoolMode){resetToAuth();toast(t('account.signedOut'));return;}
-    S.web.client.auth.signOut({scope:'local'}).then(function(r){if(r.error){toast(t('school.signoutFailed'));return;}if(S.web.user)resetToAuth();toast(t('account.signedOut'));},function(){toast(t('school.signoutFailed'));});
+    resetToAuth(); toast(t('account.signedOut'));
   }, function () {
     toast(LANG === 'th' ? 'เชื่อมต่อไม่สำเร็จ เก็บข้อมูลล่าสุดไว้ในเครื่องนี้แล้ว' :
       'Could not sync changes. Your latest data is kept on this device.');
   });
 }
 function goAuth() { S.authScreen = true; emit(); }
-function AuthScreen(){return S.web&&S.web.schoolMode?html`<${SchoolAuthScreen}/>`:html`<${LegacyAuthScreen}/>`;}
-function LegacyAuthScreen() {
+function AuthScreen() {
   var es = useState(''), email = es[0], setEmail = es[1];
   var ers = useState(null), err = ers[0], setErr = ers[1];
   useEffect(function () { document.documentElement.lang = LANG; document.title = 'GradeSpace – ' + t('taglineShort'); });
   var enter = function () {
     var em = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { setErr(t('auth.err.email')); return; }
-    startLegacyUser({ id: em, email: em });
+    startUser({ id: em, email: em });
   };
   var setLang = function (v) { LANG = v; try { localStorage.setItem('gradespace.lang', v); } catch (e) { /* ignore */ } emit(); };
   return html`<div className="auth-wrap">
@@ -8002,59 +7647,9 @@ function AccountSection() {
       : html`<p className="small muted" style=${{ margin: 0 }}>${t('account.guestP')}</p><div><button className="btn primary" onClick=${goAuth}>${t('account.signInBtn')}</button></div>`}
   </section>`;
 }
-function SchoolAuthScreen() {
-  var a=useState(false),busy=a[0],setBusy=a[1],b=useState(''),err=b[0],setErr=b[1];
-  useEffect(function(){document.documentElement.lang=LANG;document.title='GradeSpace – '+t('taglineShort');});
-  var enter=async function(admin){
-    setBusy(true);setErr('');
-    try{
-      var opts={redirectTo:location.origin+location.pathname+'?exam_oauth=1',queryParams:{prompt:'select_account'}};
-      if(!admin)opts.queryParams.hd='*';
-      var r=await S.web.client.auth.signInWithOAuth({provider:'google',options:opts});
-      if(r.error)throw Error('provider');
-    }catch(e){setErr('school.loginFailed');setBusy(false);}
-  };
-  var setLang=function(v){LANG=v;try{localStorage.setItem('gradespace.lang',v);}catch(e){}emit();};
-  return html`<div className="auth-wrap"><div className="auth-card card">
-    <div className="row between" style=${{marginBottom:18}}><div className="brand" style=${{padding:0}}><${Logo}/><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div>
-      <${Seg} label=${t('language')} value=${LANG} onChange=${setLang} options=${[{v:'th',l:'TH'},{v:'en',l:'EN'}]}/></div>
-    <h1 className="auth-title">${t('welcomeT')}</h1>
-    <div className="stack"><p className="muted">${t('school.intro')}</p>
-      <p className="small muted">xxxxxxxxxx@student.chula.ac.th</p>
-      ${(err||S.web&&S.web.loginError)&&html`<${Banner} kind="bad">${t(err||S.web.loginError)}<//>`}
-      <button className="btn primary" disabled=${busy} onClick=${function(){enter(false);}}>${t('school.enter')}</button>
-      <p className="auth-privacy">${t('school.privacy')}</p>
-      <p className="auth-privacy">${t('school.dataNotice')}</p>
-      <div className="auth-divider"></div><button className="btn ghost" disabled=${busy} onClick=${function(){enter(true);}}>${t('school.adminEnter')}</button>
-      <p className="hint">${t('school.legacy')}</p>
-    </div></div></div>`;
-}
-function AccountSection() {
-  var u = S.web.user;
-  return html`<section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('account')}</h2>
-    ${u ? html`<div className="row wrap between">
-        <div className="row"><span className="avatar lg">${initialOf(u)}</span><div className="small muted">${t('account.signedInAs', { e: u.email })}</div></div>
-        <button className="btn" onClick=${function () { confirmDialog({ title: t('account.signOutQ'), body: t('account.signOutBody'), confirmLabel: t('account.signOut'), onConfirm: signOut }); }}>${t('account.signOut')}</button>
-      </div>`
-      : html`<p className="small muted" style=${{ margin: 0 }}>${t('account.guestP')}</p><div><button className="btn primary" onClick=${goAuth}>${t('account.signInBtn')}</button></div>`}
-  </section>`;
-}
-// Staged rollout: production root keeps the existing entry until real school OAuth is verified.
-function schoolLoginMode(url,previous){
-  var u=new URL(url);
-  if(u.searchParams.get('school_preview')==='0')return false;
-  return u.hostname==='feat-private-exam-database-gradespace-th.dome-dome310850.workers.dev' ||
-    u.searchParams.get('school_preview')==='1' || u.searchParams.get('exam_oauth')==='1' || previous==='1';
-}
-function webBoot(){
-  var prior='';try{prior=sessionStorage.getItem('gs-school-preview')||'';}catch(e){}
-  var school=schoolLoginMode(location.href,prior);
-  try{if(school)sessionStorage.setItem('gs-school-preview','1');else sessionStorage.removeItem('gs-school-preview');}catch(e){}
-  if(school)schoolWebBoot();else legacyWebBoot();
-}
-function legacyWebBoot() {
+function webBoot() {
   var cfg = window.GS_WEB;
-  S.web = { client: window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: false, autoRefreshToken: false } }), user: null, schoolMode:false };
+  S.web = { client: window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: false, autoRefreshToken: false } }), user: null };
   var saved = null, guestPref = false;
   try {
     if (localStorage.getItem('gradespace.th-default-v1') !== '1') { localStorage.setItem('gradespace.th-default-v1', '1'); localStorage.setItem('gradespace.lang', 'th'); }
@@ -8065,45 +7660,9 @@ function legacyWebBoot() {
   } catch (e) { /* ignore */ }
   S.state = freshState();
   ReactDOM.createRoot(document.getElementById('root')).render(h(Root));
-  if (saved) startLegacyUser({ id: saved, email: saved });
+  if (saved) startUser({ id: saved, email: saved });
   else if (guestPref) startGuest();
   else { S.authScreen = true; S.ready = true; emit(); }
-}
-
-function schoolWebBoot() {
-  var cfg=window.GS_WEB;
-  S.web={client:window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:true,storage:sessionStorage,storageKey:'gradespace-school-auth',flowType:'pkce',autoRefreshToken:true,detectSessionInUrl:false}}),user:null,verifiedUser:null,loginError:'',schoolMode:true};
-  try{
-    if(localStorage.getItem('gradespace.th-default-v1')!=='1'){localStorage.setItem('gradespace.th-default-v1','1');localStorage.setItem('gradespace.lang','th');}
-    var l=localStorage.getItem('gradespace.lang');LANG=l==='en'?'en':'th';
-  }catch(e){}
-  S.state=freshState();S.authScreen=true;S.ready=false;
-  ReactDOM.createRoot(document.getElementById('root')).render(h(Root));
-  var w=S.web;
-  w.client.auth.onAuthStateChange(function(event){if(event==='SIGNED_OUT'&&w.user)setTimeout(function(){if(w.user)resetToAuth();},0);});
-  (async function(){
-    var u=new URL(location.href),callback=u.searchParams.get('exam_oauth')==='1';
-    try{
-      if(callback){
-        var code=u.searchParams.get('code');history.replaceState(null,'',location.pathname);
-        if(!code)throw Error('provider');
-        var exchange=await w.client.auth.exchangeCodeForSession(code);if(exchange.error)throw Error('provider');
-      }
-      var sess=await w.client.auth.getSession();
-      if(sess.error)throw Error('provider');
-      if(!sess.data.session){S.ready=true;emit();return;}
-      var verified=await w.client.auth.getUser();
-      if(verified.error||!verified.data.user)throw Error('provider');
-      var admission=await w.client.rpc('gs_school_access');
-      if(admission.error||!admission.data)throw Error(admission.error&&admission.error.code==='42501'?'denied':'access');
-      var acct=verified.data.user;w.verifiedUser=acct;
-      startUser({id:acct.id,email:String(acct.email||'').toLowerCase()},admission.data);
-    }catch(e){
-      w.loginError=e.message==='denied'?'school.denied':e.message==='access'?'school.accessFailed':'school.loginFailed';
-      try{await w.client.auth.signOut({scope:'local'});}catch(x){}
-      w.verifiedUser=null;S.authScreen=true;S.ready=true;emit();
-    }
-  })();
 }
 
 /* ================= boot ================= */

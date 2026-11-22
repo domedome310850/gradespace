@@ -106,7 +106,7 @@ data and fails on any error or sideways scrolling. Also click through what you c
 
 ## Open work
 
-- Login with OTP / Google instead of email-only (anyone who knows an email can open that account today).
+- **Paused by owner (2026-11-22):** university/OTP/Google login and individual exam-room lookup. Keep original email entry and original exam-date/calendar display; don't reactivate either experiment until requested. All eight experimental RPCs are revoked from browser roles; private tables retained. Email-only access is not verified authentication (anyone knowing an email can open that account).
 - Installable app (PWA) and a privacy (PDPA) page.
 - Move the two Google Sheets into Supabase tables.
 - MyCourseVille: official API needs an app key from the MCV team; meanwhile "Paste from MCV" and
