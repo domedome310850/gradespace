@@ -1864,6 +1864,15 @@ var Scan = (function () {
     ['A','B+','B','C+','C','D+','D'].forEach(function(k){var v=g.minimumGrades[k];if(v==null)return;if(typeof v!=='number'||!Number.isFinite(v)||v<=0||v>100||v>=prev){bad=true;return;}out[k]=v;prev=v;});
     return bad?{}:out;
   }
+  function scanRules(g) {
+    var q=g&&g.advancedRules;
+    if(!q||typeof q!=='object'||typeof q.evidence!=='string'||!q.evidence.trim())return null;
+    var out={evidence:q.evidence.slice(0,400),minimums:[],drops:[]};
+    if(['nearest','floor','ceil'].includes(q.rounding))out.rounding=q.rounding;
+    if(Array.isArray(q.minimums))out.minimums=q.minimums.filter(function(r){return r&&TYPES.includes(r.type)&&typeof r.min==='number'&&r.min>=0&&r.min<=100&&['A','B+','B','C+','C','D+','D','F','S','U'].includes(r.cap);}).slice(0,8);
+    if(Array.isArray(q.drops))out.drops=q.drops.filter(function(r){return r&&typeof r.group==='string'&&r.group.trim()&&Number.isInteger(r.count)&&r.count>0&&r.count<100;}).slice(0,8);
+    return out.rounding||out.minimums.length||out.drops.length?out:null;
+  }
   function gradingSummary(g) {
     g = g || {};
     if (g.method === 'su') return { kind: 'su', mpl: num(g.mpl) };
@@ -1897,7 +1906,7 @@ var Scan = (function () {
         match: match,
         rows: items.map(function (a) { return { a: a, hit: match ? matchAssessment(existing, a) : null }; }),
         items: items.length, scored: items.filter(function (a) { return num(a.score) !== null; }).length,
-        grading: gradingSummary(sc.grading)
+        grading: gradingSummary(sc.grading), rules: scanRules(sc.grading)
       };
     });
   }
@@ -1934,6 +1943,9 @@ var Scan = (function () {
       var groups = Array.isArray(sc.groups) ? sc.groups : [];
       var course = findCourse(state, semesterId, sc, loose);
       var gr = gradingFor(state, sc.grading);
+      var incomingSection=String(sc.section||String(sc.code||'').match(/\.(\d+)$/)?.[1]||'').replace(/^0+(?=\d)/,'');
+      var currentSection=course?String(sectionOf(course)||'').replace(/^0+(?=\d)/,''):'';
+      var sectionCompatible=!incomingSection||!currentSection||incomingSection===currentSection;
       if (!course) {
         course = { id: Store.uid('c-'), semesterId: semesterId, name: niceName(sc.name || sc.code || 'Course'), code: sc.code || '',
           credits: num(sc.credits) !== null ? num(sc.credits) : 3, section: sc.section || '', instructor: '', target: null,
@@ -1944,12 +1956,12 @@ var Scan = (function () {
         Store.placeCourse(state, course.id);
         touched.push(course);
       } else {
-        if (!course.gradingUser && sc.grading && (sc.grading.method || sc.grading.referencing || sc.grading.cutoffs)) { course.scaleId = gr.scaleId; course.customGrades = gr.customGrades; course.gradingMode = sc.grading.referencing === 'norm' ? 'norm' : ((sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'); if(course.gradingMode === 'norm' && course.targetPct == null) course.targetPct = 60; }
+        if (sectionCompatible && !course.gradingUser && sc.grading && (sc.grading.method || sc.grading.referencing || sc.grading.cutoffs)) { course.scaleId = gr.scaleId; course.customGrades = gr.customGrades; course.gradingMode = sc.grading.referencing === 'norm' ? 'norm' : ((sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'); if(course.gradingMode === 'norm' && course.targetPct == null) course.targetPct = 60; }
         if (num(sc.credits) !== null) course.credits = num(sc.credits);
         updated++; touched.push(course);
       }
       // Scan suggestions require explicit review before becoming guarantees.
-      if (!course.gradingUser && sc.grading && sc.grading._confirmFloors === true) {
+      if (sectionCompatible && !course.gradingUser && sc.grading && sc.grading._confirmFloors === true) {
         var accepted=confirmedFloors(sc.grading);
         if(Object.keys(accepted).length)course.normFloors=accepted;
       }
@@ -1989,6 +2001,13 @@ var Scan = (function () {
         });
         state.assessments.push(row); existing.push(row);
       });
+      if(sectionCompatible&&!course.gradingUser&&sc.grading&&sc.grading._confirmRules===true&&!(typeof GSPlanning!=='undefined'&&GSPlanning.active(course.advancedPolicy))){
+        var suggested=scanRules(sc.grading);
+        if(suggested){var policy={minimums:suggested.minimums,rounding:suggested.rounding||'none',drops:{}};var allMapped=true;
+          suggested.drops.forEach(function(r){var cat=catByName[norm(r.group)],n=cat?state.assessments.filter(function(a){return a.categoryId===cat.id;}).length:0;if(!cat||cat.dist!=='equal'||r.count>=n)allMapped=false;else policy.drops[cat.id]=r.count;});
+          if(allMapped){course.advancedPolicy=policy;course.gradingEvidence=suggested.evidence;}
+        }
+      }
     });
     state.settings.onboarded = true;
     return { added: added, updated: updated, semesterId: semesterId, courses: touched };
@@ -2594,6 +2613,7 @@ en: {
   "policy.rawHint":"Raw scores only. Advanced rules may change the result; see the policy panel.",
   "policy.simHint":"Advanced rules are applied to the complete simulated scores. Raw-score target solving is disabled for this course.",
   "policy.adjusted":"Adjusted total: {p}%",
+  "policy.adjustedLabel":"Rule-adjusted total","policy.rawLabel":"Raw total (rules unresolved)",
   "policy.title":"Advanced grading rules",
   "policy.hint":"Use only confirmed syllabus rules. Official grades are never changed. Raw totals stay visible separately.",
   "policy.rounding":"Round the total before grading",
@@ -2621,6 +2641,7 @@ en: {
   "policy.ruleError":"Use valid values and select a component or assessment.",
   "paste.badRange":"Score outside valid range — skip or correct the source.",
   "plan.reminders":"Exam and deadline reminders","plan.reminderHint":"Device notifications while GradeSpace is open; export the calendar for reminders when the app is closed.","plan.reminderCount":"{n} exams or deadlines in the next 3 days.","plan.reminderOn":"Enable notifications","plan.reminderOff":"Disable notifications","plan.reminderDenied":"Notification permission was not granted.","plan.reminderUnsupported":"Notifications are unavailable in this browser. Calendar export still works.",
+  "plan.scanRules":"Suggested advanced rules", "plan.scanRulesConfirm":"I verified the quoted rule. Apply only if categories match; existing manual rules are preserved.",
   "plan.priority":"Study priorities",
   "plan.priorityHint":"Planning heuristic using exam dates, exam weight, score gap and credits; not a probability. Review impossible or invalid goals separately.",
   "plan.examDays":"Exam in {n} days",
@@ -3018,6 +3039,7 @@ th: {
   "policy.rawHint":"คะแนนดิบเท่านั้น กฎพิเศษอาจเปลี่ยนผลลัพธ์ ดูส่วนกฎการตัดเกรด",
   "policy.simHint":"นำกฎพิเศษไปใช้กับคะแนนจำลองทั้งหมด ปิดการคำนวณย้อนกลับจากคะแนนดิบสำหรับวิชานี้",
   "policy.adjusted":"คะแนนหลังใช้กฎ: {p}%",
+  "policy.adjustedLabel":"คะแนนรวมหลังใช้กฎ","policy.rawLabel":"คะแนนดิบ (กฎยังไม่สมบูรณ์)",
   "policy.title":"กฎการตัดเกรดเพิ่มเติม",
   "policy.hint":"ระบุเฉพาะกฎที่ยืนยันจากประมวลรายวิชา ไม่เปลี่ยนเกรดจริงที่บันทึกแล้ว และยังแสดงคะแนนดิบแยกต่างหาก",
   "policy.rounding":"ปัดคะแนนรวมก่อนตัดเกรด",
@@ -3045,6 +3067,7 @@ th: {
   "policy.ruleError":"กรอกค่าที่ถูกต้องและเลือกองค์ประกอบหรือรายการประเมิน",
   "paste.badRange":"คะแนนเกินช่วงที่กำหนด โปรดข้ามหรือแก้ข้อมูลต้นทาง",
   "plan.reminders":"เตือนสอบและกำหนดส่งงาน","plan.reminderHint":"แจ้งเตือนบนอุปกรณ์ขณะเปิด GradeSpace หรือส่งออกปฏิทินเพื่อรับการเตือนเมื่อปิดเว็บ","plan.reminderCount":"มีสอบหรือกำหนดส่ง {n} รายการใน 3 วันข้างหน้า","plan.reminderOn":"เปิดการแจ้งเตือน","plan.reminderOff":"ปิดการแจ้งเตือน","plan.reminderDenied":"ไม่ได้รับอนุญาตให้แจ้งเตือน","plan.reminderUnsupported":"เบราว์เซอร์ไม่รองรับการแจ้งเตือน ยังส่งออกปฏิทินได้",
+  "plan.scanRules":"กฎเพิ่มเติมที่ AI อ่านได้", "plan.scanRulesConfirm":"ตรวจสอบข้อความแล้ว ใช้เมื่อกลุ่มคะแนนตรงกันและไม่ทับกฎที่กำหนดเอง",
   "plan.priority":"ลำดับวิชาที่ควรอ่าน",
   "plan.priorityHint":"จัดลำดับจากวันสอบ น้ำหนักสอบ คะแนนที่ขาดและหน่วยกิต ไม่ใช่ความน่าจะเป็น ควรตรวจสอบเป้าหมายที่ทำไม่ได้หรือข้อมูลผิดปกติ",
   "plan.examDays":"สอบอีก {n} วัน",
@@ -4099,7 +4122,7 @@ function isSUCourse(c) {
 }
 function gradingModeFor(c) {
   if (isSUCourse(c)) return 'criterion';
-  if (c && c.gradingUser && (c.gradingMode === 'criterion' || c.gradingMode === 'norm')) return c.gradingMode;
+  if (c && c.gradingUser && ['criterion','norm','unknown','component'].includes(c.gradingMode)) return c.gradingMode;
   // A public syllabus can establish relative grading without knowing the group's final cutoffs.
   // Only use a section-exact policy, not the generic course-code template.
   if (c && typeof SharedCatalog !== 'undefined' && S && S.state) {
@@ -4987,7 +5010,7 @@ function CourseCard(p) {
       </div>
       <${GradeBadge} info=${info} />
     </div>
-    <div className="ccard-slot ccard-bar-slot">${!c.finalGrade && html`<${GradeBar} sum=${sum} grades=${mode === 'criterion' ? grades : []} target=${tg} />`}</div>
+    <div className="ccard-slot ccard-bar-slot">${!c.finalGrade && html`<${GradeBar} sum=${sum} grades=${mode === 'criterion' && !hasAdvanced(c) ? grades : []} target=${hasAdvanced(c)?null:tg} />`}</div>
     <div className="ccard-slot ccard-progress-slot">${manual || c.finalGrade ? html`<p className="small muted" style=${{ margin: 0 }}>${c.finalGrade ? officialNote(c, state) : t('manualGradeNote')}</p>` : html`<div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>`}</div>
     <div className="ccard-slot ccard-warning-slot">${!c.finalGrade && sum.issues.over && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.over",{n:fmtT(sum.totalWeight)})}</div>`}${!c.finalGrade && sum.issues.overMax>0 && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.overMax")}</div>`}</div>
     <div className="ccard-slot ccard-forecast-slot">${!c.finalGrade && html`<${EstimateBasis} course=${c} sum=${sum} state=${state} collapsible=${true} />`}</div>
@@ -5450,15 +5473,15 @@ function StudyPriority(p) {
     var target=goal ? goal.min : mode==='criterion' ? null : numericGoalFor(c);
     var event=p.events.filter(function(e){return e.c.id===c.id&&!e.completed&&e.d>=0;}).sort(function(a,b){return a.d-b.d;})[0];
     var gap=target==null?null:Math.max(0,target-sum.earned);
-    var invalid=hasAdvanced(c)||sum.issues.over||sum.issues.overMax>0;
+    var advanced=hasAdvanced(c), invalid=advanced||sum.issues.over||sum.issues.overMax>0;
     var impossible=gap!=null&&target>sum.maxPossible+1e-8;
     var weight=event ? sum.pendingRows.filter(function(r){return r.a.type===event.a.type;}).reduce(function(a,r){return a+r.w;},0):0;
     var score=invalid||impossible||gap===0? -1 : (event? 60/(1+event.d):0)+weight/2+(gap==null?0:30*gap/Math.max(1,sum.remaining))+(toNum(c.credits)||0);
-    return {c:c,event:event,gap:gap,target:target,goal:goal,invalid:invalid,impossible:impossible,score:score};
+    return {c:c,event:event,gap:gap,target:target,goal:goal,advanced:advanced,invalid:invalid,impossible:impossible,score:score};
   }).sort(function(a,b){return b.score-a.score;});
   if(!rows.length)return null;
   return html`<section data-testid="study-priority" className="section card pad"><div className="section-head"><h2>${t('plan.priority')}</h2></div><p className="small muted">${t('plan.priorityHint')}</p>
-    <div className="stack">${rows.slice(0,5).map(function(r){return html`<div key=${r.c.id} className="row wrap between"><div className="grow"><a href=${'#course-'+r.c.id}><b>${courseDisplayTitle(r.c)}</b></a><div className="small muted">${r.event?t('plan.examDays',{n:r.event.d}):t('plan.noDate')} · ${r.invalid?t('plan.invalid'):r.impossible?t('plan.unreachable'):r.gap===null?t('plan.noGoal'):r.gap===0?t('plan.reached'):t('plan.gap',{n:fmtT(Math.ceil(r.gap*100)/100),p:fmtT(r.target)})}</div></div><span className=${'chip '+(r.invalid||r.impossible?'warn':r.gap===0?'ok':'')}>${r.invalid||r.impossible?t('plan.review'):r.gap===0?t('plan.reached'):r.event&&r.event.d<=3?t('plan.soon'):t('plan.study')}</span></div>`;})}</div></section>`;
+    <div className="stack">${rows.slice(0,5).map(function(r){return html`<div key=${r.c.id} className="row wrap between"><div className="grow"><a href=${'#course-'+r.c.id}><b>${courseDisplayTitle(r.c)}</b></a><div className="small muted">${r.event?t('plan.examDays',{n:r.event.d}):t('plan.noDate')} · ${r.advanced?t('policy.rawHint'):r.invalid?t('plan.invalid'):r.impossible?t('plan.unreachable'):r.gap===null?t('plan.noGoal'):r.gap===0?t('plan.reached'):t('plan.gap',{n:fmtT(Math.ceil(r.gap*100)/100),p:fmtT(r.target)})}</div></div><span className=${'chip '+(r.invalid||r.impossible?'warn':r.gap===0?'ok':'')}>${r.invalid||r.impossible?t('plan.review'):r.gap===0?t('plan.reached'):r.event&&r.event.d<=3?t('plan.soon'):t('plan.study')}</span></div>`;})}</div></section>`;
 }
 function ClassComparison(p) {
   var c=p.course,sum=p.sum;
@@ -5572,9 +5595,6 @@ function Dashboard(p) {
     </div>
     ${needRecord.length > 0 && html`<div style=${{ marginTop: 14 }}><${Banner} kind="ok">${t('recordPrompt', { n: needRecord.length })}${' '}
       ${needRecord.map(function (c, i) { return html`<span key=${c.id}>${i ? ', ' : ''}<a href=${'#course-' + c.id}>${courseDisplayTitle(c)}</a></span>`; })}<//></div>`}
-    <${StudyPriority} courses=${courses} state=${state} events=${examEvents} />
-    <${SemesterRange} state=${state} semester=${cur} />
-    <${ReminderPanel} events=${upcoming} state=${state} semester=${cur} personal=${personal} />
     <div className="section dashboard-exam-layout">
       <div className="card pad dashboard-exam-panel">
         <div className="section-head"><h2>${t('upcoming')}</h2>
@@ -5601,6 +5621,9 @@ function Dashboard(p) {
       </div>
       <${ExamCalendarPanel} events=${allUpcoming} />
     </div>
+    <${StudyPriority} courses=${courses} state=${state} events=${examEvents} />
+    <${SemesterRange} state=${state} semester=${cur} />
+    <${ReminderPanel} events=${upcoming} state=${state} semester=${cur} personal=${personal} />
     <div className="section">
       <div className="section-head"><h2>${t('coursesIn', { s: semFull(state, cur) })}</h2>
         <a className="btn ghost sm" href="#courses">${t('allCourses')}</a></div>
@@ -6125,7 +6148,7 @@ function GradeSimulator(p) {
     </div>
     ${normFloorText(c, Object.assign({}, sum, {earned:total})) && html`<div className="small muted">${t('predFinal')}: ${normFloorText(c, Object.assign({}, sum, {earned:total}))}</div>`}
     <div className="sim-result">
-      <div><div className="k">${t('predFinal')}</div><div className="v">${fmt(total)}%</div></div>
+      <div><div className="k">${advanced?t(adjusted&&adjusted.status==='ok'?'policy.adjustedLabel':'policy.rawLabel'):t('predFinal')}</div><div className="v">${fmt(total)}%</div></div>
       <div><div className="k">${t('predGrade')}</div><div className=${criterion ? "v" : "v grade-summary-short"} title=${criterion ? undefined : t("grading.noLetterPrediction")}>${pg ? pg.label : t('grading.noLetterPredictionShort')}</div></div>
       <div><div className="k">${t('predGPAContrib')}</div><div className="v">${meta && meta.gpa && isNum(meta.points) ? fmt(meta.points * credits) : '–'}</div>
         <div className="tiny muted">${meta && meta.gpa && isNum(meta.points) ? t('ptsXcr', { p: fmtT(meta.points), c: fmtT(credits) }) : ''}</div></div>
@@ -6304,6 +6327,7 @@ function semesterPlanning(state,sem) {
     var floor=!sum.issues.over&&!sum.issues.overMax?floors.find(function(g){return sum.earned>=g.min;}):null;
     var grades=C.gradesFor(c,state).filter(function(g){return g.gpa!==false&&isNum(g.points)&&g.points>=0;});
     var lower=floor?grades.find(function(g){return g.label===floor.label;}):null;
+    if(!hasAdvanced(c)&&mode==='criterion'&&!sum.issues.over&&!sum.issues.overMax&&sum.rows.length)lower=C.letterFor(sum.earned,grades);
     if(hasAdvanced(c)){var result=GSPlanning.evaluate(c.advancedPolicy,state,c,sum,grades,null);if(mode==='criterion'&&sum.complete&&result.status==='ok'&&result.grade)return [result.grade];return grades.sort(function(a,b){return a.points-b.points;});}
     return grades.filter(function(g){return (!lower||g.points>=lower.points)&&(mode!=='criterion'||sum.issues.over||sum.issues.overMax||g.min<=sum.maxPossible+1e-8);}).sort(function(a,b){return a.points-b.points;});
   });
@@ -6632,7 +6656,7 @@ function CourseModal(p) {
         normMethod: f.normMethod || 'unknown', normMean: toNum(f.normMean), normStdDev: toNum(f.normStdDev),
         gradingNotes: String(f.gradingNotes || '').trim(), gradingSource: String(f.gradingSource || '').trim() };
       var sectionChanged = !!c && sectionOf(c) !== data.section;
-      if (sectionChanged) { data.normFloors = {}; data.classSnapshot = {}; data.advancedPolicy = {}; data.gradingMode = 'unknown'; data.customGrades = null; data.scaleId = d.settings.defaultScaleId; data.gradingSource = ''; data.exams = null; }
+      if (sectionChanged) { data.normFloors = {}; data.classSnapshot = {}; data.advancedPolicy = {}; data.gradingEvidence = ''; data.gradingMode = 'unknown'; data.customGrades = null; data.scaleId = d.settings.defaultScaleId; data.gradingSource = ''; data.exams = null; }
       if ((!c && data.code) || sectionChanged) {
         var verifiedRule = SharedCatalog.verifiedPolicyTemplate(data, d);
         if (verifiedRule) {
@@ -7249,6 +7273,7 @@ function ScanModal(p) {
               </div>
             </label>
             ${chosen[i] && Object.keys(c.grading.floors||{}).length>0 && html`<label className="check small"><input type="checkbox" checked=${sc.grading._confirmFloors===true} onChange=${function(e){var next=res.courses.slice();next[i]=Object.assign({},sc,{grading:Object.assign({},sc.grading,{_confirmFloors:e.target.checked})});setRes(Object.assign({},res,{courses:next}));}} /><span>${t('plan.scanConfirm')}</span></label>`}
+            ${chosen[i] && c.rules && html`<div className="banner info"><div><b>${t('plan.scanRules')}</b><p className="small">${c.rules.evidence}</p><div className="small">${c.rules.rounding?t('policy.rounding')+': '+t('policy.'+c.rules.rounding):''}${c.rules.minimums.map(function(r){return ' · '+t('type.'+r.type)+' ≥ '+r.min+'% / '+t('policy.cap')+' '+r.cap;}).join('')}${c.rules.drops.map(function(r){return ' · '+r.group+' — '+t('policy.dropCount')+' '+r.count;}).join('')}</div><label className="check small"><input type="checkbox" checked=${sc.grading._confirmRules===true} onChange=${function(e){var next=res.courses.slice();next[i]=Object.assign({},sc,{grading:Object.assign({},sc.grading,{_confirmRules:e.target.checked})});setRes(Object.assign({},res,{courses:next}));}} /><span>${t('plan.scanRulesConfirm')}</span></label></div></div>`}
             ${sc.weightFlag != null && html`<div className="small scan-warn">${t('scan.weights', { w: fmtT(sc.weightFlag) })}</div>`}
             ${chosen[i] && c.rows.length > 0 && html`<div className="scan-rows">
               ${c.rows.map(function (r, j) {
