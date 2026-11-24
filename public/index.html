@@ -6208,8 +6208,8 @@ function CourseDetail(p) {
         <div style=${{ marginTop: 8 }}><button className="btn sm primary" onClick=${function () { openModal('final', { courseId: c.id }); }}>${t('recordGrade')}</button></div></div><//>`}
       ${c.finalGrade ? html`<${Banner} kind="info"><div>${officialNote(c, state)}${impliedRange(c, state, c.finalGrade) ? html`<div className="small" style=${{ marginTop: 4 }}>${impliedText(impliedRange(c, state, c.finalGrade))}</div>` : ''}</div><//>` : html`<${GradingAndGap} course=${c} state=${state} sum=${sum} />`}
       <${GradeSummary} course=${c} state=${state} sum=${sum} info=${info} />
-      <${AdvancedPolicy} key=${c.id} course=${c} state=${state} sum=${sum} />
-      ${gradingModeFor(c)==='norm' && html`<${ClassComparison} key=${c.id} course=${c} sum=${sum} />`}
+      <${AdvancedPolicy} key=${'policy-'+c.id} course=${c} state=${state} sum=${sum} />
+      ${gradingModeFor(c)==='norm' && html`<${ClassComparison} key=${'comparison-'+c.id} course=${c} sum=${sum} />`}
       <${AssessmentList} course=${c} state=${state} sum=${sum} />
       ${sum.rows.length > 0 && !c.finalGrade && html`<${GradeSimulator} course=${c} state=${state} />`}
       <${CoursevilleSnapshot} course=${c} state=${state} />
