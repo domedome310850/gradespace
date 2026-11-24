@@ -3528,9 +3528,9 @@ function daysUntil(d) {
   var dt = new Date(p[0], p[1] - 1, p[2]);
   if (dt.getFullYear() !== p[0] || dt.getMonth() !== p[1] - 1 || dt.getDate() !== p[2]) return null;
   // Calendar-day math is timezone-independent and isn't affected by DST.
-  var now = new Date();
+  var now = new Date(Date.now()+7*3600000);
   return Math.round((Date.UTC(p[0], p[1] - 1, p[2]) -
-    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())) / 86400000);
 }
 var TYPES = ['midterm', 'final', 'assignment', 'homework', 'quiz', 'project', 'presentation', 'lab', 'participation', 'attendance', 'custom'];
 var COLORS = { indigo: 'var(--c-indigo)', blue: 'var(--c-blue)', teal: 'var(--c-teal)', green: 'var(--c-green)', amber: 'var(--c-amber)', rose: 'var(--c-rose)', violet: 'var(--c-violet)', slate: 'var(--c-slate)' };
@@ -4352,7 +4352,8 @@ function examEnded(e, now) {
 function examCompleted(c,state,k,e) {
   if(c.finalGrade||c.examCompleted&&c.examCompleted[k]===true||examEnded(e))return true;
   var type=k==='mid'?'midterm':'final', rows=state.assessments.filter(function(a){return a.courseId===c.id&&a.type===type;});
-  return rows.length>0&&rows.every(C.isGraded);
+  if(rows.length>0&&rows.every(C.isGraded))return true;
+  return (!e||!e.date)&&rows.length>0&&rows.every(function(a){return C.isGraded(a)||examEnded({date:a.due});});
 }
 function setExamCompleted(c,k,value){
   update(function(d){var x=d.courses.find(function(a){return a.id===c.id;});if(x)x.examCompleted=Object.assign({},x.examCompleted||{},{[k]:value});},{undo:true});
@@ -4446,8 +4447,7 @@ function downloadICS(state, semId, personal) {
 }
 function examText(e) {
   if (!e || !e.date) return t('exam.tbd');
-  var past = daysUntil(e.date);
-  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : '') + (past !== null && past < 0 ? ' ' + t('exam.done') : '');
+  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : '') + (examEnded(e) ? ' ' + t('exam.done') : '');
 }
 // skipMid: the midterm is already graded and its date was never recorded, so "to be announced" would mislead
 function examLine(ex, skipMid) {
@@ -5472,9 +5472,8 @@ function examEventDetail(x){
 }
 function ExamCalendarPanel(p) {
   var exams = p.events.filter(function(x){ return (x.a.type === 'midterm' || x.a.type === 'final') && x.a.due && /^\d{4}-\d{2}-\d{2}$/.test(String(x.a.due)); });
-  var now = new Date();
-  var isoNow = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-  var first = (exams.find(function(x){ return x.a.due >= isoNow; }) || exams[0]);
+  var isoNow = new Date(Date.now()+7*3600000).toISOString().slice(0,10);
+  var first = (exams.find(function(x){ return x.a.due >= isoNow&&!x.completed; }) || exams.find(function(x){return x.a.due===isoNow;}) || exams[0]);
   var initial = first ? first.a.due.slice(0,7) : isoNow.slice(0,7);
   var ms = useState(''), month = ms[0] || initial, setMonth = ms[1];
   var ds = useState(''), chosen = ds[0], setSelected = ds[1];
@@ -5519,7 +5518,7 @@ function ExamCalendarPanel(p) {
     <div className="dashboard-calendar-legend">${fmtDate(selected,true)}</div>
     ${show.length ? show.map(function(x){var q=String(x.a.due).split('-');return html`<div key=${x.a.id} className="dashboard-cal-event" style=${{ '--cc': courseColor(x.c.color) }}>
       <div className="date-pill cc"><b>${+q[2]}</b><small>${fmtDate(x.a.due).replace(/^\d+\s*/,'')}</small></div>
-      <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}</div>${examEventDetail(x)}</div>
+      <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}${x.completed?' · '+t('plan.examAlready'):''}</div>${examEventDetail(x)}</div>
       <a className="btn sm" href=${'#course-'+x.c.id}>${t('viewCourse')}</a>
     </div>`;}) : html`<p className="muted small">${LANG==='th'?'ไม่มีรายการสอบที่บันทึกไว้ในช่วงนี้':'No recorded exams in this period'}</p>`}<//>`}
     <p className="dashboard-calendar-note">${t('examroom.calendarHint')}</p>
@@ -5539,7 +5538,7 @@ function StudyPriority(p) {
     var impossible=!advanced&&gap!=null&&target>sum.maxPossible+1e-8;
     var weight=event ? sum.pendingRows.filter(function(r){return r.a.type===event.a.type;}).reduce(function(a,r){return a+r.w;},0):0;
     var done=finalExamPassed(c,p.state,p.personal)&&!event, reached=!advanced&&!invalid&&gap===0;
-    var tone=done?'done':invalid||impossible?'review':event&&event.d<=2?'urgent':event&&event.d<=7?'soon':reached?'done':'normal';
+    var tone=done?'done':invalid||impossible?'review':reached?'done':event&&event.d<=2?'urgent':event&&event.d<=7?'soon':'normal';
     var score=done?-100:invalid||impossible?-10:reached&&!event?-20:(event?60/(1+event.d):0)+weight/2+(advanced||gap==null?0:30*gap/Math.max(1,sum.remaining))+(toNum(c.credits)||0);
     return {c:c,event:event,gap:gap,target:target,advanced:advanced,invalid:invalid,impossible:impossible,done:done,reached:reached,tone:tone,score:score};
   }).sort(function(a,b){return b.score-a.score;});
