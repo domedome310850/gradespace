@@ -1,3 +1,16 @@
+## 2026-11-24 — ChatGPT: Academic planning release candidate
+
+- `docs/academic-planning-roadmap.md`: implementation, UI and acceptance plan; login and community explicitly excluded.
+- `public/index.html`, `public/planning-core.js`: study priority, class score comparison, GPA bounds and reverse planner, advanced grading policies (component minimum/cap, drop-lowest for equally weighted categories, bonus, retake and rounding), scanner confirmation, local reminders and MCV paste handling. Relative grades and simulated results remain hypothetical.
+- `public/manifest.webmanifest`, `public/sw.js`, `public/app-icon.svg`: installable static shell; private RPC and scan responses are not cached.
+- `supabase/functions/gs-scan/index.ts`: extraction/validation of explicitly stated grading rules; production deployment not performed.
+- `tests/planning.mjs`, `tests/smoke.mjs`: pure calculation and browser regression coverage. CI run 45384873158 passed at commit 082c215; added interactive tests for grade floors, class comparison, advanced policy, GPA inputs and denied/unsupported notification permission in commit 1aba3db. Verify latest CI before merging.
+- Release blockers: actual device PWA install/offline and calendar reminders, live scan verification, authorized MCV API credentials, and server preservation of new optional fields when legacy clients save. No production deploy or login/community modifications.
+
+## 2026-11-24 — ChatGPT: Confirmed minimum grades for relative grading
+
+- `public/index.html`: optional instructor-confirmed lower bounds in the grading modal, separate from estimated scales; show reached and remaining thresholds in course cards, details and simulator without treating them as exact grades or GPA. Clear bounds on section changes. Thai/English support. Browser smoke pending; AI scan and older-client server preservation not yet implemented.
+
 ## 2026-11-22 — ChatGPT: Compact overview summary
 
 - `public/index.html`: combine semester GPA, cumulative GPA and next-term plan into one responsive desktop row with smaller metric typography and padding. Keep GPA coverage and estimation status, study-plan editing, major selection, GenEd and full-plan access. On mobile the GPA tiles remain side by side with the plan below. Full Years-page plan remains unchanged. No data or computation changes.

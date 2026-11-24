@@ -124,6 +124,49 @@ async function run(browser, lang, width) {
       if(layout.failures.length)errors.push(hash+' unaligned '+layout.failures.join(', '));
     }
   }
+  // Interaction-level regression: real controls in both languages and every viewport.
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.getByTestId('study-priority').waitFor();
+  await page.getByTestId('gpa-range').waitFor();
+  await page.getByTestId('reminders').waitFor();
+  await page.evaluate(()=>{
+    Object.defineProperty(window,'Notification',{configurable:true,value:class {
+      static permission='default'; static async requestPermission(){return 'denied';}
+    }});
+  });
+  await page.getByTestId('reminders').getByRole('button',{name:lang==='th'?'เปิดการแจ้งเตือน':'Enable notifications'}).click();
+  await page.getByTestId('reminders').getByRole('status').waitFor();
+  const testId='c-imp004';
+  await page.evaluate(id=>{
+    GradeSpace.update(d=>{const c=d.courses.find(x=>x.id===id);c.gradingMode='norm';c.gradingUser=true;c.normFloors={};c.classSnapshot={};c.advancedPolicy={};});
+    location.hash='course-'+id;
+  },testId);
+  const comparison=page.getByTestId('class-comparison');
+  await comparison.waitFor();
+  const fields=comparison.locator('input');
+  await fields.nth(0).fill('72');await fields.nth(1).fill('60');await fields.nth(2).fill('0');
+  const save=comparison.getByRole('button',{name:lang==='th'?'บันทึก':'Save',exact:true});
+  if(await save.isEnabled())errors.push('zero SD must not save');
+  await fields.nth(2).fill('10');
+  await comparison.getByText(/Z-score 1\.20?/).waitFor();
+  await save.click();
+  if(!(await page.evaluate(id=>GradeSpace.S.state.courses.find(c=>c.id===id).classSnapshot.sd===10,testId)))errors.push('class snapshot not persisted');
+  await page.getByRole('button',{name:lang==='th'?'แก้':'Change',exact:true}).click();
+  await page.getByLabel('D',{exact:true}).fill('40');
+  await page.getByRole('button',{name:lang==='th'?'บันทึก':'Save',exact:true}).last().click();
+  await page.waitForTimeout(150);
+  if(!(await page.evaluate(id=>GradeSpace.S.state.courses.find(c=>c.id===id).normFloors.D===40,testId)))errors.push('minimum D threshold not persisted');
+  const policy=page.getByTestId('advanced-policy');
+  await policy.locator('summary').click();
+  await policy.locator('input').first().fill('5');
+  await policy.getByRole('button',{name:lang==='th'?'บันทึกกฎ':'Save rules'}).click();
+  if(!(await page.evaluate(id=>GradeSpace.S.state.courses.find(c=>c.id===id).advancedPolicy.bonus===5,testId)))errors.push('bonus rule not persisted');
+  await page.evaluate(()=>location.hash='gpa');
+  const reverse=page.getByTestId('reverse-gpa');await reverse.waitFor();
+  await reverse.locator('input').fill('0');
+  await reverse.getByText(/^GPA [0-9]/).first().waitFor();
+  await reverse.locator('input').fill('4.1');
+  if(await reverse.getByText(/^GPA [0-9]/).count())errors.push('invalid GPA target has scenarios');
   const ids = await page.evaluate(() => GradeSpace.S.state.courses.map((c) => c.id));
   const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', ...ids.map((i) => 'course-' + i)];
   for (const h of hashes) {

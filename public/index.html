@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GradeSpace</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#4F46E5">
+<link rel="apple-touch-icon" href="/app-icon.svg">
 <meta name="description" content="GradeSpace – ติดตามคะแนน คำนวณเกรด และวางแผน GPA">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%20%3Cdefs%3E%20%20%3ClinearGradient%20id%3D%22gsGradient%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%238C71FE%22%2F%3E%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%236654E8%22%2F%3E%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%233F51C9%22%2F%3E%20%20%3C%2FlinearGradient%3E%20%3C%2Fdefs%3E%20%3Crect%20width%3D%2248%22%20height%3D%2248%22%20rx%3D%2214%22%20fill%3D%22url%28%23gsGradient%29%22%2F%3E%20%3Cpath%20d%3D%22M33.7%2018.5A12%2012%200%201%200%2035%2030.8V25.2H25.5%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%20%3Ccircle%20cx%3D%2234.8%22%20cy%3D%2212.6%22%20r%3D%223%22%20fill%3D%22%23C5ECFF%22%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1083,6 +1086,7 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-s
 <body>
 <div id="root"></div>
 <noscript>GradeSpace needs JavaScript to run.</noscript>
+<script src="./planning-core.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
@@ -1309,6 +1313,11 @@ var Calc = (function () {
       return { kind: 'none', needsGradingRule: true, gradingMethod: gradingMethod, pct: s.complete ? s.earned : s.expected, basis: s.basis };
     }
     var grades = gradesFor(course, state);
+    if (typeof GSPlanning !== 'undefined' && GSPlanning.active(course.advancedPolicy)) {
+      var result = GSPlanning.evaluate(course.advancedPolicy,state,course,s,grades,null);
+      if (result.status==='ok' && s.complete && result.grade) return {kind:'calculated',pct:result.score,label:result.grade.label,meta:outcomeMeta(result.grade.label,course,state)};
+      return {kind:'none',advancedPolicy:true};
+    }
     if (s.complete) {
       var g = letterFor(s.earned, grades);
       return { kind: 'calculated', pct: s.earned, label: g && g.label, meta: g ? outcomeMeta(g.label, course, state) : null };
@@ -1849,10 +1858,25 @@ var Scan = (function () {
     }
     return { scaleId: state.settings.defaultScaleId, customGrades: null };
   }
+  function confirmedFloors(g) {
+    if(!g || g.referencing!=='norm'||!g.minimumGrades||typeof g.minimumGrades!=='object')return {};
+    var out={},prev=Infinity,bad=false;
+    ['A','B+','B','C+','C','D+','D'].forEach(function(k){var v=g.minimumGrades[k];if(v==null)return;if(typeof v!=='number'||!Number.isFinite(v)||v<=0||v>100||v>=prev){bad=true;return;}out[k]=v;prev=v;});
+    return bad?{}:out;
+  }
+  function scanRules(g) {
+    var q=g&&g.advancedRules;
+    if(!q||typeof q!=='object'||typeof q.evidence!=='string'||!q.evidence.trim())return null;
+    var out={evidence:q.evidence.slice(0,400),minimums:[],drops:[]};
+    if(['nearest','floor','ceil'].includes(q.rounding))out.rounding=q.rounding;
+    if(Array.isArray(q.minimums))out.minimums=q.minimums.filter(function(r){return r&&TYPES.includes(r.type)&&typeof r.min==='number'&&r.min>=0&&r.min<=100&&['A','B+','B','C+','C','D+','D','F','S','U'].includes(r.cap);}).slice(0,8);
+    if(Array.isArray(q.drops))out.drops=q.drops.filter(function(r){return r&&typeof r.group==='string'&&r.group.trim()&&Number.isInteger(r.count)&&r.count>0&&r.count<100;}).slice(0,8);
+    return out.rounding||out.minimums.length||out.drops.length?out:null;
+  }
   function gradingSummary(g) {
     g = g || {};
     if (g.method === 'su') return { kind: 'su', mpl: num(g.mpl) };
-    if (g.referencing === 'norm') return { kind: 'norm' };
+    if (g.referencing === 'norm') return { kind: 'norm', floors: confirmedFloors(g) };
     if (g.cutoffs && num(g.cutoffs.A) !== null) return { kind: 'criterion', a: num(g.cutoffs.A) };
     return { kind: 'unknown' };
   }
@@ -1882,7 +1906,7 @@ var Scan = (function () {
         match: match,
         rows: items.map(function (a) { return { a: a, hit: match ? matchAssessment(existing, a) : null }; }),
         items: items.length, scored: items.filter(function (a) { return num(a.score) !== null; }).length,
-        grading: gradingSummary(sc.grading)
+        grading: gradingSummary(sc.grading), rules: scanRules(sc.grading)
       };
     });
   }
@@ -1919,6 +1943,9 @@ var Scan = (function () {
       var groups = Array.isArray(sc.groups) ? sc.groups : [];
       var course = findCourse(state, semesterId, sc, loose);
       var gr = gradingFor(state, sc.grading);
+      var incomingSection=String(sc.section||String(sc.code||'').match(/\.(\d+)$/)?.[1]||'').replace(/^0+(?=\d)/,'');
+      var currentSection=course?String(sectionOf(course)||'').replace(/^0+(?=\d)/,''):'';
+      var sectionCompatible=!incomingSection||!currentSection||incomingSection===currentSection;
       if (!course) {
         course = { id: Store.uid('c-'), semesterId: semesterId, name: niceName(sc.name || sc.code || 'Course'), code: sc.code || '',
           credits: num(sc.credits) !== null ? num(sc.credits) : 3, section: sc.section || '', instructor: '', target: null,
@@ -1929,9 +1956,14 @@ var Scan = (function () {
         Store.placeCourse(state, course.id);
         touched.push(course);
       } else {
-        if (sc.grading && (sc.grading.method || sc.grading.referencing || sc.grading.cutoffs)) { course.scaleId = gr.scaleId; course.customGrades = gr.customGrades; course.gradingMode = sc.grading.referencing === 'norm' ? 'norm' : ((sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'); if(course.gradingMode === 'norm' && course.targetPct == null) course.targetPct = 60; }
+        if (sectionCompatible && !course.gradingUser && sc.grading && (sc.grading.method || sc.grading.referencing || sc.grading.cutoffs)) { course.scaleId = gr.scaleId; course.customGrades = gr.customGrades; course.gradingMode = sc.grading.referencing === 'norm' ? 'norm' : ((sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'); if(course.gradingMode === 'norm' && course.targetPct == null) course.targetPct = 60; }
         if (num(sc.credits) !== null) course.credits = num(sc.credits);
         updated++; touched.push(course);
+      }
+      // Scan suggestions require explicit review before becoming guarantees.
+      if (sectionCompatible && !course.gradingUser && sc.grading && sc.grading._confirmFloors === true) {
+        var accepted=confirmedFloors(sc.grading);
+        if(Object.keys(accepted).length)course.normFloors=accepted;
       }
       // categories for grouped items
       var catByName = {};
@@ -1969,6 +2001,13 @@ var Scan = (function () {
         });
         state.assessments.push(row); existing.push(row);
       });
+      if(sectionCompatible&&!course.gradingUser&&sc.grading&&sc.grading._confirmRules===true&&!(typeof GSPlanning!=='undefined'&&GSPlanning.active(course.advancedPolicy))){
+        var suggested=scanRules(sc.grading);
+        if(suggested){var policy={minimums:suggested.minimums,rounding:suggested.rounding||'none',drops:{}};var allMapped=true;
+          suggested.drops.forEach(function(r){var cat=catByName[norm(r.group)],n=cat?state.assessments.filter(function(a){return a.categoryId===cat.id;}).length:0;if(!cat||cat.dist!=='equal'||r.count>=n)allMapped=false;else policy.drops[cat.id]=r.count;});
+          if(allMapped){course.advancedPolicy=policy;course.gradingEvidence=suggested.evidence;}
+        }
+      }
     });
     state.settings.onboarded = true;
     return { added: added, updated: updated, semesterId: semesterId, courses: touched };
@@ -2114,7 +2153,13 @@ var PasteScores = (function () {
   // → [{ name, score (null = not out yet), max, type }]
   function parse(text) {
     var rows = [];
-    lines(text).forEach(function (l) {
+    var prepared=String(text||'').split(/\r?\n/).map(function(line){
+      var cells=line.split('\t');if(cells.length!==3)return line;
+      var name=cells[0].trim(),score=cells[1].trim(),max=cells[2].trim();
+      if(!name||!/^\d+(?:[.,]\d+)?$/.test(max)||score&&!new RegExp('^(?:'+SCORE+')$','i').test(score))return line;
+      return name+' '+(score||'Not ready')+' / '+max;
+    }).join('\n');
+    lines(prepared).forEach(function (l) {
       var m = l.match(ROW);
       if (!m) return;
       var name = m[1].replace(/\s*[:|]\s*$/, '').trim();
@@ -2562,7 +2607,62 @@ en: {
   'tt.noSec': 'Set the Sec to see the times for: {list}', 'tt.noData': 'No matching timetable data for: {list}. Check your course code, section and term.',
   'gm.title': 'How this course is graded', 'gm.edit': 'Change', 'gm.kind': 'Grade type', 'gm.letter': 'Letter grades (A–F)', 'gm.su': 'S/U (pass/fail)',
   'gm.pass': 'Score needed to pass (S)', 'gm.passHint': 'From the syllabus. Reach it and you get S.',
-  'gm.modeHint.criterion': 'Fixed cut-offs: the grade depends only on your own score.', 'gm.modeHint.norm': 'Grades depend on the class; the cut-offs below are only used as an estimate.', 'gm.modeHint.unknown': 'Not stated yet; the cut-offs below are used as an estimate.',
+  'gm.modeHint.criterion': 'Fixed cut-offs: the grade depends only on your own score.', 'gm.modeHint.norm': 'Grades depend on the class; enter only explicitly guaranteed minimum grades.', 'gm.modeHint.unknown': 'Not stated yet; the cut-offs below are used as an estimate.',
+  "policy.range":"Possible semester GPA range",
+  "policy.rangeHint":"Hypothetical range across recorded and pending letter-graded courses; not a forecast.",
+  "policy.rawHint":"Raw scores only. Advanced rules may change the result; see the policy panel.",
+  "policy.simHint":"Advanced rules are applied to the complete simulated scores. Raw-score target solving is disabled for this course.",
+  "policy.adjusted":"Adjusted total: {p}%",
+  "policy.adjustedLabel":"Rule-adjusted total","policy.rawLabel":"Raw total (rules unresolved)",
+  "policy.title":"Advanced grading rules",
+  "policy.hint":"Use only confirmed syllabus rules. Official grades are never changed. Raw totals stay visible separately.",
+  "policy.rounding":"Round the total before grading",
+  "policy.none":"No rounding",
+  "policy.nearest":"Nearest whole point",
+  "policy.floor":"Round down",
+  "policy.ceil":"Round up",
+  "policy.bonus":"Confirmed bonus course points",
+  "policy.minimum":"Component minimum and grade cap",
+  "policy.addMinimum":"Add component condition",
+  "policy.minimumPct":"Minimum component %",
+  "policy.cap":"Maximum grade if below minimum",
+  "policy.drops":"Drop lowest (equal-weight category only)",
+  "policy.retakes":"Retake / replacement score",
+  "policy.addRetake":"Add replacement",
+  "policy.retakeScore":"Replacement raw score",
+  "policy.replace":"Replace original",
+  "policy.higher":"Keep higher score",
+  "policy.invalid":"Check rule values, component coverage and total weight.",
+  "policy.pending":"Rules can be evaluated when every required score is known.",
+  "policy.save":"Save rules",
+  "policy.remove":"Remove",
+  "policy.clear":"Reset rules",
+  "policy.dropCount":"Number to drop",
+  "policy.ruleError":"Use valid values and select a component or assessment.",
+  "paste.badRange":"Score outside valid range — skip or correct the source.",
+  "plan.reminders":"Exam and deadline reminders","plan.reminderHint":"Device notifications while GradeSpace is open; export the calendar for reminders when the app is closed.","plan.reminderCount":"{n} exams or deadlines in the next 3 days.","plan.reminderOn":"Enable notifications","plan.reminderOff":"Disable notifications","plan.reminderDenied":"Notification permission was not granted.","plan.reminderUnsupported":"Notifications are unavailable in this browser. Calendar export still works.",
+  "plan.scanRules":"Suggested advanced rules", "plan.scanRulesConfirm":"I verified the quoted rule. Apply only if categories match; existing manual rules are preserved.",
+  "plan.priority":"Study priorities",
+  "plan.priorityHint":"Planning heuristic using exam dates, exam weight, score gap and credits; not a probability. Review impossible or invalid goals separately.",
+  "plan.examDays":"Exam in {n} days",
+  "plan.noDate":"No confirmed upcoming exam",
+  "plan.invalid":"Check score weights",
+  "plan.unreachable":"Target not reachable under current assumptions",
+  "plan.noGoal":"Set a grade target",
+  "plan.reached":"Score target reached",
+  "plan.gap":"Need {n} points to reach {p}%",
+  "plan.review":"Review",
+  "plan.soon":"Exam soon",
+  "plan.study":"Plan study",
+  "plan.class":"Class score comparison",
+  "plan.classHint":"Enter your score, class mean and SD as percentages from the same assessment or snapshot. Z-score is not a class rank or grade prediction.",
+  "plan.myScore":"Your score (%)",
+  "plan.z":"Z-score {z} · difference from mean {d} points",
+  "plan.clear":"Clear",
+  "plan.reverse":"Semester GPA reverse planner",
+  "plan.reverseHint":"Illustrative grade combinations for the selected semester, excluding S/U. Recorded grades stay fixed; relative grades remain hypothetical. Not a guarantee or exhaustive search.",
+  "plan.gpaTarget":"Target semester GPA", "plan.scanConfirm":"I checked these minimum grade guarantees against the syllabus (existing manual policy is preserved).",
+  'gm.floorTitle':'Instructor-confirmed minimum grades', 'gm.floorHint':'Enter only confirmed guarantees; leave unknown grades blank. Below a threshold does not imply failure.', 'gm.floorReached':'At least {g} by confirmed cutoff', 'gm.floorMissing':'Need {n} more points to guarantee {g}',
   'gm.cuts': 'Grade cut-offs', 'gm.cutsNorm': 'Cut-offs used for the estimate', 'gm.std': 'Use 80/75/70/65/60/55/50',
   'gm.cutsHint': 'Below the lowest cut-off is {f}. Change the lowest one to change the pass mark.', 'gm.bad': 'Each cut-off must be lower than the one above it, between 1 and 100.',
   'gm.saved': 'Grading updated', 'gm.afterFinalT': 'Final exam is over.', 'gm.afterFinalP': 'If the grade is out but the final score isn’t, just record the grade; the score isn’t needed.',
@@ -2933,7 +3033,62 @@ th: {
   'tt.noSec': 'ใส่ Sec เพื่อดูเวลาเรียนของ: {list}', 'tt.noData': 'ยังไม่พบตารางเรียนที่ตรงกับ: {list} โปรดตรวจรหัสวิชา Sec และเทอม',
   'gm.title': 'วิธีตัดเกรดของวิชานี้', 'gm.edit': 'แก้', 'gm.kind': 'ระบบเกรด', 'gm.letter': 'เกรด A–F', 'gm.su': 'S/U (ผ่าน/ไม่ผ่าน)',
   'gm.pass': 'คะแนนขั้นต่ำที่ผ่าน (ได้ S)', 'gm.passHint': 'ดูจากประมวลรายวิชา ได้ถึงเกณฑ์นี้ก็ได้ S',
-  'gm.modeHint.criterion': 'เกณฑ์ตายตัว เกรดขึ้นกับคะแนนของคุณเท่านั้น', 'gm.modeHint.norm': 'เกรดขึ้นกับคะแนนทั้งห้อง เกณฑ์ด้านล่างใช้แค่ประมาณ', 'gm.modeHint.unknown': 'ยังไม่รู้วิธีตัดเกรด ใช้เกณฑ์ด้านล่างประมาณไปก่อน',
+  'gm.modeHint.criterion': 'เกณฑ์ตายตัว เกรดขึ้นกับคะแนนของคุณเท่านั้น', 'gm.modeHint.norm': 'เกรดขึ้นกับคะแนนทั้งห้อง กรอกเฉพาะเกรดขั้นต่ำที่อาจารย์รับประกัน', 'gm.modeHint.unknown': 'ยังไม่รู้วิธีตัดเกรด ใช้เกณฑ์ด้านล่างประมาณไปก่อน',
+  "policy.range":"ช่วง GPA เทอมที่เป็นไปได้",
+  "policy.rangeHint":"ช่วงสมมติจากเกรดที่บันทึกและวิชาที่ยังไม่ประกาศเกรด ไม่นับเป็นการพยากรณ์",
+  "policy.rawHint":"คะแนนดิบเท่านั้น กฎพิเศษอาจเปลี่ยนผลลัพธ์ ดูส่วนกฎการตัดเกรด",
+  "policy.simHint":"นำกฎพิเศษไปใช้กับคะแนนจำลองทั้งหมด ปิดการคำนวณย้อนกลับจากคะแนนดิบสำหรับวิชานี้",
+  "policy.adjusted":"คะแนนหลังใช้กฎ: {p}%",
+  "policy.adjustedLabel":"คะแนนรวมหลังใช้กฎ","policy.rawLabel":"คะแนนดิบ (กฎยังไม่สมบูรณ์)",
+  "policy.title":"กฎการตัดเกรดเพิ่มเติม",
+  "policy.hint":"ระบุเฉพาะกฎที่ยืนยันจากประมวลรายวิชา ไม่เปลี่ยนเกรดจริงที่บันทึกแล้ว และยังแสดงคะแนนดิบแยกต่างหาก",
+  "policy.rounding":"ปัดคะแนนรวมก่อนตัดเกรด",
+  "policy.none":"ไม่ปัด",
+  "policy.nearest":"ปัดเป็นจำนวนเต็มที่ใกล้ที่สุด",
+  "policy.floor":"ปัดลง",
+  "policy.ceil":"ปัดขึ้น",
+  "policy.bonus":"คะแนนโบนัสรวมที่ยืนยันแล้ว",
+  "policy.minimum":"คะแนนขั้นต่ำรายองค์ประกอบและเพดานเกรด",
+  "policy.addMinimum":"เพิ่มเงื่อนไของค์ประกอบ",
+  "policy.minimumPct":"คะแนนขั้นต่ำ (%)",
+  "policy.cap":"เกรดสูงสุดหากไม่ถึงขั้นต่ำ",
+  "policy.drops":"ตัดคะแนนต่ำสุด (เฉพาะกลุ่มน้ำหนักเท่ากัน)",
+  "policy.retakes":"สอบแก้ตัว / คะแนนทดแทน",
+  "policy.addRetake":"เพิ่มคะแนนทดแทน",
+  "policy.retakeScore":"คะแนนดิบทดแทน",
+  "policy.replace":"แทนคะแนนเดิม",
+  "policy.higher":"ใช้คะแนนที่สูงกว่า",
+  "policy.invalid":"ตรวจสอบค่ากฎ องค์ประกอบและน้ำหนักรวม",
+  "policy.pending":"คำนวณตามกฎได้เมื่อทราบคะแนนที่จำเป็นครบ",
+  "policy.save":"บันทึกกฎ",
+  "policy.remove":"ลบ",
+  "policy.clear":"ล้างกฎ",
+  "policy.dropCount":"จำนวนรายการที่ตัด",
+  "policy.ruleError":"กรอกค่าที่ถูกต้องและเลือกองค์ประกอบหรือรายการประเมิน",
+  "paste.badRange":"คะแนนเกินช่วงที่กำหนด โปรดข้ามหรือแก้ข้อมูลต้นทาง",
+  "plan.reminders":"เตือนสอบและกำหนดส่งงาน","plan.reminderHint":"แจ้งเตือนบนอุปกรณ์ขณะเปิด GradeSpace หรือส่งออกปฏิทินเพื่อรับการเตือนเมื่อปิดเว็บ","plan.reminderCount":"มีสอบหรือกำหนดส่ง {n} รายการใน 3 วันข้างหน้า","plan.reminderOn":"เปิดการแจ้งเตือน","plan.reminderOff":"ปิดการแจ้งเตือน","plan.reminderDenied":"ไม่ได้รับอนุญาตให้แจ้งเตือน","plan.reminderUnsupported":"เบราว์เซอร์ไม่รองรับการแจ้งเตือน ยังส่งออกปฏิทินได้",
+  "plan.scanRules":"กฎเพิ่มเติมที่ AI อ่านได้", "plan.scanRulesConfirm":"ตรวจสอบข้อความแล้ว ใช้เมื่อกลุ่มคะแนนตรงกันและไม่ทับกฎที่กำหนดเอง",
+  "plan.priority":"ลำดับวิชาที่ควรอ่าน",
+  "plan.priorityHint":"จัดลำดับจากวันสอบ น้ำหนักสอบ คะแนนที่ขาดและหน่วยกิต ไม่ใช่ความน่าจะเป็น ควรตรวจสอบเป้าหมายที่ทำไม่ได้หรือข้อมูลผิดปกติ",
+  "plan.examDays":"สอบอีก {n} วัน",
+  "plan.noDate":"ยังไม่มีวันสอบที่ยืนยัน",
+  "plan.invalid":"ตรวจสอบน้ำหนักคะแนน",
+  "plan.unreachable":"ไม่ถึงเป้าหมายภายใต้สมมติฐานปัจจุบัน",
+  "plan.noGoal":"ตั้งเป้าหมายเกรด",
+  "plan.reached":"ถึงเป้าคะแนนแล้ว",
+  "plan.gap":"ขาดอีก {n} คะแนนเพื่อถึง {p}%",
+  "plan.review":"ตรวจสอบ",
+  "plan.soon":"ใกล้สอบ",
+  "plan.study":"วางแผนอ่าน",
+  "plan.class":"เปรียบเทียบคะแนนกับกลุ่ม",
+  "plan.classHint":"กรอกคะแนนตนเอง ค่าเฉลี่ยและ SD เป็นเปอร์เซ็นต์จากการสอบหรือชุดคะแนนเดียวกัน Z-score ไม่ใช่อันดับจริงหรือการทำนายเกรด",
+  "plan.myScore":"คะแนนของคุณ (%)",
+  "plan.z":"Z-score {z} · ต่างจากค่าเฉลี่ย {d} คะแนน",
+  "plan.clear":"ล้างข้อมูล",
+  "plan.reverse":"วางแผนเกรดย้อนกลับจาก GPA เทอม",
+  "plan.reverseHint":"ตัวอย่างชุดเกรดของเทอมที่เลือก ไม่นับ S/U เกรดจริงที่บันทึกแล้วคงเดิม เกรดอิงกลุ่มเป็นสมมติฐาน ไม่รับประกันและไม่ได้ค้นหาทุกชุด",
+  "plan.gpaTarget":"GPA เป้าหมายเทอมนี้", "plan.scanConfirm":"ตรวจสอบเกณฑ์ขั้นต่ำกับประมวลรายวิชาแล้ว (ไม่ทับเกณฑ์ที่ตั้งเอง)",
+  'gm.floorTitle':'เกณฑ์ขั้นต่ำที่อาจารย์ยืนยัน', 'gm.floorHint':'กรอกเฉพาะเกรดที่อาจารย์รับประกัน เว้นช่องที่ไม่ทราบไว้ คะแนนไม่ถึงเกณฑ์ไม่ได้แปลว่าตก', 'gm.floorReached':'ถึงเกณฑ์ขั้นต่ำ {g} แล้ว', 'gm.floorMissing':'ขาดอีก {n} คะแนนเพื่อรับประกัน {g}',
   'gm.cuts': 'เกณฑ์เกรด', 'gm.cutsNorm': 'เกณฑ์ที่ใช้ประมาณ', 'gm.std': 'ใช้ 80/75/70/65/60/55/50',
   'gm.cutsHint': 'ต่ำกว่าเกณฑ์สุดท้ายคือ {f} อยากเปลี่ยนคะแนนขั้นต่ำที่ผ่าน ให้แก้เกณฑ์ช่องล่างสุด', 'gm.bad': 'แต่ละเกณฑ์ต้องต่ำกว่าช่องข้างบน และอยู่ระหว่าง 1–100',
   'gm.saved': 'แก้วิธีตัดเกรดแล้ว', 'gm.afterFinalT': 'สอบปลายภาคไปแล้ว', 'gm.afterFinalP': 'ถ้าประกาศเกรดแล้วแต่ไม่ประกาศคะแนนปลายภาค บันทึกแค่เกรดที่ได้ก็พอ ไม่ต้องมีคะแนน',
@@ -3967,7 +4122,7 @@ function isSUCourse(c) {
 }
 function gradingModeFor(c) {
   if (isSUCourse(c)) return 'criterion';
-  if (c && c.gradingUser && (c.gradingMode === 'criterion' || c.gradingMode === 'norm')) return c.gradingMode;
+  if (c && c.gradingUser && ['criterion','norm','unknown','component'].includes(c.gradingMode)) return c.gradingMode;
   // A public syllabus can establish relative grading without knowing the group's final cutoffs.
   // Only use a section-exact policy, not the generic course-code template.
   if (c && typeof SharedCatalog !== 'undefined' && S && S.state) {
@@ -3991,12 +4146,28 @@ function gradingModeFor(c) {
 function numericGoalFor(c) {
   return isNum(c && c.targetPct) && c.targetPct >= 0 && c.targetPct <= 100 ? c.targetPct : (gradingModeFor(c) === 'norm' ? 60 : null);
 }
+// Confirmed lower bounds are separate from estimated/full grade scales.
+function hasAdvanced(c) { return typeof GSPlanning !== 'undefined' && GSPlanning.active(c && c.advancedPolicy); }
+function normFloorsFor(c) {
+  if (hasAdvanced(c) || gradingModeFor(c) !== 'norm' || !c.normFloors || typeof c.normFloors !== 'object') return [];
+  return ['A','B+','B','C+','C','D+','D'].filter(function (g) {
+    return isNum(c.normFloors[g]) && c.normFloors[g] > 0 && c.normFloors[g] <= 100;
+  }).map(function (g) { return { label: g, min: c.normFloors[g] }; });
+}
+function normFloorText(c, sum) {
+  var floors = normFloorsFor(c);
+  if (!floors.length || c.finalGrade || sum.issues.over || sum.issues.overMax > 0) return null;
+  var reached = floors.find(function (g) { return sum.earned >= g.min; });
+  var next = floors.slice().reverse().find(function (g) { return sum.earned < g.min; });
+  return [reached ? t('gm.floorReached', {g: reached.label}) : '', next ? t('gm.floorMissing', {g: next.label, n: fmtT(Math.ceil((next.min - sum.earned)*100)/100)}) : ''].filter(Boolean).join(' · ');
+}
 function GradingAndGap(p) {
   var c = p.course, state = p.state, summary = p.sum || C.courseSummary(c, state);
   var mode = gradingModeFor(c);
   var grades = C.gradesFor(c, state);
   var target = mode === 'criterion' ? (c.target && grades.find(function (g) { return g.label === c.target; })) :
     (numericGoalFor(c) !== null ? { min: numericGoalFor(c), label: fmtT(numericGoalFor(c)) + '%' } : null);
+  if (hasAdvanced(c)) target=null;
   var short = target ? Math.max(0, target.min - summary.earned) : null;
   var average = target ? C.requiredExamAverage(target.min, summary) : null;
   return html`<div className=${'goal-insight' + (p.compact ? ' compact' : '')}>
@@ -4004,13 +4175,14 @@ function GradingAndGap(p) {
       ${mode === 'norm' && html`<span className="tiny muted">${t('grading.estimate')}</span>`}
       ${!p.compact && html`<button type="button" className="btn sm" aria-label=${t('gm.edit')} onClick=${function () { openModal('grading', { courseId: c.id }); }}><${Icon} n="edit" s=${15} />${t('gm.edit')}</button>`}
     </div>
+    ${normFloorText(c, summary) && html`<div className="small" role="status">${normFloorText(c, summary)}</div>`}
     ${target ? html`<div className="goal-gap"><b>${mode === 'criterion' ? t('goal.missing', { n: fmtT(short), g: target.label }) : (short <= 0.00001 ? t('grading.pointsReached', { p: fmtT(target.min) }) : t('grading.needPoints', { n: fmtT(short), p: fmtT(target.min) }))}</b>
       <span className="small muted">${short <= 0.00001 ? (mode === 'criterion' ? t('goal.reached') : t('grading.scoreOnly')) : average ? (average.pct > 100.00001 ? t('goal.examNotEnough') : t('goal.examAverage', { n: fmtT(Math.max(0, average.pct)) })) : t('goal.noPendingExams')}</span>
       ${short > 0.00001 && average && average.pct <= 100.00001 && html`<span className="small goal-raw">${t('goal.examRaw', { list: summary.pendingRows.filter(function (r) { return (r.a.type === 'midterm' || r.a.type === 'final') && r.w > 0.00001 && isNum(r.max) && r.max > 0; })
         .map(function (r) { return aName(r.a) + ' ' + fmtT(Math.ceil(Math.max(0, average.pct) / 100 * r.max * 100 - 1e-9) / 100) + '/' + fmtT(r.max); }).join(', ') })}</span>`}
       ${short > 0.00001 && average && average.otherPending && html`<span className="tiny muted">${t('goal.examAssumes', { p: fmt(average.assumedPct) })}</span>`}
       ${summary.unassigned > 0.005 && html`<span className="tiny muted">${t('goal.unassigned')}</span>`}</div>`
-    : html`<div className="small muted">${mode === 'criterion' ? t('goal.notSet') : t('grading.numericGoalHint')}</div>`}
+    : html`<div className="small muted">${hasAdvanced(c) ? t('policy.rawHint') : mode === 'criterion' ? t('goal.notSet') : t('grading.numericGoalHint')}</div>`}
   </div>`;
 }
 /* ---- grading method editor: letter grades (criterion / norm) or S/U, with the cut-offs ---- */
@@ -4031,6 +4203,12 @@ function GradingModal(p) {
   var ms = useState(mode0 === 'norm' || mode0 === 'criterion' ? mode0 : 'unknown'), mode = ms[0], setMode = ms[1];
   var ps = useState(sGrade && isNum(sGrade.min) ? sGrade.min : 60), pass = ps[0], setPass = ps[1];
   var gs = useState(function () { return c ? letterGradesFor(c, state).map(function (g) { return Object.assign({}, g); }) : []; }), grades = gs[0], setGrades = gs[1];
+  var fs = useState(function () { return Object.assign({}, c && c.normFloors || {}); }), floors = fs[0], setFloors = fs[1];
+  var floorLabels = ['A','B+','B','C+','C','D+','D'];
+  var enteredFloors = floorLabels.filter(function(g) { return floors[g] != null; });
+  var badFloors = kind === 'letter' && mode === 'norm' && enteredFloors.some(function(g,i) {
+    return !isNum(floors[g]) || floors[g] <= 0 || floors[g] > 100 || (i > 0 && floors[g] <= 100 && floors[g] >= floors[enteredFloors[i-1]]);
+  });
   if (!c) return null;
   var cutRows = grades.filter(function (g) { return g.earns !== false && g.min > 0; });
   var setMin = function (label, v) { setGrades(grades.map(function (g) { return g.label === label ? Object.assign({}, g, { min: v }) : g; })); };
@@ -4053,6 +4231,7 @@ function GradingModal(p) {
         x.gradingMode = mode;
         if (x.target === 'S' || x.target === 'U') x.target = null;
       }
+      x.normFloors = kind === 'letter' && mode === 'norm' ? Object.fromEntries(enteredFloors.map(function(g) { return [g, floors[g]]; })) : {};
       x.gradingUser = true; // the student's own choice beats the shared syllabus data
     }, { undo: true });
     closeModal();
@@ -4060,7 +4239,7 @@ function GradingModal(p) {
   };
   return html`<${Modal} title=${t('gm.title')} onClose=${closeModal} foot=${html`
     <button className="btn" onClick=${closeModal}>${t('cancel')}</button>
-    <button className="btn primary" disabled=${bad || badPass} onClick=${save}>${t('save')}</button>`}>
+    <button className="btn primary" disabled=${(mode !== 'norm' && bad) || badPass || badFloors} onClick=${save}>${t('save')}</button>`}>
     <p className="small muted" style=${{ margin: 0 }}>${courseDisplayTitle(c)}</p>
     <${Field} label=${t('gm.kind')} id="gm-kind">
       <div className="seg-pick" role="group" aria-label=${t('gm.kind')}>
@@ -4079,7 +4258,7 @@ function GradingModal(p) {
           })}
         </div>
       <//>
-      <div>
+      ${mode === 'norm' ? html`<div><div className="label">${t('gm.floorTitle')}</div><div className="hint">${t('gm.floorHint')}</div><div className="gm-cuts">${floorLabels.map(function(g) { return html`<label key=${g} className="gm-cut"><b>${g}</b><span className="muted tiny">≥</span><${NumCell} label=${g} value=${floors[g] == null ? null : floors[g]} onChange=${function(v) { setFloors(function(old) { return Object.assign({}, old, {[g]:v}); }); }} /><span className="muted tiny">%</span></label>`; })}</div>${badFloors && html`<div className="error-text" role="alert">${t('gm.bad')}</div>`}</div>` : html`<div>
         <div className="row between wrap" style=${{ gap: 8, marginBottom: 6 }}>
           <span className="label">${mode === 'norm' ? t('gm.cutsNorm') : t('gm.cuts')}</span>
           <button type="button" className="linkish" onClick=${std}>${t('gm.std')}</button>
@@ -4090,7 +4269,7 @@ function GradingModal(p) {
         })}</div>
         <div className="hint">${t('gm.cutsHint', { f: (grades.find(function (g) { return g.earns === false; }) || { label: 'F' }).label })}</div>
         ${bad && html`<div className="error-text" role="alert">${t('gm.bad')}</div>`}
-      </div>
+      </div>`}
     <//>`}
   <//>`;
 }
@@ -4189,7 +4368,7 @@ function buildICS(events) {
     L.push('SUMMARY:' + icsEscape(e.title));
     if (e.where) L.push('LOCATION:' + icsEscape(e.where));
     if (e.note) L.push('DESCRIPTION:' + icsEscape(e.note));
-    if (e.exam) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEscape(e.title), 'TRIGGER:-P1D', 'END:VALARM');
+    L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEscape(e.title), 'TRIGGER:-P1D', 'END:VALARM');
     L.push('END:VEVENT');
   });
   L.push('END:VCALENDAR');
@@ -4780,7 +4959,7 @@ function goalLine(c, state, sum) {
   var mode = gradingModeFor(c), grades = C.gradesFor(c, state);
   var target = mode === 'criterion' ? (c.target && grades.find(function (g) { return g.label === c.target; })) :
     (numericGoalFor(c) !== null ? { min: numericGoalFor(c), label: fmtT(numericGoalFor(c)) + '%' } : null);
-  if (!target || c.finalGrade) return null;
+  if (!target || c.finalGrade || hasAdvanced(c)) return null;
   var short = Math.max(0, target.min - sum.earned);
   if (short <= 0.00001) return { tone: 'ok', text: t('cc.reached') };
   var avg = C.requiredExamAverage(target.min, sum);
@@ -4831,11 +5010,11 @@ function CourseCard(p) {
       </div>
       <${GradeBadge} info=${info} />
     </div>
-    <div className="ccard-slot ccard-bar-slot">${!c.finalGrade && html`<${GradeBar} sum=${sum} grades=${mode === 'criterion' ? grades : []} target=${tg} />`}</div>
+    <div className="ccard-slot ccard-bar-slot">${!c.finalGrade && html`<${GradeBar} sum=${sum} grades=${mode === 'criterion' && !hasAdvanced(c) ? grades : []} target=${hasAdvanced(c)?null:tg} />`}</div>
     <div className="ccard-slot ccard-progress-slot">${manual || c.finalGrade ? html`<p className="small muted" style=${{ margin: 0 }}>${c.finalGrade ? officialNote(c, state) : t('manualGradeNote')}</p>` : html`<div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>`}</div>
     <div className="ccard-slot ccard-warning-slot">${!c.finalGrade && sum.issues.over && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.over",{n:fmtT(sum.totalWeight)})}</div>`}${!c.finalGrade && sum.issues.overMax>0 && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.overMax")}</div>`}</div>
     <div className="ccard-slot ccard-forecast-slot">${!c.finalGrade && html`<${EstimateBasis} course=${c} sum=${sum} state=${state} collapsible=${true} />`}</div>
-    <div className="ccard-slot ccard-goal-slot">${gl && html`<div className=${'ccard-line ' + gl.tone}><${Icon} n="target" s=${14} /><span>${gl.text}</span></div>`}</div>
+    <div className="ccard-slot ccard-goal-slot">${normFloorText(c, sum) && html`<div className="ccard-line"><${Icon} n="target" s=${14} /><span>${normFloorText(c, sum)}</span></div>`}${gl && html`<div className=${'ccard-line ' + gl.tone}><${Icon} n="target" s=${14} /><span>${gl.text}</span></div>`}</div>
     <div className="ccard-slot ccard-exam-slot">${nx && html`<div className="ccard-line"><${Icon} n="calendar" s=${14} /><span>${nextExamText(nx)}</span></div>`}</div>
     <div className="ccard-foot">
       <span className="row" style=${{ gap: 6, minWidth: 0 }}>${p.handle}${c.finalGrade ? null : html`<${GoalPicker} course=${c} state=${state} />`}</span>
@@ -4853,7 +5032,7 @@ function EstimateBasis(p) {
   var c = p.course, sum = p.sum, state = p.state || S.state;
   if (c.finalGrade || !sum.pendingRows.length || sum.expected == null) return null;
   var saved = sum.pendingRows.filter(function (r) { return r.predContrib !== null; });
-  var grades = C.gradesFor(c, state), g = gradingModeFor(c) === 'criterion' ? C.letterFor(sum.expected, grades) : null;
+  var grades = C.gradesFor(c, state), g = gradingModeFor(c) === 'criterion' && !hasAdvanced(c) ? C.letterFor(sum.expected, grades) : null;
   var head = g ? t('pred.headGrade', { g: g.label, p: fmt(sum.expected) }) : t('pred.headPct', { p: fmt(sum.expected) });
   // Describe where an assumed percentage comes from, naming the graded work it copies.
   var srcText = function (r) {
@@ -5286,6 +5465,63 @@ function ExamCalendarPanel(p) {
   </div>`;
 }
 
+// Planning heuristics are not probabilities or grade predictions.
+function StudyPriority(p) {
+  var rows = p.courses.filter(function(c){return !c.finalGrade;}).map(function(c){
+    var sum=C.courseSummary(c,p.state), mode=gradingModeFor(c);
+    var goal=mode==='criterion' ? C.gradesFor(c,p.state).find(function(g){return g.label===c.target;}) : normFloorsFor(c).slice().reverse().find(function(g){return g.min>sum.earned;});
+    var target=goal ? goal.min : mode==='criterion' ? null : numericGoalFor(c);
+    var event=p.events.filter(function(e){return e.c.id===c.id&&!e.completed&&e.d>=0;}).sort(function(a,b){return a.d-b.d;})[0];
+    var gap=target==null?null:Math.max(0,target-sum.earned);
+    var advanced=hasAdvanced(c), invalid=advanced||sum.issues.over||sum.issues.overMax>0;
+    var impossible=gap!=null&&target>sum.maxPossible+1e-8;
+    var weight=event ? sum.pendingRows.filter(function(r){return r.a.type===event.a.type;}).reduce(function(a,r){return a+r.w;},0):0;
+    var score=invalid||impossible||gap===0? -1 : (event? 60/(1+event.d):0)+weight/2+(gap==null?0:30*gap/Math.max(1,sum.remaining))+(toNum(c.credits)||0);
+    return {c:c,event:event,gap:gap,target:target,goal:goal,advanced:advanced,invalid:invalid,impossible:impossible,score:score};
+  }).sort(function(a,b){return b.score-a.score;});
+  if(!rows.length)return null;
+  return html`<section data-testid="study-priority" className="section card pad"><div className="section-head"><h2>${t('plan.priority')}</h2></div><p className="small muted">${t('plan.priorityHint')}</p>
+    <div className="stack">${rows.slice(0,5).map(function(r){return html`<div key=${r.c.id} className="row wrap between"><div className="grow"><a href=${'#course-'+r.c.id}><b>${courseDisplayTitle(r.c)}</b></a><div className="small muted">${r.event?t('plan.examDays',{n:r.event.d}):t('plan.noDate')} · ${r.advanced?t('policy.rawHint'):r.invalid?t('plan.invalid'):r.impossible?t('plan.unreachable'):r.gap===null?t('plan.noGoal'):r.gap===0?t('plan.reached'):t('plan.gap',{n:fmtT(Math.ceil(r.gap*100)/100),p:fmtT(r.target)})}</div></div><span className=${'chip '+(r.invalid||r.impossible?'warn':r.gap===0?'ok':'')}>${r.invalid||r.impossible?t('plan.review'):r.gap===0?t('plan.reached'):r.event&&r.event.d<=3?t('plan.soon'):t('plan.study')}</span></div>`;})}</div></section>`;
+}
+function ClassComparison(p) {
+  var c=p.course,sum=p.sum;
+  if(gradingModeFor(c)!=='norm')return null;
+  var st=useState(c.classSnapshot||{}), v=st[0], setV=st[1];
+  var comparison=GSPlanning.compare(v.score,v.mean,v.sd), valid=!!comparison;
+  var z=valid?comparison.z:null;
+  return html`<section data-testid="class-comparison" className="card pad"><div className="section-head"><h2>${t('plan.class')}</h2></div><p className="small muted">${t('plan.classHint')}</p><div className="row wrap">${[['score','plan.myScore'],['mean','grading.normMean'],['sd','grading.normStdDev']].map(function(pair){return html`<div key=${pair[0]} style=${{flex:'1 1 100px',minWidth:0}}><div className="label">${t(pair[1])}</div><${NumCell} label=${t(pair[1])} value=${v[pair[0]]} onChange=${function(n){setV(function(old){return Object.assign({},old,{[pair[0]]:n});});}} /></div>`;})}</div>
+  ${valid&&html`<div className="stack" style=${{marginTop:12}}>${[['plan.myScore',v.score],['grading.normMean',v.mean]].map(function(pair){return html`<div key=${pair[0]}><div className="row between small"><span>${t(pair[0])}</span><b>${fmtT(pair[1])}%</b></div><div style=${{height:8,background:'var(--surface-3)',borderRadius:8,overflow:'hidden'}}><div style=${{height:8,width:pair[1]+'%',background:pair[0]==='plan.myScore'?'var(--accent)':'var(--muted)'}}></div></div></div>`;})}<p><b>${t('plan.z',{z:fmt(z),d:fmt(v.score-v.mean)})}</b></p></div>`}
+  <div className="row wrap"><button className="btn sm" disabled=${!valid} onClick=${function(){update(function(d){var x=d.courses.find(function(x){return x.id===c.id;});if(x)x.classSnapshot=Object.assign({},v);},{undo:true});}}>${t('save')}</button><button className="btn sm ghost" onClick=${function(){setV({});update(function(d){var x=d.courses.find(function(x){return x.id===c.id;});if(x)x.classSnapshot={};},{undo:true});}}>${t('plan.clear')}</button></div></section>`;
+}
+function ReminderPanel(p){
+  var st=useState(function(){try{return localStorage.getItem('gs.reminders.enabled')==='1';}catch(e){return false;}}),enabled=st[0],setEnabled=st[1];
+  var statusState=useState(''),status=statusState[0],setStatus=statusState[1];
+  var count=p.events.filter(function(e){return e.d>=0&&e.d<=3;}).length;
+  var supported=typeof Notification!=='undefined'&&window.isSecureContext;
+  useEffect(function(){
+    if(!enabled||!supported||Notification.permission!=='granted'||!count)return;
+    var day=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'}),key='gs.reminders.last';
+    try{if(localStorage.getItem(key)===day)return;}catch(e){}
+    var options={body:t('plan.reminderCount',{n:count}),tag:'gs-due',icon:'/app-icon.svg'};
+    var done=function(){try{localStorage.setItem(key,day);}catch(e){}};
+    if('serviceWorker' in navigator)navigator.serviceWorker.getRegistration().then(function(reg){
+      if(reg)return reg.showNotification('GradeSpace',options);
+      new Notification('GradeSpace',options);
+    }).then(done).catch(function(){setStatus('plan.reminderUnsupported');});
+    else try{new Notification('GradeSpace',options);done();}catch(e){setStatus('plan.reminderUnsupported');}
+  },[enabled,count,supported]);
+  var toggle=async function(){
+    if(enabled){setEnabled(false);try{localStorage.removeItem('gs.reminders.enabled');}catch(e){}return;}
+    if(!supported){setStatus('plan.reminderUnsupported');return;}
+    try{
+      var permission=await Notification.requestPermission();
+      if(permission!=='granted'){setStatus('plan.reminderDenied');return;}
+      try{localStorage.setItem('gs.reminders.enabled','1');}catch(e){}
+      setEnabled(true);setStatus('');
+    }catch(e){setStatus('plan.reminderUnsupported');}
+  };
+  return html`<section className="section card pad" data-testid="reminders"><div className="row between wrap"><div className="grow"><h2>${t('plan.reminders')}</h2><div className="small muted">${t('plan.reminderHint')}</div></div><button className="btn sm" onClick=${toggle}>${t(enabled?'plan.reminderOff':'plan.reminderOn')}</button><button className="btn sm" onClick=${function(){downloadICS(p.state,p.semester.id,p.personal);}}>${t('ics.btn')}</button></div>${status&&html`<p className="small muted" role="status">${t(status)}</p>`}</section>`;
+}
 function Dashboard(p) {
   var personal=React.useContext(PersonalExamContext);
   var state = p.state, cur = curSemester(state);
@@ -5385,6 +5621,9 @@ function Dashboard(p) {
       </div>
       <${ExamCalendarPanel} events=${allUpcoming} />
     </div>
+    <${StudyPriority} courses=${courses} state=${state} events=${examEvents} />
+    <${SemesterRange} state=${state} semester=${cur} />
+    <${ReminderPanel} events=${upcoming} state=${state} semester=${cur} personal=${personal} />
     <div className="section">
       <div className="section-head"><h2>${t('coursesIn', { s: semFull(state, cur) })}</h2>
         <a className="btn ghost sm" href="#courses">${t('allCourses')}</a></div>
@@ -5603,9 +5842,32 @@ function CoursesPage(p) {
 }
 
 /* ================= course detail ================= */
+function AdvancedPolicy(p) {
+  var c=p.course,state=p.state,sum=p.sum,grades=C.sortedGrades(C.gradesFor(c,state));
+  var st=useState(function(){return clone(c.advancedPolicy||{});}),v=st[0],setV=st[1];
+  var es=useState(false),error=es[0],setError=es[1];
+  var patch=function(k,x){setV(function(old){return Object.assign({},old,{[k]:x});});setError(false);};
+  var rules=v.minimums||[],drops=v.drops||{},retakes=v.retakes||{};
+  var cats=state.categories.filter(function(k){return k.courseId===c.id&&k.dist==='equal'&&state.assessments.filter(function(a){return a.categoryId===k.id;}).length>1;});
+  var items=state.assessments.filter(function(a){return a.courseId===c.id&&C.isGraded(a);});
+  var result=GSPlanning.active(c.advancedPolicy)?GSPlanning.evaluate(c.advancedPolicy,state,c,sum,grades,null):null;
+  var save=function(){
+    var valid=(v.bonus==null||isNum(v.bonus)&&v.bonus>=0&&v.bonus<=100)&&rules.every(function(r){return TYPES.includes(r.type)&&isNum(r.min)&&r.min>=0&&r.min<=100&&grades.some(function(g){return g.label===r.cap;});})&&Object.entries(drops).every(function(pair){return cats.some(function(k){return k.id===pair[0]&&Number.isInteger(pair[1])&&pair[1]>0&&pair[1]<state.assessments.filter(function(a){return a.categoryId===k.id;}).length;});})&&Object.entries(retakes).every(function(pair){return items.some(function(a){return a.id===pair[0]&&isNum(pair[1].score)&&pair[1].score>=0&&pair[1].score<=a.max;});});
+    if(!valid){setError(true);return;}
+    update(function(d){var x=d.courses.find(function(y){return y.id===c.id;});if(x)x.advancedPolicy=clone(v);},{undo:true});toast(t('saved'),{undo:true});
+  };
+  return html`<section className="card pad stack" data-testid="advanced-policy"><details><summary style=${{cursor:'pointer',fontWeight:600}}>${t('policy.title')}</summary><p className="small muted">${t('policy.hint')}</p>
+    ${result&&html`<div className="banner info">${result.status==='ok'?t('policy.adjusted',{p:fmt(result.score)})+(gradingModeFor(c)==='criterion'&&result.grade?' · '+result.grade.label:''):t(result.status==='pending'?'policy.pending':'policy.invalid')}</div>`}
+    <div className="grid2"><${Field} label=${t('policy.rounding')}><select className="select" aria-label=${t('policy.rounding')} value=${v.rounding||'none'} onChange=${function(e){patch('rounding',e.target.value);}}>${['none','nearest','floor','ceil'].map(function(x){return html`<option key=${x} value=${x}>${t('policy.'+x)}</option>`;})}</select><//><${Field} label=${t('policy.bonus')}><${NumCell} label=${t('policy.bonus')} value=${v.bonus} onChange=${function(n){patch('bonus',n);}} /><//></div>
+    <div className="stack" style=${{marginTop:12}}><b>${t('policy.minimum')}</b>${rules.map(function(r,i){var change=function(k,x){patch('minimums',rules.map(function(q,j){return j===i?Object.assign({},q,{[k]:x}):q;}));};return html`<div key=${i} className="grid2"><select className="select" aria-label=${t('assessType')} value=${r.type} onChange=${function(e){change('type',e.target.value);}}>${TYPES.map(function(x){return html`<option key=${x} value=${x}>${t('type.'+x)}</option>`;})}</select><${NumCell} label=${t('policy.minimumPct')} value=${r.min} onChange=${function(n){change('min',n);}} /><select className="select" aria-label=${t('policy.cap')} value=${r.cap} onChange=${function(e){change('cap',e.target.value);}}>${grades.map(function(g){return html`<option key=${g.label} value=${g.label}>${t('policy.cap')}: ${g.label}</option>`;})}</select><button className="btn sm" onClick=${function(){patch('minimums',rules.filter(function(q,j){return j!==i;}));}}>${t('policy.remove')}</button></div>`;})}<button className="btn sm" onClick=${function(){patch('minimums',rules.concat([{type:'final',min:null,cap:grades.length?grades[grades.length-1].label:''}]));}}>${t('policy.addMinimum')}</button></div>
+    <div className="stack" style=${{marginTop:12}}><b>${t('policy.drops')}</b>${cats.map(function(k){return html`<div key=${k.id} className="row wrap"><span className="grow">${catName(k)}</span><${NumCell} label=${t('policy.dropCount')+' '+catName(k)} value=${drops[k.id]||0} style=${{width:100}} onChange=${function(n){var d=Object.assign({},drops);if(n==null||n===0)delete d[k.id];else d[k.id]=n;patch('drops',d);}} /></div>`;})}</div>
+    <div className="stack" style=${{marginTop:12}}><b>${t('policy.retakes')}</b>${items.map(function(a){var q=retakes[a.id];return html`<div key=${a.id}><label className="check"><input type="checkbox" checked=${!!q} onChange=${function(e){var next=Object.assign({},retakes);if(e.target.checked)next[a.id]={score:a.score,mode:'replace'};else delete next[a.id];patch('retakes',next);}} /><span>${aName(a)}</span></label>${q&&html`<div className="grid2"><${NumCell} label=${t('policy.retakeScore')} value=${q.score} onChange=${function(n){patch('retakes',Object.assign({},retakes,{[a.id]:Object.assign({},q,{score:n})}));}} /><select className="select" aria-label=${t('policy.retakes')} value=${q.mode} onChange=${function(e){patch('retakes',Object.assign({},retakes,{[a.id]:Object.assign({},q,{mode:e.target.value})}));}}><option value="replace">${t('policy.replace')}</option><option value="higher">${t('policy.higher')}</option></select></div>`}</div>`;})}</div>
+    ${error&&html`<p className="error-text" role="alert">${t('policy.ruleError')}</p>`}<div className="row wrap" style=${{marginTop:12}}><button className="btn primary sm" onClick=${save}>${t('policy.save')}</button><button className="btn sm" onClick=${function(){setV({});setError(false);}}>${t('policy.clear')}</button></div>
+  </details></section>`;
+}
 function GradeSummary(p) {
   var c = p.course, state = p.state, s = p.sum, grades = C.gradesFor(c, state);
-  var criterion = gradingModeFor(c) === 'criterion';
+  var criterion = gradingModeFor(c) === 'criterion' && !hasAdvanced(c);
   var tg = criterion ? (c.target ? grades.find(function (g) { return g.label === c.target; }) : null) :
     (numericGoalFor(c) !== null ? { min: numericGoalFor(c), label: fmtT(numericGoalFor(c)) + '%' } : null);
   var L = function (v) { if (!criterion) return t('grading.noLetterPredictionShort'); var g = C.letterFor(v, grades); return g ? g.label : '–'; };
@@ -5616,7 +5878,7 @@ function GradeSummary(p) {
     <div><${GradeBar} sum=${s} grades=${criterion ? grades : []} target=${tg} lg=${true}
        onTargetChange=${criterion ? function (label) { saveCourseTarget(c.id, label); } : null} />
        <div className="goal-bar-hint">${criterion ? t('goal.chooseHere') : t('grading.numericGoalHint')}</div></div>
-    ${!criterion && html`<${Banner} kind="info">${t('grading.noLetterPrediction')}<//>`}
+    ${!criterion && html`<${Banner} kind="info">${t(hasAdvanced(c)?'policy.rawHint':'grading.noLetterPrediction')}<//>`}
     ${s.issues.over && html`<${Banner} kind="bad">${t('warn.over', { n: fmtT(s.totalWeight) })}<//>`}
     ${s.issues.under && html`<${Banner} kind="info">${t('warn.under', { n: fmtT(s.totalWeight), r: fmtT(100 - s.totalWeight) })}<//>`}
     ${s.issues.overMax > 0 && html`<${Banner} kind="bad">${t('warn.overMax')}<//>`}
@@ -5792,7 +6054,7 @@ function defaultSim(sum, whole) {
 function GradeSimulator(p) {
   var c = p.course, state = p.state, sum = C.courseSummary(c, state);
   var grades = C.sortedGrades(C.gradesFor(c, state));
-  var criterion = gradingModeFor(c) === 'criterion';
+  var advanced=hasAdvanced(c), criterion = gradingModeFor(c) === 'criterion' && !advanced;
   var targets = criterion ? grades.filter(function (g) { return g.min > 0; }) : [];
   var whole = state.settings.wholeNumbers !== false;
   var initT = criterion && c.target && targets.find(function (g) { return g.label === c.target; }) ? c.target : (criterion && targets[0] ? targets[0].label : 'custom');
@@ -5809,9 +6071,10 @@ function GradeSimulator(p) {
 
   if (!sum.rows.length) return html`<section className="card pad"><h2 style=${{ fontSize: 18 }}>${t('nav.simulator')}</h2><p className="muted">${t('simNoAssess')}</p></section>`;
   if (!sum.pendingRows.length) {
+    var advancedResult=advanced?GSPlanning.evaluate(c.advancedPolicy,state,c,sum,grades,null):null;
     var g0 = criterion ? C.letterFor(sum.earned, grades) : null;
     return html`<section className="card pad"><h2 style=${{ fontSize: 18 }}>${t('nav.simulator')}</h2>
-      <p className="muted" style=${{ marginBottom: 0 }}>${criterion ? t('simAllGraded', { p: fmt(sum.earned), g: g0 ? g0.label : '–' }) : t('grading.allGradedPoints', { p: fmt(sum.earned) })}</p></section>`;
+      <p className="muted" style=${{ marginBottom: 0 }}>${advancedResult&&advancedResult.status==='ok'?t('policy.adjusted',{p:fmt(advancedResult.score)})+(gradingModeFor(c)==='criterion'&&advancedResult.grade?' · '+advancedResult.grade.label:''):criterion ? t('simAllGraded', { p: fmt(sum.earned), g: g0 ? g0.label : '–' }) : t('grading.allGradedPoints', { p: fmt(sum.earned) })}</p></section>`;
   }
   var tGrade = grades.find(function (g) { return g.label === tKey; });
   var targetPct = tKey === 'custom' ? Math.max(0, Math.min(100, toNum(custom) || 0)) : (tGrade ? tGrade.min : 0);
@@ -5819,7 +6082,9 @@ function GradeSimulator(p) {
   var req = C.requiredScore(targetPct, sum, solve.id, sim, whole);
   var avg = C.requiredExamAverage(targetPct, sum);
   var total = C.simulatedTotal(sum, sim);
-  var pg = criterion ? C.letterFor(total, grades) : null;
+  var adjusted=advanced?GSPlanning.evaluate(c.advancedPolicy,state,c,sum,grades,sim):null;
+  if(adjusted&&adjusted.status==='ok')total=adjusted.score;
+  var pg = criterion ? C.letterFor(total, grades) : adjusted&&adjusted.status==='ok'&&gradingModeFor(c)==='criterion'?adjusted.grade:null;
   var meta = pg ? C.outcomeMeta(pg.label, c, state) : null;
   var credits = toNum(c.credits) || 0;
   var others = sum.pendingRows.length > 1;
@@ -5851,10 +6116,10 @@ function GradeSimulator(p) {
       ${others && html`<${Field} label=${t('solveFor')} id="sim-solve"><select id="sim-solve" className="select" style=${{ width: 'auto', minWidth: 170 }} value=${solve.id} onChange=${function (e) { setSolveId(e.target.value); }}>
         ${sum.pendingRows.map(function (r) { return html`<option key=${r.id} value=${r.id}>${aName(r.a)} (${fmtT(r.w)}%)</option>`; })}</select><//>`}
     </div>
-    <div className=${'verdict ' + vcls} aria-live="polite">${verdict}
+    ${advanced?html`<div className="banner info">${t('policy.simHint')}</div>`:html`<div className=${'verdict ' + vcls} aria-live="polite">${verdict}
       ${avg && avg.examCount > 1 && html`<div className="verdict-sub">${avg.pct > 100 ? t('v.avgImpossible', { p: fmt(avg.pct) }) : avg.pct <= 0 ? t('v.avgSecured') : t('v.avg', { p: fmt(avg.pct) })}${avg.otherPending ? ' ' + t('goal.examAssumes', { p: fmt(avg.assumedPct) }) : ''}</div>`}
       ${sum.unassigned > 0.005 && html`<div className="verdict-sub">${t('v.unassigned', { n: fmtT(sum.unassigned) })}</div>`}
-    </div>
+    </div>`}
     ${criterion && html`<div>
       <div className="label" style=${{ marginBottom: 8 }}>${t('ladderT', { name: nmv(aName(solve.a)) })}</div>
       <div className="ladder">${targets.map(function (g) {
@@ -5881,13 +6146,14 @@ function GradeSimulator(p) {
         </div>`;
       })}</div>
     </div>
+    ${normFloorText(c, Object.assign({}, sum, {earned:total})) && html`<div className="small muted">${t('predFinal')}: ${normFloorText(c, Object.assign({}, sum, {earned:total}))}</div>`}
     <div className="sim-result">
-      <div><div className="k">${t('predFinal')}</div><div className="v">${fmt(total)}%</div></div>
-      <div><div className="k">${t('predGrade')}</div><div className=${criterion ? "v" : "v grade-summary-short"} title=${criterion ? undefined : t("grading.noLetterPrediction")}>${criterion ? (pg ? pg.label : '–') : t('grading.noLetterPredictionShort')}</div></div>
+      <div><div className="k">${advanced?t(adjusted&&adjusted.status==='ok'?'policy.adjustedLabel':'policy.rawLabel'):t('predFinal')}</div><div className="v">${fmt(total)}%</div></div>
+      <div><div className="k">${t('predGrade')}</div><div className=${criterion ? "v" : "v grade-summary-short"} title=${criterion ? undefined : t("grading.noLetterPrediction")}>${pg ? pg.label : t('grading.noLetterPredictionShort')}</div></div>
       <div><div className="k">${t('predGPAContrib')}</div><div className="v">${meta && meta.gpa && isNum(meta.points) ? fmt(meta.points * credits) : '–'}</div>
         <div className="tiny muted">${meta && meta.gpa && isNum(meta.points) ? t('ptsXcr', { p: fmtT(meta.points), c: fmtT(credits) }) : ''}</div></div>
-      <div><div className="k">${t('targetStatus')}</div><div className="v" style=${{ fontSize: 17, color: total >= targetPct - 1e-9 ? 'var(--ok)' : 'var(--bad)' }}>
-        ${total >= targetPct - 1e-9 ? t('onTrack') : t('shortBy', { n: fmt(targetPct - total) })}</div></div>
+      ${!advanced&&html`<div><div className="k">${t('targetStatus')}</div><div className="v" style=${{ fontSize: 17, color: total >= targetPct - 1e-9 ? 'var(--ok)' : 'var(--bad)' }}>
+        ${total >= targetPct - 1e-9 ? t('onTrack') : t('shortBy', { n: fmt(targetPct - total) })}</div></div>`}
     </div>
   </section>`;
 }
@@ -5942,6 +6208,8 @@ function CourseDetail(p) {
         <div style=${{ marginTop: 8 }}><button className="btn sm primary" onClick=${function () { openModal('final', { courseId: c.id }); }}>${t('recordGrade')}</button></div></div><//>`}
       ${c.finalGrade ? html`<${Banner} kind="info"><div>${officialNote(c, state)}${impliedRange(c, state, c.finalGrade) ? html`<div className="small" style=${{ marginTop: 4 }}>${impliedText(impliedRange(c, state, c.finalGrade))}</div>` : ''}</div><//>` : html`<${GradingAndGap} course=${c} state=${state} sum=${sum} />`}
       <${GradeSummary} course=${c} state=${state} sum=${sum} info=${info} />
+      <${AdvancedPolicy} key=${'policy-'+c.id} course=${c} state=${state} sum=${sum} />
+      ${gradingModeFor(c)==='norm' && html`<${ClassComparison} key=${'comparison-'+c.id} course=${c} sum=${sum} />`}
       <${AssessmentList} course=${c} state=${state} sum=${sum} />
       ${sum.rows.length > 0 && !c.finalGrade && html`<${GradeSimulator} course=${c} state=${state} />`}
       <${CoursevilleSnapshot} course=${c} state=${state} />
@@ -6051,6 +6319,35 @@ function CreditsCard(p) {
     })}
   </section>`;
 }
+function semesterPlanning(state,sem) {
+  var fixed=C.semesterStats(state,sem.id,'confirmed');
+  var courses=state.courses.filter(function(c){return c.semesterId===sem.id&&!c.finalGrade&&!isSUCourse(c)&&c.credits>0;});
+  var options=courses.map(function(c){
+    var sum=C.courseSummary(c,state), mode=gradingModeFor(c), floors=normFloorsFor(c);
+    var floor=!sum.issues.over&&!sum.issues.overMax?floors.find(function(g){return sum.earned>=g.min;}):null;
+    var grades=C.gradesFor(c,state).filter(function(g){return g.gpa!==false&&isNum(g.points)&&g.points>=0;});
+    var lower=floor?grades.find(function(g){return g.label===floor.label;}):null;
+    if(!hasAdvanced(c)&&mode==='criterion'&&!sum.issues.over&&!sum.issues.overMax&&sum.rows.length)lower=C.letterFor(sum.earned,grades);
+    if(hasAdvanced(c)){var result=GSPlanning.evaluate(c.advancedPolicy,state,c,sum,grades,null);if(mode==='criterion'&&sum.complete&&result.status==='ok'&&result.grade)return [result.grade];return grades.sort(function(a,b){return a.points-b.points;});}
+    return grades.filter(function(g){return (!lower||g.points>=lower.points)&&(mode!=='criterion'||sum.issues.over||sum.issues.overMax||g.min<=sum.maxPossible+1e-8);}).sort(function(a,b){return a.points-b.points;});
+  });
+  return {fixed:fixed,courses:courses,options:options};
+}
+function SemesterRange(p){
+  var plan=semesterPlanning(p.state,p.semester), bounds=GSPlanning.range(plan.fixed,plan.courses,plan.options);
+  if(!bounds)return null;
+  return html`<section data-testid="gpa-range" className="section card pad"><div className="row between wrap"><div><h2>${t('policy.range')}</h2><div className="small muted">${t('policy.rangeHint')}</div></div><b style=${{fontSize:22}}>${fmt(bounds.low)} – ${fmt(bounds.high)}</b></div><div style=${{height:8,borderRadius:8,background:'var(--surface-3)',position:'relative',marginTop:12}}><div style=${{position:'absolute',height:8,borderRadius:8,background:'var(--accent)',left:Math.max(0,bounds.low/4*100)+'%',width:Math.max(0,(bounds.high-bounds.low)/4*100)+'%'}}></div></div><div className="row between tiny muted"><span>0.00</span><span>4.00</span></div></section>`;
+}
+function ReverseSemesterPlanner(p) {
+  var state=p.state, sem=curSemester(state),st=useState(3.5),target=st[0],setTarget=st[1];
+  if(!sem)return null;
+  var plan=semesterPlanning(state,sem),courses=plan.courses;
+  var bounds=GSPlanning.range(plan.fixed,courses,plan.options);
+  var valid=isNum(target)&&target>=0&&target<=4&&!!bounds;
+  var scenarios=valid?GSPlanning.scenarios(plan.fixed,courses,plan.options,target):[];
+  return html`<section data-testid="reverse-gpa" className="section card pad"><div className="section-head"><h2>${t('plan.reverse')}</h2></div><p className="small muted">${t('plan.reverseHint')}</p><div className="row wrap"><label className="label">${t('plan.gpaTarget')}</label><${NumCell} label=${t('plan.gpaTarget')} value=${target} onChange=${setTarget} style=${{width:100}} /></div>
+  ${valid?(scenarios.length?html`<div className="stack">${scenarios.map(function(x,j){return html`<div key=${j} className="card pad"><b>GPA ${fmt(x.gpa)}</b>${courses.map(function(c,i){return html`<div key=${c.id} className="row between small"><span>${courseDisplayTitle(c)}</span><b>${x.labels[i]}</b></div>`;})}</div>`;})}</div>`:html`<p className="small muted">${t('plan.unreachable')}</p>`):null}</section>`;
+}
 function GPAPage(p) {
   var state = p.state, mode = state.settings.gpaMode === 'estimated' ? 'estimated' : 'confirmed';
   var cum = C.cumulativeStats(state, mode), cumC = C.cumulativeStats(state, 'confirmed');
@@ -6097,6 +6394,7 @@ function GPAPage(p) {
         })()}</tbody></table></div>` : html`<p className="muted small">${t('noYearsP')}</p>`}
     </div>
     <div className="section"><${CreditsCard} state=${state} /></div>
+    <${ReverseSemesterPlanner} state=${state} />
     <div className="section"><${GoalPlanner} state=${state} /></div>
   </div>`;
 }
@@ -6358,7 +6656,7 @@ function CourseModal(p) {
         normMethod: f.normMethod || 'unknown', normMean: toNum(f.normMean), normStdDev: toNum(f.normStdDev),
         gradingNotes: String(f.gradingNotes || '').trim(), gradingSource: String(f.gradingSource || '').trim() };
       var sectionChanged = !!c && sectionOf(c) !== data.section;
-      if (sectionChanged) { data.gradingMode = 'unknown'; data.customGrades = null; data.scaleId = d.settings.defaultScaleId; data.gradingSource = ''; data.exams = null; }
+      if (sectionChanged) { data.normFloors = {}; data.classSnapshot = {}; data.advancedPolicy = {}; data.gradingEvidence = ''; data.gradingMode = 'unknown'; data.customGrades = null; data.scaleId = d.settings.defaultScaleId; data.gradingSource = ''; data.exams = null; }
       if ((!c && data.code) || sectionChanged) {
         var verifiedRule = SharedCatalog.verifiedPolicyTemplate(data, d);
         if (verifiedRule) {
@@ -6650,7 +6948,8 @@ function PasteScoresModal(p) {
   var rows = PasteScores.parse(text);
   // default target per row: the matching assessment (each one used once), else skip; the student's picks override
   var used = {};
-  var defaults = rows.map(function (r) {
+  var defaults = rows.map(function (r,i) {
+    if(rows.some(function(x,j){return j<i&&x.name===r.name&&x.score===r.score&&x.max===r.max;}))return '__skip';
     var hit = Scan.matchAssessment(existing.filter(function (a) { return !used[a.id]; }), r);
     if (hit) { used[hit.id] = true; return hit.id; }
     return '__skip';
@@ -6669,6 +6968,8 @@ function PasteScoresModal(p) {
   var dupe = {};
   targets.forEach(function (v) { if (v.indexOf('__') !== 0) dupe[v] = (dupe[v] || 0) + 1; });
   var hasDupe = Object.keys(dupe).some(function (k) { return dupe[k] > 1; });
+  var badRows=rows.map(function(r,i){var a=existing.find(function(x){return x.id===targets[i];});return r.score!=null&&(r.score<0||r.score>r.max&&!(a&&a.extra));});
+  var hasBad=badRows.some(function(b,i){return b&&targets[i]!=='__skip';});
   var apply = function () {
     var n = 0;
     update(function (d) {
@@ -6692,7 +6993,7 @@ function PasteScoresModal(p) {
     toast(t('paste.done', { n: n }), { undo: true });
   };
   var foot = html`<button className="btn" onClick=${closeModal}>${t('cancel')}</button>
-    <button className="btn primary" disabled=${!nUse || hasDupe} onClick=${apply}>${t('paste.apply', { n: nUse })}</button>`;
+    <button className="btn primary" disabled=${!nUse || hasDupe || hasBad} onClick=${apply}>${t('paste.apply', { n: nUse })}</button>`;
   return html`<${Modal} title=${t('paste.title')} wide=${true} onClose=${closeModal} foot=${foot}>
     <p className="small muted" style=${{ margin: 0 }}>${t('paste.intro', { c: courseDisplayTitle(c) })}</p>
     <textarea className="input paste-box" rows="6" aria-label=${t('paste.title')} placeholder=${'Mid term EXAM\t35\t/ 50\nFinal Exam\tNot ready\t/ 50'}
@@ -6705,10 +7006,10 @@ function PasteScoresModal(p) {
         var note = tg === '__skip' ? t('paste.skipNote')
           : a ? (r.score == null ? t('paste.notOut') : t('paste.replace', { old: fmtSM(a.score, a.max), now: fmtSM(r.score, r.max) }))
           : t('paste.newNote');
-        return html`<div key=${i} className=${'scan-row' + (clash ? ' flag' : '') + (tg === '__skip' ? ' off' : '')}>
+        return html`<div key=${i} className=${'scan-row' + (clash || badRows[i] ? ' flag' : '') + (tg === '__skip' ? ' off' : '')}>
           <div className="grow" style=${{ minWidth: 0 }}>
             <div className="scan-row-name">${r.name} <span className="muted" style=${{ fontWeight: 500 }}>${fmtSM(r.score, r.max)}</span></div>
-            <div className="tiny muted">${clash ? html`<span className="scan-flag">${t('paste.clash')}</span>` : note}</div>
+            <div className="tiny muted">${badRows[i]?html`<span className="scan-flag">${t('paste.badRange')}</span>`:clash ? html`<span className="scan-flag">${t('paste.clash')}</span>` : note}</div>
           </div>
           <select className="input paste-sel" aria-label=${t('paste.target', { n: r.name })} value=${tg} onChange=${function (e) { setTarget(i, e.target.value); }}>
             ${existing.map(function (x) { return html`<option key=${x.id} value=${x.id}>${aName(x)} (${fmtSM(x.score, x.max)})</option>`; })}
@@ -6918,7 +7219,7 @@ function ScanModal(p) {
   var gLabel = function (g) {
     if (g.kind === 'su') return t('scan.g.su', { m: g.mpl != null ? fmtT(g.mpl) : '60' });
     if (g.kind === 'criterion') return t('scan.g.criterion', { a: fmtT(g.a) });
-    if (g.kind === 'norm') return t('scan.g.norm');
+    if (g.kind === 'norm') return t('scan.g.norm') + (Object.keys(g.floors||{}).length ? ' · '+Object.keys(g.floors).map(function(k){return k+' ≥ '+fmtT(g.floors[k])+'%';}).join(', ') : '');
     return t('scan.g.unknown');
   };
   var check = res && res.check;
@@ -6971,6 +7272,8 @@ function ScanModal(p) {
                 <div className="small muted" style=${{ marginTop: 2 }}>${t('scan.items', { n: c.items, s: c.scored })}, ${gLabel(c.grading)}${!c.match && c.credits == null ? ', ' + t('scan.credits') : ''}</div>
               </div>
             </label>
+            ${chosen[i] && Object.keys(c.grading.floors||{}).length>0 && html`<label className="check small"><input type="checkbox" checked=${sc.grading._confirmFloors===true} onChange=${function(e){var next=res.courses.slice();next[i]=Object.assign({},sc,{grading:Object.assign({},sc.grading,{_confirmFloors:e.target.checked})});setRes(Object.assign({},res,{courses:next}));}} /><span>${t('plan.scanConfirm')}</span></label>`}
+            ${chosen[i] && c.rules && html`<div className="banner info"><div><b>${t('plan.scanRules')}</b><p className="small">${c.rules.evidence}</p><div className="small">${c.rules.rounding?t('policy.rounding')+': '+t('policy.'+c.rules.rounding):''}${c.rules.minimums.map(function(r){return ' · '+t('type.'+r.type)+' ≥ '+r.min+'% / '+t('policy.cap')+' '+r.cap;}).join('')}${c.rules.drops.map(function(r){return ' · '+r.group+' — '+t('policy.dropCount')+' '+r.count;}).join('')}</div><label className="check small"><input type="checkbox" checked=${sc.grading._confirmRules===true} onChange=${function(e){var next=res.courses.slice();next[i]=Object.assign({},sc,{grading:Object.assign({},sc.grading,{_confirmRules:e.target.checked})});setRes(Object.assign({},res,{courses:next}));}} /><span>${t('plan.scanRulesConfirm')}</span></label></div></div>`}
             ${sc.weightFlag != null && html`<div className="small scan-warn">${t('scan.weights', { w: fmtT(sc.weightFlag) })}</div>`}
             ${chosen[i] && c.rows.length > 0 && html`<div className="scan-rows">
               ${c.rows.map(function (r, j) {
@@ -7913,6 +8216,9 @@ window.setTimeout(function () {
       '</main>';
   }
 }, 4500);
+</script>
+<script>
+if (window.isSecureContext && location.protocol!=='file:' && 'serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){ /* normal website remains usable */ });
 </script>
 </body>
 </html>
