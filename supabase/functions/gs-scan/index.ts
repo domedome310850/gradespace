@@ -35,6 +35,7 @@ Return ONLY JSON in this exact shape:
         "method": "letter",              // "letter" for A-F, "su" for Pass-Fail (S/U)
         "referencing": "criterion",      // "criterion" (อิงเกณฑ์), "norm" (อิงกลุ่ม) or null
         "cutoffs": {"A":80,"B+":75,"B":70,"C+":65,"C":60,"D+":55,"D":50}, // only for criterion letter grades, else null
+        "minimumGrades": null,          // norm grading only: sparse map of explicitly guaranteed minimum grades, e.g. {"D":40}; otherwise null
         "mpl": null                      // Minimum Passing Level number if shown, else null
       },
       "groups": [ {"name": "Homework before final exam", "weight": 15} ],
@@ -54,6 +55,7 @@ Rules:
 - Child items under a parent row (indented, e.g. HW1, HW2 under "Homework before midterm exam") go in "assessments" with "group" set to the parent name; put the parent in "groups" with its weight. Do not also list the parent as an assessment.
 - Scores shown in blue are calculated totals of child items; do not add them as separate assessments.
 - If a page says Pass-Fail (S/U) is selected, method is "su"; put the MPL in "mpl".
+- For norm grading, extract minimumGrades only when the syllabus explicitly guarantees at least that letter at or above a total course percentage. Never use distribution, mean, tentative cutoffs, component thresholds, a standard scale, or a strict greater-than threshold as an inclusive guarantee. Omit unknown entries; if unclear, return null and explain in notes.
 - Thai Buddhist years: subtract 543 for due dates (2569 → 2026). Thai months: ม.ค.=1 ... ธ.ค.=12.
 - Do not invent courses, weights, or scores that are not visible. Keep names short but recognizable.
 
@@ -93,6 +95,20 @@ function validate(result: any) {
   const issues: string[] = [];
   const courses = Array.isArray(result?.courses) ? result.courses : [];
   for (const c of courses) {
+    const g = c.grading;
+    if (g && g.minimumGrades != null) {
+      const raw = g.minimumGrades;
+      let prev = Infinity;
+      let bad = g.referencing !== "norm" || !raw || typeof raw !== "object" || Array.isArray(raw);
+      const clean: Record<string, number> = {};
+      for (const key of ["A","B+","B","C+","C","D+","D"]) {
+        const v = raw?.[key]; if (v == null) continue;
+        if (typeof v !== "number" || !Number.isFinite(v) || v <= 0 || v > 100 || v >= prev) { bad = true; continue; }
+        clean[key] = v; prev = v;
+      }
+      g.minimumGrades = bad ? null : clean;
+      if (bad) issues.push(`${c.code || c.name || "course"}: invalid minimum grade guarantees; review syllabus`);
+    }
     const items = Array.isArray(c.assessments) ? c.assessments : [];
     const groups = Array.isArray(c.groups) ? c.groups : [];
     const label = c.code || c.name || "course";
