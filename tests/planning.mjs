@@ -1,0 +1,68 @@
+import { readFileSync } from 'node:fs';
+function run(read,URLCtor=URL) {
+  let passed=0;
+  function check(name,ok){if(!ok)throw Error(name);console.log('PASS '+name);passed++;}
+  const html=read('public/index.html'), core=read('public/planning-core.js'), sw=read('public/sw.js');
+  const mod={exports:{}};new Function('module',core)(mod);const P=mod.exports;
+  let parsed=0;for(const m of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)){if(m[1].trim()){new Function(m[1]);parsed++;}}
+  check('all inline scripts parse',parsed>=3);
+  const calcSource=html.slice(html.indexOf('var Calc = (function'),html.indexOf('/* Stable course colors'));
+  const C=new Function('GSPlanning',calcSource+';return Calc;')(P);
+  const gs=[{label:'A',min:80,points:4},{label:'C',min:60,points:2},{label:'D',min:40,points:1},{label:'F',min:0,points:0}];
+  const c={id:'c',credits:3,gradingMode:'criterion',scaleId:'s'}, state={categories:[{id:'q',courseId:'c',dist:'equal',weight:20}],scales:[{id:'s',grades:gs}],settings:{defaultScaleId:'s'},assessments:[]};
+  const row=(id,type,weight,score,cat)=>({id,a:{id,type,score,categoryId:cat},graded:score!==null,max:100,w:weight,virtual:false,extra:false});
+  const sum={rows:[row('q1','quiz',10,20,'q'),row('q2','quiz',10,100,'q'),row('f','final',40,35),row('a','assignment',40,100)],totalWeight:100,issues:{}};
+  check('positive Z score',Math.abs(P.compare(72,60,10).z-1.2)<1e-9);
+  check('SD zero rejected',P.compare(72,60,0)===null);
+  check('negative Z score',P.compare(40,60,10).z===-2);
+  check('missing statistics rejected',P.compare(null,60,10)===null);
+  let x=P.evaluate({drops:{q:1}},state,c,sum,gs);
+  check('drop lowest',x.status==='ok'&&x.score===74&&x.dropped[0]==='q1');
+  x=P.evaluate({drops:{q:1},bonus:6,minimums:[{type:'final',min:40,cap:'D'}]},state,c,sum,gs);
+  check('component minimum cap and bonus',x.score===80&&x.grade.label==='D');
+  x=P.evaluate({retakes:{f:{score:60,mode:'higher'}},rounding:'nearest'},state,c,sum,gs);
+  check('retake and rounding',x.score===76);
+  check('invalid drop',P.evaluate({drops:{q:2}},state,c,sum,gs).status==='invalid');
+  check('invalid weight',P.evaluate({},state,c,{...sum,totalWeight:90},gs).status==='invalid');
+  const pending={...sum,rows:sum.rows.map(r=>r.id==='f'?{...r,graded:false,a:{...r.a,score:null}}:r)};
+  check('unknown scores do not become zero',P.evaluate({},state,c,pending,gs).status==='pending');
+  check('simulation and inclusive minimum',P.evaluate({minimums:[{type:'final',min:40,cap:'F'}]},state,c,pending,gs,{f:40}).grade.label==='C');
+  check('cap cannot raise an existing grade',P.evaluate({minimums:[{type:'final',min:40,cap:'A'}]},state,c,sum,gs).grade.label==='C');
+  const fixed={gpaCredits:3,qp:9},courses=[{credits:3},{credits:2}],opts=[gs.slice().reverse(),gs.slice().reverse()];
+  check('GPA range weighted',P.range(fixed,courses,opts).high===3.625&&P.range(fixed,courses,opts).low===1.125);
+  const scenarios=P.scenarios(fixed,courses,opts,3.5);
+  check('reverse GPA feasible scenarios',scenarios.length>0&&scenarios.every(x=>x.gpa>=3.5));
+  check('unreachable GPA',P.scenarios(fixed,courses,opts,4).length===0);
+  state.assessments=sum.rows.map(r=>({...r.a,courseId:c.id,max:r.max,weight:r.w,status:'graded'}));
+  check('legacy weighted score unchanged',C.courseSummary(c,state).earned===66);
+  check('advanced final result integrated',C.courseGrade({...c,advancedPolicy:{drops:{q:1},bonus:6}},state).label==='A');
+  check('official grade immutable',C.courseGrade({...c,finalGrade:'D',advancedPolicy:{bonus:100}},state).label==='D');
+  check('norm grade remains unknown',C.courseGrade({...c,gradingMode:'norm',advancedPolicy:{bonus:100}},state).kind==='none');
+  const cf=html.slice(html.indexOf('  function confirmedFloors('),html.indexOf('  function gradingSummary('));
+  const floors=new Function(cf+';return confirmedFloors;')();
+  check('scan sparse D floor',floors({referencing:'norm',minimumGrades:{D:40}}).D===40);
+  check('scan contradictory cutoffs rejected',Object.keys(floors({referencing:'norm',minimumGrades:{A:40,D:50}})).length===0);
+  check('scan does not accept criterion as norm floor',Object.keys(floors({referencing:'criterion',minimumGrades:{D:40}})).length===0);
+  const fl=html.slice(html.indexOf('function normFloorsFor('),html.indexOf('function GradingAndGap('));
+  const textFor=new Function('hasAdvanced','gradingModeFor','isNum','t','fmtT',fl+';return normFloorText;')(c=>P.active(c.advancedPolicy),c=>c.gradingMode,Number.isFinite,(k,v)=>k+JSON.stringify(v),String);
+  const nc={gradingMode:'norm',normFloors:{D:40,C:55}};
+  check('floor below threshold not failed',textFor(nc,{earned:39.99,issues:{}}).includes('floorMissing')&&!textFor(nc,{earned:39.99,issues:{}}).includes('floorReached'));
+  check('floor reached at exact boundary',textFor(nc,{earned:40,issues:{}}).includes('floorReached'));
+  check('floor suppressed under advanced rules',textFor({...nc,advancedPolicy:{bonus:1}},{earned:40,issues:{}})===null);
+  const ps=html.slice(html.indexOf('var PasteScores ='),html.indexOf('var Fuzzy ='));
+  const paste=new Function(ps+';return PasteScores;')();
+  const rows=paste.parse('Quiz 1\t0\t10\nFinal Exam\t\t50\nHomework\t8\t10');
+  check('MCV TSV import preserves zero and pending',rows.length===3&&rows[0].score===0&&rows[1].score===null&&rows[2].score===8);
+  check('MCV standard format',paste.parse('Midterm Exam 35 / 50')[0].score===35);
+  const manifest=JSON.parse(read('public/manifest.webmanifest'));
+  check('PWA manifest and icon',manifest.display==='standalone'&&manifest.icons.length>0&&read('public/app-icon.svg').includes('<svg'));
+  const handlers={},self={location:{origin:'https://example.test'},addEventListener:(name,fn)=>handlers[name]=fn};
+  const mockCache={open:async()=>({put:async()=>{},match:async()=>null})};
+  new Function('self','caches','fetch','URL',sw)(self,mockCache,async()=>({ok:true,clone(){return this;}}),URLCtor);
+  function intercepted(url,method='GET',mode='cors'){let yes=false;handlers.fetch({request:{url,method,mode},respondWith:p=>{yes=true;p.catch(()=>{});}});return yes;}
+  check('PWA shell intercepted',intercepted('https://example.test/planning-core.js'));
+  check('PWA private RPC never cached',!intercepted('https://example.test/rpc/gs_load')&&!intercepted('https://x.supabase.co/rest/v1/rpc/gs_load')&&!intercepted('https://example.test/','POST'));
+  check('ICS reminder applies to all events',html.includes("L.push('BEGIN:VALARM'")&&!html.includes("if (e.exam) L.push('BEGIN:VALARM'"));
+  console.log('Planning checks passed: '+passed);
+}
+run(path=>readFileSync(new URL('../'+path,import.meta.url),'utf8'));
