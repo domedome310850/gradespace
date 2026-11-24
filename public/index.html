@@ -243,6 +243,43 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.3; letter-spacing: -0.01em; }
 .exam-status-item{display:flex;align-items:center;gap:6px;font-size:12px}
 @media(max-width:1050px){.dashboard-planning-grid{grid-template-columns:1fr}.dashboard-planning-mini{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.planning-card.card{padding:10px}.planning-head h2{font-size:13px}.planning-value{font-size:18px}.planning-actions .btn{padding:4px 5px}.study-row{padding:7px}.study-badge{max-width:38%}.dashboard-planning-grid,.dashboard-planning-mini{gap:8px}}
+.overview-hub.card{margin-top:12px;padding:14px;background:var(--surface);box-shadow:none;border-color:var(--line-strong)}
+.hub-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:9px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.hub-kicker>span:first-child{display:flex;align-items:center;gap:6px;color:var(--accent-text);font-size:12px;font-weight:750;letter-spacing:.035em}
+.overview-hub .dashboard-planning-grid{grid-template-columns:minmax(0,1fr) minmax(200px,.46fr);gap:12px}
+.overview-hub .dashboard-planning-mini{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;align-items:stretch}
+.focus-panel{min-width:0}
+.focus-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:7px}
+.focus-heading h2{font-size:16px;line-height:1.2;margin:0}
+.focus-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.focus-list{display:grid;gap:5px}
+.study-row.focus-row{--tone:var(--accent-text);--tone-bg:var(--accent-soft);display:grid;grid-template-columns:46px minmax(0,1fr) 13px;gap:9px;background:var(--surface-2);border:0;border-radius:8px;padding:7px 9px}
+.study-row.focus-row.urgent{--tone:var(--bad);--tone-bg:var(--bad-soft)}
+.study-row.focus-row.soon,.study-row.focus-row.review{--tone:var(--warn);--tone-bg:var(--warn-soft)}
+.study-row.focus-row.done{--tone:var(--ok);--tone-bg:var(--ok-soft)}
+.study-row.focus-row.featured{background:var(--tone-bg);box-shadow:inset 3px 0 var(--tone)}
+.focus-day{background:var(--tone-bg);color:var(--tone);border-radius:6px;min-height:41px;display:grid;place-content:center;text-align:center}
+.focus-day b{font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
+.focus-day small{font-size:10px;line-height:1.2;margin-top:3px}
+.focus-row.featured .focus-day{background:var(--tone);color:var(--surface)}
+.focus-row .study-copy{gap:1px}
+.focus-row .study-copy b{font-size:13px}
+.focus-row .study-copy .focus-action{color:var(--tone);font-weight:750;font-size:10px}
+.focus-arrow{color:var(--tone);font-size:21px;line-height:1}
+.focus-footer{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap;margin-top:5px}
+.focus-complete{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ok)}
+.focus-history{display:grid;gap:3px;font-size:11px;margin-top:6px}
+.hub-mini{background:var(--surface-2);border-radius:8px;min-width:0;padding:9px;display:flex;flex-direction:column;gap:5px;align-self:start}
+.hub-mini-label{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:11px;font-weight:600;color:var(--ink-2);line-height:1.25}
+.hub-mini-label>.ic{color:var(--accent-text)}
+.hub-mini-value{font-size:20px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1.2;white-space:nowrap;letter-spacing:-.04em}
+.hub-mini-value small{font-size:10px;font-weight:500;margin-left:4px;letter-spacing:0;color:var(--muted)}
+.hub-mini-action{font:inherit;font-size:11px;line-height:1.4;font-weight:650;color:var(--accent-text);padding:4px 0;background:none;border:0;text-align:left;text-decoration:none;cursor:pointer;min-height:25px;margin-top:auto}
+.hub-mini-action:hover{text-decoration:underline}
+.hub-status{font-size:10px;color:var(--muted);line-height:1.3;overflow-wrap:anywhere}
+@media(min-width:1051px){.overview-hub .dashboard-planning-mini{grid-template-columns:1fr;gap:7px}.hub-mini{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px 8px}.hub-mini-label{grid-column:1/-1}.hub-mini-action{text-align:right}.hub-status{grid-column:1/-1}}
+@media(max-width:1050px){.overview-hub .dashboard-planning-grid{grid-template-columns:1fr;gap:9px}}
+@media(max-width:640px){.overview-hub.card{padding:10px;margin-top:10px}.hub-mini{padding:8px;gap:4px}.hub-mini-value{font-size:18px}.focus-heading h2{font-size:15px}.study-row.focus-row{grid-template-columns:42px minmax(0,1fr) 10px;padding:6px;gap:6px}.focus-day{min-height:38px}.focus-row .study-copy b{font-size:12px}}
 .dashboard-exam-layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start; }
 .dashboard-exam-panel { min-width:0; }
 .dashboard-exam-panel .section-head { margin-bottom:12px; }
@@ -2680,6 +2717,7 @@ en: {
   "plan.reminders":"Exam and deadline reminders","plan.reminderHint":"Device notifications while GradeSpace is open; export the calendar for reminders when the app is closed.","plan.reminderCount":"{n} exams or deadlines in the next 3 days.","plan.reminderOn":"Enable notifications","plan.reminderOff":"Disable notifications","plan.reminderDenied":"Notification permission was not granted.","plan.reminderUnsupported":"Notifications are unavailable in this browser. Calendar export still works.",
   "plan.scanRules":"Suggested advanced rules", "plan.scanRulesConfirm":"I verified the quoted rule. Apply only if categories match; existing manual rules are preserved.",
   "plan.priority":"Study recommendations",
+  "hub.title":"YOUR NEXT STEPS","hub.subtitle":"Based on this semester","hub.focusHint":"Suggested focus, not a required study order","hub.days":"days","hub.noDateShort":"No date","hub.rawNeed":"Target: {n} on remaining exam","hub.finished":"{n} courses finished · waiting for results","hub.due":"Due in 3 days","hub.items":"items","hub.range":"Possible GPA","hub.notifyOn":"Enable alerts","hub.notifyOff":"Disable alerts",
   "plan.examStatus":"Exam status","plan.examStatusHint":"Independent of your scores or official grade.","plan.examAlready":"Completed","plan.examMark":"Mark done","plan.examUndo":"Undo completion","plan.examMarked":"Exam marked completed","plan.examUnmarked":"Exam completion cleared","plan.noStudy":"No outstanding study recommendations.","plan.finishedCount":"{n} final exams done","plan.waitGrades":"Waiting for results","plan.less":"Show less","plan.more":"See all {n}","plan.tone.urgent":"Focus now","plan.tone.soon":"Prepare soon","plan.tone.normal":"Plan ahead","plan.tone.review":"Review goal","plan.tone.done":"On track","plan.checkRules":"Check grading rules","plan.gapShort":"Need {n} pts","plan.next3Days":"in next 3 days","plan.openGpa":"Plan GPA",
   "plan.priorityHint":"Planning heuristic using exam dates, exam weight, score gap and credits; not a probability. Review impossible or invalid goals separately.",
   "plan.examDays":"Exam in {n} days",
@@ -3107,6 +3145,7 @@ th: {
   "plan.reminders":"เตือนสอบและกำหนดส่งงาน","plan.reminderHint":"แจ้งเตือนบนอุปกรณ์ขณะเปิด GradeSpace หรือส่งออกปฏิทินเพื่อรับการเตือนเมื่อปิดเว็บ","plan.reminderCount":"มีสอบหรือกำหนดส่ง {n} รายการใน 3 วันข้างหน้า","plan.reminderOn":"เปิดการแจ้งเตือน","plan.reminderOff":"ปิดการแจ้งเตือน","plan.reminderDenied":"ไม่ได้รับอนุญาตให้แจ้งเตือน","plan.reminderUnsupported":"เบราว์เซอร์ไม่รองรับการแจ้งเตือน ยังส่งออกปฏิทินได้",
   "plan.scanRules":"กฎเพิ่มเติมที่ AI อ่านได้", "plan.scanRulesConfirm":"ตรวจสอบข้อความแล้ว ใช้เมื่อกลุ่มคะแนนตรงกันและไม่ทับกฎที่กำหนดเอง",
   "plan.priority":"แนะนำการอ่านหนังสือ",
+  "hub.title":"สิ่งที่ควรทำต่อ","hub.subtitle":"จากข้อมูลเทอมนี้","hub.focusHint":"เป็นคำแนะนำ ไม่ใช่ลำดับที่ต้องทำตาม","hub.days":"วัน","hub.noDateShort":"ไม่ระบุ","hub.rawNeed":"ตั้งเป้าสอบที่เหลือ {n}","hub.finished":"สอบ/เรียนเสร็จ {n} วิชา · รอผล","hub.due":"กำหนดใน 3 วัน","hub.items":"รายการ","hub.range":"ช่วง GPA","hub.notifyOn":"เปิดเตือน","hub.notifyOff":"ปิดเตือน",
   "plan.examStatus":"สถานะการสอบ","plan.examStatusHint":"แยกจากคะแนนและเกรดจริง","plan.examAlready":"สอบแล้ว","plan.examMark":"สอบแล้ว","plan.examUndo":"ยกเลิกสถานะสอบแล้ว","plan.examMarked":"บันทึกว่าสอบแล้ว","plan.examUnmarked":"ยกเลิกสถานะสอบแล้ว","plan.noStudy":"ไม่มีวิชาที่ต้องแนะนำการอ่านเพิ่มเติม","plan.finishedCount":"สอบปลายภาคแล้ว {n} วิชา","plan.waitGrades":"รอผลคะแนน","plan.less":"ดูน้อยลง","plan.more":"ดูทั้งหมด {n} วิชา","plan.tone.urgent":"เน้นตอนนี้","plan.tone.soon":"เตรียมตัว","plan.tone.normal":"วางแผนไว้","plan.tone.review":"ทบทวนเป้าหมาย","plan.tone.done":"ตามเป้าหมาย","plan.checkRules":"ดูกฎตัดเกรด","plan.gapShort":"ขาด {n} คะแนน","plan.next3Days":"ใน 3 วันข้างหน้า","plan.openGpa":"วางแผน GPA",
   "plan.priorityHint":"จัดลำดับจากวันสอบ น้ำหนักสอบ คะแนนที่ขาดและหน่วยกิต ไม่ใช่ความน่าจะเป็น ควรตรวจสอบเป้าหมายที่ทำไม่ได้หรือข้อมูลผิดปกติ",
   "plan.examDays":"สอบอีก {n} วัน",
@@ -5528,26 +5567,36 @@ function ExamCalendarPanel(p) {
 // Planning heuristics are not probabilities or grade predictions.
 function StudyPriority(p) {
   var more=useState(false), expanded=more[0],setExpanded=more[1];
-  var rows = p.courses.filter(function(c){return !c.finalGrade;}).map(function(c){
-    var sum=C.courseSummary(c,p.state), mode=gradingModeFor(c);
-    var goal=mode==='criterion' ? C.gradesFor(c,p.state).find(function(g){return g.label===c.target;}) : normFloorsFor(c).slice().reverse().find(function(g){return g.min>sum.earned;});
-    var target=goal ? goal.min : mode==='criterion' ? null : numericGoalFor(c);
+  var rows=p.courses.filter(function(c){return !c.finalGrade;}).map(function(c){
+    var sum=C.courseSummary(c,p.state), mode=gradingModeFor(c), advanced=hasAdvanced(c);
     var event=p.events.filter(function(e){return e.c.id===c.id&&!e.completed&&e.d>=0;}).sort(function(a,b){return a.d-b.d;})[0];
+    var targetGrade=mode==='criterion'?C.gradesFor(c,p.state).find(function(g){return g.label===c.target;}):null;
+    var target=targetGrade?targetGrade.min:mode==='criterion'?null:numericGoalFor(c);
     var gap=target==null?null:Math.max(0,target-sum.earned);
-    var advanced=hasAdvanced(c), invalid=sum.issues.over||sum.issues.overMax>0;
-    var impossible=!advanced&&gap!=null&&target>sum.maxPossible+1e-8;
-    var weight=event ? sum.pendingRows.filter(function(r){return r.a.type===event.a.type;}).reduce(function(a,r){return a+r.w;},0):0;
-    var done=finalExamPassed(c,p.state,p.personal)&&!event, reached=!advanced&&!invalid&&gap===0;
-    var tone=done?'done':invalid||impossible?'review':reached?'done':event&&event.d<=2?'urgent':event&&event.d<=7?'soon':'normal';
-    var score=done?-100:invalid||impossible?-10:reached&&!event?-20:(event?60/(1+event.d):0)+weight/2+(advanced||gap==null?0:30*gap/Math.max(1,sum.remaining))+(toNum(c.credits)||0);
-    return {c:c,event:event,gap:gap,target:target,advanced:advanced,invalid:invalid,impossible:impossible,done:done,reached:reached,tone:tone,score:score};
+    var invalid=sum.issues.over||sum.issues.overMax>0, impossible=!advanced&&!invalid&&gap!=null&&target>sum.maxPossible+1e-8;
+    var finished=!event&&(finalExamPassed(c,p.state,p.personal)||sum.complete);
+    var reached=!advanced&&!invalid&&gap===0;
+    var weight=event?sum.pendingRows.filter(function(r){return r.a.type===event.a.type;}).reduce(function(a,r){return a+r.w;},0):0;
+    var pressure=gap==null||advanced||invalid?null:gap/Math.max(1,sum.remaining);
+    var tone=finished?'done':invalid||impossible?'review':reached?'done':event&&(event.d<=1||event.d<=3&&pressure!=null&&pressure>=.5)?'urgent':event&&event.d<=7?'soon':'normal';
+    var score=finished?-100:invalid||impossible?-10:reached?-20:(event?60/(1+event.d):0)+weight/2+(pressure==null?0:30*pressure)+(toNum(c.credits)||0);
+    var raw=null;
+    if(event&&gap!=null&&!advanced&&!invalid&&!impossible&&!reached){
+      var avg=C.requiredExamAverage(target,sum), examRows=sum.pendingRows.filter(function(r){return (r.a.type==='midterm'||r.a.type==='final')&&r.w>0&&isNum(r.max)&&r.max>0;});
+      if(avg&&avg.pct<=100&&examRows.length===1&&examRows[0].a.type===event.a.type)raw=fmtT(Math.ceil(Math.max(0,avg.pct)/100*examRows[0].max*100-1e-9)/100)+'/'+fmtT(examRows[0].max);
+    }
+    return {c:c,event:event,gap:gap,target:target,targetGrade:targetGrade,advanced:advanced,invalid:invalid,impossible:impossible,finished:finished,reached:reached,tone:tone,score:score,raw:raw};
   }).sort(function(a,b){return b.score-a.score;});
-  var active=rows.filter(function(r){return !r.done;}), finished=rows.filter(function(r){return r.done;});
-  return html`<section data-testid="study-priority" className="card planning-card"><div className="planning-head"><h2>${t('plan.priority')}</h2><${Tip} text=${t('plan.priorityHint')} /></div>
+  var active=rows.filter(function(r){return !r.finished;}), finished=rows.filter(function(r){return r.finished;});
+  var visible=expanded?active:active.slice(0,3);
+  return html`<section data-testid="study-priority" className="focus-panel"><div className="focus-heading"><div><h2>${t('plan.priority')}</h2><div className="focus-sub">${t('hub.focusHint')}</div></div><${Tip} text=${t('plan.priorityHint')} /></div>
     ${!active.length&&html`<div className="study-empty">${t('plan.noStudy')}</div>`}
-    <div className="study-list">${(expanded?active:active.slice(0,3)).map(function(r){return html`<a key=${r.c.id} href=${'#course-'+r.c.id} className=${'study-row '+r.tone}><div className="study-copy"><b>${upcomingCourseTitle(r.c)}</b><span>${r.event?(r.event.d===0?t('today'):t('plan.examDays',{n:r.event.d})):t('plan.noDate')}${' · '}${r.invalid?t('plan.invalid'):r.impossible?t('plan.unreachable'):r.advanced?t('plan.checkRules'):r.reached?t('plan.reached'):r.gap===null?t('plan.noGoal'):t('plan.gapShort',{n:fmtT(Math.ceil(r.gap*100)/100)})}</span></div><span className=${'study-badge '+r.tone}>${t('plan.tone.'+r.tone)}</span></a>`;})}</div>
-    ${finished.length>0&&html`<div className="study-finished"><span className="study-badge done">${t('plan.finishedCount',{n:finished.length})}</span><span>${t('plan.waitGrades')}</span></div>`}
-    ${active.length>3&&html`<button type="button" className="btn ghost sm planning-more" aria-expanded=${expanded} onClick=${function(){setExpanded(!expanded);}}>${t(expanded?'plan.less':'plan.more',{n:active.length})}</button>`}
+    <div className="focus-list">${visible.map(function(r,i){
+      var reason=r.invalid?t('plan.invalid'):r.impossible?t('plan.unreachable'):r.advanced?t('plan.checkRules'):r.reached?t('plan.reached'):r.gap===null?t('plan.noGoal'):r.raw?t('hub.rawNeed',{n:r.raw}):t('plan.gapShort',{n:fmtT(Math.ceil(r.gap*100)/100)});
+      return html`<a key=${r.c.id} href=${'#course-'+r.c.id} className=${'study-row focus-row '+r.tone+(i===0&&!r.reached&&!r.invalid&&!r.impossible?' featured':'')}><div className="focus-day"><b>${r.event?r.event.d===0?'!':r.event.d:'–'}</b><small>${r.event?t(r.event.d===0?'today':'hub.days'):t('hub.noDateShort')}</small></div><div className="study-copy"><span className="focus-action">${t('plan.tone.'+r.tone)}</span><b>${upcomingCourseTitle(r.c)}</b><span>${reason}</span></div><span className="focus-arrow" aria-hidden="true">›</span></a>`;
+    })}</div>
+    <div className="focus-footer">${finished.length>0&&html`<span className="focus-complete"><${Icon} n="check" s=${14}/>${t('hub.finished',{n:finished.length})}</span>`}${active.length>3&&html`<button type="button" className="btn ghost sm planning-more" aria-expanded=${expanded} onClick=${function(){setExpanded(!expanded);}}>${t(expanded?'plan.less':'plan.more',{n:active.length})} ›</button>`}</div>
+    ${finished.length>0&&expanded&&html`<div className="focus-history">${finished.map(function(r){return html`<a key=${r.c.id} href=${'#course-'+r.c.id}>${upcomingCourseTitle(r.c)} · ${t('plan.waitGrades')}</a>`;})}</div>`}
   </section>`;
 }
 function ClassComparison(p) {
@@ -5587,7 +5636,7 @@ function ReminderPanel(p){
       setEnabled(true);setStatus('');
     }catch(e){setStatus('plan.reminderUnsupported');}
   };
-  return html`<section className="card planning-card planning-mini" data-testid="reminders"><div className="planning-head"><h2>${t('plan.reminders')}</h2><${Tip} text=${t('plan.reminderHint')} /></div><div className="planning-value">${count}<span>${t('plan.next3Days')}</span></div><div className="planning-actions"><button type="button" className="btn sm" onClick=${toggle}>${t(enabled?'plan.reminderOff':'plan.reminderOn')}</button><button type="button" className="btn sm ghost" onClick=${function(){downloadICS(p.state,p.semester.id,p.personal);}}>${t('ics.btn')}</button></div>${status&&html`<p className="tiny muted" role="status">${t(status)}</p>`}</section>`;
+  return html`<section className="hub-mini planning-mini" data-testid="reminders"><div className="hub-mini-label"><${Icon} n="calendar" s=${14}/>${t('hub.due')}<${Tip} text=${t('plan.reminderHint')} /></div><div className="hub-mini-value">${count}<small>${t('hub.items')}</small></div><button type="button" className="hub-mini-action" aria-label=${t(enabled?'plan.reminderOff':'plan.reminderOn')} onClick=${toggle}>${t(enabled?'hub.notifyOff':'hub.notifyOn')} ›</button>${status&&html`<div className="hub-status" role="status">${t(status)}</div>`}</section>`;
 }
 function Dashboard(p) {
   var personal=React.useContext(PersonalExamContext);
@@ -5664,9 +5713,12 @@ function Dashboard(p) {
     </div>
     ${needRecord.length > 0 && html`<div style=${{ marginTop: 14 }}><${Banner} kind="ok">${t('recordPrompt', { n: needRecord.length })}${' '}
       ${needRecord.map(function (c, i) { return html`<span key=${c.id}>${i ? ', ' : ''}<a href=${'#course-' + c.id}>${courseDisplayTitle(c)}</a></span>`; })}<//></div>`}
-    <div className="section dashboard-planning-grid">
-      <${StudyPriority} courses=${courses} state=${state} events=${examEvents} personal=${personal} />
-      <div className="dashboard-planning-mini"><${SemesterRange} state=${state} semester=${cur} /><${ReminderPanel} events=${allDue} state=${state} semester=${cur} personal=${personal} /></div>
+    <div className="card overview-hub">
+      <div className="hub-kicker"><span><${Icon} n="target" s=${15}/>${t('hub.title')}</span><span className="tiny muted">${t('hub.subtitle')}</span></div>
+      <div className="dashboard-planning-grid">
+        <${StudyPriority} courses=${courses} state=${state} events=${examEvents} personal=${personal} />
+        <div className="dashboard-planning-mini"><${SemesterRange} state=${state} semester=${cur} /><${ReminderPanel} events=${allDue} state=${state} semester=${cur} personal=${personal} /></div>
+      </div>
     </div>
     <div className="section dashboard-exam-layout">
       <div className="card pad dashboard-exam-panel">
@@ -6415,7 +6467,7 @@ function semesterPlanning(state,sem) {
 function SemesterRange(p){
   var plan=semesterPlanning(p.state,p.semester), bounds=GSPlanning.range(plan.fixed,plan.courses,plan.options);
   if(!bounds)return null;
-  return html`<section data-testid="gpa-range" className="card planning-card planning-mini"><div className="planning-head"><h2>${t('policy.range')}</h2><${Tip} text=${t('policy.rangeHint')} /></div><div className="planning-value">${fmt(bounds.low)} – ${fmt(bounds.high)}</div><div className="planning-range"><div style=${{left:Math.max(0,bounds.low/4*100)+'%',width:Math.max(0,(bounds.high-bounds.low)/4*100)+'%'}}></div></div><a className="planning-link" href="#gpa">${t('plan.openGpa')} ›</a></section>`;
+  return html`<section data-testid="gpa-range" className="hub-mini planning-mini"><div className="hub-mini-label"><${Icon} n="target" s=${14}/>${t('hub.range')}<${Tip} text=${t('policy.rangeHint')} /></div><div className="hub-mini-value">${fmt(bounds.low)}–${fmt(bounds.high)}</div><a className="hub-mini-action" href="#gpa">${t('plan.openGpa')} ›</a></section>`;
 }
 function ReverseSemesterPlanner(p) {
   var state=p.state, sem=curSemester(state),st=useState(3.5),target=st[0],setTarget=st[1];
