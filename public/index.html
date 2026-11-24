@@ -1849,10 +1849,16 @@ var Scan = (function () {
     }
     return { scaleId: state.settings.defaultScaleId, customGrades: null };
   }
+  function confirmedFloors(g) {
+    if(!g || g.referencing!=='norm'||!g.minimumGrades||typeof g.minimumGrades!=='object')return {};
+    var out={},prev=Infinity,bad=false;
+    ['A','B+','B','C+','C','D+','D'].forEach(function(k){var v=g.minimumGrades[k];if(v==null)return;if(typeof v!=='number'||!Number.isFinite(v)||v<=0||v>100||v>=prev){bad=true;return;}out[k]=v;prev=v;});
+    return bad?{}:out;
+  }
   function gradingSummary(g) {
     g = g || {};
     if (g.method === 'su') return { kind: 'su', mpl: num(g.mpl) };
-    if (g.referencing === 'norm') return { kind: 'norm' };
+    if (g.referencing === 'norm') return { kind: 'norm', floors: confirmedFloors(g) };
     if (g.cutoffs && num(g.cutoffs.A) !== null) return { kind: 'criterion', a: num(g.cutoffs.A) };
     return { kind: 'unknown' };
   }
@@ -1929,9 +1935,14 @@ var Scan = (function () {
         Store.placeCourse(state, course.id);
         touched.push(course);
       } else {
-        if (sc.grading && (sc.grading.method || sc.grading.referencing || sc.grading.cutoffs)) { course.scaleId = gr.scaleId; course.customGrades = gr.customGrades; course.gradingMode = sc.grading.referencing === 'norm' ? 'norm' : ((sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'); if(course.gradingMode === 'norm' && course.targetPct == null) course.targetPct = 60; }
+        if (!course.gradingUser && sc.grading && (sc.grading.method || sc.grading.referencing || sc.grading.cutoffs)) { course.scaleId = gr.scaleId; course.customGrades = gr.customGrades; course.gradingMode = sc.grading.referencing === 'norm' ? 'norm' : ((sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'); if(course.gradingMode === 'norm' && course.targetPct == null) course.targetPct = 60; }
         if (num(sc.credits) !== null) course.credits = num(sc.credits);
         updated++; touched.push(course);
+      }
+      // Scan suggestions require explicit review before becoming guarantees.
+      if (!course.gradingUser && sc.grading && sc.grading._confirmFloors === true) {
+        var accepted=confirmedFloors(sc.grading);
+        if(Object.keys(accepted).length)course.normFloors=accepted;
       }
       // categories for grouped items
       var catByName = {};
@@ -2582,7 +2593,7 @@ en: {
   "plan.clear":"Clear",
   "plan.reverse":"Semester GPA reverse planner",
   "plan.reverseHint":"Illustrative grade combinations for the selected semester, excluding S/U. Recorded grades stay fixed; relative grades remain hypothetical. Not a guarantee or exhaustive search.",
-  "plan.gpaTarget":"Target semester GPA",
+  "plan.gpaTarget":"Target semester GPA", "plan.scanConfirm":"I checked these minimum grade guarantees against the syllabus (existing manual policy is preserved).",
   'gm.floorTitle':'Instructor-confirmed minimum grades', 'gm.floorHint':'Enter only confirmed guarantees; leave unknown grades blank. Below a threshold does not imply failure.', 'gm.floorReached':'At least {g} by confirmed cutoff', 'gm.floorMissing':'Need {n} more points to guarantee {g}',
   'gm.cuts': 'Grade cut-offs', 'gm.cutsNorm': 'Cut-offs used for the estimate', 'gm.std': 'Use 80/75/70/65/60/55/50',
   'gm.cutsHint': 'Below the lowest cut-off is {f}. Change the lowest one to change the pass mark.', 'gm.bad': 'Each cut-off must be lower than the one above it, between 1 and 100.',
@@ -2974,7 +2985,7 @@ th: {
   "plan.clear":"ล้างข้อมูล",
   "plan.reverse":"วางแผนเกรดย้อนกลับจาก GPA เทอม",
   "plan.reverseHint":"ตัวอย่างชุดเกรดของเทอมที่เลือก ไม่นับ S/U เกรดจริงที่บันทึกแล้วคงเดิม เกรดอิงกลุ่มเป็นสมมติฐาน ไม่รับประกันและไม่ได้ค้นหาทุกชุด",
-  "plan.gpaTarget":"GPA เป้าหมายเทอมนี้",
+  "plan.gpaTarget":"GPA เป้าหมายเทอมนี้", "plan.scanConfirm":"ตรวจสอบเกณฑ์ขั้นต่ำกับประมวลรายวิชาแล้ว (ไม่ทับเกณฑ์ที่ตั้งเอง)",
   'gm.floorTitle':'เกณฑ์ขั้นต่ำที่อาจารย์ยืนยัน', 'gm.floorHint':'กรอกเฉพาะเกรดที่อาจารย์รับประกัน เว้นช่องที่ไม่ทราบไว้ คะแนนไม่ถึงเกณฑ์ไม่ได้แปลว่าตก', 'gm.floorReached':'ถึงเกณฑ์ขั้นต่ำ {g} แล้ว', 'gm.floorMissing':'ขาดอีก {n} คะแนนเพื่อรับประกัน {g}',
   'gm.cuts': 'เกณฑ์เกรด', 'gm.cutsNorm': 'เกณฑ์ที่ใช้ประมาณ', 'gm.std': 'ใช้ 80/75/70/65/60/55/50',
   'gm.cutsHint': 'ต่ำกว่าเกณฑ์สุดท้ายคือ {f} อยากเปลี่ยนคะแนนขั้นต่ำที่ผ่าน ให้แก้เกณฑ์ช่องล่างสุด', 'gm.bad': 'แต่ละเกณฑ์ต้องต่ำกว่าช่องข้างบน และอยู่ระหว่าง 1–100',
@@ -7048,7 +7059,7 @@ function ScanModal(p) {
   var gLabel = function (g) {
     if (g.kind === 'su') return t('scan.g.su', { m: g.mpl != null ? fmtT(g.mpl) : '60' });
     if (g.kind === 'criterion') return t('scan.g.criterion', { a: fmtT(g.a) });
-    if (g.kind === 'norm') return t('scan.g.norm');
+    if (g.kind === 'norm') return t('scan.g.norm') + (Object.keys(g.floors||{}).length ? ' · '+Object.keys(g.floors).map(function(k){return k+' ≥ '+fmtT(g.floors[k])+'%';}).join(', ') : '');
     return t('scan.g.unknown');
   };
   var check = res && res.check;
@@ -7101,6 +7112,7 @@ function ScanModal(p) {
                 <div className="small muted" style=${{ marginTop: 2 }}>${t('scan.items', { n: c.items, s: c.scored })}, ${gLabel(c.grading)}${!c.match && c.credits == null ? ', ' + t('scan.credits') : ''}</div>
               </div>
             </label>
+            ${chosen[i] && Object.keys(c.grading.floors||{}).length>0 && html`<label className="check small"><input type="checkbox" checked=${sc.grading._confirmFloors===true} onChange=${function(e){var next=res.courses.slice();next[i]=Object.assign({},sc,{grading:Object.assign({},sc.grading,{_confirmFloors:e.target.checked})});setRes(Object.assign({},res,{courses:next}));}} /><span>${t('plan.scanConfirm')}</span></label>`}
             ${sc.weightFlag != null && html`<div className="small scan-warn">${t('scan.weights', { w: fmtT(sc.weightFlag) })}</div>`}
             ${chosen[i] && c.rows.length > 0 && html`<div className="scan-rows">
               ${c.rows.map(function (r, j) {
