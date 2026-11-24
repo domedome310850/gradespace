@@ -35,6 +35,7 @@ Return ONLY JSON in this exact shape:
         "method": "letter",              // "letter" for A-F, "su" for Pass-Fail (S/U)
         "referencing": "criterion",      // "criterion" (อิงเกณฑ์), "norm" (อิงกลุ่ม) or null
         "cutoffs": {"A":80,"B+":75,"B":70,"C+":65,"C":60,"D+":55,"D":50}, // only for criterion letter grades, else null
+        "advancedRules": null,          // or {"rounding":"nearest","minimums":[{"type":"final","min":40,"cap":"F"}],"drops":[{"group":"Quizzes","count":1}],"evidence":"exact syllabus quote"}; omit unsupported or uncertain rules
         "minimumGrades": null,          // norm grading only: sparse map of explicitly guaranteed minimum grades, e.g. {"D":40}; otherwise null
         "mpl": null                      // Minimum Passing Level number if shown, else null
       },
@@ -55,7 +56,7 @@ Rules:
 - Child items under a parent row (indented, e.g. HW1, HW2 under "Homework before midterm exam") go in "assessments" with "group" set to the parent name; put the parent in "groups" with its weight. Do not also list the parent as an assessment.
 - Scores shown in blue are calculated totals of child items; do not add them as separate assessments.
 - If a page says Pass-Fail (S/U) is selected, method is "su"; put the MPL in "mpl".
-- For norm grading, extract minimumGrades only when the syllabus explicitly guarantees at least that letter at or above a total course percentage. Never use distribution, mean, tentative cutoffs, component thresholds, a standard scale, or a strict greater-than threshold as an inclusive guarantee. Omit unknown entries; if unclear, return null and explain in notes.
+- Extract advancedRules only for explicit syllabus rules: total rounding (nearest/floor/ceil to a whole point), weighted component minimum with explicit resulting letter-grade cap, or dropping the lowest N equal-weight items from a named group. Include the exact short evidence quotation; never infer an F cap, guess an attendance requirement, infer a drop from missing scores, or treat possible bonus points as earned. Omit unsupported rules and describe them in notes. For norm grading, extract minimumGrades only when the syllabus explicitly guarantees at least that letter at or above a total course percentage. Never use distribution, mean, tentative cutoffs, component thresholds, a standard scale, or a strict greater-than threshold as an inclusive guarantee. Omit unknown entries; if unclear, return null and explain in notes.
 - Thai Buddhist years: subtract 543 for due dates (2569 → 2026). Thai months: ม.ค.=1 ... ธ.ค.=12.
 - Do not invent courses, weights, or scores that are not visible. Keep names short but recognizable.
 
@@ -108,6 +109,19 @@ function validate(result: any) {
       }
       g.minimumGrades = bad ? null : clean;
       if (bad) issues.push(`${c.code || c.name || "course"}: invalid minimum grade guarantees; review syllabus`);
+    }
+    if (g?.advancedRules != null) {
+      const q = g.advancedRules;
+      const validEvidence = typeof q?.evidence === "string" && q.evidence.trim().length > 0;
+      if (!validEvidence) g.advancedRules = null;
+      else {
+        const types = ["midterm","final","assignment","homework","quiz","project","presentation","lab","participation","attendance","custom"];
+        const labels = ["A","B+","B","C+","C","D+","D","F","S","U"];
+        const minimums = Array.isArray(q.minimums) ? q.minimums.filter((r: any) => types.includes(r?.type) && typeof r.min === "number" && Number.isFinite(r.min) && r.min >= 0 && r.min <= 100 && labels.includes(r.cap)).slice(0,8) : [];
+        const drops = Array.isArray(q.drops) ? q.drops.filter((r: any) => typeof r?.group === "string" && r.group.trim() && Number.isInteger(r.count) && r.count > 0 && r.count < 100).slice(0,8) : [];
+        const rounding = ["nearest","floor","ceil"].includes(q.rounding) ? q.rounding : null;
+        g.advancedRules = rounding || minimums.length || drops.length ? {rounding,minimums,drops,evidence:q.evidence.slice(0,400)} : null;
+      }
     }
     const items = Array.isArray(c.assessments) ? c.assessments : [];
     const groups = Array.isArray(c.groups) ? c.groups : [];
