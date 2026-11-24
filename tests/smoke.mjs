@@ -136,6 +136,32 @@ async function run(browser, lang, width) {
   });
   await page.getByTestId('reminders').getByRole('button',{name:lang==='th'?'เปิดการแจ้งเตือน':'Enable notifications'}).click();
   await page.getByTestId('reminders').getByRole('status').waitFor();
+  // Dashboard is compact; actionable rows have an explicit semantic style, not course-color alone.
+  const geometry=await page.locator('.dashboard-planning-grid').evaluate(el=>{
+    const r=el.getBoundingClientRect(), minis=[...el.querySelectorAll('.planning-mini')].map(x=>x.getBoundingClientRect());
+    return {height:r.height,minis:minis.map(x=>({top:x.top,left:x.left,width:x.width,height:x.height})),rows:el.querySelectorAll('.study-row').length,tones:[...el.querySelectorAll('.study-row')].map(x=>x.className)};
+  });
+  if(geometry.minis.length!==2||geometry.minis.some(x=>x.height>180))errors.push('planning mini cards not compact');
+  if(width===390&&Math.abs(geometry.minis[0].top-geometry.minis[1].top)>2)errors.push('mobile mini cards do not share row');
+  if(geometry.rows>3||geometry.tones.some(t=>!/(urgent|soon|normal|done|review)/.test(t)))errors.push('study recommendation preview invalid');
+  // Mark an upcoming personal exam done without changing scores or removing calendar history.
+  const examId=await page.evaluate(()=>GradeSpace.S.state.courses.find(c=>String(c.code).split('.')[0]==='2900111').id);
+  const before=await page.evaluate(id=>JSON.stringify(GradeSpace.S.state.assessments.filter(a=>a.courseId===id)),examId);
+  await page.evaluate(id=>location.hash='course-'+id,examId);
+  await page.getByTestId('exam-complete-fin').click();
+  if(!(await page.evaluate(id=>GradeSpace.S.state.courses.find(c=>c.id===id).examCompleted.fin===true,examId)))errors.push('exam completion not saved');
+  if(before!==await page.evaluate(id=>JSON.stringify(GradeSpace.S.state.assessments.filter(a=>a.courseId===id)),examId))errors.push('marking exam changed scores');
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.getByTestId('study-priority').waitFor();
+  if(await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-B',{exact:false}).count())errors.push('completed exam still upcoming');
+  if(await page.getByTestId('study-priority').locator('a[href="#course-'+examId+'"]').count())errors.push('completed final still recommended');
+  await page.locator('.dashboard-cal-cell.has-exam').filter({has:page.locator('.cal-num',{hasText:/^24$/})}).click();
+  await page.locator('.dashboard-cal-event').getByText('TEST-ROOM-B',{exact:false}).waitFor();
+  if(!(await page.locator('.dashboard-cal-event').filter({hasText:'TEST-ROOM-B'}).innerText()).includes(lang==='th'?'สอบแล้ว':'Completed'))errors.push('calendar lacks completed status');
+  await page.evaluate(id=>location.hash='course-'+id,examId);
+  await page.getByTestId('exam-complete-fin').click();
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-B',{exact:false}).waitFor();
   const testId='c-imp004';
   await page.evaluate(id=>{
     GradeSpace.update(d=>{const c=d.courses.find(x=>x.id===id);c.gradingMode='norm';c.gradingUser=true;c.normFloors={};c.classSnapshot={};c.advancedPolicy={};});
