@@ -2562,7 +2562,8 @@ en: {
   'tt.noSec': 'Set the Sec to see the times for: {list}', 'tt.noData': 'No matching timetable data for: {list}. Check your course code, section and term.',
   'gm.title': 'How this course is graded', 'gm.edit': 'Change', 'gm.kind': 'Grade type', 'gm.letter': 'Letter grades (A–F)', 'gm.su': 'S/U (pass/fail)',
   'gm.pass': 'Score needed to pass (S)', 'gm.passHint': 'From the syllabus. Reach it and you get S.',
-  'gm.modeHint.criterion': 'Fixed cut-offs: the grade depends only on your own score.', 'gm.modeHint.norm': 'Grades depend on the class; the cut-offs below are only used as an estimate.', 'gm.modeHint.unknown': 'Not stated yet; the cut-offs below are used as an estimate.',
+  'gm.modeHint.criterion': 'Fixed cut-offs: the grade depends only on your own score.', 'gm.modeHint.norm': 'Grades depend on the class; enter only explicitly guaranteed minimum grades.', 'gm.modeHint.unknown': 'Not stated yet; the cut-offs below are used as an estimate.',
+  'gm.floorTitle':'Instructor-confirmed minimum grades', 'gm.floorHint':'Enter only confirmed guarantees; leave unknown grades blank. Below a threshold does not imply failure.', 'gm.floorReached':'At least {g} by confirmed cutoff', 'gm.floorMissing':'Need {n} more points to guarantee {g}',
   'gm.cuts': 'Grade cut-offs', 'gm.cutsNorm': 'Cut-offs used for the estimate', 'gm.std': 'Use 80/75/70/65/60/55/50',
   'gm.cutsHint': 'Below the lowest cut-off is {f}. Change the lowest one to change the pass mark.', 'gm.bad': 'Each cut-off must be lower than the one above it, between 1 and 100.',
   'gm.saved': 'Grading updated', 'gm.afterFinalT': 'Final exam is over.', 'gm.afterFinalP': 'If the grade is out but the final score isn’t, just record the grade; the score isn’t needed.',
@@ -2933,7 +2934,8 @@ th: {
   'tt.noSec': 'ใส่ Sec เพื่อดูเวลาเรียนของ: {list}', 'tt.noData': 'ยังไม่พบตารางเรียนที่ตรงกับ: {list} โปรดตรวจรหัสวิชา Sec และเทอม',
   'gm.title': 'วิธีตัดเกรดของวิชานี้', 'gm.edit': 'แก้', 'gm.kind': 'ระบบเกรด', 'gm.letter': 'เกรด A–F', 'gm.su': 'S/U (ผ่าน/ไม่ผ่าน)',
   'gm.pass': 'คะแนนขั้นต่ำที่ผ่าน (ได้ S)', 'gm.passHint': 'ดูจากประมวลรายวิชา ได้ถึงเกณฑ์นี้ก็ได้ S',
-  'gm.modeHint.criterion': 'เกณฑ์ตายตัว เกรดขึ้นกับคะแนนของคุณเท่านั้น', 'gm.modeHint.norm': 'เกรดขึ้นกับคะแนนทั้งห้อง เกณฑ์ด้านล่างใช้แค่ประมาณ', 'gm.modeHint.unknown': 'ยังไม่รู้วิธีตัดเกรด ใช้เกณฑ์ด้านล่างประมาณไปก่อน',
+  'gm.modeHint.criterion': 'เกณฑ์ตายตัว เกรดขึ้นกับคะแนนของคุณเท่านั้น', 'gm.modeHint.norm': 'เกรดขึ้นกับคะแนนทั้งห้อง กรอกเฉพาะเกรดขั้นต่ำที่อาจารย์รับประกัน', 'gm.modeHint.unknown': 'ยังไม่รู้วิธีตัดเกรด ใช้เกณฑ์ด้านล่างประมาณไปก่อน',
+  'gm.floorTitle':'เกณฑ์ขั้นต่ำที่อาจารย์ยืนยัน', 'gm.floorHint':'กรอกเฉพาะเกรดที่อาจารย์รับประกัน เว้นช่องที่ไม่ทราบไว้ คะแนนไม่ถึงเกณฑ์ไม่ได้แปลว่าตก', 'gm.floorReached':'ถึงเกณฑ์ขั้นต่ำ {g} แล้ว', 'gm.floorMissing':'ขาดอีก {n} คะแนนเพื่อรับประกัน {g}',
   'gm.cuts': 'เกณฑ์เกรด', 'gm.cutsNorm': 'เกณฑ์ที่ใช้ประมาณ', 'gm.std': 'ใช้ 80/75/70/65/60/55/50',
   'gm.cutsHint': 'ต่ำกว่าเกณฑ์สุดท้ายคือ {f} อยากเปลี่ยนคะแนนขั้นต่ำที่ผ่าน ให้แก้เกณฑ์ช่องล่างสุด', 'gm.bad': 'แต่ละเกณฑ์ต้องต่ำกว่าช่องข้างบน และอยู่ระหว่าง 1–100',
   'gm.saved': 'แก้วิธีตัดเกรดแล้ว', 'gm.afterFinalT': 'สอบปลายภาคไปแล้ว', 'gm.afterFinalP': 'ถ้าประกาศเกรดแล้วแต่ไม่ประกาศคะแนนปลายภาค บันทึกแค่เกรดที่ได้ก็พอ ไม่ต้องมีคะแนน',
@@ -3991,6 +3993,20 @@ function gradingModeFor(c) {
 function numericGoalFor(c) {
   return isNum(c && c.targetPct) && c.targetPct >= 0 && c.targetPct <= 100 ? c.targetPct : (gradingModeFor(c) === 'norm' ? 60 : null);
 }
+// Confirmed lower bounds are separate from estimated/full grade scales.
+function normFloorsFor(c) {
+  if (gradingModeFor(c) !== 'norm' || !c.normFloors || typeof c.normFloors !== 'object') return [];
+  return ['A','B+','B','C+','C','D+','D'].filter(function (g) {
+    return isNum(c.normFloors[g]) && c.normFloors[g] > 0 && c.normFloors[g] <= 100;
+  }).map(function (g) { return { label: g, min: c.normFloors[g] }; });
+}
+function normFloorText(c, sum) {
+  var floors = normFloorsFor(c);
+  if (!floors.length || c.finalGrade || sum.issues.over || sum.issues.overMax > 0) return null;
+  var reached = floors.find(function (g) { return sum.earned >= g.min; });
+  var next = floors.slice().reverse().find(function (g) { return sum.earned < g.min; });
+  return [reached ? t('gm.floorReached', {g: reached.label}) : '', next ? t('gm.floorMissing', {g: next.label, n: fmtT(Math.ceil((next.min - sum.earned)*100)/100)}) : ''].filter(Boolean).join(' · ');
+}
 function GradingAndGap(p) {
   var c = p.course, state = p.state, summary = p.sum || C.courseSummary(c, state);
   var mode = gradingModeFor(c);
@@ -4004,6 +4020,7 @@ function GradingAndGap(p) {
       ${mode === 'norm' && html`<span className="tiny muted">${t('grading.estimate')}</span>`}
       ${!p.compact && html`<button type="button" className="btn sm" aria-label=${t('gm.edit')} onClick=${function () { openModal('grading', { courseId: c.id }); }}><${Icon} n="edit" s=${15} />${t('gm.edit')}</button>`}
     </div>
+    ${normFloorText(c, summary) && html`<div className="small" role="status">${normFloorText(c, summary)}</div>`}
     ${target ? html`<div className="goal-gap"><b>${mode === 'criterion' ? t('goal.missing', { n: fmtT(short), g: target.label }) : (short <= 0.00001 ? t('grading.pointsReached', { p: fmtT(target.min) }) : t('grading.needPoints', { n: fmtT(short), p: fmtT(target.min) }))}</b>
       <span className="small muted">${short <= 0.00001 ? (mode === 'criterion' ? t('goal.reached') : t('grading.scoreOnly')) : average ? (average.pct > 100.00001 ? t('goal.examNotEnough') : t('goal.examAverage', { n: fmtT(Math.max(0, average.pct)) })) : t('goal.noPendingExams')}</span>
       ${short > 0.00001 && average && average.pct <= 100.00001 && html`<span className="small goal-raw">${t('goal.examRaw', { list: summary.pendingRows.filter(function (r) { return (r.a.type === 'midterm' || r.a.type === 'final') && r.w > 0.00001 && isNum(r.max) && r.max > 0; })
@@ -4031,6 +4048,12 @@ function GradingModal(p) {
   var ms = useState(mode0 === 'norm' || mode0 === 'criterion' ? mode0 : 'unknown'), mode = ms[0], setMode = ms[1];
   var ps = useState(sGrade && isNum(sGrade.min) ? sGrade.min : 60), pass = ps[0], setPass = ps[1];
   var gs = useState(function () { return c ? letterGradesFor(c, state).map(function (g) { return Object.assign({}, g); }) : []; }), grades = gs[0], setGrades = gs[1];
+  var fs = useState(function () { return Object.assign({}, c && c.normFloors || {}); }), floors = fs[0], setFloors = fs[1];
+  var floorLabels = ['A','B+','B','C+','C','D+','D'];
+  var enteredFloors = floorLabels.filter(function(g) { return floors[g] != null; });
+  var badFloors = kind === 'letter' && mode === 'norm' && enteredFloors.some(function(g,i) {
+    return !isNum(floors[g]) || floors[g] <= 0 || floors[g] > 100 || (i > 0 && floors[g] <= 100 && floors[g] >= floors[enteredFloors[i-1]]);
+  });
   if (!c) return null;
   var cutRows = grades.filter(function (g) { return g.earns !== false && g.min > 0; });
   var setMin = function (label, v) { setGrades(grades.map(function (g) { return g.label === label ? Object.assign({}, g, { min: v }) : g; })); };
@@ -4053,6 +4076,7 @@ function GradingModal(p) {
         x.gradingMode = mode;
         if (x.target === 'S' || x.target === 'U') x.target = null;
       }
+      x.normFloors = kind === 'letter' && mode === 'norm' ? Object.fromEntries(enteredFloors.map(function(g) { return [g, floors[g]]; })) : {};
       x.gradingUser = true; // the student's own choice beats the shared syllabus data
     }, { undo: true });
     closeModal();
@@ -4060,7 +4084,7 @@ function GradingModal(p) {
   };
   return html`<${Modal} title=${t('gm.title')} onClose=${closeModal} foot=${html`
     <button className="btn" onClick=${closeModal}>${t('cancel')}</button>
-    <button className="btn primary" disabled=${bad || badPass} onClick=${save}>${t('save')}</button>`}>
+    <button className="btn primary" disabled=${(mode !== 'norm' && bad) || badPass || badFloors} onClick=${save}>${t('save')}</button>`}>
     <p className="small muted" style=${{ margin: 0 }}>${courseDisplayTitle(c)}</p>
     <${Field} label=${t('gm.kind')} id="gm-kind">
       <div className="seg-pick" role="group" aria-label=${t('gm.kind')}>
@@ -4079,7 +4103,7 @@ function GradingModal(p) {
           })}
         </div>
       <//>
-      <div>
+      ${mode === 'norm' ? html`<div><div className="label">${t('gm.floorTitle')}</div><div className="hint">${t('gm.floorHint')}</div><div className="gm-cuts">${floorLabels.map(function(g) { return html`<label key=${g} className="gm-cut"><b>${g}</b><span className="muted tiny">≥</span><${NumCell} label=${g} value=${floors[g] == null ? null : floors[g]} onChange=${function(v) { setFloors(function(old) { return Object.assign({}, old, {[g]:v}); }); }} /><span className="muted tiny">%</span></label>`; })}</div>${badFloors && html`<div className="error-text" role="alert">${t('gm.bad')}</div>`}</div>` : html`<div>
         <div className="row between wrap" style=${{ gap: 8, marginBottom: 6 }}>
           <span className="label">${mode === 'norm' ? t('gm.cutsNorm') : t('gm.cuts')}</span>
           <button type="button" className="linkish" onClick=${std}>${t('gm.std')}</button>
@@ -4090,7 +4114,7 @@ function GradingModal(p) {
         })}</div>
         <div className="hint">${t('gm.cutsHint', { f: (grades.find(function (g) { return g.earns === false; }) || { label: 'F' }).label })}</div>
         ${bad && html`<div className="error-text" role="alert">${t('gm.bad')}</div>`}
-      </div>
+      </div>`}
     <//>`}
   <//>`;
 }
@@ -4835,6 +4859,7 @@ function CourseCard(p) {
     <div className="ccard-slot ccard-progress-slot">${manual || c.finalGrade ? html`<p className="small muted" style=${{ margin: 0 }}>${c.finalGrade ? officialNote(c, state) : t('manualGradeNote')}</p>` : html`<div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>`}</div>
     <div className="ccard-slot ccard-warning-slot">${!c.finalGrade && sum.issues.over && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.over",{n:fmtT(sum.totalWeight)})}</div>`}${!c.finalGrade && sum.issues.overMax>0 && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.overMax")}</div>`}</div>
     <div className="ccard-slot ccard-forecast-slot">${!c.finalGrade && html`<${EstimateBasis} course=${c} sum=${sum} state=${state} collapsible=${true} />`}</div>
+    ${normFloorText(c, sum) && html`<div className="ccard-line"><${Icon} n="target" s=${14} /><span>${normFloorText(c, sum)}</span></div>`}
     <div className="ccard-slot ccard-goal-slot">${gl && html`<div className=${'ccard-line ' + gl.tone}><${Icon} n="target" s=${14} /><span>${gl.text}</span></div>`}</div>
     <div className="ccard-slot ccard-exam-slot">${nx && html`<div className="ccard-line"><${Icon} n="calendar" s=${14} /><span>${nextExamText(nx)}</span></div>`}</div>
     <div className="ccard-foot">
@@ -5881,6 +5906,7 @@ function GradeSimulator(p) {
         </div>`;
       })}</div>
     </div>
+    ${normFloorText(c, Object.assign({}, sum, {earned:total})) && html`<div className="small muted">${t('predFinal')}: ${normFloorText(c, Object.assign({}, sum, {earned:total}))}</div>`}
     <div className="sim-result">
       <div><div className="k">${t('predFinal')}</div><div className="v">${fmt(total)}%</div></div>
       <div><div className="k">${t('predGrade')}</div><div className=${criterion ? "v" : "v grade-summary-short"} title=${criterion ? undefined : t("grading.noLetterPrediction")}>${criterion ? (pg ? pg.label : '–') : t('grading.noLetterPredictionShort')}</div></div>
@@ -6358,7 +6384,7 @@ function CourseModal(p) {
         normMethod: f.normMethod || 'unknown', normMean: toNum(f.normMean), normStdDev: toNum(f.normStdDev),
         gradingNotes: String(f.gradingNotes || '').trim(), gradingSource: String(f.gradingSource || '').trim() };
       var sectionChanged = !!c && sectionOf(c) !== data.section;
-      if (sectionChanged) { data.gradingMode = 'unknown'; data.customGrades = null; data.scaleId = d.settings.defaultScaleId; data.gradingSource = ''; data.exams = null; }
+      if (sectionChanged) { data.normFloors = {}; data.gradingMode = 'unknown'; data.customGrades = null; data.scaleId = d.settings.defaultScaleId; data.gradingSource = ''; data.exams = null; }
       if ((!c && data.code) || sectionChanged) {
         var verifiedRule = SharedCatalog.verifiedPolicyTemplate(data, d);
         if (verifiedRule) {
