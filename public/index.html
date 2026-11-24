@@ -2134,7 +2134,13 @@ var PasteScores = (function () {
   // → [{ name, score (null = not out yet), max, type }]
   function parse(text) {
     var rows = [];
-    lines(text).forEach(function (l) {
+    var prepared=String(text||'').split(/\r?\n/).map(function(line){
+      var cells=line.split('\t');if(cells.length!==3)return line;
+      var name=cells[0].trim(),score=cells[1].trim(),max=cells[2].trim();
+      if(!name||!/^\d+(?:[.,]\d+)?$/.test(max)||score&&!new RegExp('^(?:'+SCORE+')$','i').test(score))return line;
+      return name+' '+(score||'Not ready')+' / '+max;
+    }).join('\n');
+    lines(prepared).forEach(function (l) {
       var m = l.match(ROW);
       if (!m) return;
       var name = m[1].replace(/\s*[:|]\s*$/, '').trim();
@@ -2613,6 +2619,7 @@ en: {
   "policy.clear":"Reset rules",
   "policy.dropCount":"Number to drop",
   "policy.ruleError":"Use valid values and select a component or assessment.",
+  "paste.badRange":"Score outside valid range — skip or correct the source.",
   "plan.priority":"Study priorities",
   "plan.priorityHint":"Planning heuristic using exam dates, exam weight, score gap and credits; not a probability. Review impossible or invalid goals separately.",
   "plan.examDays":"Exam in {n} days",
@@ -3035,6 +3042,7 @@ th: {
   "policy.clear":"ล้างกฎ",
   "policy.dropCount":"จำนวนรายการที่ตัด",
   "policy.ruleError":"กรอกค่าที่ถูกต้องและเลือกองค์ประกอบหรือรายการประเมิน",
+  "paste.badRange":"คะแนนเกินช่วงที่กำหนด โปรดข้ามหรือแก้ข้อมูลต้นทาง",
   "plan.priority":"ลำดับวิชาที่ควรอ่าน",
   "plan.priorityHint":"จัดลำดับจากวันสอบ น้ำหนักสอบ คะแนนที่ขาดและหน่วยกิต ไม่ใช่ความน่าจะเป็น ควรตรวจสอบเป้าหมายที่ทำไม่ได้หรือข้อมูลผิดปกติ",
   "plan.examDays":"สอบอีก {n} วัน",
@@ -4335,7 +4343,7 @@ function buildICS(events) {
     L.push('SUMMARY:' + icsEscape(e.title));
     if (e.where) L.push('LOCATION:' + icsEscape(e.where));
     if (e.note) L.push('DESCRIPTION:' + icsEscape(e.note));
-    if (e.exam) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEscape(e.title), 'TRIGGER:-P1D', 'END:VALARM');
+    L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEscape(e.title), 'TRIGGER:-P1D', 'END:VALARM');
     L.push('END:VEVENT');
   });
   L.push('END:VCALENDAR');
@@ -5447,7 +5455,7 @@ function StudyPriority(p) {
     return {c:c,event:event,gap:gap,target:target,goal:goal,invalid:invalid,impossible:impossible,score:score};
   }).sort(function(a,b){return b.score-a.score;});
   if(!rows.length)return null;
-  return html`<section className="section card pad"><div className="section-head"><h2>${t('plan.priority')}</h2></div><p className="small muted">${t('plan.priorityHint')}</p>
+  return html`<section data-testid="study-priority" className="section card pad"><div className="section-head"><h2>${t('plan.priority')}</h2></div><p className="small muted">${t('plan.priorityHint')}</p>
     <div className="stack">${rows.slice(0,5).map(function(r){return html`<div key=${r.c.id} className="row wrap between"><div className="grow"><a href=${'#course-'+r.c.id}><b>${courseDisplayTitle(r.c)}</b></a><div className="small muted">${r.event?t('plan.examDays',{n:r.event.d}):t('plan.noDate')} · ${r.invalid?t('plan.invalid'):r.impossible?t('plan.unreachable'):r.gap===null?t('plan.noGoal'):r.gap===0?t('plan.reached'):t('plan.gap',{n:fmtT(Math.ceil(r.gap*100)/100),p:fmtT(r.target)})}</div></div><span className=${'chip '+(r.invalid||r.impossible?'warn':r.gap===0?'ok':'')}>${r.invalid||r.impossible?t('plan.review'):r.gap===0?t('plan.reached'):r.event&&r.event.d<=3?t('plan.soon'):t('plan.study')}</span></div>`;})}</div></section>`;
 }
 function ClassComparison(p) {
@@ -5456,7 +5464,7 @@ function ClassComparison(p) {
   var st=useState(c.classSnapshot||{}), v=st[0], setV=st[1];
   var comparison=GSPlanning.compare(v.score,v.mean,v.sd), valid=!!comparison;
   var z=valid?comparison.z:null;
-  return html`<section className="card pad"><div className="section-head"><h2>${t('plan.class')}</h2></div><p className="small muted">${t('plan.classHint')}</p><div className="row wrap">${[['score','plan.myScore'],['mean','grading.normMean'],['sd','grading.normStdDev']].map(function(pair){return html`<div key=${pair[0]} style=${{flex:'1 1 100px',minWidth:0}}><div className="label">${t(pair[1])}</div><${NumCell} label=${t(pair[1])} value=${v[pair[0]]} onChange=${function(n){setV(function(old){return Object.assign({},old,{[pair[0]]:n});});}} /></div>`;})}</div>
+  return html`<section data-testid="class-comparison" className="card pad"><div className="section-head"><h2>${t('plan.class')}</h2></div><p className="small muted">${t('plan.classHint')}</p><div className="row wrap">${[['score','plan.myScore'],['mean','grading.normMean'],['sd','grading.normStdDev']].map(function(pair){return html`<div key=${pair[0]} style=${{flex:'1 1 100px',minWidth:0}}><div className="label">${t(pair[1])}</div><${NumCell} label=${t(pair[1])} value=${v[pair[0]]} onChange=${function(n){setV(function(old){return Object.assign({},old,{[pair[0]]:n});});}} /></div>`;})}</div>
   ${valid&&html`<div className="stack" style=${{marginTop:12}}>${[['plan.myScore',v.score],['grading.normMean',v.mean]].map(function(pair){return html`<div key=${pair[0]}><div className="row between small"><span>${t(pair[0])}</span><b>${fmtT(pair[1])}%</b></div><div style=${{height:8,background:'var(--surface-3)',borderRadius:8,overflow:'hidden'}}><div style=${{height:8,width:pair[1]+'%',background:pair[0]==='plan.myScore'?'var(--accent)':'var(--muted)'}}></div></div></div>`;})}<p><b>${t('plan.z',{z:fmt(z),d:fmt(v.score-v.mean)})}</b></p></div>`}
   <div className="row wrap"><button className="btn sm" disabled=${!valid} onClick=${function(){update(function(d){var x=d.courses.find(function(x){return x.id===c.id;});if(x)x.classSnapshot=Object.assign({},v);},{undo:true});}}>${t('save')}</button><button className="btn sm ghost" onClick=${function(){setV({});update(function(d){var x=d.courses.find(function(x){return x.id===c.id;});if(x)x.classSnapshot={};},{undo:true});}}>${t('plan.clear')}</button></div></section>`;
 }
@@ -5793,7 +5801,7 @@ function AdvancedPolicy(p) {
     if(!valid){setError(true);return;}
     update(function(d){var x=d.courses.find(function(y){return y.id===c.id;});if(x)x.advancedPolicy=clone(v);},{undo:true});toast(t('saved'),{undo:true});
   };
-  return html`<section className="card pad stack"><details><summary style=${{cursor:'pointer',fontWeight:600}}>${t('policy.title')}</summary><p className="small muted">${t('policy.hint')}</p>
+  return html`<section className="card pad stack" data-testid="advanced-policy"><details><summary style=${{cursor:'pointer',fontWeight:600}}>${t('policy.title')}</summary><p className="small muted">${t('policy.hint')}</p>
     ${result&&html`<div className="banner info">${result.status==='ok'?t('policy.adjusted',{p:fmt(result.score)})+(gradingModeFor(c)==='criterion'&&result.grade?' · '+result.grade.label:''):t(result.status==='pending'?'policy.pending':'policy.invalid')}</div>`}
     <div className="grid2"><${Field} label=${t('policy.rounding')}><select className="select" aria-label=${t('policy.rounding')} value=${v.rounding||'none'} onChange=${function(e){patch('rounding',e.target.value);}}>${['none','nearest','floor','ceil'].map(function(x){return html`<option key=${x} value=${x}>${t('policy.'+x)}</option>`;})}</select><//><${Field} label=${t('policy.bonus')}><${NumCell} label=${t('policy.bonus')} value=${v.bonus} onChange=${function(n){patch('bonus',n);}} /><//></div>
     <div className="stack" style=${{marginTop:12}}><b>${t('policy.minimum')}</b>${rules.map(function(r,i){var change=function(k,x){patch('minimums',rules.map(function(q,j){return j===i?Object.assign({},q,{[k]:x}):q;}));};return html`<div key=${i} className="grid2"><select className="select" aria-label=${t('assessType')} value=${r.type} onChange=${function(e){change('type',e.target.value);}}>${TYPES.map(function(x){return html`<option key=${x} value=${x}>${t('type.'+x)}</option>`;})}</select><${NumCell} label=${t('policy.minimumPct')} value=${r.min} onChange=${function(n){change('min',n);}} /><select className="select" aria-label=${t('policy.cap')} value=${r.cap} onChange=${function(e){change('cap',e.target.value);}}>${grades.map(function(g){return html`<option key=${g.label} value=${g.label}>${t('policy.cap')}: ${g.label}</option>`;})}</select><button className="btn sm" onClick=${function(){patch('minimums',rules.filter(function(q,j){return j!==i;}));}}>${t('policy.remove')}</button></div>`;})}<button className="btn sm" onClick=${function(){patch('minimums',rules.concat([{type:'final',min:null,cap:grades.length?grades[grades.length-1].label:''}]));}}>${t('policy.addMinimum')}</button></div>
@@ -6272,7 +6280,7 @@ function semesterPlanning(state,sem) {
 function SemesterRange(p){
   var plan=semesterPlanning(p.state,p.semester), bounds=GSPlanning.range(plan.fixed,plan.courses,plan.options);
   if(!bounds)return null;
-  return html`<section className="section card pad"><div className="row between wrap"><div><h2>${t('plan.range')}</h2><div className="small muted">${t('plan.rangeHint')}</div></div><b style=${{fontSize:22}}>${fmt(bounds.low)} – ${fmt(bounds.high)}</b></div><div style=${{height:8,borderRadius:8,background:'var(--surface-3)',position:'relative',marginTop:12}}><div style=${{position:'absolute',height:8,borderRadius:8,background:'var(--accent)',left:Math.max(0,bounds.low/4*100)+'%',width:Math.max(0,(bounds.high-bounds.low)/4*100)+'%'}}></div></div><div className="row between tiny muted"><span>0.00</span><span>4.00</span></div></section>`;
+  return html`<section data-testid="gpa-range" className="section card pad"><div className="row between wrap"><div><h2>${t('policy.range')}</h2><div className="small muted">${t('policy.rangeHint')}</div></div><b style=${{fontSize:22}}>${fmt(bounds.low)} – ${fmt(bounds.high)}</b></div><div style=${{height:8,borderRadius:8,background:'var(--surface-3)',position:'relative',marginTop:12}}><div style=${{position:'absolute',height:8,borderRadius:8,background:'var(--accent)',left:Math.max(0,bounds.low/4*100)+'%',width:Math.max(0,(bounds.high-bounds.low)/4*100)+'%'}}></div></div><div className="row between tiny muted"><span>0.00</span><span>4.00</span></div></section>`;
 }
 function ReverseSemesterPlanner(p) {
   var state=p.state, sem=curSemester(state),st=useState(3.5),target=st[0],setTarget=st[1];
@@ -6281,7 +6289,7 @@ function ReverseSemesterPlanner(p) {
   var bounds=GSPlanning.range(plan.fixed,courses,plan.options);
   var valid=isNum(target)&&target>=0&&target<=4&&!!bounds;
   var scenarios=valid?GSPlanning.scenarios(plan.fixed,courses,plan.options,target):[];
-  return html`<section className="section card pad"><div className="section-head"><h2>${t('plan.reverse')}</h2></div><p className="small muted">${t('plan.reverseHint')}</p><div className="row wrap"><label className="label">${t('plan.gpaTarget')}</label><${NumCell} label=${t('plan.gpaTarget')} value=${target} onChange=${setTarget} style=${{width:100}} /></div>
+  return html`<section data-testid="reverse-gpa" className="section card pad"><div className="section-head"><h2>${t('plan.reverse')}</h2></div><p className="small muted">${t('plan.reverseHint')}</p><div className="row wrap"><label className="label">${t('plan.gpaTarget')}</label><${NumCell} label=${t('plan.gpaTarget')} value=${target} onChange=${setTarget} style=${{width:100}} /></div>
   ${valid?(scenarios.length?html`<div className="stack">${scenarios.map(function(x,j){return html`<div key=${j} className="card pad"><b>GPA ${fmt(x.gpa)}</b>${courses.map(function(c,i){return html`<div key=${c.id} className="row between small"><span>${courseDisplayTitle(c)}</span><b>${x.labels[i]}</b></div>`;})}</div>`;})}</div>`:html`<p className="small muted">${t('plan.unreachable')}</p>`):null}</section>`;
 }
 function GPAPage(p) {
@@ -6884,7 +6892,8 @@ function PasteScoresModal(p) {
   var rows = PasteScores.parse(text);
   // default target per row: the matching assessment (each one used once), else skip; the student's picks override
   var used = {};
-  var defaults = rows.map(function (r) {
+  var defaults = rows.map(function (r,i) {
+    if(rows.some(function(x,j){return j<i&&x.name===r.name&&x.score===r.score&&x.max===r.max;}))return '__skip';
     var hit = Scan.matchAssessment(existing.filter(function (a) { return !used[a.id]; }), r);
     if (hit) { used[hit.id] = true; return hit.id; }
     return '__skip';
@@ -6903,6 +6912,8 @@ function PasteScoresModal(p) {
   var dupe = {};
   targets.forEach(function (v) { if (v.indexOf('__') !== 0) dupe[v] = (dupe[v] || 0) + 1; });
   var hasDupe = Object.keys(dupe).some(function (k) { return dupe[k] > 1; });
+  var badRows=rows.map(function(r,i){var a=existing.find(function(x){return x.id===targets[i];});return r.score!=null&&(r.score<0||r.score>r.max&&!(a&&a.extra));});
+  var hasBad=badRows.some(function(b,i){return b&&targets[i]!=='__skip';});
   var apply = function () {
     var n = 0;
     update(function (d) {
@@ -6926,7 +6937,7 @@ function PasteScoresModal(p) {
     toast(t('paste.done', { n: n }), { undo: true });
   };
   var foot = html`<button className="btn" onClick=${closeModal}>${t('cancel')}</button>
-    <button className="btn primary" disabled=${!nUse || hasDupe} onClick=${apply}>${t('paste.apply', { n: nUse })}</button>`;
+    <button className="btn primary" disabled=${!nUse || hasDupe || hasBad} onClick=${apply}>${t('paste.apply', { n: nUse })}</button>`;
   return html`<${Modal} title=${t('paste.title')} wide=${true} onClose=${closeModal} foot=${foot}>
     <p className="small muted" style=${{ margin: 0 }}>${t('paste.intro', { c: courseDisplayTitle(c) })}</p>
     <textarea className="input paste-box" rows="6" aria-label=${t('paste.title')} placeholder=${'Mid term EXAM\t35\t/ 50\nFinal Exam\tNot ready\t/ 50'}
@@ -6939,10 +6950,10 @@ function PasteScoresModal(p) {
         var note = tg === '__skip' ? t('paste.skipNote')
           : a ? (r.score == null ? t('paste.notOut') : t('paste.replace', { old: fmtSM(a.score, a.max), now: fmtSM(r.score, r.max) }))
           : t('paste.newNote');
-        return html`<div key=${i} className=${'scan-row' + (clash ? ' flag' : '') + (tg === '__skip' ? ' off' : '')}>
+        return html`<div key=${i} className=${'scan-row' + (clash || badRows[i] ? ' flag' : '') + (tg === '__skip' ? ' off' : '')}>
           <div className="grow" style=${{ minWidth: 0 }}>
             <div className="scan-row-name">${r.name} <span className="muted" style=${{ fontWeight: 500 }}>${fmtSM(r.score, r.max)}</span></div>
-            <div className="tiny muted">${clash ? html`<span className="scan-flag">${t('paste.clash')}</span>` : note}</div>
+            <div className="tiny muted">${badRows[i]?html`<span className="scan-flag">${t('paste.badRange')}</span>`:clash ? html`<span className="scan-flag">${t('paste.clash')}</span>` : note}</div>
           </div>
           <select className="input paste-sel" aria-label=${t('paste.target', { n: r.name })} value=${tg} onChange=${function (e) { setTarget(i, e.target.value); }}>
             ${existing.map(function (x) { return html`<option key=${x.id} value=${x.id}>${aName(x)} (${fmtSM(x.score, x.max)})</option>`; })}
@@ -8150,7 +8161,7 @@ window.setTimeout(function () {
 }, 4500);
 </script>
 <script>
-if (location.protocol==='https:' && 'serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){ /* normal website remains usable */ });
+if (window.isSecureContext && location.protocol!=='file:' && 'serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){ /* normal website remains usable */ });
 </script>
 </body>
 </html>
