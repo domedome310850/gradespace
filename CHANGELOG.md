@@ -1,3 +1,7 @@
+## 2026-11-24 — ChatGPT: Confirmed minimum grades for relative grading
+
+- `public/index.html`: optional instructor-confirmed lower bounds in the grading modal, separate from estimated scales; show reached and remaining thresholds in course cards, details and simulator without treating them as exact grades or GPA. Clear bounds on section changes. Thai/English support. Browser smoke pending; AI scan and older-client server preservation not yet implemented.
+
 ## 2026-11-22 — ChatGPT: Compact overview summary
 
 - `public/index.html`: combine semester GPA, cumulative GPA and next-term plan into one responsive desktop row with smaller metric typography and padding. Keep GPA coverage and estimation status, study-plan editing, major selection, GenEd and full-plan access. On mobile the GPA tiles remain side by side with the plan below. Full Years-page plan remains unchanged. No data or computation changes.
