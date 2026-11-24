@@ -206,6 +206,43 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.3; letter-spacing: -0.01em; }
 
 
 /* Dashboard 2026: compact vertical upcoming list beside a real date-driven exam calendar. */
+.dashboard-planning-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:10px;align-items:start}
+.dashboard-planning-mini{display:grid;gap:10px;min-width:0}
+.planning-card.card{padding:12px 14px;min-width:0;box-shadow:none}
+.planning-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px}
+.planning-head h2{font-size:14px;line-height:1.35;margin:0}
+.planning-mini .planning-head{margin-bottom:5px}
+.planning-value{font-size:22px;font-weight:750;line-height:1.25;display:flex;align-items:baseline;flex-wrap:wrap;gap:5px}
+.planning-value span{font-size:11px;color:var(--muted);font-weight:500}
+.planning-range{height:6px;background:var(--surface-3);border-radius:8px;position:relative;margin:7px 0;overflow:hidden}
+.planning-range>div{position:absolute;height:100%;border-radius:8px;background:var(--accent)}
+.planning-link{font-size:12px;font-weight:600;text-decoration:none}
+.planning-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.planning-actions .btn{font-size:11px;min-height:28px;padding:4px 7px;white-space:normal}
+.study-list{display:grid;gap:6px}
+.study-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px;border-radius:9px;border:1px solid var(--line);border-inline-start:3px solid var(--line-strong);color:var(--ink);text-decoration:none;min-width:0}
+.study-row:hover{outline:1px solid var(--accent)}
+.study-row.urgent{background:var(--bad-soft);border-inline-start-color:var(--bad)}
+.study-row.soon{background:var(--warn-soft);border-inline-start-color:var(--warn)}
+.study-row.normal{background:var(--surface-2);border-inline-start-color:var(--accent)}
+.study-row.done{background:var(--ok-soft);border-inline-start-color:var(--ok)}
+.study-row.review{background:var(--surface-2);border-inline-start-color:var(--warn)}
+.study-copy{min-width:0;flex:1;display:grid;gap:2px}
+.study-copy b{font-size:13px;line-height:1.3;overflow-wrap:anywhere}
+.study-copy>span,.study-empty,.study-finished{font-size:11px;line-height:1.4;color:var(--ink-2)}
+.study-badge{display:inline-block;flex:none;font-size:11px;font-weight:700;line-height:1.3;padding:4px 6px;border-radius:6px;white-space:normal;text-align:center}
+.study-badge.urgent{background:var(--bad);color:var(--surface)}
+.study-badge.soon,.study-badge.review{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.study-badge.done{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok)}
+.study-badge.normal{background:var(--accent-soft);color:var(--accent-text)}
+.study-finished{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:7px}
+.planning-more.btn{font-size:11px;min-height:28px;margin-top:5px;padding:3px 6px}
+.exam-status-panel{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px}
+.exam-status-title{display:grid;gap:2px}
+.exam-status-actions{display:flex;gap:10px;flex-wrap:wrap}
+.exam-status-item{display:flex;align-items:center;gap:6px;font-size:12px}
+@media(max-width:1050px){.dashboard-planning-grid{grid-template-columns:1fr}.dashboard-planning-mini{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.planning-card.card{padding:10px}.planning-head h2{font-size:13px}.planning-value{font-size:18px}.planning-actions .btn{padding:4px 5px}.study-row{padding:7px}.study-badge{max-width:38%}.dashboard-planning-grid,.dashboard-planning-mini{gap:8px}}
 .dashboard-exam-layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start; }
 .dashboard-exam-panel { min-width:0; }
 .dashboard-exam-panel .section-head { margin-bottom:12px; }
@@ -2642,7 +2679,8 @@ en: {
   "paste.badRange":"Score outside valid range — skip or correct the source.",
   "plan.reminders":"Exam and deadline reminders","plan.reminderHint":"Device notifications while GradeSpace is open; export the calendar for reminders when the app is closed.","plan.reminderCount":"{n} exams or deadlines in the next 3 days.","plan.reminderOn":"Enable notifications","plan.reminderOff":"Disable notifications","plan.reminderDenied":"Notification permission was not granted.","plan.reminderUnsupported":"Notifications are unavailable in this browser. Calendar export still works.",
   "plan.scanRules":"Suggested advanced rules", "plan.scanRulesConfirm":"I verified the quoted rule. Apply only if categories match; existing manual rules are preserved.",
-  "plan.priority":"Study priorities",
+  "plan.priority":"Study recommendations",
+  "plan.examStatus":"Exam status","plan.examStatusHint":"Independent of your scores or official grade.","plan.examAlready":"Completed","plan.examMark":"Mark done","plan.examUndo":"Undo completion","plan.examMarked":"Exam marked completed","plan.examUnmarked":"Exam completion cleared","plan.noStudy":"No outstanding study recommendations.","plan.finishedCount":"{n} final exams done","plan.waitGrades":"Waiting for results","plan.less":"Show less","plan.more":"See all {n}","plan.tone.urgent":"Focus now","plan.tone.soon":"Prepare soon","plan.tone.normal":"Plan ahead","plan.tone.review":"Review goal","plan.tone.done":"On track","plan.checkRules":"Check grading rules","plan.gapShort":"Need {n} pts","plan.next3Days":"in next 3 days","plan.openGpa":"Plan GPA",
   "plan.priorityHint":"Planning heuristic using exam dates, exam weight, score gap and credits; not a probability. Review impossible or invalid goals separately.",
   "plan.examDays":"Exam in {n} days",
   "plan.noDate":"No confirmed upcoming exam",
@@ -3068,7 +3106,8 @@ th: {
   "paste.badRange":"คะแนนเกินช่วงที่กำหนด โปรดข้ามหรือแก้ข้อมูลต้นทาง",
   "plan.reminders":"เตือนสอบและกำหนดส่งงาน","plan.reminderHint":"แจ้งเตือนบนอุปกรณ์ขณะเปิด GradeSpace หรือส่งออกปฏิทินเพื่อรับการเตือนเมื่อปิดเว็บ","plan.reminderCount":"มีสอบหรือกำหนดส่ง {n} รายการใน 3 วันข้างหน้า","plan.reminderOn":"เปิดการแจ้งเตือน","plan.reminderOff":"ปิดการแจ้งเตือน","plan.reminderDenied":"ไม่ได้รับอนุญาตให้แจ้งเตือน","plan.reminderUnsupported":"เบราว์เซอร์ไม่รองรับการแจ้งเตือน ยังส่งออกปฏิทินได้",
   "plan.scanRules":"กฎเพิ่มเติมที่ AI อ่านได้", "plan.scanRulesConfirm":"ตรวจสอบข้อความแล้ว ใช้เมื่อกลุ่มคะแนนตรงกันและไม่ทับกฎที่กำหนดเอง",
-  "plan.priority":"ลำดับวิชาที่ควรอ่าน",
+  "plan.priority":"แนะนำการอ่านหนังสือ",
+  "plan.examStatus":"สถานะการสอบ","plan.examStatusHint":"แยกจากคะแนนและเกรดจริง","plan.examAlready":"สอบแล้ว","plan.examMark":"สอบแล้ว","plan.examUndo":"ยกเลิกสถานะสอบแล้ว","plan.examMarked":"บันทึกว่าสอบแล้ว","plan.examUnmarked":"ยกเลิกสถานะสอบแล้ว","plan.noStudy":"ไม่มีวิชาที่ต้องแนะนำการอ่านเพิ่มเติม","plan.finishedCount":"สอบปลายภาคแล้ว {n} วิชา","plan.waitGrades":"รอผลคะแนน","plan.less":"ดูน้อยลง","plan.more":"ดูทั้งหมด {n} วิชา","plan.tone.urgent":"เน้นตอนนี้","plan.tone.soon":"เตรียมตัว","plan.tone.normal":"วางแผนไว้","plan.tone.review":"ทบทวนเป้าหมาย","plan.tone.done":"ตามเป้าหมาย","plan.checkRules":"ดูกฎตัดเกรด","plan.gapShort":"ขาด {n} คะแนน","plan.next3Days":"ใน 3 วันข้างหน้า","plan.openGpa":"วางแผน GPA",
   "plan.priorityHint":"จัดลำดับจากวันสอบ น้ำหนักสอบ คะแนนที่ขาดและหน่วยกิต ไม่ใช่ความน่าจะเป็น ควรตรวจสอบเป้าหมายที่ทำไม่ได้หรือข้อมูลผิดปกติ",
   "plan.examDays":"สอบอีก {n} วัน",
   "plan.noDate":"ยังไม่มีวันสอบที่ยืนยัน",
@@ -3489,9 +3528,9 @@ function daysUntil(d) {
   var dt = new Date(p[0], p[1] - 1, p[2]);
   if (dt.getFullYear() !== p[0] || dt.getMonth() !== p[1] - 1 || dt.getDate() !== p[2]) return null;
   // Calendar-day math is timezone-independent and isn't affected by DST.
-  var now = new Date();
+  var now = new Date(Date.now()+7*3600000);
   return Math.round((Date.UTC(p[0], p[1] - 1, p[2]) -
-    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())) / 86400000);
 }
 var TYPES = ['midterm', 'final', 'assignment', 'homework', 'quiz', 'project', 'presentation', 'lab', 'participation', 'attendance', 'custom'];
 var COLORS = { indigo: 'var(--c-indigo)', blue: 'var(--c-blue)', teal: 'var(--c-teal)', green: 'var(--c-green)', amber: 'var(--c-amber)', rose: 'var(--c-rose)', violet: 'var(--c-violet)', slate: 'var(--c-slate)' };
@@ -4299,10 +4338,31 @@ function impliedText(rng) {
   return rng.one ? t('gm.implOne', { n: rng.name, a: fmtT(rng.from), b: fmtT(rng.to), m: fmtT(rng.max) }) : t('gm.implMany', { a: fmtT(rng.from), b: fmtT(rng.to) });
 }
 // The final exam has passed but no grade is recorded yet: many courses publish only the letter grade.
-function finalExamPassed(c, state) {
+// Exam completion is independent of score publication. Dates and times are Bangkok local.
+function examEnded(e, now) {
+  if (!e || !/^\d{4}-\d{2}-\d{2}$/.test(e.date||'')) return false;
+  now=now||new Date();
+  var local=new Date(now.getTime()+7*3600000), today=local.toISOString().slice(0,10);
+  if(e.date<today)return true;
+  if(e.date>today)return false;
+  var range=parseTimeRange(e.time);
+  if(!range||range.some(function(h){return h[0]>23||h[1]>59;})||range[1][0]*60+range[1][1]<=range[0][0]*60+range[0][1])return false;
+  return local.getUTCHours()*60+local.getUTCMinutes()>=range[1][0]*60+range[1][1];
+}
+function examCompleted(c,state,k,e) {
+  if(c.finalGrade||c.examCompleted&&c.examCompleted[k]===true||examEnded(e))return true;
+  var type=k==='mid'?'midterm':'final', rows=state.assessments.filter(function(a){return a.courseId===c.id&&a.type===type;});
+  if(rows.length>0&&rows.every(C.isGraded))return true;
+  return (!e||!e.date)&&rows.length>0&&rows.every(function(a){return C.isGraded(a)||examEnded({date:a.due});});
+}
+function setExamCompleted(c,k,value){
+  update(function(d){var x=d.courses.find(function(a){return a.id===c.id;});if(x)x.examCompleted=Object.assign({},x.examCompleted||{},{[k]:value});},{undo:true});
+  toast(t(value?'plan.examMarked':'plan.examUnmarked'),{undo:true});
+}
+function finalExamPassed(c, state, personal) {
   if (!c || c.finalGrade) return false;
-  var ex = examsFor(c, state), d = ex && ex.fin && ex.fin.date ? daysUntil(ex.fin.date) : null;
-  return d !== null && d < 0;
+  var ex=displayExamsFor(c,state,personal)||{};
+  return examCompleted(c,state,'fin',ex.fin);
 }
 /* ================= catalog helpers ================= */
 // What to say once an official grade is recorded: no targets, simulator or exam reminders any more.
@@ -4348,11 +4408,13 @@ function calendarEvents(state, semId, personal) {
       var e = ex[k[0]];
       if (!e || !/^\d{4}-\d{2}-\d{2}$/.test(e.date || '')) return;
       have[k[1]] = true;
+      if(examCompleted(c,state,k[0],e))return;
       ev.push({ uid: 'exam-' + k[0] + '-' + c.id, date: e.date, time: parseTimeRange(e.time), exam: true,
         title: t('type.' + k[1]) + ' · ' + title, where: e.location || '', note: (c.code || '') + (sectionOf(c) ? ' Sec ' + sectionOf(c) : '') });
     });
     state.assessments.forEach(function (a) {
       if (a.courseId !== c.id || C.isGraded(a) || !/^\d{4}-\d{2}-\d{2}$/.test(a.due || '') || have[a.type]) return;
+      if((a.type==='midterm'||a.type==='final')&&examCompleted(c,state,a.type==='midterm'?'mid':'fin',{date:a.due}))return;
       ev.push({ uid: 'due-' + a.id, date: a.due, time: null, exam: a.type === 'midterm' || a.type === 'final', title: aName(a) + ' · ' + title, where: '', note: c.code || '' });
     });
   });
@@ -4385,8 +4447,7 @@ function downloadICS(state, semId, personal) {
 }
 function examText(e) {
   if (!e || !e.date) return t('exam.tbd');
-  var past = daysUntil(e.date);
-  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : '') + (past !== null && past < 0 ? ' ' + t('exam.done') : '');
+  return fmtDate(e.date, true) + (e.time ? ' ' + e.time : '') + (e.location ? ' · ' + t('exam.room', { r: e.location }) : '') + (examEnded(e) ? ' ' + t('exam.done') : '');
 }
 // skipMid: the midterm is already graded and its date was never recorded, so "to be announced" would mislead
 function examLine(ex, skipMid) {
@@ -4971,12 +5032,12 @@ function goalLine(c, state, sum) {
   return { tone: '', text: t('goal.examAverage', { n: fmtT(Math.max(0, avg.pct)) }) };
 }
 // The next exam that hasn't happened yet (or the final when its date isn't out).
-function nextExamOf(ex) {
-  if (!ex) return null;
-  var list = [{ k: 'mid', e: ex.mid }, { k: 'fin', e: ex.fin }];
-  var soon = list.filter(function (x) { return x.e && x.e.date && daysUntil(x.e.date) !== null && daysUntil(x.e.date) >= 0; });
-  if (soon.length) return soon[0];
-  if (!ex.fin || !ex.fin.date) return { k: 'fin', e: null };
+function nextExamOf(ex,c,state) {
+  ex=ex||{};
+  var list=[{k:'mid',e:ex.mid},{k:'fin',e:ex.fin}];
+  var soon=list.filter(function(x){return x.e&&x.e.date&&daysUntil(x.e.date)!==null&&!examCompleted(c,state,x.k,x.e);}).sort(function(a,b){return a.e.date.localeCompare(b.e.date);});
+  if(soon.length)return soon[0];
+  if((!ex.fin||!ex.fin.date)&&!examCompleted(c,state,'fin',ex.fin))return {k:'fin',e:null};
   return null;
 }
 function nextExamText(x) {
@@ -4995,8 +5056,8 @@ function CourseCard(p) {
   var href = '#course-' + c.id;
   var manual = !sum.rows.length && c.finalGrade;
   var sec = sectionOf(c);
-  var nx = c.finalGrade ? null : nextExamOf(displayExamsFor(c, state, personal));
-  var gl = c.finalGrade ? null : finalExamPassed(c, state) ? { tone: 'ok', text: t('gm.afterFinalCard') } : goalLine(c, state, sum);
+  var nx = c.finalGrade ? null : nextExamOf(displayExamsFor(c, state, personal), c, state);
+  var gl = c.finalGrade ? null : finalExamPassed(c, state, personal) ? { tone: 'ok', text: t('gm.afterFinalCard') } : goalLine(c, state, sum);
   return html`<article className="card ccard" style=${{ '--cc': courseColor(c.color) }}>
     <div className="ccard-top">
       <div className="grow">
@@ -5411,9 +5472,8 @@ function examEventDetail(x){
 }
 function ExamCalendarPanel(p) {
   var exams = p.events.filter(function(x){ return (x.a.type === 'midterm' || x.a.type === 'final') && x.a.due && /^\d{4}-\d{2}-\d{2}$/.test(String(x.a.due)); });
-  var now = new Date();
-  var isoNow = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-  var first = (exams.find(function(x){ return x.a.due >= isoNow; }) || exams[0]);
+  var isoNow = new Date(Date.now()+7*3600000).toISOString().slice(0,10);
+  var first = (exams.find(function(x){ return x.a.due >= isoNow&&!x.completed; }) || exams.find(function(x){return x.a.due===isoNow;}) || exams[0]);
   var initial = first ? first.a.due.slice(0,7) : isoNow.slice(0,7);
   var ms = useState(''), month = ms[0] || initial, setMonth = ms[1];
   var ds = useState(''), chosen = ds[0], setSelected = ds[1];
@@ -5458,7 +5518,7 @@ function ExamCalendarPanel(p) {
     <div className="dashboard-calendar-legend">${fmtDate(selected,true)}</div>
     ${show.length ? show.map(function(x){var q=String(x.a.due).split('-');return html`<div key=${x.a.id} className="dashboard-cal-event" style=${{ '--cc': courseColor(x.c.color) }}>
       <div className="date-pill cc"><b>${+q[2]}</b><small>${fmtDate(x.a.due).replace(/^\d+\s*/,'')}</small></div>
-      <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}</div>${examEventDetail(x)}</div>
+      <div className="dashboard-cal-event-main"><div className="dashboard-cal-event-name">${upcomingCourseTitle(x.c)}</div><div className="dashboard-cal-event-type">${upcomingTypeShort(x.a)}${x.completed?' · '+t('plan.examAlready'):''}</div>${examEventDetail(x)}</div>
       <a className="btn sm" href=${'#course-'+x.c.id}>${t('viewCourse')}</a>
     </div>`;}) : html`<p className="muted small">${LANG==='th'?'ไม่มีรายการสอบที่บันทึกไว้ในช่วงนี้':'No recorded exams in this period'}</p>`}<//>`}
     <p className="dashboard-calendar-note">${t('examroom.calendarHint')}</p>
@@ -5467,21 +5527,28 @@ function ExamCalendarPanel(p) {
 
 // Planning heuristics are not probabilities or grade predictions.
 function StudyPriority(p) {
+  var more=useState(false), expanded=more[0],setExpanded=more[1];
   var rows = p.courses.filter(function(c){return !c.finalGrade;}).map(function(c){
     var sum=C.courseSummary(c,p.state), mode=gradingModeFor(c);
     var goal=mode==='criterion' ? C.gradesFor(c,p.state).find(function(g){return g.label===c.target;}) : normFloorsFor(c).slice().reverse().find(function(g){return g.min>sum.earned;});
     var target=goal ? goal.min : mode==='criterion' ? null : numericGoalFor(c);
     var event=p.events.filter(function(e){return e.c.id===c.id&&!e.completed&&e.d>=0;}).sort(function(a,b){return a.d-b.d;})[0];
     var gap=target==null?null:Math.max(0,target-sum.earned);
-    var advanced=hasAdvanced(c), invalid=advanced||sum.issues.over||sum.issues.overMax>0;
-    var impossible=gap!=null&&target>sum.maxPossible+1e-8;
+    var advanced=hasAdvanced(c), invalid=sum.issues.over||sum.issues.overMax>0;
+    var impossible=!advanced&&gap!=null&&target>sum.maxPossible+1e-8;
     var weight=event ? sum.pendingRows.filter(function(r){return r.a.type===event.a.type;}).reduce(function(a,r){return a+r.w;},0):0;
-    var score=invalid||impossible||gap===0? -1 : (event? 60/(1+event.d):0)+weight/2+(gap==null?0:30*gap/Math.max(1,sum.remaining))+(toNum(c.credits)||0);
-    return {c:c,event:event,gap:gap,target:target,goal:goal,advanced:advanced,invalid:invalid,impossible:impossible,score:score};
+    var done=finalExamPassed(c,p.state,p.personal)&&!event, reached=!advanced&&!invalid&&gap===0;
+    var tone=done?'done':invalid||impossible?'review':reached?'done':event&&event.d<=2?'urgent':event&&event.d<=7?'soon':'normal';
+    var score=done?-100:invalid||impossible?-10:reached&&!event?-20:(event?60/(1+event.d):0)+weight/2+(advanced||gap==null?0:30*gap/Math.max(1,sum.remaining))+(toNum(c.credits)||0);
+    return {c:c,event:event,gap:gap,target:target,advanced:advanced,invalid:invalid,impossible:impossible,done:done,reached:reached,tone:tone,score:score};
   }).sort(function(a,b){return b.score-a.score;});
-  if(!rows.length)return null;
-  return html`<section data-testid="study-priority" className="section card pad"><div className="section-head"><h2>${t('plan.priority')}</h2></div><p className="small muted">${t('plan.priorityHint')}</p>
-    <div className="stack">${rows.slice(0,5).map(function(r){return html`<div key=${r.c.id} className="row wrap between"><div className="grow"><a href=${'#course-'+r.c.id}><b>${courseDisplayTitle(r.c)}</b></a><div className="small muted">${r.event?t('plan.examDays',{n:r.event.d}):t('plan.noDate')} · ${r.advanced?t('policy.rawHint'):r.invalid?t('plan.invalid'):r.impossible?t('plan.unreachable'):r.gap===null?t('plan.noGoal'):r.gap===0?t('plan.reached'):t('plan.gap',{n:fmtT(Math.ceil(r.gap*100)/100),p:fmtT(r.target)})}</div></div><span className=${'chip '+(r.invalid||r.impossible?'warn':r.gap===0?'ok':'')}>${r.invalid||r.impossible?t('plan.review'):r.gap===0?t('plan.reached'):r.event&&r.event.d<=3?t('plan.soon'):t('plan.study')}</span></div>`;})}</div></section>`;
+  var active=rows.filter(function(r){return !r.done;}), finished=rows.filter(function(r){return r.done;});
+  return html`<section data-testid="study-priority" className="card planning-card"><div className="planning-head"><h2>${t('plan.priority')}</h2><${Tip} text=${t('plan.priorityHint')} /></div>
+    ${!active.length&&html`<div className="study-empty">${t('plan.noStudy')}</div>`}
+    <div className="study-list">${(expanded?active:active.slice(0,3)).map(function(r){return html`<a key=${r.c.id} href=${'#course-'+r.c.id} className=${'study-row '+r.tone}><div className="study-copy"><b>${upcomingCourseTitle(r.c)}</b><span>${r.event?(r.event.d===0?t('today'):t('plan.examDays',{n:r.event.d})):t('plan.noDate')}${' · '}${r.invalid?t('plan.invalid'):r.impossible?t('plan.unreachable'):r.advanced?t('plan.checkRules'):r.reached?t('plan.reached'):r.gap===null?t('plan.noGoal'):t('plan.gapShort',{n:fmtT(Math.ceil(r.gap*100)/100)})}</span></div><span className=${'study-badge '+r.tone}>${t('plan.tone.'+r.tone)}</span></a>`;})}</div>
+    ${finished.length>0&&html`<div className="study-finished"><span className="study-badge done">${t('plan.finishedCount',{n:finished.length})}</span><span>${t('plan.waitGrades')}</span></div>`}
+    ${active.length>3&&html`<button type="button" className="btn ghost sm planning-more" aria-expanded=${expanded} onClick=${function(){setExpanded(!expanded);}}>${t(expanded?'plan.less':'plan.more',{n:active.length})}</button>`}
+  </section>`;
 }
 function ClassComparison(p) {
   var c=p.course,sum=p.sum;
@@ -5520,7 +5587,7 @@ function ReminderPanel(p){
       setEnabled(true);setStatus('');
     }catch(e){setStatus('plan.reminderUnsupported');}
   };
-  return html`<section className="section card pad" data-testid="reminders"><div className="row between wrap"><div className="grow"><h2>${t('plan.reminders')}</h2><div className="small muted">${t('plan.reminderHint')}</div></div><button className="btn sm" onClick=${toggle}>${t(enabled?'plan.reminderOff':'plan.reminderOn')}</button><button className="btn sm" onClick=${function(){downloadICS(p.state,p.semester.id,p.personal);}}>${t('ics.btn')}</button></div>${status&&html`<p className="small muted" role="status">${t(status)}</p>`}</section>`;
+  return html`<section className="card planning-card planning-mini" data-testid="reminders"><div className="planning-head"><h2>${t('plan.reminders')}</h2><${Tip} text=${t('plan.reminderHint')} /></div><div className="planning-value">${count}<span>${t('plan.next3Days')}</span></div><div className="planning-actions"><button type="button" className="btn sm" onClick=${toggle}>${t(enabled?'plan.reminderOff':'plan.reminderOn')}</button><button type="button" className="btn sm ghost" onClick=${function(){downloadICS(p.state,p.semester.id,p.personal);}}>${t('ics.btn')}</button></div>${status&&html`<p className="tiny muted" role="status">${t(status)}</p>`}</section>`;
 }
 function Dashboard(p) {
   var personal=React.useContext(PersonalExamContext);
@@ -5548,7 +5615,7 @@ function Dashboard(p) {
       var date=e.date||(assessment&&assessment.due);
       if(!/^\d{4}-\d{2}-\d{2}$/.test(date||''))return;
       examEvents.push({a:{id:'ex-'+c.id+k[0],type:k[1],name:'',due:date},d:daysUntil(date),c:c,exam:true,examInfo:e,
-        completed:!!c.finalGrade||(related.length>0&&related.every(C.isGraded))});
+        completed:examCompleted(c,state,k[0],Object.assign({},e,{date:date}))});
     });
   });
   function eventOrder(x,y){return x.a.due.localeCompare(y.a.due)||String(x.examInfo&&x.examInfo.time||'').localeCompare(String(y.examInfo&&y.examInfo.time||''));}
@@ -5557,7 +5624,9 @@ function Dashboard(p) {
     .map(function(a){return {a:a,d:daysUntil(a.due),c:courses.find(function(c){return c.id===a.courseId;})};})
     .filter(function(x){return x.c&&!x.c.finalGrade&&x.d!==null&&x.d>=-14;})
     .concat(examEvents.filter(function(x){return !x.completed&&x.d!==null&&x.d>=0;}))
-    .sort(eventOrder).slice(0,6);
+    .sort(eventOrder);
+  var allDue=upcoming;
+  upcoming=allDue.slice(0,6);
   var allUpcoming=examEvents;
   var next = upcoming.find(function (x) { return x.d >= 0; });
   var tr = C.trend(state), maxPts = C.maxPoints(C.gradesFor(null, state)) || 4;
@@ -5595,6 +5664,10 @@ function Dashboard(p) {
     </div>
     ${needRecord.length > 0 && html`<div style=${{ marginTop: 14 }}><${Banner} kind="ok">${t('recordPrompt', { n: needRecord.length })}${' '}
       ${needRecord.map(function (c, i) { return html`<span key=${c.id}>${i ? ', ' : ''}<a href=${'#course-' + c.id}>${courseDisplayTitle(c)}</a></span>`; })}<//></div>`}
+    <div className="section dashboard-planning-grid">
+      <${StudyPriority} courses=${courses} state=${state} events=${examEvents} personal=${personal} />
+      <div className="dashboard-planning-mini"><${SemesterRange} state=${state} semester=${cur} /><${ReminderPanel} events=${allDue} state=${state} semester=${cur} personal=${personal} /></div>
+    </div>
     <div className="section dashboard-exam-layout">
       <div className="card pad dashboard-exam-panel">
         <div className="section-head"><h2>${t('upcoming')}</h2>
@@ -5621,9 +5694,7 @@ function Dashboard(p) {
       </div>
       <${ExamCalendarPanel} events=${allUpcoming} />
     </div>
-    <${StudyPriority} courses=${courses} state=${state} events=${examEvents} />
-    <${SemesterRange} state=${state} semester=${cur} />
-    <${ReminderPanel} events=${upcoming} state=${state} semester=${cur} personal=${personal} />
+
     <div className="section">
       <div className="section-head"><h2>${t('coursesIn', { s: semFull(state, cur) })}</h2>
         <a className="btn ghost sm" href="#courses">${t('allCourses')}</a></div>
@@ -6157,6 +6228,13 @@ function GradeSimulator(p) {
     </div>
   </section>`;
 }
+function ExamCompletionControls(p){
+  var c=p.course,ex=displayExamsFor(c,p.state,p.personal)||{};
+  return html`<div className="card exam-status-panel"><div className="exam-status-title"><b>${t('plan.examStatus')}</b><span className="tiny muted">${t('plan.examStatusHint')}</span></div><div className="exam-status-actions">${[{k:'mid',e:ex.mid},{k:'fin',e:ex.fin}].map(function(x){
+    var manual=!!(c.examCompleted&&c.examCompleted[x.k]), done=examCompleted(c,p.state,x.k,x.e);
+    return html`<div key=${x.k} className="exam-status-item"><span>${t('type.'+(x.k==='mid'?'midterm':'final'))}</span>${done&&!manual?html`<span className="study-badge done">${t('plan.examAlready')}</span>`:html`<button type="button" className=${'btn sm '+(manual?'ghost':'')} data-testid=${'exam-complete-'+x.k} onClick=${function(){setExamCompleted(c,x.k,!manual);}}>${t(manual?'plan.examUndo':'plan.examMark')}</button>`}</div>`;
+  })}</div></div>`;
+}
 function CourseDetail(p) {
   var personal=React.useContext(PersonalExamContext);
   var state = p.state, c = state.courses.find(function (x) { return x.id === p.id; });
@@ -6204,7 +6282,8 @@ function CourseDetail(p) {
       </div>
     </div>
     <div className="stack">
-      ${finalExamPassed(c, state) && html`<${Banner} kind="info"><div><b>${t('gm.afterFinalT')}</b> ${t('gm.afterFinalP')}
+      ${!c.finalGrade&&html`<${ExamCompletionControls} course=${c} state=${state} personal=${personal} />`}
+      ${finalExamPassed(c, state, personal) && html`<${Banner} kind="info"><div><b>${t('gm.afterFinalT')}</b> ${t('gm.afterFinalP')}
         <div style=${{ marginTop: 8 }}><button className="btn sm primary" onClick=${function () { openModal('final', { courseId: c.id }); }}>${t('recordGrade')}</button></div></div><//>`}
       ${c.finalGrade ? html`<${Banner} kind="info"><div>${officialNote(c, state)}${impliedRange(c, state, c.finalGrade) ? html`<div className="small" style=${{ marginTop: 4 }}>${impliedText(impliedRange(c, state, c.finalGrade))}</div>` : ''}</div><//>` : html`<${GradingAndGap} course=${c} state=${state} sum=${sum} />`}
       <${GradeSummary} course=${c} state=${state} sum=${sum} info=${info} />
@@ -6336,7 +6415,7 @@ function semesterPlanning(state,sem) {
 function SemesterRange(p){
   var plan=semesterPlanning(p.state,p.semester), bounds=GSPlanning.range(plan.fixed,plan.courses,plan.options);
   if(!bounds)return null;
-  return html`<section data-testid="gpa-range" className="section card pad"><div className="row between wrap"><div><h2>${t('policy.range')}</h2><div className="small muted">${t('policy.rangeHint')}</div></div><b style=${{fontSize:22}}>${fmt(bounds.low)} – ${fmt(bounds.high)}</b></div><div style=${{height:8,borderRadius:8,background:'var(--surface-3)',position:'relative',marginTop:12}}><div style=${{position:'absolute',height:8,borderRadius:8,background:'var(--accent)',left:Math.max(0,bounds.low/4*100)+'%',width:Math.max(0,(bounds.high-bounds.low)/4*100)+'%'}}></div></div><div className="row between tiny muted"><span>0.00</span><span>4.00</span></div></section>`;
+  return html`<section data-testid="gpa-range" className="card planning-card planning-mini"><div className="planning-head"><h2>${t('policy.range')}</h2><${Tip} text=${t('policy.rangeHint')} /></div><div className="planning-value">${fmt(bounds.low)} – ${fmt(bounds.high)}</div><div className="planning-range"><div style=${{left:Math.max(0,bounds.low/4*100)+'%',width:Math.max(0,(bounds.high-bounds.low)/4*100)+'%'}}></div></div><a className="planning-link" href="#gpa">${t('plan.openGpa')} ›</a></section>`;
 }
 function ReverseSemesterPlanner(p) {
   var state=p.state, sem=curSemester(state),st=useState(3.5),target=st[0],setTarget=st[1];
@@ -6656,7 +6735,7 @@ function CourseModal(p) {
         normMethod: f.normMethod || 'unknown', normMean: toNum(f.normMean), normStdDev: toNum(f.normStdDev),
         gradingNotes: String(f.gradingNotes || '').trim(), gradingSource: String(f.gradingSource || '').trim() };
       var sectionChanged = !!c && sectionOf(c) !== data.section;
-      if (sectionChanged) { data.normFloors = {}; data.classSnapshot = {}; data.advancedPolicy = {}; data.gradingEvidence = ''; data.gradingMode = 'unknown'; data.customGrades = null; data.scaleId = d.settings.defaultScaleId; data.gradingSource = ''; data.exams = null; }
+      if (sectionChanged) { data.examCompleted = {}; data.normFloors = {}; data.classSnapshot = {}; data.advancedPolicy = {}; data.gradingEvidence = ''; data.gradingMode = 'unknown'; data.customGrades = null; data.scaleId = d.settings.defaultScaleId; data.gradingSource = ''; data.exams = null; }
       if ((!c && data.code) || sectionChanged) {
         var verifiedRule = SharedCatalog.verifiedPolicyTemplate(data, d);
         if (verifiedRule) {

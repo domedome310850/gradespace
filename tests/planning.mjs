@@ -63,6 +63,18 @@ function run(read,URLCtor=URL) {
   check('PWA shell intercepted',intercepted('https://example.test/planning-core.js'));
   check('PWA private RPC never cached',!intercepted('https://example.test/rpc/gs_load')&&!intercepted('https://x.supabase.co/rest/v1/rpc/gs_load')&&!intercepted('https://example.test/','POST'));
   check('ICS reminder applies to all events',html.includes("L.push('BEGIN:VALARM'")&&!html.includes("if (e.exam) L.push('BEGIN:VALARM'"));
+  const examSource=html.slice(html.indexOf('function examEnded('),html.indexOf('function setExamCompleted('));
+  const parseSource=html.slice(html.indexOf('function parseTimeRange('),html.indexOf('// Bangkok local time'));
+  const E=new Function('C',parseSource+examSource+';return {examEnded,examCompleted};')({isGraded:a=>a.status==='graded'});
+  const exam={date:'2026-11-24',time:'13:00-16:00'};
+  check('same-day exam remains upcoming before end',!E.examEnded(exam,new Date('2026-11-24T08:59:00Z')));
+  check('same-day exam done at Bangkok end time',E.examEnded(exam,new Date('2026-11-24T09:00:00Z')));
+  check('unknown exam time does not assume completion today',!E.examEnded({date:'2026-11-24'},new Date('2026-11-24T11:00:00Z')));
+  check('past exam is done with no score',E.examEnded({date:'2026-11-23'},new Date('2026-11-24T00:00:00Z')));
+  check('future exam stays upcoming',!E.examEnded({date:'2026-11-25'},new Date('2026-11-24T11:00:00Z')));
+  check('manual exam completion does not need score',E.examCompleted({id:'c',examCompleted:{fin:true}},{assessments:[]},'fin',null));
+  check('completion is per exam',!E.examCompleted({id:'c',examCompleted:{fin:true}},{assessments:[]},'mid',null));
+  check('graded final detected',E.examCompleted({id:'c'},{assessments:[{courseId:'c',type:'final',status:'graded'}]},'fin',null));
   console.log('Planning checks passed: '+passed);
 }
 run(path=>readFileSync(new URL('../'+path,import.meta.url),'utf8'));

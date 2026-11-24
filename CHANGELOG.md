@@ -1,3 +1,9 @@
+## 2026-11-24 — ChatGPT: Compact overview and exam completion flow
+
+- `public/index.html`: replace full-width planning sections with a responsive recommendation card plus two compact GPA/reminder cards, above the detailed calendar. Semantic status colors, concise reasons, three recommendations by default, expanded view on demand, and completed finals summarized rather than ranked. GPA planner link and full reminder count. Preserve calendar history.
+- Exam completion uses Bangkok dates and same-day end times, recorded scores, or independent user-controlled per-exam flags. Mark/undo from Course Detail; suppress completed exam reminders, study recommendations and upcoming ICS exports without changing assessment scores or grades. Reset manual flags when section changes. No hard-coded student/course state or login/community changes.
+- `tests/planning.mjs`: 8 additional exam completion checks; all 40 planning checks executed in an isolated JS harness. `tests/smoke.mjs`: compact layout, mark/undo, calendar history, score preservation across languages and viewports; GitHub CI pending.
+
 ## 2026-11-24 — ChatGPT: Academic planning release candidate
 
 - `docs/academic-planning-roadmap.md`: implementation, UI and acceptance plan; login and community explicitly excluded.
