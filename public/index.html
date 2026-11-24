@@ -2620,6 +2620,7 @@ en: {
   "policy.dropCount":"Number to drop",
   "policy.ruleError":"Use valid values and select a component or assessment.",
   "paste.badRange":"Score outside valid range — skip or correct the source.",
+  "plan.reminders":"Exam and deadline reminders","plan.reminderHint":"Device notifications while GradeSpace is open; export the calendar for reminders when the app is closed.","plan.reminderCount":"{n} exams or deadlines in the next 3 days.","plan.reminderOn":"Enable notifications","plan.reminderOff":"Disable notifications","plan.reminderDenied":"Notification permission was not granted.","plan.reminderUnsupported":"Notifications are unavailable in this browser. Calendar export still works.",
   "plan.priority":"Study priorities",
   "plan.priorityHint":"Planning heuristic using exam dates, exam weight, score gap and credits; not a probability. Review impossible or invalid goals separately.",
   "plan.examDays":"Exam in {n} days",
@@ -3043,6 +3044,7 @@ th: {
   "policy.dropCount":"จำนวนรายการที่ตัด",
   "policy.ruleError":"กรอกค่าที่ถูกต้องและเลือกองค์ประกอบหรือรายการประเมิน",
   "paste.badRange":"คะแนนเกินช่วงที่กำหนด โปรดข้ามหรือแก้ข้อมูลต้นทาง",
+  "plan.reminders":"เตือนสอบและกำหนดส่งงาน","plan.reminderHint":"แจ้งเตือนบนอุปกรณ์ขณะเปิด GradeSpace หรือส่งออกปฏิทินเพื่อรับการเตือนเมื่อปิดเว็บ","plan.reminderCount":"มีสอบหรือกำหนดส่ง {n} รายการใน 3 วันข้างหน้า","plan.reminderOn":"เปิดการแจ้งเตือน","plan.reminderOff":"ปิดการแจ้งเตือน","plan.reminderDenied":"ไม่ได้รับอนุญาตให้แจ้งเตือน","plan.reminderUnsupported":"เบราว์เซอร์ไม่รองรับการแจ้งเตือน ยังส่งออกปฏิทินได้",
   "plan.priority":"ลำดับวิชาที่ควรอ่าน",
   "plan.priorityHint":"จัดลำดับจากวันสอบ น้ำหนักสอบ คะแนนที่ขาดและหน่วยกิต ไม่ใช่ความน่าจะเป็น ควรตรวจสอบเป้าหมายที่ทำไม่ได้หรือข้อมูลผิดปกติ",
   "plan.examDays":"สอบอีก {n} วัน",
@@ -5468,6 +5470,35 @@ function ClassComparison(p) {
   ${valid&&html`<div className="stack" style=${{marginTop:12}}>${[['plan.myScore',v.score],['grading.normMean',v.mean]].map(function(pair){return html`<div key=${pair[0]}><div className="row between small"><span>${t(pair[0])}</span><b>${fmtT(pair[1])}%</b></div><div style=${{height:8,background:'var(--surface-3)',borderRadius:8,overflow:'hidden'}}><div style=${{height:8,width:pair[1]+'%',background:pair[0]==='plan.myScore'?'var(--accent)':'var(--muted)'}}></div></div></div>`;})}<p><b>${t('plan.z',{z:fmt(z),d:fmt(v.score-v.mean)})}</b></p></div>`}
   <div className="row wrap"><button className="btn sm" disabled=${!valid} onClick=${function(){update(function(d){var x=d.courses.find(function(x){return x.id===c.id;});if(x)x.classSnapshot=Object.assign({},v);},{undo:true});}}>${t('save')}</button><button className="btn sm ghost" onClick=${function(){setV({});update(function(d){var x=d.courses.find(function(x){return x.id===c.id;});if(x)x.classSnapshot={};},{undo:true});}}>${t('plan.clear')}</button></div></section>`;
 }
+function ReminderPanel(p){
+  var st=useState(function(){try{return localStorage.getItem('gs.reminders.enabled')==='1';}catch(e){return false;}}),enabled=st[0],setEnabled=st[1];
+  var statusState=useState(''),status=statusState[0],setStatus=statusState[1];
+  var count=p.events.filter(function(e){return e.d>=0&&e.d<=3;}).length;
+  var supported=typeof Notification!=='undefined'&&window.isSecureContext;
+  useEffect(function(){
+    if(!enabled||!supported||Notification.permission!=='granted'||!count)return;
+    var day=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'}),key='gs.reminders.last';
+    try{if(localStorage.getItem(key)===day)return;}catch(e){}
+    var options={body:t('plan.reminderCount',{n:count}),tag:'gs-due',icon:'/app-icon.svg'};
+    var done=function(){try{localStorage.setItem(key,day);}catch(e){}};
+    if('serviceWorker' in navigator)navigator.serviceWorker.getRegistration().then(function(reg){
+      if(reg)return reg.showNotification('GradeSpace',options);
+      new Notification('GradeSpace',options);
+    }).then(done).catch(function(){setStatus('plan.reminderUnsupported');});
+    else try{new Notification('GradeSpace',options);done();}catch(e){setStatus('plan.reminderUnsupported');}
+  },[enabled,count,supported]);
+  var toggle=async function(){
+    if(enabled){setEnabled(false);try{localStorage.removeItem('gs.reminders.enabled');}catch(e){}return;}
+    if(!supported){setStatus('plan.reminderUnsupported');return;}
+    try{
+      var permission=await Notification.requestPermission();
+      if(permission!=='granted'){setStatus('plan.reminderDenied');return;}
+      try{localStorage.setItem('gs.reminders.enabled','1');}catch(e){}
+      setEnabled(true);setStatus('');
+    }catch(e){setStatus('plan.reminderUnsupported');}
+  };
+  return html`<section className="section card pad" data-testid="reminders"><div className="row between wrap"><div className="grow"><h2>${t('plan.reminders')}</h2><div className="small muted">${t('plan.reminderHint')}</div></div><button className="btn sm" onClick=${toggle}>${t(enabled?'plan.reminderOff':'plan.reminderOn')}</button><button className="btn sm" onClick=${function(){downloadICS(p.state,p.semester.id,p.personal);}}>${t('ics.btn')}</button></div>${status&&html`<p className="small muted" role="status">${t(status)}</p>`}</section>`;
+}
 function Dashboard(p) {
   var personal=React.useContext(PersonalExamContext);
   var state = p.state, cur = curSemester(state);
@@ -5543,6 +5574,7 @@ function Dashboard(p) {
       ${needRecord.map(function (c, i) { return html`<span key=${c.id}>${i ? ', ' : ''}<a href=${'#course-' + c.id}>${courseDisplayTitle(c)}</a></span>`; })}<//></div>`}
     <${StudyPriority} courses=${courses} state=${state} events=${examEvents} />
     <${SemesterRange} state=${state} semester=${cur} />
+    <${ReminderPanel} events=${upcoming} state=${state} semester=${cur} personal=${personal} />
     <div className="section dashboard-exam-layout">
       <div className="card pad dashboard-exam-panel">
         <div className="section-head"><h2>${t('upcoming')}</h2>
