@@ -136,14 +136,25 @@ async function run(browser, lang, width) {
   });
   await page.getByTestId('reminders').getByRole('button',{name:lang==='th'?'เปิดการแจ้งเตือน':'Enable notifications'}).click();
   await page.getByTestId('reminders').getByRole('status').waitFor();
+  // A finished exam without a released score must not be recommended (synthetic enrollment).
+  await page.evaluate(()=>GradeSpace.update(d=>{
+    const c={...d.courses.find(x=>x.id==='c-imp004'),id:'exam-finished-test',name:'Completed exam fixture',code:'',targetPct:85,examCompleted:{},exams:{source:'manual',fin:{date:'2026-11-21',time:'09:00-12:00',source:'manual'}}};
+    d.courses.push(c);
+  }));
+  await page.locator('.overview-hub').waitFor();
+  if(await page.getByTestId('study-priority').locator('.study-row[href="#course-exam-finished-test"]').count())errors.push('past ungraded final recommended');
+  if(!(await page.locator('.focus-complete').count()))errors.push('completed course summary missing');
+  await page.evaluate(()=>GradeSpace.update(d=>{d.courses=d.courses.filter(c=>c.id!=='exam-finished-test');}));
   // Dashboard is compact; actionable rows have an explicit semantic style, not course-color alone.
   const geometry=await page.locator('.dashboard-planning-grid').evaluate(el=>{
     const r=el.getBoundingClientRect(), minis=[...el.querySelectorAll('.planning-mini')].map(x=>x.getBoundingClientRect());
     return {height:r.height,minis:minis.map(x=>({top:x.top,left:x.left,width:x.width,height:x.height})),rows:el.querySelectorAll('.study-row').length,tones:[...el.querySelectorAll('.study-row')].map(x=>x.className)};
   });
-  if(geometry.minis.length!==2||geometry.minis.some(x=>x.height>180))errors.push('planning mini cards not compact');
+  if(geometry.minis.length!==2||geometry.minis.some(x=>x.height>180))errors.push('planning mini cards not compact '+JSON.stringify(geometry.minis));
   if(width===390&&Math.abs(geometry.minis[0].top-geometry.minis[1].top)>2)errors.push('mobile mini cards do not share row');
   if(geometry.rows>3||geometry.tones.some(t=>!/(urgent|soon|normal|done|review)/.test(t)))errors.push('study recommendation preview invalid');
+  if(!(await page.locator('.overview-hub .focus-day').count()))errors.push('new focus layout missing');
+  await page.screenshot({path:'overview-'+lang+'-'+width+'.png',fullPage:false});
   // Mark an upcoming personal exam done without changing scores or removing calendar history.
   const examId=await page.evaluate(()=>GradeSpace.S.state.courses.find(c=>String(c.code).split('.')[0]==='2900111').id);
   const before=await page.evaluate(id=>JSON.stringify(GradeSpace.S.state.assessments.filter(a=>a.courseId===id)),examId);

@@ -1,3 +1,8 @@
+## 2026-11-24 — ChatGPT: Overview action hub redesign
+
+- `public/index.html`: unify planning modules into one actionable hub with an emphasized first recommendation, colored day counters and concise target/exam score explanations. Keep top three by default, explicit completed-course summary and smaller GPA/alerts tiles; remove duplicated export action (calendar retains export). Differentiate exam urgency by time and score pressure; hide finished/fully graded courses from study recommendations. Thai and English.
+- `tests/smoke.mjs`, `.github/workflows/gradespace-browser-smoke.yml`: retain 180px mini-card size limit; test completed ungraded exam and generate viewport screenshots for visual review. Prior PR #14 failed compactness at 390px; new CI pending. No user account data changed.
+
 ## 2026-11-24 — ChatGPT: Compact overview and exam completion flow
 
 - `public/index.html`: replace full-width planning sections with a responsive recommendation card plus two compact GPA/reminder cards, above the detailed calendar. Semantic status colors, concise reasons, three recommendations by default, expanded view on demand, and completed finals summarized rather than ranked. GPA planner link and full reminder count. Preserve calendar history.
