@@ -246,6 +246,19 @@ async function run(browser, lang, width) {
   return errors.length + overflow.length;
 }
 
+// Test the exact embedded appearance functions in both modes, including extreme custom colors.
+const source=readFileSync(resolve(here,'../public/index.html'),'utf8');
+const apStart=source.indexOf('var APPEARANCE_KEY'),apEnd=source.indexOf('function AppearanceSettings',apStart);
+if(apStart<0||apEnd<0)throw Error('appearance logic missing');
+const apAPI=new Function(source.slice(apStart,apEnd)+'\nreturn {cleanAppearance,appearanceTokens,appearanceContrast};')();
+for(const dark of [true,false])for(const custom of ['#FFFFFF','#000000','#FFFF00','#FF0000','#00FF00','#0000FF','#808080'])for(const palette of ['cu','cbs','tu','custom']){
+  const tokens=apAPI.appearanceTokens(apAPI.cleanAppearance({palette,custom}),dark);
+  for(const [a,b] of [['--accent','--accent-ink'],['--accent-hover','--accent-ink'],['--accent-text','--accent-soft']]){
+    if(apAPI.appearanceContrast(tokens[a],tokens[b])<4.5)throw Error('appearance contrast '+palette+' '+custom+' '+dark);
+  }
+}
+if(apAPI.cleanAppearance({institution:'tu',faculty:'cbs',palette:'invalid',custom:'foo'}).faculty!=='general')throw Error('invalid faculty accepted');
+
 const browser = await chromium.launch();
 let bad = 0;
 for (const lang of ['th', 'en']) for (const w of [390, 1280, 1800]) bad += await run(browser, lang, w);
