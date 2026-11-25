@@ -833,6 +833,57 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .dashboard-summary .metric .m-value { font-size: 22px; }
   .dashboard-summary .metric .m-label { font-size: 11px; }
 }
+
+/* Mobile courses V3: subject identity, compact controls, flat surfaces. */
+.courses-v3 .courses-add-mobile, .ccard-v3-forecast { display:none; }
+.course-add-choices { display:grid; gap:0; }
+.course-add-choices .btn { justify-content:flex-start; white-space:normal; text-align:start; min-height:52px; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; padding:12px 4px; box-shadow:none; }
+.course-add-choices .btn:last-child { border-bottom:0; }
+.course-add-choices .btn svg { color:var(--accent-text); flex:none; }
+@media (max-width:640px) {
+  .courses-v3 .page-head { flex-wrap:nowrap; align-items:center; gap:10px; margin:8px 0 14px; }
+  .courses-v3 .page-head > div:first-child { width:auto; min-width:0; flex:1; }
+  .courses-v3 .page-head h1 { font-size:26px; line-height:1.25; overflow-wrap:anywhere; }
+  .courses-v3 .page-head p, .courses-v3 .courses-add-desktop { display:none; }
+  .courses-v3 .courses-add-mobile { display:inline-flex; min-height:44px; padding-inline:12px; white-space:nowrap; }
+  .courses-v3 .filters { display:grid; grid-template-columns:minmax(0, 2fr) minmax(0, 3fr); align-items:stretch; gap:8px; margin-bottom:12px !important; }
+  .courses-v3 .filters > .select { min-width:0 !important; width:100% !important; height:44px; padding-inline:8px; font-size:13px; }
+  .courses-v3 .filters .cs-box { min-width:0; max-width:none; }
+  .courses-v3 .filters .input { width:100%; min-width:0; height:44px; font-size:13px; }
+  .courses-v3 .section-head { gap:4px 8px; margin-bottom:8px; }
+  .courses-v3 .section-head h2 { font-size:16px; }
+  .courses-v3 .section-head .row { gap:4px; }
+  .courses-v3 .section-head .btn { min-height:36px; white-space:normal; text-align:start; }
+  .courses-v3 .course-grid { grid-template-columns:minmax(0,1fr); gap:10px; }
+  .courses-v3 .ccard { padding:14px 13px 12px 16px; gap:7px; border-radius:12px; box-shadow:none; }
+  .courses-v3 .ccard::before { top:13px; bottom:13px; width:3px; border-radius:0 2px 2px 0; }
+  .courses-v3 .ccard-top { gap:8px; }
+  .courses-v3 .ccard-name { display:inline-block; font-size:19px; font-weight:700; letter-spacing:-.025em; line-height:1.3; }
+  .courses-v3 .ccard-meta { margin-top:3px; font-size:12px; line-height:1.6; }
+  .courses-v3 .ccard .gbar-track { height:6px; }
+  .courses-v3 .ccard .gbar-seg.earned { background:var(--cc,var(--earned)); }
+  .courses-v3 .ccard .gbar-seg.pending { background:var(--pending-a); }
+  .courses-v3 .ccard-progress { font-size:12px; line-height:1.5; }
+  .courses-v3 .grade-badge.has-forecast { background:transparent; border:0; text-align:right; padding:0; max-width:44%; }
+  .courses-v3 .grade-badge.has-forecast > b { display:inline; font-size:12px; color:var(--ink-2); }
+  .courses-v3 .grade-badge.has-forecast > small { display:inline; white-space:normal; margin:0 0 0 3px; font-size:10px; }
+  .courses-v3 .grade-badge.has-forecast.no-letter > b { display:none; }
+  .courses-v3 .ccard-v3-forecast { display:block; margin-bottom:3px; }
+  .courses-v3 .ccard-v3-forecast strong { display:block; font-size:24px; font-variant-numeric:tabular-nums; color:var(--ink); font-weight:700; letter-spacing:-.045em; }
+  .courses-v3 .ccard-v3-forecast span { display:block; font-size:10.5px; color:var(--muted); font-weight:500; line-height:1.4; }
+  .courses-v3 .ccard .basis-box.fold:not(.warn) { background:transparent; border:1px solid var(--line); border-radius:8px; }
+  .courses-v3 .ccard .basis-box.fold { padding:7px 9px; }
+  .courses-v3 .ccard-line { font-size:12px; line-height:1.5; }
+  .courses-v3 .ccard-foot { padding-top:7px; }
+  .courses-v3 .ccard-foot > .btn, .courses-v3 .ccard-foot .goal-pick-button { min-height:38px; }
+  .courses-v3 .ccard:focus-within { border-color:var(--cc,var(--accent)); }
+}
+@media (max-width:350px) {
+  .courses-v3 .page-head h1 { font-size:23px; }
+  .courses-v3 .ccard-name { font-size:17px; }
+  .courses-v3 .ccard-v3-forecast strong { font-size:21px; }
+}
+
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -2631,6 +2682,7 @@ en: {
   'pred.valEach': 'scores about {p}% each',
   'pred.valOne': 'scores about {v}/{m}',
   'pred.headPct': 'Expected {p}% total if',
+  'pred.totalShort': 'Expected total',
   'pred.headGrade': 'Expected {g} ({p}% total) if',
   'pred.otherOverall': 'other work scores like your overall performance ({p}%)',
   'pred.otherLike': 'other work scores like the same kind of graded work ({p}%)',
@@ -3059,6 +3111,7 @@ th: {
   'pred.valEach': 'ได้ประมาณ {p}% ต่อชิ้น',
   'pred.valOne': 'ได้ประมาณ {v}/{m}',
   'pred.headPct': 'คาดว่าได้รวม {p}% ถ้า',
+  'pred.totalShort': 'คาดการณ์รวม',
   'pred.headGrade': 'คาดว่าได้ {g} (รวม {p}%) ถ้า',
   'pred.otherOverall': 'งานที่เหลือได้เท่าผลงานรวมตอนนี้ ({p}%)',
   'pred.otherLike': 'งานที่เหลือได้เท่างานแบบเดียวกันที่ตรวจแล้ว ({p}%)',
@@ -3830,7 +3883,7 @@ function GradeBadge(p) {
   if (i.needsGradingRule) sub = i.gradingMethod === 'norm' ? t('grading.norm') : (i.gradingMethod === 'component' ? t('grading.component') : t('grading.unknown'));
   // Withdrawn / incomplete are official but not an achievement: show them in neutral grey.
   var neutral = kind === 'confirmed' && i.meta && i.meta.kind === 'outcome' && !i.meta.earned;
-  return html`<div className=${'grade-badge ' + kind + (neutral ? ' neutral' : '')} title=${title}><b>${i.label || '–'}</b><small>${sub}</small></div>`;
+  return html`<div className=${'grade-badge ' + kind + (neutral ? ' neutral' : '') + (p.forecast != null ? ' has-forecast' : '') + (i.needsGradingRule ? ' no-letter' : '')} title=${title}>${p.forecast != null && html`<div className="ccard-v3-forecast"><strong>${fmt(p.forecast)}%</strong><span>${t('pred.totalShort')}</span></div>`}<b>${i.label || '–'}</b><small>${sub}</small></div>`;
 }
 
 /* ================= shared actions ================= */
@@ -5108,7 +5161,7 @@ function CourseCard(p) {
           ${mode === 'norm' && !c.finalGrade && html`<span className="chip warn" title=${t('grading.estimate')}>${t('grading.norm')}</span>`}
         </div>
       </div>
-      <${GradeBadge} info=${info} />
+      <${GradeBadge} info=${info} forecast=${p.compact && !c.finalGrade && sum.pendingRows.length && sum.expected != null ? sum.expected : null} />
     </div>
     <div className="ccard-slot ccard-bar-slot">${!c.finalGrade && html`<${GradeBar} sum=${sum} grades=${mode === 'criterion' && !hasAdvanced(c) ? grades : []} target=${hasAdvanced(c)?null:tg} />`}</div>
     <div className="ccard-slot ccard-progress-slot">${manual || c.finalGrade ? html`<p className="small muted" style=${{ margin: 0 }}>${c.finalGrade ? officialNote(c, state) : t('manualGradeNote')}</p>` : html`<div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>`}</div>
@@ -5938,11 +5991,11 @@ function CoursesPage(p) {
   var courseFields = function (c) { var cat = CATALOG.get(c.code); return [c.name, c.code, String(c.code || '').split('.')[0], c.instructor, cat && cat.n, cat && cat.aka]; };
   var match = function (c) { return !q.trim() || Fuzzy.score(q, courseFields(c)) >= 0; };
   var any = false;
-  return html`<div>
+  return html`<div className="courses-v3">
     <div className="page-head"><div><h1>${t('nav.courses')}</h1><p>${t('coursesSub')}</p></div>
-      ${state.courses.length > 0 && html`<div className="row wrap"><${ScanButton} semesterId=${filter || (curSemester(state) || {}).id} />
+      ${state.courses.length > 0 && html`<${React.Fragment}><div className="row wrap courses-add-desktop"><${ScanButton} semesterId=${filter || (curSemester(state) || {}).id} />
       <button className="btn primary" onClick=${function () { openModal('plan', { semesterId: filter || null }); }}><${Icon} n="layers" />${t('plan.btn')}</button>
-      <button className="btn" onClick=${function () { openModal('course', { semesterId: filter || (curSemester(state) || {}).id }); }}><${Icon} n="plus" />${t('addCourse')}</button></div>`}</div>
+      <button className="btn" onClick=${function () { openModal('course', { semesterId: filter || (curSemester(state) || {}).id }); }}><${Icon} n="plus" />${t('addCourse')}</button></div><button type="button" className="btn primary courses-add-mobile" onClick=${function () { openModal('courseAddMenu', { semesterId: filter || (curSemester(state) || {}).id, planSemesterId: filter || null }); }}><${Icon} n="plus" />${t('addCourse')}</button><//>`}</div>
     ${state.courses.length ? html`<div className="filters" style=${{ marginBottom: 18 }}>
       <${SemesterSelect} state=${state} value=${filter} allowAll=${true} label=${t('filterSemester')} onChange=${setFilter} style=${{ width: 'auto', minWidth: 180 }} />
       <${CourseSearch} state=${state} q=${q} setQ=${setQ} courseFields=${courseFields} semesterId=${filter || (curSemester(state) || {}).id} />
@@ -5956,7 +6009,7 @@ function CoursesPage(p) {
         <${SortableGrid} ids=${cs.map(function (c) { return c.id; })} disabled=${!!q.trim()}
           label=${function (id) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? c.name : ''; }}
           onReorder=${function (ids) { reorderSemester(s.id, ids); }}
-          render=${function (id, handle) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? html`<${CourseCard} course=${c} state=${state} handle=${handle} />` : null; }} />
+          render=${function (id, handle) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? html`<${CourseCard} course=${c} state=${state} handle=${handle} compact=${true} />` : null; }} />
       </section>`;
     })}
     ${state.courses.length > 0 && !any && html`<p className="muted">${t('noMatches')}</p>`}
@@ -7633,11 +7686,20 @@ function PlanModal(p) {
     <div className="hint">${t(plan && plan.term === 1 && plan.ay === '2569' ? 'plan.sourceFall' : 'plan.source')}</div>
   <//>`;
 }
+function CourseAddMenu(p) {
+  var o = p.props;
+  return html`<${Modal} title=${t('addCourse')} onClose=${closeModal}>
+    <div className="course-add-choices">
+      <${ScanButton} semesterId=${o.semesterId} />
+      <button type="button" className="btn" onClick=${function(){openModal('plan',{semesterId:o.planSemesterId});}}><${Icon} n="layers" />${t('plan.btn')}</button>
+      <button type="button" className="btn" onClick=${function(){openModal('course',{semesterId:o.semesterId});}}><${Icon} n="plus" />${t('addCourse')}</button>
+    </div><//>`;
+}
 function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, courseAddMenu: CourseAddMenu }[m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 

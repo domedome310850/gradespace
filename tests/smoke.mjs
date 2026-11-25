@@ -85,6 +85,23 @@ async function run(browser, lang, width) {
   if(summary.cards.length!==3)errors.push('overview summary missing tiles');
   if(width>950&&(Math.max(...summary.cards.map(c=>c.top))-Math.min(...summary.cards.map(c=>c.top))>2||summary.height>150))errors.push('overview summary not compact single row');
   if(width<=950&&summary.cards[2].top<summary.cards[0].bottom-1)errors.push('mobile plan must follow GPA tiles');
+  // Mobile course V3 keeps filters on one row and retains all add actions in a sheet.
+  if(width<=640){
+    await page.evaluate(()=>location.hash='courses');
+    await page.locator('.courses-v3 .ccard').first().waitFor();
+    const filterLayout=await page.locator('.courses-v3 .filters').evaluate(el=>[...el.children].map(x=>x.getBoundingClientRect().top));
+    if(Math.max(...filterLayout)-Math.min(...filterLayout)>2)errors.push('course filters not aligned');
+    const forecasts=page.locator('.courses-v3 .ccard-v3-forecast:visible');
+    if(!(await forecasts.count()))errors.push('course forecast not prominent');
+    await page.screenshot({path:resolve(here,'overview-courses-'+lang+'-'+width+'.png')});
+    await page.locator('.courses-add-mobile').click();
+    await page.locator('.course-add-choices').waitFor();
+    if(await page.locator('.course-add-choices button').count()!==3)errors.push('missing mobile course-add action');
+    await page.screenshot({path:resolve(here,'overview-courses-add-'+lang+'-'+width+'.png')});
+    await page.keyboard.press('Escape');
+    await page.locator('.course-add-choices').waitFor({state:'detached'});
+    await page.evaluate(()=>location.hash='dashboard');
+  }
   // Deliberately vary titles and confirm every shared track lines up in each desktop row.
   await page.evaluate(()=>{
     GradeSpace.update(d=>{
