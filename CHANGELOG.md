@@ -1,3 +1,8 @@
+## 2026-11-25 — ChatGPT: Multi-university course library preview
+
+- `public/index.html`: read-only Course Library on My Courses, using 149 legacy CU records and 21 TU BBA International 2023 records with source link. Namespaced IDs, prefix and suffix filters, institution and source status filters, paginated results, Thai/English. TU code/title/credits checked against program course-description page, not current offerings or degree eligibility. No automatic enrollment, rule application or saved-state changes. Existing CU data explicitly marked legacy/review needed.
+- `tests/smoke.mjs`: interaction tests for pagination, fractional credits, institution changes, prefix/suffix filters and grade-state isolation. Pure query checks executed in isolated JS; Browser CI pending. Authentication and production unchanged.
+
 ## 2026-11-24 — ChatGPT: Overview action hub redesign
 
 - `public/index.html`: unify planning modules into one actionable hub with an emphasized first recommendation, colored day counters and concise target/exam score explanations. Keep top three by default, explicit completed-course summary and smaller GPA/alerts tiles; remove duplicated export action (calendar retains export). Differentiate exam urgency by time and score pressure; hide finished/fully graded courses from study recommendations. Thai and English.
