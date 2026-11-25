@@ -1,3 +1,8 @@
+## 2026-11-26 — Claude (claude.ai): one space per university
+
+- `public/index.html`: choosing a university now switches to that university’s own space. `switchSpace` / `applyUni` move the current `years`, `semesters`, `courses`, `categories`, `assessments` (and `currentSemesterId`, `studyPlan`, `genEdRequired`, `plannedCredits`, `targetCGPA`) into `settings.spaces[<old>]` and bring back `settings.spaces[<new>]` or an empty space. Kept inside `settings` because every copy of the site (`normalize`) and `gs_save` keep unknown settings keys; nothing is deleted. Switching with courses asks first (“your N courses are kept aside, not deleted”). A university picked on the sign-in screen applies quietly. TH/EN.
+- `tests/smoke.mjs`: TU sign-in starts an empty TU space with the Chula courses kept aside; switch TU → CU → TU restores each space exactly, with no course leaking between them.
+
 ## 2026-11-26 — Claude (claude.ai): secure sign-in step 1 (one-time email code), switched off
 
 - `supabase/migrations/20261126_verified_email_signin.sql` (**not applied**): adds `gradespace_by_email.verified_at`; `gs_me_load` / `gs_me_save` for signed-in Supabase Auth users (email taken from the confirmed session, `authenticated` only); `gs_save_core` shares the existing save logic (daily backup, course keep-list); `gs_load` / `gs_save` refuse rows already verified. No data copied, renamed or removed; rollback block included. Checked on local Postgres 16 with `tests/sql/verified-signin.*` (anon/unconfirmed/no-session refused, keep-list and backup kept, email-only blocked only for verified rows).

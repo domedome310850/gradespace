@@ -66,6 +66,8 @@ Find code with search (`grep -n "^function CourseCard"`), not by line number —
   **Universities:** `uniOf(state)` / `isCU(state)` read `settings.institution` (`''` → Chula). Anything that talks
   to Reg Chula, Chula GenEd, CBS study plans or exam rooms must stay behind `isCU`. Thammasat data lives in
   `TU_GENED` / `TU_TBS` / `TU_CATALOG`; `CATALOG.get/search` switch by university.
+  Each university is a separate space: inactive ones live in `settings.spaces[cu|tu]` (`SPACE_KEYS`,
+  `SPACE_SETTINGS`, `switchSpace`). Always switch with `setUni`; never copy courses between spaces.
   Thammasat-only wording: add `'key@tu'` next to `'key'` in both languages; `t()` picks it when not Chula.
   TU grade rules (regulation 2568) are in `TU_OUTCOMES` and `TuRulesCard`.
   Other helpers: `RegData` (Reg Chula data per course), `GenEdData`, `examsFor(c, state)`,

@@ -2728,6 +2728,9 @@ en: {
   'otp.intro': 'Enter your email and we’ll send a one-time code. No password needed.', 'otp.send': 'Send code', 'otp.sent': 'We sent a code to {e}. Enter it below (check spam too).',
   'otp.code': 'Code from your email', 'otp.verify': 'Sign in', 'otp.resend': 'Send a new code', 'otp.wait': 'New code in {n}s', 'otp.change': 'Use another email',
   'otp.err.send': 'Couldn’t send the code. Check the email and try again in a minute.', 'otp.err.code': 'That code didn’t work. Check it or send a new one.',
+  'space.q': 'Switch to {u}?', 'space.body': 'Each university has its own space. Your {n} courses at {a} are kept aside, not deleted.',
+  'space.back': 'Your {n} courses there come back.', 'space.new': 'You start with an empty space there.', 'space.go': 'Switch',
+  'space.switched': 'Now using {u}', 'space.note': 'Each university keeps its own courses and scores. Switching never deletes anything.',
   'uni.label': 'University', 'uni.cu': 'Chulalongkorn', 'uni.tu': 'Thammasat', 'uni.cuFull': 'Chulalongkorn University', 'uni.tuFull': 'Thammasat University',
   'uni.hint': 'Sets the course list, GenEd and exam features for your university.',
   'tuge.title': 'Thammasat GenEd courses', 'tuge.intro': 'General Education Program (2023 revision): 30 credits across 5 groups. Check your faculty’s structure for which groups you need.',
@@ -3210,6 +3213,9 @@ th: {
   'otp.intro': 'กรอกอีเมล แล้วเราจะส่งรหัสใช้ครั้งเดียวไปให้ ไม่ต้องตั้งรหัสผ่าน', 'otp.send': 'ส่งรหัส', 'otp.sent': 'ส่งรหัสไปที่ {e} แล้ว กรอกรหัสด้านล่าง (ดูในอีเมลขยะด้วย)',
   'otp.code': 'รหัสจากอีเมล', 'otp.verify': 'เข้าสู่ระบบ', 'otp.resend': 'ส่งรหัสใหม่', 'otp.wait': 'ส่งใหม่ได้ใน {n} วินาที', 'otp.change': 'ใช้อีเมลอื่น',
   'otp.err.send': 'ส่งรหัสไม่สำเร็จ ตรวจอีเมลแล้วลองใหม่ในอีกสักครู่', 'otp.err.code': 'รหัสไม่ถูกต้อง ตรวจอีกครั้งหรือขอรหัสใหม่',
+  'space.q': 'สลับไป{u}?', 'space.body': 'แต่ละมหาวิทยาลัยมีพื้นที่ของตัวเอง วิชาของ{a} {n} วิชาจะถูกเก็บแยกไว้ ไม่ได้ลบ',
+  'space.back': 'วิชาที่เคยบันทึกไว้ที่นั่น {n} วิชาจะกลับมา', 'space.new': 'ที่นั่นจะเริ่มจากพื้นที่ว่าง', 'space.go': 'สลับ',
+  'space.switched': 'ตอนนี้ใช้พื้นที่ของ{u}', 'space.note': 'แต่ละมหาวิทยาลัยเก็บวิชาและคะแนนแยกกัน สลับไปมาได้ ไม่มีอะไรถูกลบ',
   'uni.label': 'มหาวิทยาลัย', 'uni.cu': 'จุฬาฯ', 'uni.tu': 'ธรรมศาสตร์', 'uni.cuFull': 'จุฬาลงกรณ์มหาวิทยาลัย', 'uni.tuFull': 'มหาวิทยาลัยธรรมศาสตร์',
   'uni.hint': 'ใช้เลือกรายชื่อวิชา GenEd และฟีเจอร์วันสอบให้ตรงกับมหาวิทยาลัยของคุณ',
   'tuge.title': 'วิชาศึกษาทั่วไป ธรรมศาสตร์', 'tuge.intro': 'หลักสูตรวิชาศึกษาทั่วไป (ปรับปรุง พ.ศ. 2566) รวม 30 หน่วยกิตใน 5 หมวด ดูโครงสร้างหลักสูตรของคณะว่าต้องเรียนหมวดใดบ้าง',
@@ -3721,8 +3727,49 @@ var TU_OUTCOMES = [
   { id: 'o-exe', label: 'EXE', name: 'Exempted (no credits)', attempted: false, earned: false, gpa: false, points: 0 },
   { id: 'o-aud', label: 'AUD', name: 'Audit (no credits)', attempted: false, earned: false, gpa: false, points: 0 }
 ];
-function setUni(v) { update(function (d) { d.settings.institution = v;
-  if (v === 'tu') { d.outcomes = Array.isArray(d.outcomes) ? d.outcomes : []; TU_OUTCOMES.forEach(function (o) { if (!d.outcomes.some(function (x) { return x.label === o.label; })) d.outcomes.push(Object.assign({}, o)); }); } if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull'); }); }
+// Each university is its own space: switching stores the current years, terms, courses and scores under
+// settings.spaces[<old>] and brings back settings.spaces[<new>] (or an empty space). Stored inside settings
+// because every copy of the site keeps unknown settings keys as they are; nothing is ever deleted.
+var SPACE_KEYS = ['years', 'semesters', 'courses', 'categories', 'assessments'];
+var SPACE_SETTINGS = ['currentSemesterId', 'studyPlan', 'genEdRequired', 'plannedCredits', 'targetCGPA'];
+function spaceHasData(d) { return SPACE_KEYS.some(function (k) { return Array.isArray(d[k]) && d[k].length; }); }
+function switchSpace(d, from, to) {
+  if (from === to) return;
+  var st = d.settings, spaces = st.spaces && typeof st.spaces === 'object' ? st.spaces : {};
+  var keep = { savedAt: Date.now() };
+  SPACE_KEYS.forEach(function (k) { keep[k] = Array.isArray(d[k]) ? d[k] : []; });
+  keep.settings = {}; SPACE_SETTINGS.forEach(function (k) { if (st[k] !== undefined) keep.settings[k] = st[k]; });
+  spaces[from] = keep;
+  var back = spaces[to];
+  SPACE_KEYS.forEach(function (k) { d[k] = back && Array.isArray(back[k]) ? back[k] : []; });
+  SPACE_SETTINGS.forEach(function (k) { st[k] = back && back.settings && back.settings[k] !== undefined ? back.settings[k] : (k === 'currentSemesterId' ? null : st[k] === undefined ? undefined : null); });
+  delete spaces[to];
+  st.spaces = spaces;
+}
+function applyUni(d, v) {
+  var from = d.settings.institution === 'tu' ? 'tu' : 'cu';
+  switchSpace(d, from, v);
+  d.settings.institution = v;
+  if (v === 'tu') { d.outcomes = Array.isArray(d.outcomes) ? d.outcomes : []; TU_OUTCOMES.forEach(function (o) { if (!d.outcomes.some(function (x) { return x.label === o.label; })) d.outcomes.push(Object.assign({}, o)); }); }
+  if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull');
+}
+// Picker: ask first when the current space has courses (they are kept, just put aside).
+function setUni(v, quiet) {
+  // The space the data currently belongs to (an unset profile is Chula), not the sign-in screen's choice.
+  var st = S.state, cur = st.settings.institution === 'tu' ? 'tu' : 'cu';
+  if (v === cur && st.settings.institution) return;
+  if (v === cur) { update(function (d) { d.settings.institution = v; }); return; }
+  var go = function () {
+    update(function (d) { applyUni(d, v); });
+    toast(t('space.switched', { u: t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull') }));
+    if (location.hash && location.hash !== '#dashboard' && !/^#(me|preferences)$/.test(location.hash)) location.hash = 'dashboard';
+  };
+  if (quiet || !spaceHasData(st)) { go(); return; }
+  var back = st.settings.spaces && st.settings.spaces[v], n = back && Array.isArray(back.courses) ? back.courses.length : 0;
+  confirmDialog({ title: t('space.q', { u: t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull') }),
+    body: t('space.body', { a: t(cur === 'tu' ? 'uni.tuFull' : 'uni.cuFull'), n: st.courses.length }) + ' ' + (n ? t('space.back', { n: n }) : t('space.new')),
+    confirmLabel: t('space.go'), onConfirm: go });
+}
 // Thammasat standing, honours and credit-load checks (regulation 2568 ข้อ 20, 49, 67–68). Recorded grades only.
 function TuRulesCard(p) {
   var state = p.state, cum = C.cumulativeStats(state, 'confirmed'), gpa = cum.gpa;
@@ -6912,7 +6959,7 @@ function Preferences(p) {
       </section>
       <section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('profile')}</h2>
         <div className="grid3">
-          <div className="field"><label>${t('uni.label')}</label><${UniPicker} value=${uniOf(state)} onChange=${setUni} /><div className="hint">${t('uni.hint')}</div></div>
+          <div className="field"><label>${t('uni.label')}</label><${UniPicker} value=${uniOf(state)} onChange=${setUni} /><div className="hint">${t('uni.hint')} ${t('space.note')}</div></div>
           <${Field} label=${t('university')} id="pf-u" hint=${t('optional')}><input id="pf-u" className="input" value=${st.university || ''} placeholder=${t('universityPh')} onChange=${function (e) { var v = e.target.value; update(function (d) { d.settings.university = v; }); }} /><//>
           <${Field} label=${t('programCredits')} id="pf-c" hint=${t('programCreditsHint')}><${NumCell} label=${t('programCredits')} value=${st.plannedCredits} placeholder=${t('eg', { v: '128' })} onChange=${function (v) { update(function (d) { d.settings.plannedCredits = v; }); }} /><//>
           <${Field} label=${t('targetCGPA')} id="pf-t"><${NumCell} label=${t('targetCGPA')} value=${st.targetCGPA} placeholder=${t('eg', { v: '3.50' })} onChange=${function (v) { update(function (d) { d.settings.targetCGPA = v; }); }} /><//>
@@ -8476,7 +8523,7 @@ function App() {
   useEffect(function () {
     // A university picked on the sign-in screen fills in a profile that has none yet
     // (also after the saved copy loads from the account, which may replace the first state).
-    if (!state.settings.institution && (uniPending === 'cu' || uniPending === 'tu')) setUni(uniPending);
+    if (!state.settings.institution && (uniPending === 'cu' || uniPending === 'tu')) setUni(uniPending, true);
   }, [state.settings.institution]);
   var active = route.page === 'course' ? 'courses' : route.page === 'feedback' ? 'help' : route.page;
   var page;

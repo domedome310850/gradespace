@@ -304,8 +304,15 @@ async function runTU(browser, lang, width) {
   if(await page.locator('#au-student').count()) errors.push('TU sign-in should not ask for a Chula student ID');
   await page.locator('#au-e').fill('tu@example.com');
   await page.locator('#au-e').press('Enter');
-  await page.locator('.dashboard-exam-panel').first().waitFor();
+  await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.state&&GradeSpace.S.state.settings.institution==='tu'&&GradeSpace.S.state.settings.spaces);
   await page.waitForTimeout(400);
+  // Separate spaces: the fixture's Chula courses are put aside, Thammasat starts empty.
+  const sp=await page.evaluate(()=>({n:GradeSpace.S.state.courses.length,cu:(GradeSpace.S.state.settings.spaces.cu||{}).courses}));
+  if(sp.n!==0||!sp.cu||sp.cu.length<5) errors.push('TU should start in its own empty space with Chula courses kept aside: '+JSON.stringify({n:sp.n,cu:sp.cu&&sp.cu.length}));
+  // Student sets up a Thammasat year/term (as with "Add year").
+  await page.evaluate(()=>GradeSpace.update(d=>{d.years.push({id:'y-tu',level:1,academic:2569});d.semesters.push({id:'s-tu',yearId:'y-tu',kind:'s1'});d.settings.currentSemesterId='s-tu';}));
+  await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
+  await page.locator('.dashboard-exam-panel').first().waitFor();
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
   const rpcs=await page.evaluate(()=>window.__rpcs||[]);
@@ -323,6 +330,22 @@ async function runTU(browser, lang, width) {
   await page.waitForTimeout(300);
   const added=await page.evaluate(()=>GradeSpace.S.state.courses.find(c=>c.code==='TU101'));
   if(!added||added.credits!==3||added.kind!=='gened') errors.push('TU101 not added as 3-credit GenEd: '+JSON.stringify(added&&{c:added.credits,k:added.kind}));
+  // Switch to Chula and back: each space comes back intact, nothing deleted.
+  const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
+  await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
+  await page.evaluate(()=>{location.hash='preferences';}); await page.waitForTimeout(300);
+  await page.locator('.seg button',{hasText:/^(จุฬาฯ|Chulalongkorn)$/}).first().click();
+  await page.locator('.modal .btn.primary, .modal .btn.danger').last().click();
+  await page.waitForTimeout(300);
+  const cuBack=await page.evaluate(()=>({u:GradeSpace.S.state.settings.institution,n:GradeSpace.S.state.courses.length,tu:(GradeSpace.S.state.settings.spaces.tu||{}).courses}));
+  if(cuBack.u!=='cu'||cuBack.n<5||!cuBack.tu||!cuBack.tu.some(c=>c.code==='TU101')) errors.push('switch to Chula did not restore its space: '+JSON.stringify({u:cuBack.u,n:cuBack.n,tu:cuBack.tu&&cuBack.tu.length}));
+  if(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='TU101'))) errors.push('Thammasat course leaked into Chula space');
+  await page.locator('.seg button',{hasText:/^(ธรรมศาสตร์|Thammasat)$/}).first().click();
+  await page.locator('.modal .btn.primary, .modal .btn.danger').last().click();
+  await page.waitForTimeout(300);
+  const after=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
+  if(JSON.stringify(after)!==JSON.stringify(before)) errors.push('Thammasat space not restored: '+JSON.stringify(after));
+  if(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>/^\d{7}/.test(c.code)))) errors.push('Chula course leaked into Thammasat space');
   // Course search suggests Thammasat codes.
   await page.evaluate(()=>{location.hash='courses';}); await page.waitForTimeout(300);
   const hashes = ['dashboard', 'years', 'courses', 'gpa', 'me', 'preferences'];
