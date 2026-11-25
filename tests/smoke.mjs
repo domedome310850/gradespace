@@ -58,7 +58,8 @@ async function run(browser, lang, width) {
   if(await page.locator('.topbar .seg').count()) errors.push('language switch should be inside the account menu');
   if(width<=900){
     // Phones: YouTube-style bottom bar (5 tabs); language/theme live under the “You” tab.
-    if(await page.locator('.bottomnav a').count()!==5) errors.push('bottom bar should have 5 tabs');
+    if(await page.locator('.bottomnav > *').count()!==5) errors.push('bottom bar should have 5 items');
+    if(!(await page.getByTestId('nav-ai').isVisible())) errors.push('centre AI button missing from bottom bar');
     await page.locator('.bottomnav a[href="#me"]').click();
     await page.locator('.me-page').waitFor();
     if(lang==='en'){await page.locator('.me-page button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
@@ -76,11 +77,29 @@ async function run(browser, lang, width) {
   // Floating AI button with one-time intro bubble, and search beside the semester picker.
   if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('AI intro bubble not shown on first visit');
   await page.locator('.ai-fab-intro .btn.primary').click();
-  if(await page.locator('.ai-action').count()!==3) errors.push('assistant popup should offer 3 actions');
+  if(await page.locator('.chat-q').count()!==3) errors.push('AI chat should offer 3 quick actions');
   await page.keyboard.press('Escape');
-  if(await page.locator('.ai-action').count()) errors.push('assistant popup did not close on Escape');
+  if(await page.locator('.chat').count()) errors.push('AI chat did not close on Escape');
   if(await page.locator('.ai-fab-intro').count()) errors.push('AI intro bubble should not return after use');
-  if(!(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
+  if(width>900 && !(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
+  // AI chat: local answers + confirmed score entry, never invents items (2026-11-26).
+  if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
+  await page.locator('.chat-input input').fill('GPA');
+  await page.locator('.chat-input input').press('Enter');
+  if(!/GPA/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat GPA answer missing');
+  await page.locator('.chat-input input').fill('HW5 econ 4/5');
+  await page.locator('.chat-input input').press('Enter');
+  await page.getByTestId('chat-save').waitFor();
+  await page.getByTestId('chat-save').click();
+  if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.max===5&&a.status==='graded';}))) errors.push('chat did not save HW5 4/5');
+  await page.locator('.chat-input input').fill('Quiz 99 econ 3/5');
+  await page.locator('.chat-input input').press('Enter');
+  if(await page.evaluate(()=>GradeSpace.S.state.assessments.some(x=>/quiz 99/i.test(x.name||'')))) errors.push('chat invented an assessment');
+  await page.locator('.chat-input input').fill(lang==='th'?'ต้องได้เท่าไหร่ถึงได้ A econ':'what do I need for A econ');
+  await page.locator('.chat-input input').press('Enter');
+  if(!/Economics/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat need-for-grade answer missing');
+  await page.keyboard.press('Escape');
+  await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');

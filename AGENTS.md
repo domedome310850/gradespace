@@ -59,7 +59,10 @@ Find code with search (`grep -n "^function CourseCard"`), not by line number —
   New features should get an entry point in the `cmd` menu (`commandItems`). Navigation follows YouTube:
   top bar = logo + search (`.top-search`) + `AccountMenu` (desktop only); phones get a 5-tab `BOTTOM_NAV`, and
   less-used pages live under the “You” tab (`MePage`, `ME_PAGES`); the sidebar `NAV` uses `group` labels.
-  The AI assistant is the floating `AiFab`. Don't add a sixth bottom tab — put it under You instead.
+  The AI chat (`ChatModal`, local `ChatBrain`) opens from the centre button of the phone bottom bar
+  (`BOTTOM_NAV` item with `center: true`) and from the desktop floating `AiFab`. Chat rules: only match
+  existing courses/assessments, always confirm before saving, never send data off the device without the
+  owner's approval. Help and Feedback share `HelpHub`. Don't add a sixth bottom item — put it under You instead.
   **Universities:** `uniOf(state)` / `isCU(state)` read `settings.institution` (`''` → Chula). Anything that talks
   to Reg Chula, Chula GenEd, CBS study plans or exam rooms must stay behind `isCU`. Thammasat data lives in
   `TU_GENED` / `TU_TBS` / `TU_CATALOG`; `CATALOG.get/search` switch by university.
