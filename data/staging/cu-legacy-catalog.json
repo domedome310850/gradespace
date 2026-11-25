@@ -1,0 +1,5908 @@
+{
+  "schema_version": 1,
+  "source": {
+    "path": "public/index.html",
+    "blob_sha": "fcbf11de315d9cebbe5c259d39907b80b39192c8",
+    "kind": "legacy_embedded_catalog",
+    "status": "staging_only"
+  },
+  "institution": {
+    "id": "cu",
+    "name_th": "จุฬาลงกรณ์มหาวิทยาลัย",
+    "name_en": "Chulalongkorn University"
+  },
+  "courses": [
+    {
+      "id": "cu:2301101",
+      "institution_id": "cu",
+      "code": "2301101",
+      "title_legacy": "CALCULUS I",
+      "title_th": null,
+      "credits": 4,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CALCULUS I",
+        "cr": 4
+      }
+    },
+    {
+      "id": "cu:2301102",
+      "institution_id": "cu",
+      "code": "2301102",
+      "title_legacy": "CALCULUS II",
+      "title_th": null,
+      "credits": 4,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CALCULUS II",
+        "cr": 4,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "13:00-16:00"
+        },
+        "fin": {
+          "date": "2027-04-28",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2301115",
+      "institution_id": "cu",
+      "code": "2301115",
+      "title_legacy": "CALCULUS BUS I",
+      "title_th": "แคลคูลัสสำหรับธุรกิจ 1",
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": "https://bba.acc.chula.ac.th/files/BBA%20Program/Course%20Description_Curriculum/2301115_Calculus_for_Business_I.pdf",
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CALCULUS BUS I",
+        "cr": 3,
+        "tpl": {
+          "src": "Course syllabus 2026/1",
+          "grading": {
+            "method": "letter",
+            "referencing": "criterion",
+            "cutoffs": {
+              "A": 80,
+              "B+": 75,
+              "B": 70,
+              "C+": 60,
+              "C": 50,
+              "D+": 40,
+              "D": 30
+            }
+          },
+          "assessments": [
+            {
+              "name": "สอบกลางภาค",
+              "type": "midterm",
+              "weight": 50,
+              "max": 50,
+              "due": "2026-09-22"
+            },
+            {
+              "name": "สอบปลายภาค",
+              "type": "final",
+              "weight": 50,
+              "max": 50,
+              "due": "2026-11-25"
+            }
+          ]
+        },
+        "aka": "CALCULUS FOR BUSINESS I",
+        "th": "แคลคูลัสสำหรับธุรกิจ 1",
+        "sec": "1",
+        "descriptionTh": "ลิมิตและความต่อเนื่อง อนุพันธ์ ปริพันธ์ ฟังก์ชันเอกซ์โพเนนเชียลและลอการิทึม ลำดับและอนุกรม ดอกเบี้ยและเงินงวด และการประยุกต์กับธุรกิจและการเงิน",
+        "descriptionEn": "Limits, differentiation, integration, logarithms, sequences and series, interest and annuities, with business and finance applications.",
+        "sourceUrl": "https://bba.acc.chula.ac.th/files/BBA%20Program/Course%20Description_Curriculum/2301115_Calculus_for_Business_I.pdf"
+      }
+    },
+    {
+      "id": "cu:2301119",
+      "institution_id": "cu",
+      "code": "2301119",
+      "title_legacy": "CAL BUS",
+      "title_th": null,
+      "credits": 4,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CAL BUS",
+        "cr": 4
+      }
+    },
+    {
+      "id": "cu:2301333",
+      "institution_id": "cu",
+      "code": "2301333",
+      "title_legacy": "LINEAR ALGEBRA",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "LINEAR ALGEBRA",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2301366",
+      "institution_id": "cu",
+      "code": "2301366",
+      "title_legacy": "NUMERICAL ANALYSIS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "NUMERICAL ANALYSIS",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "08:30-11:30"
+        },
+        "fin": {
+          "date": "2027-04-29",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2313213",
+      "institution_id": "cu",
+      "code": "2313213",
+      "title_legacy": "DIGITAL PHOTOGRAPHY",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DIGITAL PHOTOGRAPHY",
+        "cr": 3,
+        "tpl": {
+          "src": "Course syllabus 2025/2",
+          "grading": {
+            "method": "su",
+            "referencing": "norm"
+          },
+          "groups": [
+            {
+              "name": "Weekly Assignment",
+              "weight": 50,
+              "dist": "equal"
+            }
+          ],
+          "assessments": [
+            {
+              "name": "Final Photo",
+              "type": "custom",
+              "weight": 20,
+              "max": 20
+            },
+            {
+              "name": "Final Quiz",
+              "type": "quiz",
+              "weight": 10,
+              "max": 10
+            },
+            {
+              "name": "Attendance",
+              "type": "attendance",
+              "weight": 10,
+              "max": 10
+            },
+            {
+              "name": "Weekly Quiz",
+              "type": "quiz",
+              "weight": 10,
+              "max": 10
+            }
+          ]
+        },
+        "ge": true
+      }
+    },
+    {
+      "id": "cu:2601113",
+      "institution_id": "cu",
+      "code": "2601113",
+      "title_legacy": "PRIN ACCTG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PRIN ACCTG",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2601114",
+      "institution_id": "cu",
+      "code": "2601114",
+      "title_legacy": "COST ACCTG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "COST ACCTG",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2601115",
+      "institution_id": "cu",
+      "code": "2601115",
+      "title_legacy": "FIN ACCTG",
+      "title_th": "การบัญชีการเงิน",
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": "https://marketing.cbs.chula.ac.th/th/prospectus/bachelor-of-business-administration-inter/program-list",
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FIN ACCTG",
+        "cr": 3,
+        "tpl": {
+          "src": "Course syllabus 2026/1",
+          "grading": {
+            "method": "letter",
+            "referencing": "norm"
+          },
+          "assessments": [
+            {
+              "name": "Midterm Exam",
+              "type": "midterm",
+              "weight": 40,
+              "max": 40
+            },
+            {
+              "name": "Final Exam + FlowAccount",
+              "type": "final",
+              "weight": 45,
+              "max": 45
+            },
+            {
+              "name": "Homework",
+              "type": "homework",
+              "weight": 10,
+              "max": 10
+            },
+            {
+              "name": "Participations",
+              "type": "participation",
+              "weight": 5,
+              "max": 5
+            }
+          ]
+        },
+        "aka": "FINANCIAL ACCOUNTING",
+        "th": "การบัญชีการเงิน",
+        "sec": "1",
+        "descriptionTh": "หลักการบัญชีและกระบวนการบันทึกรายการ การปรับปรุงบัญชี การปิดบัญชี และการจัดทำงบการเงิน",
+        "descriptionEn": "Accounting fundamentals, recording and adjusting entries, closing accounts and preparing financial statements.",
+        "sourceUrl": "https://marketing.cbs.chula.ac.th/th/prospectus/bachelor-of-business-administration-inter/program-list"
+      }
+    },
+    {
+      "id": "cu:2601116",
+      "institution_id": "cu",
+      "code": "2601116",
+      "title_legacy": "INTMD ACCTG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTMD ACCTG",
+        "cr": 3,
+        "mid": {
+          "date": "2027-03-01",
+          "time": "13:00-16:00"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2601212",
+      "institution_id": "cu",
+      "code": "2601212",
+      "title_legacy": "INTMD ACCTG I",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTMD ACCTG I",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "13:00-16:00"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2601213",
+      "institution_id": "cu",
+      "code": "2601213",
+      "title_legacy": "INTMD ACCTG II",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTMD ACCTG II",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2601231",
+      "institution_id": "cu",
+      "code": "2601231",
+      "title_legacy": "MNGL ACCTG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MNGL ACCTG",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-05-06",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2601251",
+      "institution_id": "cu",
+      "code": "2601251",
+      "title_legacy": "AIS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "AIS",
+        "cr": 3,
+        "mid": {
+          "date": "2027-03-01",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2601255",
+      "institution_id": "cu",
+      "code": "2601255",
+      "title_legacy": "MNGL ACCTG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MNGL ACCTG",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2601317",
+      "institution_id": "cu",
+      "code": "2601317",
+      "title_legacy": "INTRO ACC BUS COMB",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTRO ACC BUS COMB",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2601352",
+      "institution_id": "cu",
+      "code": "2601352",
+      "title_legacy": "ANAL/DSGN ACCTG DB",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ANAL/DSGN ACCTG DB",
+        "cr": 3,
+        "mid": {
+          "date": "2027-03-01",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2601354",
+      "institution_id": "cu",
+      "code": "2601354",
+      "title_legacy": "INFO SYS CTRL/AUD",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INFO SYS CTRL/AUD",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2601361",
+      "institution_id": "cu",
+      "code": "2601361",
+      "title_legacy": "AUDITING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "AUDITING",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": ""
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": ""
+        }
+      }
+    },
+    {
+      "id": "cu:2601414",
+      "institution_id": "cu",
+      "code": "2601414",
+      "title_legacy": "TAXATION",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "TAXATION",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "13:00-16:00"
+        },
+        "fin": {
+          "date": "2027-04-28",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2601421",
+      "institution_id": "cu",
+      "code": "2601421",
+      "title_legacy": "ADV ACCOUNTING I",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ADV ACCOUNTING I",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2601422",
+      "institution_id": "cu",
+      "code": "2601422",
+      "title_legacy": "ADV ACCOUNTING II",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ADV ACCOUNTING II",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "08:30-11:30"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2601431",
+      "institution_id": "cu",
+      "code": "2601431",
+      "title_legacy": "FIN REP ANA",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FIN REP ANA",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "13:00-16:00"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2601493",
+      "institution_id": "cu",
+      "code": "2601493",
+      "title_legacy": "SEM FIN REP ASSCE",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SEM FIN REP ASSCE",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2601494",
+      "institution_id": "cu",
+      "code": "2601494",
+      "title_legacy": "SEM MGT ACC/CTRL",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SEM MGT ACC/CTRL",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2601495",
+      "institution_id": "cu",
+      "code": "2601495",
+      "title_legacy": "SEM AIS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SEM AIS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602122",
+      "institution_id": "cu",
+      "code": "2602122",
+      "title_legacy": "BUS FOUNDATION",
+      "title_th": "ความรู้พื้นฐานธุรกิจ",
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": "https://marketing.cbs.chula.ac.th/th/prospectus/bachelor-of-business-administration-inter/program-list",
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUS FOUNDATION",
+        "cr": 3,
+        "tpl": {
+          "src": "Course syllabus 2026/1",
+          "grading": {
+            "method": "su",
+            "referencing": "criterion",
+            "mpl": 60
+          },
+          "assessments": [
+            {
+              "name": "Mid term EXAM",
+              "type": "midterm",
+              "weight": 50,
+              "max": 50
+            },
+            {
+              "name": "Final Exam",
+              "type": "final",
+              "weight": 50,
+              "max": 50
+            }
+          ]
+        },
+        "aka": "BUSINESS FOUNDATION",
+        "th": "ความรู้พื้นฐานธุรกิจ",
+        "sec": "1",
+        "descriptionTh": "รายวิชาความรู้พื้นฐานด้านธุรกิจ ตามแผนหลักสูตรบริหารธุรกิจ; ประเมินผลแบบ S/U และไม่คิดรวม GPA",
+        "descriptionEn": "Foundational business course listed in the BBA core curriculum; uses S/U grading and contributes no GPA credits.",
+        "sourceUrl": "https://marketing.cbs.chula.ac.th/th/prospectus/bachelor-of-business-administration-inter/program-list"
+      }
+    },
+    {
+      "id": "cu:2602214",
+      "institution_id": "cu",
+      "code": "2602214",
+      "title_legacy": "FOUND ENTRE",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FOUND ENTRE",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602242",
+      "institution_id": "cu",
+      "code": "2602242",
+      "title_legacy": "PRIN LOG SUP MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PRIN LOG SUP MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602313",
+      "institution_id": "cu",
+      "code": "2602313",
+      "title_legacy": "MGT / ORGANIZATION",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MGT / ORGANIZATION",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-05-05",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2602317",
+      "institution_id": "cu",
+      "code": "2602317",
+      "title_legacy": "NEW VENTURE DEV",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "NEW VENTURE DEV",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602327",
+      "institution_id": "cu",
+      "code": "2602327",
+      "title_legacy": "QUANT BUS ANAL",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "QUANT BUS ANAL",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "08:30-11:30"
+        },
+        "fin": {
+          "date": "2027-05-05",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2602344",
+      "institution_id": "cu",
+      "code": "2602344",
+      "title_legacy": "PROD OPER MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PROD OPER MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602349",
+      "institution_id": "cu",
+      "code": "2602349",
+      "title_legacy": "ERP",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ERP",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602355",
+      "institution_id": "cu",
+      "code": "2602355",
+      "title_legacy": "ENT IT GOV",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ENT IT GOV",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-04-26",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2602359",
+      "institution_id": "cu",
+      "code": "2602359",
+      "title_legacy": "EXCEL BUS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "EXCEL BUS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602363",
+      "institution_id": "cu",
+      "code": "2602363",
+      "title_legacy": "MANAGERIAL COM",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MANAGERIAL COM",
+        "cr": 3,
+        "fin": {
+          "date": "2027-05-03",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2602364",
+      "institution_id": "cu",
+      "code": "2602364",
+      "title_legacy": "CON TOPIC MIS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CON TOPIC MIS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602365",
+      "institution_id": "cu",
+      "code": "2602365",
+      "title_legacy": "PYTHON BUS ANA",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PYTHON BUS ANA",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602367",
+      "institution_id": "cu",
+      "code": "2602367",
+      "title_legacy": "MACHINE LEARN BUS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MACHINE LEARN BUS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602371",
+      "institution_id": "cu",
+      "code": "2602371",
+      "title_legacy": "PRIN INTL BUS MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PRIN INTL BUS MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602374",
+      "institution_id": "cu",
+      "code": "2602374",
+      "title_legacy": "TRANS DIST MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "TRANS DIST MGT",
+        "cr": 3,
+        "fin": {
+          "date": "2027-05-03",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2602377",
+      "institution_id": "cu",
+      "code": "2602377",
+      "title_legacy": "PCHS/MTRL MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PCHS/MTRL MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602381",
+      "institution_id": "cu",
+      "code": "2602381",
+      "title_legacy": "AIR TRANS MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "AIR TRANS MGT",
+        "cr": 3,
+        "fin": {
+          "date": "2027-04-30",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2602383",
+      "institution_id": "cu",
+      "code": "2602383",
+      "title_legacy": "INV WH MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INV WH MGT",
+        "cr": 3,
+        "fin": {
+          "date": "2027-04-26",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2602399",
+      "institution_id": "cu",
+      "code": "2602399",
+      "title_legacy": "MNG ORG CHG INNO",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MNG ORG CHG INNO",
+        "cr": 3,
+        "fin": {
+          "date": "2027-05-06",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2602416",
+      "institution_id": "cu",
+      "code": "2602416",
+      "title_legacy": "BUSINESS STRATEGY",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUSINESS STRATEGY",
+        "cr": 3,
+        "fin": {
+          "date": "2027-04-26",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2602429",
+      "institution_id": "cu",
+      "code": "2602429",
+      "title_legacy": "BUS INFO SYS A/D",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUS INFO SYS A/D",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2602432",
+      "institution_id": "cu",
+      "code": "2602432",
+      "title_legacy": "ORG BEHAVIOR",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ORG BEHAVIOR",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2602446",
+      "institution_id": "cu",
+      "code": "2602446",
+      "title_legacy": "DATABASE APPLN MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DATABASE APPLN MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603101",
+      "institution_id": "cu",
+      "code": "2603101",
+      "title_legacy": "FOUND STAT INS IT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FOUND STAT INS IT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603140",
+      "institution_id": "cu",
+      "code": "2603140",
+      "title_legacy": "PRIN INSURANCE",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PRIN INSURANCE",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603174",
+      "institution_id": "cu",
+      "code": "2603174",
+      "title_legacy": "PROG PROB SOLVING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PROG PROB SOLVING",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603240",
+      "institution_id": "cu",
+      "code": "2603240",
+      "title_legacy": "CAS INSURANCE",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CAS INSURANCE",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603245",
+      "institution_id": "cu",
+      "code": "2603245",
+      "title_legacy": "INTRO BUS STAT",
+      "title_th": "สถิติธุรกิจเบื้องต้น",
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": "https://marketing.cbs.chula.ac.th/th/prospectus/bachelor-of-business-administration-inter/program-list",
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTRO BUS STAT",
+        "cr": 3,
+        "tpl": {
+          "src": "Course syllabus 2026/1",
+          "grading": {
+            "method": "letter",
+            "referencing": "criterion",
+            "cutoffs": {
+              "A": 80,
+              "B+": 75,
+              "B": 70,
+              "C+": 65,
+              "C": 60,
+              "D+": 55,
+              "D": 50
+            }
+          },
+          "assessments": [
+            {
+              "name": "แบบฝึกหัด",
+              "type": "assignment",
+              "weight": 20,
+              "max": 20
+            },
+            {
+              "name": "สอบกลางภาค",
+              "type": "midterm",
+              "weight": 35,
+              "max": 35
+            },
+            {
+              "name": "สอบปลายภาค",
+              "type": "final",
+              "weight": 45,
+              "max": 45
+            }
+          ]
+        },
+        "aka": "INTRODUCTION TO BUSINESS STATISTICS",
+        "th": "สถิติธุรกิจเบื้องต้น",
+        "sec": "3",
+        "descriptionTh": "บทนำสถิติสำหรับธุรกิจ เป็นวิชาแกนของหลักสูตรบริหารธุรกิจ ใช้เป็นพื้นฐานการอ่านและวิเคราะห์ข้อมูลเชิงปริมาณ",
+        "descriptionEn": "Introductory business statistics, a core BBA course that provides a foundation for quantitative data analysis.",
+        "sourceUrl": "https://marketing.cbs.chula.ac.th/th/prospectus/bachelor-of-business-administration-inter/program-list"
+      }
+    },
+    {
+      "id": "cu:2603272",
+      "institution_id": "cu",
+      "code": "2603272",
+      "title_legacy": "DATABASE",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DATABASE",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-05-03",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603275",
+      "institution_id": "cu",
+      "code": "2603275",
+      "title_legacy": "JAVA PROGRAMMING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "JAVA PROGRAMMING",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603276",
+      "institution_id": "cu",
+      "code": "2603276",
+      "title_legacy": "WEB PROGRAMMING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "WEB PROGRAMMING",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-26",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603278",
+      "institution_id": "cu",
+      "code": "2603278",
+      "title_legacy": "INFO VISUAL",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INFO VISUAL",
+        "cr": 3,
+        "mid": {
+          "date": "2027-03-01",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-05-07",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603279",
+      "institution_id": "cu",
+      "code": "2603279",
+      "title_legacy": "OOP",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "OOP",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-05-03",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603311",
+      "institution_id": "cu",
+      "code": "2603311",
+      "title_legacy": "GLMS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "GLMS",
+        "cr": 3,
+        "mid": {
+          "date": "2027-03-01",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-05-03",
+          "time": "08:30-10:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603312",
+      "institution_id": "cu",
+      "code": "2603312",
+      "title_legacy": "STAT THEORY I",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "STAT THEORY I",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "08:30-11:30"
+        },
+        "fin": {
+          "date": "2027-05-05",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603313",
+      "institution_id": "cu",
+      "code": "2603313",
+      "title_legacy": "STAT THEORY II",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "STAT THEORY II",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603318",
+      "institution_id": "cu",
+      "code": "2603318",
+      "title_legacy": "STAT ANALYSIS II",
+      "title_th": null,
+      "credits": 4,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "STAT ANALYSIS II",
+        "cr": 4
+      }
+    },
+    {
+      "id": "cu:2603320",
+      "institution_id": "cu",
+      "code": "2603320",
+      "title_legacy": "INTRO STOC PROC",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTRO STOC PROC",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603321",
+      "institution_id": "cu",
+      "code": "2603321",
+      "title_legacy": "SAMP SURV RES DSGN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SAMP SURV RES DSGN",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "08:30-11:30"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "13:00-15:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603322",
+      "institution_id": "cu",
+      "code": "2603322",
+      "title_legacy": "MOBILE APP DEV",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MOBILE APP DEV",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603330",
+      "institution_id": "cu",
+      "code": "2603330",
+      "title_legacy": "BUSINESS STAT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUSINESS STAT",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-04-26",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603335",
+      "institution_id": "cu",
+      "code": "2603335",
+      "title_legacy": "MATH FINANCE",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MATH FINANCE",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603340",
+      "institution_id": "cu",
+      "code": "2603340",
+      "title_legacy": "CAS MATH",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CAS MATH",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603341",
+      "institution_id": "cu",
+      "code": "2603341",
+      "title_legacy": "ACTUARIAL MODELS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ACTUARIAL MODELS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603347",
+      "institution_id": "cu",
+      "code": "2603347",
+      "title_legacy": "FUND RISK MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FUND RISK MGT",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-05-05",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603371",
+      "institution_id": "cu",
+      "code": "2603371",
+      "title_legacy": "DATA ACQUI PREP",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DATA ACQUI PREP",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "13:00-15:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603372",
+      "institution_id": "cu",
+      "code": "2603372",
+      "title_legacy": "MACHINE LEARNING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MACHINE LEARNING",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603373",
+      "institution_id": "cu",
+      "code": "2603373",
+      "title_legacy": "INFO SYS ANAL",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INFO SYS ANAL",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603374",
+      "institution_id": "cu",
+      "code": "2603374",
+      "title_legacy": "INFO SYS DSGN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INFO SYS DSGN",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-29",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603386",
+      "institution_id": "cu",
+      "code": "2603386",
+      "title_legacy": "DATA STRUC",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DATA STRUC",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603388",
+      "institution_id": "cu",
+      "code": "2603388",
+      "title_legacy": "IT INFRASTRUC",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "IT INFRASTRUC",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603389",
+      "institution_id": "cu",
+      "code": "2603389",
+      "title_legacy": "DW BIS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DW BIS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603411",
+      "institution_id": "cu",
+      "code": "2603411",
+      "title_legacy": "DATA ANA PRAC",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DATA ANA PRAC",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603418",
+      "institution_id": "cu",
+      "code": "2603418",
+      "title_legacy": "SEM STAT APP BUS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SEM STAT APP BUS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603434",
+      "institution_id": "cu",
+      "code": "2603434",
+      "title_legacy": "INTRO MVAR ANAL",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTRO MVAR ANAL",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603436",
+      "institution_id": "cu",
+      "code": "2603436",
+      "title_legacy": "DSGN EXPERIMENT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DSGN EXPERIMENT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603437",
+      "institution_id": "cu",
+      "code": "2603437",
+      "title_legacy": "BAYESIAN ANALYSIS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BAYESIAN ANALYSIS",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "08:30-10:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603439",
+      "institution_id": "cu",
+      "code": "2603439",
+      "title_legacy": "OPTIM APP",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "OPTIM APP",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603441",
+      "institution_id": "cu",
+      "code": "2603441",
+      "title_legacy": "ACTU SC LIFE INS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ACTU SC LIFE INS",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-29",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603468",
+      "institution_id": "cu",
+      "code": "2603468",
+      "title_legacy": "COMP NET SEC",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "COMP NET SEC",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603469",
+      "institution_id": "cu",
+      "code": "2603469",
+      "title_legacy": "ERP IMPLN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ERP IMPLN",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603473",
+      "institution_id": "cu",
+      "code": "2603473",
+      "title_legacy": "SEM BUSINESS IT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SEM BUSINESS IT",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-30",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603476",
+      "institution_id": "cu",
+      "code": "2603476",
+      "title_legacy": "COMPUTER AUDIT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "COMPUTER AUDIT",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-04-28",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603483",
+      "institution_id": "cu",
+      "code": "2603483",
+      "title_legacy": "SW ENG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SW ENG",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603485",
+      "institution_id": "cu",
+      "code": "2603485",
+      "title_legacy": "E-BUS DEV",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "E-BUS DEV",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-05-03",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603487",
+      "institution_id": "cu",
+      "code": "2603487",
+      "title_legacy": "INTRO HCI",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTRO HCI",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-05-03",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2603491",
+      "institution_id": "cu",
+      "code": "2603491",
+      "title_legacy": "DATABASE PROG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DATABASE PROG",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603492",
+      "institution_id": "cu",
+      "code": "2603492",
+      "title_legacy": "INS SEMINAR",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INS SEMINAR",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603496",
+      "institution_id": "cu",
+      "code": "2603496",
+      "title_legacy": "SEN PROJ IT BUS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SEN PROJ IT BUS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603497",
+      "institution_id": "cu",
+      "code": "2603497",
+      "title_legacy": "SENIOR PROJ INS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SENIOR PROJ INS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603498",
+      "institution_id": "cu",
+      "code": "2603498",
+      "title_legacy": "DATA SCI PRAC",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DATA SCI PRAC",
+        "cr": 3,
+        "fin": {
+          "date": "2027-04-26",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2603499",
+      "institution_id": "cu",
+      "code": "2603499",
+      "title_legacy": "SENIOR PROJ STAT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SENIOR PROJ STAT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603520",
+      "institution_id": "cu",
+      "code": "2603520",
+      "title_legacy": "DEEP LEARNING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DEEP LEARNING",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603521",
+      "institution_id": "cu",
+      "code": "2603521",
+      "title_legacy": "DATA SCI BUS ANAL",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "DATA SCI BUS ANAL",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603522",
+      "institution_id": "cu",
+      "code": "2603522",
+      "title_legacy": "RECR SYS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "RECR SYS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603536",
+      "institution_id": "cu",
+      "code": "2603536",
+      "title_legacy": "THEORY STAT LEARN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "THEORY STAT LEARN",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2603538",
+      "institution_id": "cu",
+      "code": "2603538",
+      "title_legacy": "ML RISK ANALYTICS",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ML RISK ANALYTICS",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604112",
+      "institution_id": "cu",
+      "code": "2604112",
+      "title_legacy": "MACRO ECON/FIN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MACRO ECON/FIN",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604161",
+      "institution_id": "cu",
+      "code": "2604161",
+      "title_legacy": "INTRO FIN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTRO FIN",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-26",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2604234",
+      "institution_id": "cu",
+      "code": "2604234",
+      "title_legacy": "FIN MKT/INSTN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FIN MKT/INSTN",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604271",
+      "institution_id": "cu",
+      "code": "2604271",
+      "title_legacy": "BUS ECON",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUS ECON",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604293",
+      "institution_id": "cu",
+      "code": "2604293",
+      "title_legacy": "MATH TECH",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MATH TECH",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604294",
+      "institution_id": "cu",
+      "code": "2604294",
+      "title_legacy": "FUND CORP FIN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FUND CORP FIN",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-26",
+          "time": "08:30-11:30"
+        },
+        "fin": {
+          "date": "2027-04-27",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2604313",
+      "institution_id": "cu",
+      "code": "2604313",
+      "title_legacy": "FIN ECONO",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FIN ECONO",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604314",
+      "institution_id": "cu",
+      "code": "2604314",
+      "title_legacy": "BANK MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BANK MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604332",
+      "institution_id": "cu",
+      "code": "2604332",
+      "title_legacy": "PRIN INV",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PRIN INV",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604334",
+      "institution_id": "cu",
+      "code": "2604334",
+      "title_legacy": "EQUITY ANAL",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "EQUITY ANAL",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604361",
+      "institution_id": "cu",
+      "code": "2604361",
+      "title_legacy": "BUS FIN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUS FIN",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604363",
+      "institution_id": "cu",
+      "code": "2604363",
+      "title_legacy": "WEALTH MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "WEALTH MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604433",
+      "institution_id": "cu",
+      "code": "2604433",
+      "title_legacy": "REAL ESTATE FIN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "REAL ESTATE FIN",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604463",
+      "institution_id": "cu",
+      "code": "2604463",
+      "title_legacy": "ANAL FIN REPORT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ANAL FIN REPORT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604465",
+      "institution_id": "cu",
+      "code": "2604465",
+      "title_legacy": "CREDIT MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CREDIT MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604467",
+      "institution_id": "cu",
+      "code": "2604467",
+      "title_legacy": "ADV BUS FIN",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ADV BUS FIN",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604468",
+      "institution_id": "cu",
+      "code": "2604468",
+      "title_legacy": "FEAS STUD/PROJ EVA",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FEAS STUD/PROJ EVA",
+        "cr": 3,
+        "fin": {
+          "date": "2027-05-07",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2604475",
+      "institution_id": "cu",
+      "code": "2604475",
+      "title_legacy": "FIN MODELLING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FIN MODELLING",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604477",
+      "institution_id": "cu",
+      "code": "2604477",
+      "title_legacy": "INTL FIN MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTL FIN MGT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604481",
+      "institution_id": "cu",
+      "code": "2604481",
+      "title_legacy": "FIN DEV",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FIN DEV",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604482",
+      "institution_id": "cu",
+      "code": "2604482",
+      "title_legacy": "FIXED INCOME",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FIXED INCOME",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604491",
+      "institution_id": "cu",
+      "code": "2604491",
+      "title_legacy": "SEMINAR",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SEMINAR",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2604495",
+      "institution_id": "cu",
+      "code": "2604495",
+      "title_legacy": "INTRO FIN ENG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INTRO FIN ENG",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2605311",
+      "institution_id": "cu",
+      "code": "2605311",
+      "title_legacy": "PRIN MKTG",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PRIN MKTG",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-28",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2605314",
+      "institution_id": "cu",
+      "code": "2605314",
+      "title_legacy": "CONSUMER BEHAVIOR",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "CONSUMER BEHAVIOR",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2605325",
+      "institution_id": "cu",
+      "code": "2605325",
+      "title_legacy": "BRAND PROD MGT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BRAND PROD MGT",
+        "cr": 3,
+        "mid": {
+          "date": "2027-03-01",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-04-29",
+          "time": "08:30-11:30"
+        }
+      }
+    },
+    {
+      "id": "cu:2605410",
+      "institution_id": "cu",
+      "code": "2605410",
+      "title_legacy": "INT MKT COMM",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "INT MKT COMM",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2605412",
+      "institution_id": "cu",
+      "code": "2605412",
+      "title_legacy": "MKTG CHAN/PHY DIST",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MKTG CHAN/PHY DIST",
+        "cr": 3,
+        "fin": {
+          "date": "2027-04-28",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2605414",
+      "institution_id": "cu",
+      "code": "2605414",
+      "title_legacy": "SERVICE MARKETING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "SERVICE MARKETING",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2605425",
+      "institution_id": "cu",
+      "code": "2605425",
+      "title_legacy": "MKT STRA",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "MKT STRA",
+        "cr": 3,
+        "fin": {
+          "date": "2027-04-26",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:2605452",
+      "institution_id": "cu",
+      "code": "2605452",
+      "title_legacy": "PRICING",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "PRICING",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2900111",
+      "institution_id": "cu",
+      "code": "2900111",
+      "title_legacy": "ECONOMICS I",
+      "title_th": "เศรษฐศาสตร์ 1",
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": "https://bba.acc.chula.ac.th/files/BBA%20Program/Course%20Description_Curriculum/2900111_Economics_I.pdf",
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ECONOMICS I",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-05-06",
+          "time": "08:30-11:30"
+        },
+        "tpl": {
+          "src": "Course syllabus 2026/1 (Section 4)",
+          "grading": {
+            "method": "letter",
+            "referencing": "norm"
+          },
+          "groups": [
+            {
+              "name": "Homework before midterm exam",
+              "weight": 15,
+              "dist": "equal"
+            },
+            {
+              "name": "Homework before final exam",
+              "weight": 15,
+              "dist": "equal"
+            }
+          ],
+          "assessments": [
+            {
+              "name": "HW1",
+              "type": "homework",
+              "max": 5,
+              "group": "Homework before midterm exam"
+            },
+            {
+              "name": "HW2",
+              "type": "homework",
+              "max": 5,
+              "group": "Homework before midterm exam"
+            },
+            {
+              "name": "HW3",
+              "type": "homework",
+              "max": 5,
+              "group": "Homework before midterm exam"
+            },
+            {
+              "name": "Midterm Exam",
+              "type": "midterm",
+              "weight": 35,
+              "max": 35
+            },
+            {
+              "name": "HW4",
+              "type": "homework",
+              "max": 5,
+              "group": "Homework before final exam"
+            },
+            {
+              "name": "HW5",
+              "type": "homework",
+              "max": 5,
+              "group": "Homework before final exam"
+            },
+            {
+              "name": "HW6",
+              "type": "homework",
+              "max": 5,
+              "group": "Homework before final exam"
+            },
+            {
+              "name": "Final Exam",
+              "type": "final",
+              "weight": 35,
+              "max": 35
+            }
+          ]
+        },
+        "th": "เศรษฐศาสตร์ 1",
+        "sec": "4",
+        "descriptionTh": "อุปสงค์–อุปทาน พฤติกรรมผู้บริโภคและผู้ผลิต การกำหนดราคา โครงสร้างตลาด ต้นทุนการผลิต และตลาดปัจจัยการผลิต",
+        "descriptionEn": "Demand and supply, consumer and producer behavior, pricing, production costs, market structures and factor markets.",
+        "sourceUrl": "https://bba.acc.chula.ac.th/files/BBA%20Program/Course%20Description_Curriculum/2900111_Economics_I.pdf"
+      }
+    },
+    {
+      "id": "cu:2900112",
+      "institution_id": "cu",
+      "code": "2900112",
+      "title_legacy": "ECONOMICS II",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ECONOMICS II",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:2900151",
+      "institution_id": "cu",
+      "code": "2900151",
+      "title_legacy": "FOUNDATION ECON",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FOUNDATION ECON",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:3200106",
+      "institution_id": "cu",
+      "code": "3200106",
+      "title_legacy": "FUNDAMENTAL ORAL BIOLOGY",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "FUNDAMENTAL ORAL BIOLOGY",
+        "cr": 3,
+        "tpl": {
+          "src": "Course syllabus 2026/1",
+          "grading": {
+            "method": "letter",
+            "referencing": "criterion",
+            "cutoffs": {
+              "A": 80,
+              "B+": 75,
+              "B": 70,
+              "C+": 65,
+              "C": 60,
+              "D+": 55,
+              "D": 50
+            },
+            "mpl": 50
+          },
+          "assessments": [
+            {
+              "name": "ORAL PRE-TEST",
+              "type": "quiz",
+              "weight": 10,
+              "max": 10
+            },
+            {
+              "name": "ORAL POST-TEST",
+              "type": "quiz",
+              "weight": 10,
+              "max": 10
+            },
+            {
+              "name": "Food Diary and Metabolism",
+              "type": "assignment",
+              "weight": 10,
+              "max": 10
+            },
+            {
+              "name": "CHULA MOOC (Course Progress)",
+              "type": "custom",
+              "weight": 10,
+              "max": 10
+            },
+            {
+              "name": "VDO Playlists (37 clips)",
+              "type": "custom",
+              "weight": 20,
+              "max": 20
+            },
+            {
+              "name": "Plaque score and Toothpaste",
+              "type": "lab",
+              "weight": 10,
+              "max": 10
+            },
+            {
+              "name": "Final examination",
+              "type": "final",
+              "weight": 30,
+              "max": 30
+            }
+          ]
+        },
+        "ge": true
+      }
+    },
+    {
+      "id": "cu:3401255",
+      "institution_id": "cu",
+      "code": "3401255",
+      "title_legacy": "BUSINESS LAW I",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUSINESS LAW I",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:3401256",
+      "institution_id": "cu",
+      "code": "3401256",
+      "title_legacy": "BUSINESS LAW II",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUSINESS LAW II",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-24",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-05-10",
+          "time": "13:00-16:00"
+        }
+      }
+    },
+    {
+      "id": "cu:5500111",
+      "institution_id": "cu",
+      "code": "5500111",
+      "title_legacy": "EXP ENG I",
+      "title_th": "ภาษาอังกฤษเพื่อการเรียนรู้ในชีวิตจริง 1",
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": "https://www.marine.sc.chula.ac.th/5500111-experiential-english-i/",
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "EXP ENG I",
+        "cr": 3,
+        "tpl": {
+          "src": "ประมวลรายวิชา / syllabus 1/2026",
+          "grading": {
+            "method": "letter",
+            "referencing": "criterion",
+            "cutoffs": {
+              "A": 85,
+              "B+": 80,
+              "B": 75,
+              "C+": 70,
+              "C": 65,
+              "D+": 60,
+              "D": 55
+            }
+          },
+          "groups": [
+            {
+              "name": "Communication Activities",
+              "weight": 20,
+              "dist": "equal"
+            },
+            {
+              "name": "Writing Quizzes",
+              "weight": 15,
+              "dist": "points"
+            }
+          ],
+          "assessments": [
+            {
+              "name": "Midterm Examination",
+              "type": "midterm",
+              "weight": 25,
+              "max": 25,
+              "due": "2026-09-21"
+            },
+            {
+              "name": "Final Examination",
+              "type": "final",
+              "weight": 25,
+              "max": 25,
+              "due": "2026-11-23"
+            },
+            {
+              "name": "Class Attendance",
+              "type": "attendance",
+              "weight": 5,
+              "max": 5
+            },
+            {
+              "name": "Out-of-Class Activity (SALC / English Club)",
+              "type": "custom",
+              "weight": 5,
+              "max": 5
+            },
+            {
+              "name": "Video Worksheets",
+              "type": "assignment",
+              "weight": 5,
+              "max": 5
+            },
+            {
+              "name": "Communication Activity: Unit 1",
+              "type": "presentation",
+              "max": 5,
+              "group": "Communication Activities"
+            },
+            {
+              "name": "Communication Activity: Unit 2",
+              "type": "presentation",
+              "max": 5,
+              "group": "Communication Activities"
+            },
+            {
+              "name": "Communication Activity: Unit 3",
+              "type": "presentation",
+              "max": 5,
+              "group": "Communication Activities"
+            },
+            {
+              "name": "Communication Activity: Unit 4",
+              "type": "presentation",
+              "max": 5,
+              "group": "Communication Activities"
+            },
+            {
+              "name": "Writing Quiz 1 (Unit 2)",
+              "type": "quiz",
+              "max": 5,
+              "group": "Writing Quizzes"
+            },
+            {
+              "name": "Writing Quiz 2 (Unit 3)",
+              "type": "quiz",
+              "max": 10,
+              "group": "Writing Quizzes"
+            }
+          ]
+        },
+        "aka": "EXPERIENTIAL ENGLISH I",
+        "th": "ภาษาอังกฤษเพื่อการเรียนรู้ในชีวิตจริง 1",
+        "sec": "81",
+        "descriptionTh": "ฝึกฟัง พูด อ่าน และเขียนภาษาอังกฤษเพื่อการสื่อสาร การวิเคราะห์ข้อมูล และการนำเสนอด้วยวาจาหรือข้อความ",
+        "descriptionEn": "Four English language skills for communication, analyzing information and presenting findings orally or in writing.",
+        "sourceUrl": "https://www.marine.sc.chula.ac.th/5500111-experiential-english-i/"
+      }
+    },
+    {
+      "id": "cu:5500112",
+      "institution_id": "cu",
+      "code": "5500112",
+      "title_legacy": "EXP ENG II",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "EXP ENG II",
+        "cr": 3,
+        "mid": {
+          "date": "2027-03-01",
+          "time": "08:30-10:30"
+        },
+        "fin": {
+          "date": "2027-04-26",
+          "time": "08:30-10:30"
+        }
+      }
+    },
+    {
+      "id": "cu:5500215",
+      "institution_id": "cu",
+      "code": "5500215",
+      "title_legacy": "BAS BUS ENG WRIT",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BAS BUS ENG WRIT",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:5500225",
+      "institution_id": "cu",
+      "code": "5500225",
+      "title_legacy": "BUS ENG CORRESP",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUS ENG CORRESP",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-23",
+          "time": "13:00-15:00"
+        },
+        "fin": {
+          "date": "2027-04-28",
+          "time": "08:30-10:30"
+        }
+      }
+    },
+    {
+      "id": "cu:5500313",
+      "institution_id": "cu",
+      "code": "5500313",
+      "title_legacy": "BUS ENG ORAL COM",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "BUS ENG ORAL COM",
+        "cr": 3
+      }
+    },
+    {
+      "id": "cu:5500315",
+      "institution_id": "cu",
+      "code": "5500315",
+      "title_legacy": "ADV BUS ORAL COM",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "ADV BUS ORAL COM",
+        "cr": 3,
+        "mid": {
+          "date": "2027-02-25",
+          "time": "13:00-14:30"
+        },
+        "fin": {
+          "date": "2027-04-29",
+          "time": "13:00-14:30"
+        }
+      }
+    },
+    {
+      "id": "cu:5500415",
+      "institution_id": "cu",
+      "code": "5500415",
+      "title_legacy": "EFF ENG COMM (S/U)",
+      "title_th": null,
+      "credits": 3,
+      "owner_unit_id": null,
+      "source_url": null,
+      "status": "legacy_unverified",
+      "legacy": {
+        "n": "EFF ENG COMM (S/U)",
+        "cr": 3
+      }
+    }
+  ],
+  "study_plans": [
+    {
+      "id": "cu:acc-1-1",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บัญชีบัณฑิต",
+      "program_label_en": "Accountancy",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2301119",
+        "cu:2601113",
+        "cu:2900112",
+        "cu:5500111"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "acc-1-1",
+        "th": "บัญชีบัณฑิต",
+        "en": "Accountancy",
+        "mth": "",
+        "men": "",
+        "year": 1,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2301119"
+          },
+          {
+            "c": "2601113"
+          },
+          {
+            "c": "2900112"
+          },
+          {
+            "c": "5500111"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 2 วิชา (รวมตามแผน 19 หน่วยกิต)",
+        "xen": "+ 2 general education courses (19 credits total)",
+        "sth": "บัญชี",
+        "sen": "Accounting",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-1-1",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2301115",
+        "cu:2602122",
+        "cu:2603245",
+        "cu:2900111",
+        "cu:2601115",
+        "cu:5500111"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-1-1",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "",
+        "men": "",
+        "year": 1,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2301115"
+          },
+          {
+            "c": "2602122"
+          },
+          {
+            "c": "2603245"
+          },
+          {
+            "c": "2900111"
+          },
+          {
+            "c": "2601115"
+          },
+          {
+            "c": "5500111"
+          }
+        ],
+        "xth": "วิชาบังคับ 6 วิชา • รวม 15 หน่วยกิตที่นับ GPA + BUS FOUNDATION (S/U, 0 หน่วยกิต)",
+        "xen": "6 required courses • 15 GPA-counted credits + BUS FOUNDATION (S/U, 0 credits)",
+        "sth": "บริหาร (ทุกสาขา)",
+        "sen": "BBA (all majors)"
+      }
+    },
+    {
+      "id": "cu:stat-1-1-bit",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+      "major_label_en": "Business Information Technology",
+      "course_refs": [
+        "cu:5500111",
+        "cu:2301101",
+        "cu:2601115",
+        "cu:2602122",
+        "cu:2603101",
+        "cu:2603174"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-1-1-bit",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+        "men": "Business Information Technology",
+        "year": 1,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500111"
+          },
+          {
+            "c": "2301101"
+          },
+          {
+            "c": "2601115"
+          },
+          {
+            "c": "2602122"
+          },
+          {
+            "c": "2603101"
+          },
+          {
+            "c": "2603174"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา (รวมตามแผน 19 หน่วยกิต)",
+        "xen": "+ 1 GenEd course (19 total credits)",
+        "sth": "สถิติ (BIT)",
+        "sen": "Statistics (BIT)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:stat-1-1-sds",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "สถิติและวิทยาการข้อมูล",
+      "major_label_en": "Statistics & Data Science",
+      "course_refs": [
+        "cu:5500111",
+        "cu:2301101",
+        "cu:2601115",
+        "cu:2602122",
+        "cu:2603101",
+        "cu:2603174"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-1-1-sds",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "สถิติและวิทยาการข้อมูล",
+        "men": "Statistics & Data Science",
+        "year": 1,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500111"
+          },
+          {
+            "c": "2301101"
+          },
+          {
+            "c": "2601115"
+          },
+          {
+            "c": "2602122"
+          },
+          {
+            "c": "2603101"
+          },
+          {
+            "c": "2603174"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา (รวมตามแผน 19 หน่วยกิต)",
+        "xen": "+ 1 GenEd course (19 total credits)",
+        "sth": "สถิติ (Data Science)",
+        "sen": "Statistics (Data Science)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:stat-1-1-ins",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "การประกันภัย",
+      "major_label_en": "Insurance",
+      "course_refs": [
+        "cu:5500111",
+        "cu:2301101",
+        "cu:2601115",
+        "cu:2602122",
+        "cu:2603101",
+        "cu:2603174"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-1-1-ins",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "การประกันภัย",
+        "men": "Insurance",
+        "year": 1,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500111"
+          },
+          {
+            "c": "2301101"
+          },
+          {
+            "c": "2601115"
+          },
+          {
+            "c": "2602122"
+          },
+          {
+            "c": "2603101"
+          },
+          {
+            "c": "2603174"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา (รวมตามแผน 19 หน่วยกิต)",
+        "xen": "+ 1 GenEd course (19 total credits)",
+        "sth": "สถิติ (Insurance)",
+        "sen": "Statistics (Insurance)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:acc-2-1",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บัญชีบัณฑิต",
+      "program_label_en": "Accountancy",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2601114",
+        "cu:2601213",
+        "cu:2603245",
+        "cu:3401255",
+        "cu:5500215",
+        "cu:2601251",
+        "cu:2601352"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "acc-2-1",
+        "th": "บัญชีบัณฑิต",
+        "en": "Accountancy",
+        "mth": "",
+        "men": "",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601114"
+          },
+          {
+            "c": "2601213"
+          },
+          {
+            "c": "2603245"
+          },
+          {
+            "c": "3401255"
+          },
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2601251",
+            "opt": "a"
+          },
+          {
+            "c": "2601352",
+            "opt": "a"
+          }
+        ],
+        "xth": "วิชาลำดับสุดท้ายเลือก AIS หรือ ANAL/DSGN ACCTG DB เพียง 1 วิชา",
+        "xen": "Choose one of AIS / ANAL/DSGN ACCTG DB",
+        "sth": "บัญชี",
+        "sen": "Accounting",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-2-1-ent",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "Entrepreneur",
+      "major_label_en": "Entrepreneur",
+      "course_refs": [
+        "cu:2601255",
+        "cu:2604271",
+        "cu:2604361",
+        "cu:5500215",
+        "cu:2602214",
+        "cu:2602359"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-2-1-ent",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "Entrepreneur",
+        "men": "Entrepreneur",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2604271"
+          },
+          {
+            "c": "2604361"
+          },
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2602214"
+          },
+          {
+            "c": "2602359"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา",
+        "xen": "+ general education as listed in the plan",
+        "sth": "บริหาร (Entrepreneur)",
+        "sen": "BBA (Entrepreneur)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-2-1-log",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "Logistics",
+      "major_label_en": "Logistics",
+      "course_refs": [
+        "cu:2601255",
+        "cu:2604271",
+        "cu:2604361",
+        "cu:5500215",
+        "cu:2602242",
+        "cu:2602359"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-2-1-log",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "Logistics",
+        "men": "Logistics",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2604271"
+          },
+          {
+            "c": "2604361"
+          },
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2602242"
+          },
+          {
+            "c": "2602359"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Logistics)",
+        "sen": "BBA (Logistics)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-2-1-mis",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "ระบบสารสนเทศทางการจัดการ",
+      "major_label_en": "MIS",
+      "course_refs": [
+        "cu:2601255",
+        "cu:2604271",
+        "cu:2604361",
+        "cu:5500215",
+        "cu:2602359"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-2-1-mis",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "ระบบสารสนเทศทางการจัดการ",
+        "men": "MIS",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2604271"
+          },
+          {
+            "c": "2604361"
+          },
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2602359"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา",
+        "xen": "+ general education as listed in the plan",
+        "sth": "บริหาร (MIS)",
+        "sen": "BBA (MIS)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-2-1-mkt",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "การตลาด",
+      "major_label_en": "Marketing",
+      "course_refs": [
+        "cu:2601255",
+        "cu:2604271",
+        "cu:2604361",
+        "cu:5500215",
+        "cu:2605314"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-2-1-mkt",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "การตลาด",
+        "men": "Marketing",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2604271"
+          },
+          {
+            "c": "2604361"
+          },
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2605314"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา",
+        "xen": "+ general education as listed in the plan",
+        "sth": "บริหาร (Marketing)",
+        "sen": "BBA (Marketing)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:fin-2-1",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "การธนาคารและการเงิน",
+      "program_label_en": "Banking & Finance",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2604271",
+        "cu:2604293",
+        "cu:5500215",
+        "cu:2601255",
+        "cu:2604361"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "fin-2-1",
+        "th": "การธนาคารและการเงิน",
+        "en": "Banking & Finance",
+        "mth": "",
+        "men": "",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2604271"
+          },
+          {
+            "c": "2604293"
+          },
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2604361"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Finance)",
+        "sen": "BBA (Finance)"
+      }
+    },
+    {
+      "id": "cu:stat-2-1-bit",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+      "major_label_en": "Business Information Technology",
+      "course_refs": [
+        "cu:5500215",
+        "cu:2301333",
+        "cu:2601255",
+        "cu:2603313",
+        "cu:2603318"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-2-1-bit",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+        "men": "Business Information Technology",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2301333"
+          },
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2603313"
+          },
+          {
+            "c": "2603318"
+          }
+        ],
+        "xth": "+ วิชาเลือก 2 วิชา",
+        "xen": "+ 2 electives",
+        "sth": "สถิติ (BIT)",
+        "sen": "Statistics (BIT)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:stat-2-1-sds",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "สถิติและวิทยาการข้อมูล",
+      "major_label_en": "Statistics & Data Science",
+      "course_refs": [
+        "cu:5500215",
+        "cu:2301333",
+        "cu:2603313",
+        "cu:2603318",
+        "cu:2603272"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-2-1-sds",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "สถิติและวิทยาการข้อมูล",
+        "men": "Statistics & Data Science",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2301333"
+          },
+          {
+            "c": "2603313"
+          },
+          {
+            "c": "2603318"
+          },
+          {
+            "c": "2603272"
+          }
+        ],
+        "xth": "+ วิชาเลือก 1 วิชา",
+        "xen": "+ 1 elective",
+        "sth": "สถิติ (Data Science)",
+        "sen": "Statistics (Data Science)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:stat-2-1-ins",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "การประกันภัย",
+      "major_label_en": "Insurance",
+      "course_refs": [
+        "cu:5500215",
+        "cu:2301333",
+        "cu:2603313",
+        "cu:2603318",
+        "cu:2603240",
+        "cu:2603335"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-2-1-ins",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "การประกันภัย",
+        "men": "Insurance",
+        "year": 2,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500215"
+          },
+          {
+            "c": "2301333"
+          },
+          {
+            "c": "2603313"
+          },
+          {
+            "c": "2603318"
+          },
+          {
+            "c": "2603240"
+          },
+          {
+            "c": "2603335"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "สถิติ (Insurance)",
+        "sen": "Statistics (Insurance)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:acc-3-1",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บัญชีบัณฑิต",
+      "program_label_en": "Accountancy",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2601361",
+        "cu:2601414",
+        "cu:2601421",
+        "cu:2601422",
+        "cu:2605311",
+        "cu:5500313"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "acc-3-1",
+        "th": "บัญชีบัณฑิต",
+        "en": "Accountancy",
+        "mth": "",
+        "men": "",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601361",
+            "opt": "a"
+          },
+          {
+            "c": "2601414",
+            "opt": "a"
+          },
+          {
+            "c": "2601421",
+            "opt": "b"
+          },
+          {
+            "c": "2601422",
+            "opt": "b"
+          },
+          {
+            "c": "2605311"
+          },
+          {
+            "c": "5500313"
+          }
+        ],
+        "xth": "เลือก AUDITING หรือ TAXATION 1 วิชา และ ADV ACCOUNTING I หรือ II 1 วิชา + วิชาเลือก 2 วิชา",
+        "xen": "Choose AUDITING/TAXATION and ADV ACCOUNTING I/II, plus 2 electives",
+        "sth": "บัญชี",
+        "sen": "Accounting",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-3-1-ent",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "Entrepreneur",
+      "major_label_en": "Entrepreneur",
+      "course_refs": [
+        "cu:2602344",
+        "cu:3401255",
+        "cu:5500313",
+        "cu:2602371",
+        "cu:2605314"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-3-1-ent",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "Entrepreneur",
+        "men": "Entrepreneur",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602344"
+          },
+          {
+            "c": "3401255"
+          },
+          {
+            "c": "5500313"
+          },
+          {
+            "c": "2602371"
+          },
+          {
+            "c": "2605314"
+          }
+        ],
+        "xth": "+ วิชาเลือก 1 วิชา",
+        "xen": "+ electives as specified in uploaded timetable",
+        "sth": "บริหาร (Entrepreneur)",
+        "sen": "BBA (Entrepreneur)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-3-1-log",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "Logistics",
+      "major_label_en": "Logistics",
+      "course_refs": [
+        "cu:2602344",
+        "cu:3401255",
+        "cu:5500313",
+        "cu:2602371",
+        "cu:2602377"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-3-1-log",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "Logistics",
+        "men": "Logistics",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602344"
+          },
+          {
+            "c": "3401255"
+          },
+          {
+            "c": "5500313"
+          },
+          {
+            "c": "2602371"
+          },
+          {
+            "c": "2602377"
+          }
+        ],
+        "xth": "+ วิชาเลือกสาขา 1 วิชา และวิชาศึกษาทั่วไป 1 วิชา",
+        "xen": "+ electives as specified in uploaded timetable",
+        "sth": "บริหาร (Logistics)",
+        "sen": "BBA (Logistics)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-3-1-mis",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "ระบบสารสนเทศทางการจัดการ",
+      "major_label_en": "MIS",
+      "course_refs": [
+        "cu:2602344",
+        "cu:3401255",
+        "cu:5500313",
+        "cu:2602429",
+        "cu:2602349"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-3-1-mis",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "ระบบสารสนเทศทางการจัดการ",
+        "men": "MIS",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602344"
+          },
+          {
+            "c": "3401255"
+          },
+          {
+            "c": "5500313"
+          },
+          {
+            "c": "2602429"
+          },
+          {
+            "c": "2602349"
+          }
+        ],
+        "xth": "+ วิชาเลือก 1 วิชา",
+        "xen": "+ electives as specified in uploaded timetable",
+        "sth": "บริหาร (MIS)",
+        "sen": "BBA (MIS)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:bba-3-1-mkt",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "การตลาด",
+      "major_label_en": "Marketing",
+      "course_refs": [
+        "cu:2602344",
+        "cu:3401255",
+        "cu:5500313",
+        "cu:2605410",
+        "cu:2605452",
+        "cu:2605414"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-3-1-mkt",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "การตลาด",
+        "men": "Marketing",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602344"
+          },
+          {
+            "c": "3401255"
+          },
+          {
+            "c": "5500313"
+          },
+          {
+            "c": "2605410"
+          },
+          {
+            "c": "2605452"
+          },
+          {
+            "c": "2605414"
+          }
+        ],
+        "xth": "+ วิชาเลือกสาขา 1 วิชา",
+        "xen": "+ electives as specified in uploaded timetable",
+        "sth": "บริหาร (Marketing)",
+        "sen": "BBA (Marketing)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:fin-3-1",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "การธนาคารและการเงิน",
+      "program_label_en": "Banking & Finance",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:3401255",
+        "cu:2601317",
+        "cu:5500313",
+        "cu:2604332",
+        "cu:2604313",
+        "cu:2602344"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "fin-3-1",
+        "th": "การธนาคารและการเงิน",
+        "en": "Banking & Finance",
+        "mth": "",
+        "men": "",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "3401255"
+          },
+          {
+            "c": "2601317"
+          },
+          {
+            "c": "5500313"
+          },
+          {
+            "c": "2604332"
+          },
+          {
+            "c": "2604313"
+          },
+          {
+            "c": "2602344"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Finance)",
+        "sen": "BBA (Finance)"
+      }
+    },
+    {
+      "id": "cu:stat-3-1-bit",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+      "major_label_en": "Business Information Technology",
+      "course_refs": [
+        "cu:5500313",
+        "cu:2603372",
+        "cu:2603278",
+        "cu:2603371",
+        "cu:2603373",
+        "cu:2603468",
+        "cu:2603275",
+        "cu:2603389"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-3-1-bit",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+        "men": "Business Information Technology",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500313"
+          },
+          {
+            "c": "2603372"
+          },
+          {
+            "c": "2603278"
+          },
+          {
+            "c": "2603371"
+          },
+          {
+            "c": "2603373"
+          },
+          {
+            "c": "2603468"
+          },
+          {
+            "c": "2603275",
+            "opt": "a"
+          },
+          {
+            "c": "2603389",
+            "opt": "a"
+          }
+        ],
+        "xth": "+ วิชาเลือก 1 วิชา / มีวิชาเลือกสาขาแนะนำ",
+        "xen": "+ 1 elective / suggested major electives",
+        "sth": "สถิติ (BIT)",
+        "sen": "Statistics (BIT)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:stat-3-1-sds",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "สถิติและวิทยาการข้อมูล",
+      "major_label_en": "Statistics & Data Science",
+      "course_refs": [
+        "cu:5500313",
+        "cu:2603372",
+        "cu:2603434",
+        "cu:2603439",
+        "cu:2603522",
+        "cu:2603536"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-3-1-sds",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "สถิติและวิทยาการข้อมูล",
+        "men": "Statistics & Data Science",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500313"
+          },
+          {
+            "c": "2603372"
+          },
+          {
+            "c": "2603434"
+          },
+          {
+            "c": "2603439"
+          },
+          {
+            "c": "2603522",
+            "opt": "a"
+          },
+          {
+            "c": "2603536",
+            "opt": "a"
+          }
+        ],
+        "xth": "+ วิชาเลือก 3 วิชา / มีวิชาเลือกสาขาแนะนำ",
+        "xen": "+ 3 electives / suggested major electives",
+        "sth": "สถิติ (Data Science)",
+        "sen": "Statistics (Data Science)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:stat-3-1-ins",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "การประกันภัย",
+      "major_label_en": "Insurance",
+      "course_refs": [
+        "cu:5500313",
+        "cu:2603372",
+        "cu:2603341",
+        "cu:2604294",
+        "cu:2900151"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-3-1-ins",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "การประกันภัย",
+        "men": "Insurance",
+        "year": 3,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500313"
+          },
+          {
+            "c": "2603372"
+          },
+          {
+            "c": "2603341"
+          },
+          {
+            "c": "2604294"
+          },
+          {
+            "c": "2900151",
+            "opt": "a"
+          }
+        ],
+        "xth": "+ วิชาเลือก 3 วิชา / FOUNDATION ECON เป็นวิชาเลือกแนะนำ",
+        "xen": "+ 3 electives / FOUNDATION ECON suggested",
+        "sth": "สถิติ (Insurance)",
+        "sen": "Statistics (Insurance)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:acc-4-1",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บัญชีบัณฑิต",
+      "program_label_en": "Accountancy",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2601354",
+        "cu:5500415",
+        "cu:2601431",
+        "cu:2602416"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "acc-4-1",
+        "th": "บัญชีบัณฑิต",
+        "en": "Accountancy",
+        "mth": "",
+        "men": "",
+        "year": 4,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601354",
+            "opt": "a"
+          },
+          {
+            "c": "5500415",
+            "opt": "a"
+          },
+          {
+            "c": "2601431",
+            "opt": "b"
+          },
+          {
+            "c": "2602416",
+            "opt": "b"
+          }
+        ],
+        "xth": "เลือก 1 วิชาจากแต่ละคู่ + วิชาเลือก/วิชาบังคับเลือกเพิ่มเติม ตามแผน PDF",
+        "xen": "Choose 1 from each pair plus prescribed electives",
+        "sth": "บัญชี",
+        "sen": "Accounting",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:fin-4-1",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "การธนาคารและการเงิน",
+      "program_label_en": "Banking & Finance",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2602416",
+        "cu:5500415",
+        "cu:2604363",
+        "cu:2604465",
+        "cu:2604491",
+        "cu:2604477",
+        "cu:2604482",
+        "cu:2604433"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "fin-4-1",
+        "th": "การธนาคารและการเงิน",
+        "en": "Banking & Finance",
+        "mth": "",
+        "men": "",
+        "year": 4,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602416"
+          },
+          {
+            "c": "5500415"
+          },
+          {
+            "c": "2604363",
+            "opt": "e"
+          },
+          {
+            "c": "2604465",
+            "opt": "e"
+          },
+          {
+            "c": "2604491",
+            "opt": "e"
+          },
+          {
+            "c": "2604477",
+            "opt": "e"
+          },
+          {
+            "c": "2604482",
+            "opt": "e"
+          },
+          {
+            "c": "2604433",
+            "opt": "e"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Finance)",
+        "sen": "BBA (Finance)"
+      }
+    },
+    {
+      "id": "cu:stat-4-1-bit",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+      "major_label_en": "Business Information Technology",
+      "course_refs": [
+        "cu:5500415",
+        "cu:2603496",
+        "cu:2603275",
+        "cu:2603389",
+        "cu:2603469",
+        "cu:2603483",
+        "cu:2603491"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-4-1-bit",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+        "men": "Business Information Technology",
+        "year": 4,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500415"
+          },
+          {
+            "c": "2603496"
+          },
+          {
+            "c": "2603275",
+            "opt": "a"
+          },
+          {
+            "c": "2603389",
+            "opt": "a"
+          },
+          {
+            "c": "2603469",
+            "opt": "a"
+          },
+          {
+            "c": "2603483",
+            "opt": "a"
+          },
+          {
+            "c": "2603491",
+            "opt": "a"
+          }
+        ],
+        "xth": "+ วิชาเลือก 3 วิชา / มีวิชาเลือกสาขาแนะนำ",
+        "xen": "+ 3 electives / suggested major electives",
+        "sth": "สถิติ (BIT)",
+        "sen": "Statistics (BIT)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:stat-4-1-sds",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "สถิติและวิทยาการข้อมูล",
+      "major_label_en": "Statistics & Data Science",
+      "course_refs": [
+        "cu:5500415",
+        "cu:2603411",
+        "cu:2603418",
+        "cu:2603499",
+        "cu:2603520",
+        "cu:2603521",
+        "cu:2603522",
+        "cu:2603536"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-4-1-sds",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "สถิติและวิทยาการข้อมูล",
+        "men": "Statistics & Data Science",
+        "year": 4,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500415"
+          },
+          {
+            "c": "2603411"
+          },
+          {
+            "c": "2603418"
+          },
+          {
+            "c": "2603499"
+          },
+          {
+            "c": "2603520",
+            "opt": "a"
+          },
+          {
+            "c": "2603521",
+            "opt": "a"
+          },
+          {
+            "c": "2603522",
+            "opt": "a"
+          },
+          {
+            "c": "2603536",
+            "opt": "a"
+          }
+        ],
+        "xth": "+ วิชาเลือก 2 วิชา / มีวิชาเลือกสาขาแนะนำ",
+        "xen": "+ 2 electives / suggested major electives",
+        "sth": "สถิติ (Data Science)",
+        "sen": "Statistics (Data Science)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:stat-4-1-ins",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "การประกันภัย",
+      "major_label_en": "Insurance",
+      "course_refs": [
+        "cu:5500415",
+        "cu:2603492",
+        "cu:2603497",
+        "cu:2604332",
+        "cu:2604495",
+        "cu:2900151"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-4-1-ins",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "การประกันภัย",
+        "men": "Insurance",
+        "year": 4,
+        "term": 1,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500415"
+          },
+          {
+            "c": "2603492"
+          },
+          {
+            "c": "2603497"
+          },
+          {
+            "c": "2604332",
+            "opt": "a"
+          },
+          {
+            "c": "2604495",
+            "opt": "a"
+          },
+          {
+            "c": "2900151",
+            "opt": "a"
+          }
+        ],
+        "xth": "+ วิชาเลือก 2 วิชา / มีวิชาเลือกสาขาแนะนำ",
+        "xen": "+ 2 electives / suggested major electives",
+        "sth": "สถิติ (Insurance)",
+        "sen": "Statistics (Insurance)",
+        "source": "uploaded-fall-2569-pdf"
+      }
+    },
+    {
+      "id": "cu:acc-1-2",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บัญชีบัณฑิต",
+      "program_label_en": "Accountancy (BAcc)",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2601212",
+        "cu:2602313",
+        "cu:2900111",
+        "cu:5500112"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "acc-1-2",
+        "th": "บัญชีบัณฑิต",
+        "en": "Accountancy (BAcc)",
+        "mth": "",
+        "men": "",
+        "year": 1,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601212"
+          },
+          {
+            "c": "2602313"
+          },
+          {
+            "c": "2900111"
+          },
+          {
+            "c": "5500112"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 2 วิชา",
+        "xen": "+ 2 general education courses",
+        "sth": "บัญชี",
+        "sen": "Accounting"
+      }
+    },
+    {
+      "id": "cu:bba-1-2",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2601116",
+        "cu:2602313",
+        "cu:2604161",
+        "cu:2605311",
+        "cu:5500112"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-1-2",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "",
+        "men": "",
+        "year": 1,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601116"
+          },
+          {
+            "c": "2602313"
+          },
+          {
+            "c": "2604161"
+          },
+          {
+            "c": "2605311"
+          },
+          {
+            "c": "5500112"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา",
+        "xen": "+ 1 general education course",
+        "sth": "บริหาร (รวม)",
+        "sen": "BBA (all majors)"
+      }
+    },
+    {
+      "id": "cu:stat-1-2-bit",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+      "major_label_en": "Business Information Technology",
+      "course_refs": [
+        "cu:5500112",
+        "cu:2301102",
+        "cu:2601255",
+        "cu:2603312",
+        "cu:2603386",
+        "cu:2603279"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-1-2-bit",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+        "men": "Business Information Technology",
+        "year": 1,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500112"
+          },
+          {
+            "c": "2301102"
+          },
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2603312"
+          },
+          {
+            "c": "2603386"
+          },
+          {
+            "c": "2603279"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "สถิติ (BIT)",
+        "sen": "Statistics (BIT)"
+      }
+    },
+    {
+      "id": "cu:stat-1-2-sds",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "สถิติและวิทยาการข้อมูล",
+      "major_label_en": "Statistics & Data Science",
+      "course_refs": [
+        "cu:5500112",
+        "cu:2301102",
+        "cu:2601255",
+        "cu:2603312",
+        "cu:2603386"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-1-2-sds",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "สถิติและวิทยาการข้อมูล",
+        "men": "Statistics & Data Science",
+        "year": 1,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500112"
+          },
+          {
+            "c": "2301102"
+          },
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2603312"
+          },
+          {
+            "c": "2603386"
+          }
+        ],
+        "xth": "+ วิชาเลือกเสรีหรือวิชาศึกษาทั่วไป",
+        "xen": "+ a free elective or general education",
+        "sth": "สถิติ (Data Science)",
+        "sen": "Statistics (Data Science)"
+      }
+    },
+    {
+      "id": "cu:stat-1-2-ins",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "การประกันภัย",
+      "major_label_en": "Insurance",
+      "course_refs": [
+        "cu:5500112",
+        "cu:2301102",
+        "cu:2601255",
+        "cu:2603312",
+        "cu:2603140"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-1-2-ins",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "การประกันภัย",
+        "men": "Insurance",
+        "year": 1,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500112"
+          },
+          {
+            "c": "2301102"
+          },
+          {
+            "c": "2601255"
+          },
+          {
+            "c": "2603312"
+          },
+          {
+            "c": "2603140"
+          }
+        ],
+        "xth": "+ วิชาเลือกเสรีหรือวิชาศึกษาทั่วไป",
+        "xen": "+ a free elective or general education",
+        "sth": "สถิติ (ประกันภัย)",
+        "sen": "Statistics (Insurance)"
+      }
+    },
+    {
+      "id": "cu:acc-2-2",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บัญชีบัณฑิต",
+      "program_label_en": "Accountancy (BAcc)",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2601231",
+        "cu:2603330",
+        "cu:2604294",
+        "cu:3401256",
+        "cu:5500225",
+        "cu:2601251",
+        "cu:2601352"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "acc-2-2",
+        "th": "บัญชีบัณฑิต",
+        "en": "Accountancy (BAcc)",
+        "mth": "",
+        "men": "",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601231"
+          },
+          {
+            "c": "2603330"
+          },
+          {
+            "c": "2604294"
+          },
+          {
+            "c": "3401256"
+          },
+          {
+            "c": "5500225"
+          },
+          {
+            "c": "2601251",
+            "opt": "a"
+          },
+          {
+            "c": "2601352",
+            "opt": "a"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บัญชี",
+        "sen": "Accounting"
+      }
+    },
+    {
+      "id": "cu:bba-2-2-ent",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "Entrepreneur",
+      "major_label_en": "Entrepreneur",
+      "course_refs": [
+        "cu:2602327",
+        "cu:2602432",
+        "cu:2603330",
+        "cu:5500225"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-2-2-ent",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "Entrepreneur",
+        "men": "Entrepreneur",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602327"
+          },
+          {
+            "c": "2602432"
+          },
+          {
+            "c": "2603330"
+          },
+          {
+            "c": "5500225"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป และวิชาเลือกเสรี",
+        "xen": "+ general education and free elective",
+        "sth": "บริหาร (Entrepreneur)",
+        "sen": "BBA (Entrepreneur)"
+      }
+    },
+    {
+      "id": "cu:bba-2-2-log",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "Logistics",
+      "major_label_en": "Logistics",
+      "course_refs": [
+        "cu:2602327",
+        "cu:2602374",
+        "cu:2602432",
+        "cu:2603330",
+        "cu:5500225"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-2-2-log",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "Logistics",
+        "men": "Logistics",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602327"
+          },
+          {
+            "c": "2602374"
+          },
+          {
+            "c": "2602432"
+          },
+          {
+            "c": "2603330"
+          },
+          {
+            "c": "5500225"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา",
+        "xen": "+ 1 general education course",
+        "sth": "บริหาร (Logistics)",
+        "sen": "BBA (Logistics)"
+      }
+    },
+    {
+      "id": "cu:bba-2-2-mis",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "ระบบสารสนเทศทางการจัดการ",
+      "major_label_en": "Management Information Systems",
+      "course_refs": [
+        "cu:2602327",
+        "cu:2602365",
+        "cu:2602432",
+        "cu:2602446",
+        "cu:2603330",
+        "cu:5500225"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-2-2-mis",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "ระบบสารสนเทศทางการจัดการ",
+        "men": "Management Information Systems",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602327"
+          },
+          {
+            "c": "2602365"
+          },
+          {
+            "c": "2602432"
+          },
+          {
+            "c": "2602446"
+          },
+          {
+            "c": "2603330"
+          },
+          {
+            "c": "5500225"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา",
+        "xen": "+ 1 general education course",
+        "sth": "บริหาร (MIS)",
+        "sen": "BBA (MIS)"
+      }
+    },
+    {
+      "id": "cu:bba-2-2-mkt",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "การตลาด",
+      "major_label_en": "Marketing",
+      "course_refs": [
+        "cu:2602327",
+        "cu:2603330",
+        "cu:2605325",
+        "cu:5500225"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-2-2-mkt",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "การตลาด",
+        "men": "Marketing",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602327"
+          },
+          {
+            "c": "2603330"
+          },
+          {
+            "c": "2605325"
+          },
+          {
+            "c": "5500225"
+          }
+        ],
+        "xth": "+ วิชาศึกษาทั่วไป 1 วิชา",
+        "xen": "+ 1 general education course",
+        "sth": "บริหาร (การตลาด)",
+        "sen": "BBA (Marketing)"
+      }
+    },
+    {
+      "id": "cu:fin-2-2",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "การธนาคารและการเงิน",
+      "program_label_en": "Banking & Finance",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2604234",
+        "cu:2603330",
+        "cu:2604112",
+        "cu:2602327",
+        "cu:5500225"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "fin-2-2",
+        "th": "การธนาคารและการเงิน",
+        "en": "Banking & Finance",
+        "mth": "",
+        "men": "",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2604234"
+          },
+          {
+            "c": "2603330"
+          },
+          {
+            "c": "2604112"
+          },
+          {
+            "c": "2602327"
+          },
+          {
+            "c": "5500225"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Finance)",
+        "sen": "BBA (Finance)"
+      }
+    },
+    {
+      "id": "cu:stat-2-2-bit",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+      "major_label_en": "Business Information Technology",
+      "course_refs": [
+        "cu:5500225",
+        "cu:2603321",
+        "cu:2603272",
+        "cu:2603388",
+        "cu:2603276"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-2-2-bit",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+        "men": "Business Information Technology",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500225"
+          },
+          {
+            "c": "2603321"
+          },
+          {
+            "c": "2603272"
+          },
+          {
+            "c": "2603388"
+          },
+          {
+            "c": "2603276"
+          }
+        ],
+        "xth": "+ วิชาเลือก 1 วิชา",
+        "xen": "+ 1 elective",
+        "sth": "สถิติ (BIT)",
+        "sen": "Statistics (BIT)"
+      }
+    },
+    {
+      "id": "cu:stat-2-2-sds",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "สถิติและวิทยาการข้อมูล",
+      "major_label_en": "Statistics & Data Science",
+      "course_refs": [
+        "cu:5500225",
+        "cu:2603321",
+        "cu:2603371",
+        "cu:2603311",
+        "cu:2301366"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-2-2-sds",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "สถิติและวิทยาการข้อมูล",
+        "men": "Statistics & Data Science",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500225"
+          },
+          {
+            "c": "2603321"
+          },
+          {
+            "c": "2603371"
+          },
+          {
+            "c": "2603311"
+          },
+          {
+            "c": "2301366"
+          }
+        ],
+        "xth": "+ วิชาเลือก 1 วิชา",
+        "xen": "+ 1 elective",
+        "sth": "สถิติ (Data Science)",
+        "sen": "Statistics (Data Science)"
+      }
+    },
+    {
+      "id": "cu:stat-2-2-ins",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "การประกันภัย",
+      "major_label_en": "Insurance",
+      "course_refs": [
+        "cu:5500225",
+        "cu:2603321",
+        "cu:2603272",
+        "cu:2603340",
+        "cu:2603441"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-2-2-ins",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "การประกันภัย",
+        "men": "Insurance",
+        "year": 2,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500225"
+          },
+          {
+            "c": "2603321"
+          },
+          {
+            "c": "2603272"
+          },
+          {
+            "c": "2603340"
+          },
+          {
+            "c": "2603441"
+          }
+        ],
+        "xth": "+ วิชาเลือก 1 วิชา",
+        "xen": "+ 1 elective",
+        "sth": "สถิติ (ประกันภัย)",
+        "sen": "Statistics (Insurance)"
+      }
+    },
+    {
+      "id": "cu:acc-3-2",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บัญชีบัณฑิต",
+      "program_label_en": "Accountancy (BAcc)",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2602327",
+        "cu:5500315",
+        "cu:2601361",
+        "cu:2601414",
+        "cu:2601421",
+        "cu:2601422"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "acc-3-2",
+        "th": "บัญชีบัณฑิต",
+        "en": "Accountancy (BAcc)",
+        "mth": "",
+        "men": "",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602327"
+          },
+          {
+            "c": "5500315"
+          },
+          {
+            "c": "2601361",
+            "opt": "a"
+          },
+          {
+            "c": "2601414",
+            "opt": "a"
+          },
+          {
+            "c": "2601421",
+            "opt": "b"
+          },
+          {
+            "c": "2601422",
+            "opt": "b"
+          }
+        ],
+        "xth": "+ วิชาเลือก 300+ ของคณะหรือวิชาเลือกเสรี และวิชาบังคับเลือก",
+        "xen": "+ a faculty 300+ elective or free elective, and a required elective",
+        "sth": "บัญชี",
+        "sen": "Accounting"
+      }
+    },
+    {
+      "id": "cu:bba-3-2-ent",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "Entrepreneur",
+      "major_label_en": "Entrepreneur",
+      "course_refs": [
+        "cu:2602317",
+        "cu:2602363",
+        "cu:2602399",
+        "cu:2604468",
+        "cu:3401256",
+        "cu:5500315"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-3-2-ent",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "Entrepreneur",
+        "men": "Entrepreneur",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602317"
+          },
+          {
+            "c": "2602363"
+          },
+          {
+            "c": "2602399"
+          },
+          {
+            "c": "2604468"
+          },
+          {
+            "c": "3401256"
+          },
+          {
+            "c": "5500315"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Entrepreneur)",
+        "sen": "BBA (Entrepreneur)"
+      }
+    },
+    {
+      "id": "cu:bba-3-2-log",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "Logistics",
+      "major_label_en": "Logistics",
+      "course_refs": [
+        "cu:2602349",
+        "cu:2602363",
+        "cu:2602383",
+        "cu:3401256",
+        "cu:5500315",
+        "cu:2602381"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-3-2-log",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "Logistics",
+        "men": "Logistics",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602349"
+          },
+          {
+            "c": "2602363"
+          },
+          {
+            "c": "2602383"
+          },
+          {
+            "c": "3401256"
+          },
+          {
+            "c": "5500315"
+          },
+          {
+            "c": "2602381"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Logistics)",
+        "sen": "BBA (Logistics)"
+      }
+    },
+    {
+      "id": "cu:bba-3-2-mis",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "ระบบสารสนเทศทางการจัดการ",
+      "major_label_en": "Management Information Systems",
+      "course_refs": [
+        "cu:2602355",
+        "cu:2602363",
+        "cu:3401256",
+        "cu:5500315",
+        "cu:2602367",
+        "cu:2602364"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-3-2-mis",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "ระบบสารสนเทศทางการจัดการ",
+        "men": "Management Information Systems",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602355"
+          },
+          {
+            "c": "2602363"
+          },
+          {
+            "c": "3401256"
+          },
+          {
+            "c": "5500315"
+          },
+          {
+            "c": "2602367",
+            "opt": "a"
+          },
+          {
+            "c": "2602364",
+            "opt": "a"
+          }
+        ],
+        "xth": "+ วิชาเลือก 1 วิชา",
+        "xen": "+ 1 elective",
+        "sth": "บริหาร (MIS)",
+        "sen": "BBA (MIS)"
+      }
+    },
+    {
+      "id": "cu:bba-3-2-mkt",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บริหารธุรกิจบัณฑิต",
+      "program_label_en": "Business Administration (BBA)",
+      "major_label_th": "การตลาด",
+      "major_label_en": "Marketing",
+      "course_refs": [
+        "cu:2605412",
+        "cu:2605425",
+        "cu:3401256",
+        "cu:5500315"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "bba-3-2-mkt",
+        "th": "บริหารธุรกิจบัณฑิต",
+        "en": "Business Administration (BBA)",
+        "mth": "การตลาด",
+        "men": "Marketing",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2605412"
+          },
+          {
+            "c": "2605425"
+          },
+          {
+            "c": "3401256"
+          },
+          {
+            "c": "5500315"
+          }
+        ],
+        "xth": "+ วิชาเลือกสาขา 2 วิชา และวิชาเลือกเสรี",
+        "xen": "+ 2 major electives and a free elective",
+        "sth": "บริหาร (การตลาด)",
+        "sen": "BBA (Marketing)"
+      }
+    },
+    {
+      "id": "cu:fin-3-2",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "การธนาคารและการเงิน",
+      "program_label_en": "Banking & Finance",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:3401256",
+        "cu:2604463",
+        "cu:2604467",
+        "cu:5500315",
+        "cu:2604481",
+        "cu:2604475"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "fin-3-2",
+        "th": "การธนาคารและการเงิน",
+        "en": "Banking & Finance",
+        "mth": "",
+        "men": "",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "3401256"
+          },
+          {
+            "c": "2604463"
+          },
+          {
+            "c": "2604467"
+          },
+          {
+            "c": "5500315"
+          },
+          {
+            "c": "2604481",
+            "opt": "e"
+          },
+          {
+            "c": "2604475",
+            "opt": "e"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Finance)",
+        "sen": "BBA (Finance)"
+      }
+    },
+    {
+      "id": "cu:stat-3-2-bit",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+      "major_label_en": "Business Information Technology",
+      "course_refs": [
+        "cu:5500315",
+        "cu:2603374",
+        "cu:2603473",
+        "cu:2603322",
+        "cu:2603476",
+        "cu:2603485",
+        "cu:2603487",
+        "cu:2603498"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-3-2-bit",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "เทคโนโลยีสารสนเทศเพื่อธุรกิจ",
+        "men": "Business Information Technology",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500315"
+          },
+          {
+            "c": "2603374"
+          },
+          {
+            "c": "2603473"
+          },
+          {
+            "c": "2603322",
+            "opt": "e"
+          },
+          {
+            "c": "2603476",
+            "opt": "e"
+          },
+          {
+            "c": "2603485",
+            "opt": "e"
+          },
+          {
+            "c": "2603487",
+            "opt": "e"
+          },
+          {
+            "c": "2603498",
+            "opt": "e"
+          }
+        ],
+        "xth": "+ วิชาเลือก 3 วิชา",
+        "xen": "+ 3 electives",
+        "sth": "สถิติ (BIT)",
+        "sen": "Statistics (BIT)"
+      }
+    },
+    {
+      "id": "cu:stat-3-2-sds",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "สถิติและวิทยาการข้อมูล",
+      "major_label_en": "Statistics & Data Science",
+      "course_refs": [
+        "cu:5500315",
+        "cu:2603278",
+        "cu:2603498",
+        "cu:2603320",
+        "cu:2603436",
+        "cu:2603437",
+        "cu:2603538"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-3-2-sds",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "สถิติและวิทยาการข้อมูล",
+        "men": "Statistics & Data Science",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500315"
+          },
+          {
+            "c": "2603278"
+          },
+          {
+            "c": "2603498"
+          },
+          {
+            "c": "2603320",
+            "opt": "e"
+          },
+          {
+            "c": "2603436",
+            "opt": "e"
+          },
+          {
+            "c": "2603437",
+            "opt": "e"
+          },
+          {
+            "c": "2603538",
+            "opt": "e"
+          }
+        ],
+        "xth": "+ วิชาเลือก 3 วิชา",
+        "xen": "+ 3 electives",
+        "sth": "สถิติ (Data Science)",
+        "sen": "Statistics (Data Science)"
+      }
+    },
+    {
+      "id": "cu:stat-3-2-ins",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "สถิติศาสตรบัณฑิต",
+      "program_label_en": "Statistics",
+      "major_label_th": "การประกันภัย",
+      "major_label_en": "Insurance",
+      "course_refs": [
+        "cu:5500315",
+        "cu:2603278",
+        "cu:2603347",
+        "cu:2603498",
+        "cu:2603538"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "stat-3-2-ins",
+        "th": "สถิติศาสตรบัณฑิต",
+        "en": "Statistics",
+        "mth": "การประกันภัย",
+        "men": "Insurance",
+        "year": 3,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "5500315"
+          },
+          {
+            "c": "2603278"
+          },
+          {
+            "c": "2603347"
+          },
+          {
+            "c": "2603498",
+            "opt": "e"
+          },
+          {
+            "c": "2603538",
+            "opt": "e"
+          }
+        ],
+        "xth": "+ วิชาเลือก 3 วิชา",
+        "xen": "+ 3 electives",
+        "sth": "สถิติ (ประกันภัย)",
+        "sen": "Statistics (Insurance)"
+      }
+    },
+    {
+      "id": "cu:acc-4-2",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "บัญชีบัณฑิต",
+      "program_label_en": "Accountancy (BAcc)",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2601431",
+        "cu:2602416",
+        "cu:2601493",
+        "cu:2601494",
+        "cu:2601495",
+        "cu:5500415",
+        "cu:2601354"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "acc-4-2",
+        "th": "บัญชีบัณฑิต",
+        "en": "Accountancy (BAcc)",
+        "mth": "",
+        "men": "",
+        "year": 4,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2601431",
+            "opt": "a"
+          },
+          {
+            "c": "2602416",
+            "opt": "a"
+          },
+          {
+            "c": "2601493",
+            "opt": "b"
+          },
+          {
+            "c": "2601494",
+            "opt": "b"
+          },
+          {
+            "c": "2601495",
+            "opt": "b"
+          },
+          {
+            "c": "5500415",
+            "opt": "c"
+          },
+          {
+            "c": "2601354",
+            "opt": "c"
+          }
+        ],
+        "xth": "+ วิชาเลือก 300 ขึ้นไปหรือวิชาเลือกเสรี",
+        "xen": "+ a 300+ elective or free elective",
+        "sth": "บัญชี",
+        "sen": "Accounting"
+      }
+    },
+    {
+      "id": "cu:fin-4-2",
+      "institution_id": "cu",
+      "academic_year_be": "2569",
+      "program_label_th": "การธนาคารและการเงิน",
+      "program_label_en": "Banking & Finance",
+      "major_label_th": null,
+      "major_label_en": null,
+      "course_refs": [
+        "cu:2602416",
+        "cu:5500415",
+        "cu:2604468",
+        "cu:2604482",
+        "cu:2604465",
+        "cu:2604314",
+        "cu:2604433",
+        "cu:2604334",
+        "cu:2604495",
+        "cu:2604467",
+        "cu:2604477"
+      ],
+      "status": "legacy_unverified",
+      "legacy": {
+        "id": "fin-4-2",
+        "th": "การธนาคารและการเงิน",
+        "en": "Banking & Finance",
+        "mth": "",
+        "men": "",
+        "year": 4,
+        "term": 2,
+        "ay": "2569",
+        "items": [
+          {
+            "c": "2602416"
+          },
+          {
+            "c": "5500415"
+          },
+          {
+            "c": "2604468",
+            "opt": "e"
+          },
+          {
+            "c": "2604482",
+            "opt": "e"
+          },
+          {
+            "c": "2604465",
+            "opt": "e"
+          },
+          {
+            "c": "2604314",
+            "opt": "e"
+          },
+          {
+            "c": "2604433",
+            "opt": "e"
+          },
+          {
+            "c": "2604334",
+            "opt": "e"
+          },
+          {
+            "c": "2604495",
+            "opt": "e"
+          },
+          {
+            "c": "2604467",
+            "opt": "e"
+          },
+          {
+            "c": "2604477",
+            "opt": "e"
+          }
+        ],
+        "xth": "",
+        "xen": "",
+        "sth": "บริหาร (Finance)",
+        "sen": "BBA (Finance)"
+      }
+    }
+  ],
+  "quality": {
+    "courses": 149,
+    "study_plans": 53,
+    "source_urls": 6,
+    "thai_titles": 6,
+    "templates": 8,
+    "exam_date_records": 58,
+    "unresolved_course_refs": []
+  }
+}
