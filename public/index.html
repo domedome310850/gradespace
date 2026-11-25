@@ -832,6 +832,10 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .dashboard-summary .metric .m-value { font-size: 22px; }
   .dashboard-summary .metric .m-label { font-size: 11px; }
 }
+/* Thammasat GenEd picker (2026-11-26). */
+.tuge-group h3{font-size:14px;margin:16px 0 4px;color:var(--accent-text)}.tuge-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+:root[data-uni="tu"] .brand-mark rect{fill:var(--accent)}:root[data-uni="tu"] .brand-mark circle{fill:var(--uni-secondary)}:root[data-uni="tu"] .brand-mark{box-shadow:none}
+:root[data-uni="tu"] .ai-fab{background:linear-gradient(135deg,#D9485C,#BC3346 55%,#8E1F2F);box-shadow:0 8px 22px rgba(188,51,70,.38),0 0 0 4px color-mix(in srgb,var(--bg) 70%,transparent)}
 /* AI assistant (floating button), command search and account menu (2026-11-25). */
 .top-search{display:flex;align-items:center;gap:10px;height:40px;width:min(520px,100%);padding:0 10px 0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
 .top-search:hover{border-color:var(--line-strong);color:var(--ink)}.top-search kbd{margin-left:auto;font:600 11px var(--font);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px}
@@ -1651,7 +1655,7 @@ var Store = (function () {
     return {
       schema: SCHEMA, updatedAt: 0,
       settings: { lang: 'th', thaiDefaultV: 1, theme: 'system', onboarded: false, defaultScaleId: 'scale-th', currentSemesterId: null,
-        targetCGPA: null, plannedCredits: null, genEdRequired: null, university: '', gpaMode: 'confirmed', wholeNumbers: true,
+        targetCGPA: null, plannedCredits: null, genEdRequired: null, university: '', institution: '', gpaMode: 'confirmed', wholeNumbers: true,
         planner: { remaining: null, includeInProgress: true, rows: [] } },
       scales: [thaiScale()], outcomes: defaultOutcomes(),
       years: [], semesters: [], courses: [], categories: [], assessments: []
@@ -2660,6 +2664,13 @@ en: {
   'cmd.btn': 'Search courses, pages, actions…', 'cmd.title': 'Search', 'cmd.ph': 'Try “GPA”, “scan” or a course code',
   'cmd.none': 'No results', 'cmd.hint': 'Press Ctrl+K (⌘K on Mac) on any page', 'cmd.gPages': 'Pages', 'cmd.gActions': 'Actions', 'cmd.gCourses': 'Courses',
   'cmd.theme': 'Toggle light/dark mode', 'cmd.lang': 'Switch language (TH/EN)',
+  'uni.label': 'University', 'uni.cu': 'Chulalongkorn', 'uni.tu': 'Thammasat', 'uni.cuFull': 'Chulalongkorn University', 'uni.tuFull': 'Thammasat University',
+  'uni.hint': 'Sets the course list, GenEd and exam features for your university.',
+  'tuge.title': 'Thammasat GenEd courses', 'tuge.intro': 'General Education Program (2023 revision): 30 credits across 5 groups. Check your faculty’s structure for which groups you need.',
+  'tuge.g1': 'Global and social literacy', 'tuge.g2': 'Aesthetics and communication', 'tuge.g3': 'Maths, science and technology', 'tuge.g4': 'Well-being and future skills', 'tuge.g5': 'Social service and learning by doing',
+  'tuge.add': 'Add', 'tuge.have': 'Added', 'tuge.source': 'List from TU’s General Education Program document (2566). Confirm what is open on reg.tu.ac.th before registering.',
+  'tu.examNote': 'Thammasat exam dates are not synced yet. Add the date to the Midterm/Final item in each course and it will show in your calendar.',
+  'ai.pasteTGeneric': 'Paste a score table', 'ai.pastePGeneric': 'Copy scores from your class site, paste them and check each row',
   'fab.hide': 'Hide for now', 'fab.introT': 'Let AI fill in your scores', 'fab.introP': 'Scan a screenshot, paste from MyCourseVille or type. You check every row before it saves.',
   'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
   'reg.teachers': 'instructor {t}',
@@ -3101,6 +3112,13 @@ th: {
   'cmd.btn': 'ค้นหาวิชา หน้า หรือคำสั่ง…', 'cmd.title': 'ค้นหา', 'cmd.ph': 'ลองพิมพ์ “GPA”, “สแกน” หรือรหัสวิชา',
   'cmd.none': 'ไม่พบ', 'cmd.hint': 'กด Ctrl+K (⌘K บน Mac) ได้ทุกหน้า', 'cmd.gPages': 'หน้า', 'cmd.gActions': 'คำสั่ง', 'cmd.gCourses': 'วิชา',
   'cmd.theme': 'สลับโหมดสว่าง/มืด', 'cmd.lang': 'สลับภาษา (TH/EN)',
+  'uni.label': 'มหาวิทยาลัย', 'uni.cu': 'จุฬาฯ', 'uni.tu': 'ธรรมศาสตร์', 'uni.cuFull': 'จุฬาลงกรณ์มหาวิทยาลัย', 'uni.tuFull': 'มหาวิทยาลัยธรรมศาสตร์',
+  'uni.hint': 'ใช้เลือกรายชื่อวิชา GenEd และฟีเจอร์วันสอบให้ตรงกับมหาวิทยาลัยของคุณ',
+  'tuge.title': 'วิชาศึกษาทั่วไป ธรรมศาสตร์', 'tuge.intro': 'หลักสูตรวิชาศึกษาทั่วไป (ปรับปรุง พ.ศ. 2566) รวม 30 หน่วยกิตใน 5 หมวด ดูโครงสร้างหลักสูตรของคณะว่าต้องเรียนหมวดใดบ้าง',
+  'tuge.g1': 'ความเท่าทันโลกและสังคม', 'tuge.g2': 'สุนทรียะและทักษะการสื่อสาร', 'tuge.g3': 'คณิตศาสตร์ วิทยาศาสตร์ และเทคโนโลยี', 'tuge.g4': 'สุขภาวะและทักษะแห่งอนาคต', 'tuge.g5': 'การบริการสังคมและการเรียนรู้จากการปฏิบัติ',
+  'tuge.add': 'เพิ่ม', 'tuge.have': 'เพิ่มแล้ว', 'tuge.source': 'รายชื่อจากเอกสารหลักสูตรวิชาศึกษาทั่วไป มธ. (พ.ศ. 2566) ตรวจวิชาที่เปิดสอนใน reg.tu.ac.th ก่อนลงทะเบียน',
+  'tu.examNote': 'ยังไม่ได้ดึงวันสอบของธรรมศาสตร์อัตโนมัติ ใส่วันที่ในงาน “สอบกลางภาค/ปลายภาค” ของแต่ละวิชา แล้ววันสอบจะขึ้นในปฏิทิน',
+  'ai.pasteTGeneric': 'วางตารางคะแนน', 'ai.pastePGeneric': 'คัดลอกคะแนนจากเว็บรายวิชามาวาง แล้วตรวจทีละแถว',
   'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'ให้ AI ช่วยกรอกคะแนนสิ', 'fab.introP': 'สแกนภาพหน้าจอ วางจาก MyCourseVille หรือพิมพ์เอง ตรวจได้ทุกแถวก่อนบันทึก',
   'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
   'reg.teachers': 'ผู้สอน {t}',
@@ -3546,6 +3564,76 @@ var C = Calc, fmt = C.fmt, fmtT = C.fmtT, toNum = C.toNum, isNum = C.isNum;
 Object.assign(I18N.en, {"examroom.title":"My exam rooms","examroom.intro":"CBS final exam notice · 23 Nov–2 Dec 2026 · Semester 1/2569","examroom.guest":"Enter your GradeSpace email first to save your student ID.","examroom.student":"Student ID (10 digits)","examroom.save":"Save student ID","examroom.remove":"Remove student ID","examroom.saved":"Student ID saved.","examroom.badId":"Enter exactly 10 digits.","examroom.error":"Exam room service unavailable. Please try again.","examroom.noTerm":"Select semester 1 of academic year 2569 to see this notice.","examroom.noYear":"Set the academic year to 2569 only if that is your actual academic year.","examroom.noCourses":"Add your registered courses and sections first.","examroom.none":"No matching exam rooms in this notice. Check your course codes, sections and student ID; not all courses are covered.","examroom.warning":"Matches are based on the student ID and sections you entered, not a verified enrollment record. Confirm with the official notice. One malformed ID interval was omitted.","examroom.secMissing":"Some courses have no section selected; room matches may be missing.","examroom.loading":"Loading exam rooms…","examroom.room":"Room","examroom.sec":"Sec","examroom.source":"Notice page {p}","examroom.ambiguous":"Multiple room matches; check the notice","examroom.private":"Enter and save your student ID. No email verification is required. This browser remembers the ID for this email; enter it again on another device.","examroom.loginId":"Student ID (10 digits, optional)","examroom.loginHint":"Used to find your exam rooms in the faculty notice. Optional; no email verification.","examroom.loginError":"Could not save the student ID. Try again or leave it blank to continue.","examroom.saving":"Saving…","examroom.edit":"Edit student ID","examroom.linked":"Student ID saved","examroom.addId":"Add student ID for exam rooms","examroom.changeId":"Edit student ID","examroom.personal":"Matched to student ID and exam notice","examroom.general":"Course schedule · room not matched to student ID","examroom.lookupError":"Personal room lookup unavailable; showing course schedules","examroom.noMatch":"Some courses have no personal room match; check your section and the notice","examroom.roomUnknown":"Room to be announced","examroom.timeUnknown":"Time to be announced","examroom.calendarHint":"Select a date to see courses, times and rooms. Confirm with the official notice."});
 Object.assign(I18N.th, {"examroom.title":"ห้องสอบของฉัน","examroom.intro":"ประกาศสอบปลายภาค คณะพาณิชยศาสตร์และการบัญชี · 23 พ.ย.–2 ธ.ค. 2569 · เทอม 1/2569","examroom.guest":"กรอกอีเมล GradeSpace ก่อนเพื่อบันทึกเลขนิสิต","examroom.student":"เลขนิสิต 10 หลัก","examroom.save":"บันทึกเลขนิสิต","examroom.remove":"ลบเลขนิสิต","examroom.saved":"บันทึกเลขนิสิตเรียบร้อยแล้ว","examroom.badId":"กรอกเลขนิสิต 10 หลัก","examroom.error":"เชื่อมต่อระบบห้องสอบไม่สำเร็จ กรุณาลองอีกครั้ง","examroom.noTerm":"เลือกเทอม 1 ปีการศึกษา 2569 เพื่อดูข้อมูลจากประกาศนี้","examroom.noYear":"ระบุปีการศึกษาเป็น 2569 เฉพาะเมื่อเป็นปีการศึกษาจริงของคุณ","examroom.noCourses":"เพิ่มรายวิชาที่ลงทะเบียนและ Section ก่อน","examroom.none":"ไม่พบห้องสอบที่ตรงกับประกาศนี้ โปรดตรวจรหัสวิชา Section และเลขนิสิต ประกาศนี้ไม่ได้ครอบคลุมทุกวิชา","examroom.warning":"ผลจับคู่จากเลขนิสิตและ Section ที่กรอกเอง ไม่ใช่ข้อมูลการลงทะเบียนที่ยืนยันแล้ว โปรดตรวจประกาศทางการอีกครั้ง มีหนึ่งช่วงเลขนิสิตผิดรูปแบบที่ยังไม่ได้นำมาใช้","examroom.secMissing":"บางวิชายังไม่ได้ระบุ Section จึงอาจไม่พบห้องสอบ","examroom.loading":"กำลังโหลดห้องสอบ…","examroom.room":"ห้องสอบ","examroom.sec":"Sec","examroom.source":"ประกาศหน้า {p}","examroom.ambiguous":"พบห้องสอบหลายรายการ โปรดตรวจประกาศ","examroom.private":"กรอกเลขนิสิตและบันทึกได้เลย ไม่ต้องยืนยันอีเมล ระบบจะจำเลขนิสิตของอีเมลนี้บนเบราว์เซอร์นี้ หากเปลี่ยนเครื่องให้กรอกใหม่","examroom.loginId":"เลขนิสิต 10 หลัก (ไม่บังคับ)","examroom.loginHint":"ใช้ค้นหาห้องสอบตามประกาศของคณะ (กรอกหรือเว้นไว้ได้ ไม่ต้องยืนยันอีเมล)","examroom.loginError":"บันทึกเลขนิสิตไม่สำเร็จ ลองอีกครั้ง หรือเว้นช่องเลขนิสิตเพื่อเข้าใช้งานก่อน","examroom.saving":"กำลังบันทึก…","examroom.edit":"แก้ไขเลขนิสิต","examroom.linked":"บันทึกเลขนิสิตแล้ว","examroom.addId":"เพิ่มเลขนิสิตเพื่อดูห้องสอบ","examroom.changeId":"แก้ไขเลขนิสิต","examroom.personal":"ตามประกาศห้องสอบและเลขนิสิต","examroom.general":"กำหนดการรายวิชา · ยังไม่ได้ยืนยันห้องตามเลขนิสิต","examroom.lookupError":"ดึงห้องสอบส่วนตัวไม่สำเร็จ กำลังแสดงกำหนดการรายวิชา","examroom.noMatch":"ไม่พบห้องสอบส่วนตัวสำหรับบางวิชา โปรดตรวจ Section และประกาศ","examroom.roomUnknown":"รอประกาศห้องสอบ","examroom.timeUnknown":"รอประกาศเวลา","examroom.calendarHint":"แตะวันที่เพื่อดูวิชา เวลา และห้องสอบ · โปรดตรวจประกาศทางการ"});
 var LANG = 'th';
+
+/* ================= university: Chulalongkorn (default) or Thammasat ================= */
+// settings.institution is a new optional field ('' = not chosen yet, treated as 'cu' so existing
+// students see no change). Chula-only features (Reg Chula sync, Chula GenEd, CBS study plans,
+// exam rooms) only run for 'cu'. Thammasat uses its own course list below.
+function uniOf(state) { var st = state || S.state; var u = (st && st.settings && st.settings.institution) || uniPending; return u === 'tu' ? 'tu' : 'cu'; }
+function isCU(state) { return uniOf(state) === 'cu'; }
+var UNI_PENDING_KEY = 'gradespace.institution';
+// Choice made on the sign-in screen, used until it is copied into the profile.
+var uniPending = (function () { try { return localStorage.getItem(UNI_PENDING_KEY) || ''; } catch (e) { return ''; } })();
+// TU General Education Program (revised 2566): [group, code, Thai name, English name, credits].
+var TU_GENED_SOURCE = 'https://www.tuacrd.in.th/tadmin/upload_file/doc_6981a6612243e.pdf';
+var TU_GENED = [[1, "TU101", "โลก อาเซียน และไทย", "Thailand, ASEAN, and the World", 3], [1, "TU109", "นวัตกรรมกับกระบวนคิดผู้ประกอบการ", "Innovation and Entrepreneurial Mindset", 3], [1, "TU121", "มนุษย์ สังคม และวัฒนธรรม", "Human, Societies and Cultures", 3], [1, "TU122", "กฎหมายในชีวิตประจำวัน", "Law in Everyday Life", 3], [1, "TU124", "สังคมกับเศรษฐกิจ", "Society and Economy", 3], [1, "TU233", "โอกาสทางธุรกิจในไทย", "Business Opportunities in Thailand", 3], [1, "TU288", "ผู้ประกอบการและสตาร์ทอัพแห่งอนาคต", "Entrepreneurs and Startups of the Future", 3], [1, "TU311", "บริการทางวิชาชีพแก่สังคม", "Professional Services to Society", 3], [1, "TU312", "โครงการรณรงค์เพื่อสังคม", "Social Project and Campaign", 3], [1, "TU399", "การฝึกงานในวิชาชีพ", "Professional Internship", 3], [2, "TU102", "ชีวิตกับสุนทรียภาพ", "Life & Aesthetics", 3], [2, "TU106", "ความคิดสร้างสรรค์และการสื่อสาร", "Creativity and Communication", 3], [2, "TU115", "มนุษย์กับผลงานสร้างสรรค์ด้านวรรณกรรม", "Man and his Literary Creativity", 3], [2, "TU116", "มนุษย์กับศิลปะ: ทัศนศิลป์ ดนตรี และศิลปะการแสดง", "Man and Arts: Visual Art, Music and Performing Arts", 3], [3, "TU103", "ชีวิตกับความยั่งยืน", "Life and Sustainability", 3], [3, "TU107", "ทักษะดิจิทัลกับการแก้ปัญหา", "Digital Skill and Problem Solving", 3], [3, "TU131", "มนุษย์กับวิทยาศาสตร์กายภาพ", "Man and Physical Science", 3], [3, "TU142", "มนุษย์กับวิทยาศาสตร์ชีวภาพ", "Man and Biological Science", 3], [3, "TU143", "มนุษย์กับสิ่งแวดล้อม", "Man and Environment", 3], [3, "TU151", "คณิตศาสตร์ทั่วไประดับมหาวิทยาลัย", "General College Mathematics", 3], [3, "TU152", "หลักพื้นฐานทางคณิตศาสตร์", "Fundamental Mathematics", 3], [3, "TU153", "คอมพิวเตอร์เบื้องต้นสำหรับสังคมศาสตร์", "Introduction to Computer for Social Science", 3], [3, "TU154", "คณิตศาสตร์เบื้องต้น", "Introduction to Mathematics", 3], [3, "TU155", "สถิติพื้นฐาน", "Elementary Statistics", 3], [3, "TU156", "การเขียนโปรแกรมเชิงวิทยาศาสตร์เบื้องต้น", "Introduction to Scientific Programming", 3], [4, "TU108", "การพัฒนาและจัดการตนเอง", "Self Development and Management", 3], [4, "TU201", "ความรู้ทางการเงินสำหรับบุคคล", "Financial Literacy for Individuals", 3], [4, "TU202", "ครบเครื่องเรื่องลงทุน", "Complete Investment", 3], [4, "TU209", "สร้างแผนธุรกิจพิชิตแหล่งเงินทุน", "How to Write a Successful Business Plan", 3], [4, "TU234", "การลงทุนสำหรับมือใหม่", "Investing for Beginners", 1], [4, "TU235", "หลักการออกแบบและพัฒนาเว็บแอปพลิเคชัน", "Web Development", 3], [4, "TU236", "การผลิตสื่อ 3 มิติ ภาพเคลื่อนไหวและโลกเสมือน", "Basic 3D Production, Animation and Virtual Reality", 3], [4, "TU237", "ความเป็นผู้ประกอบการดิจิทัลรายใหม่", "Digital Entrepreneurship & Startup Crash Course", 3], [4, "TU238", "พื้นฐานการใช้งานปัญญาประดิษฐ์ อินเทอร์เน็ตสรรพสิ่ง และการจัดการวิเคราะห์ข้อมูล", "Basic AI & IoT", 3], [4, "TU239", "การพัฒนาโปรแกรมด้วยภาษาไพทอนเบื้องต้น", "Python Programming", 3], [4, "TU240", "เศรษฐกิจภูมิรัฐศาสตร์โลก", "World Geopolitical Economy", 3], [4, "TU241", "การลดความเหลื่อมล้ำในสังคม", "Reducing Social Inequality", 3], [4, "TU242", "นวัตกรรมการแก้ปัญหากับการคิดเชิงออกแบบ", "Design Thinking and Innovative Problem Solving", 3], [4, "TU243", "ทักษะดิจิทัลเพื่ออนาคต", "Digital Skills for the Future", 3], [4, "TU280", "จริยธรรมปัญญาประดิษฐ์สำหรับผู้นำอนาคต", "Artificial Intelligence Ethics for Leaders of the Future", 3], [4, "TU301", "การลงทุนในตลาดหลักทรัพย์ฯ", "Investment in the Stock Market", 3], [4, "TU309", "การลงทุนแบบมืออาชีพ", "Securities Investment in Practice", 3], [5, "TU100", "พลเมืองกับการลงมือแก้ปัญหา", "Civic Engagement", 3], [5, "TU200", "พลเมืองกับการลงมือแก้ปัญหาโดยออกแบบการเรียนรู้เอง", "Self Design Civic Engagement", 3], [5, "TU221", "การเรียนรู้จากการแข่งขันระดับชาติ", "Learning through National Competition", 3], [5, "TU222", "การเรียนรู้จากการแข่งขันระดับนานาชาติ", "Learning through International Competition", 3], [5, "TU231", "การเรียนรู้จากการลงมือปฏิบัติ 1", "Experiential Learning 1", 6], [5, "TU232", "การเรียนรู้จากการลงมือปฏิบัติ 2", "Experiential Learning 2", 6], [5, "TU300", "การทำโครงงานบริการสังคมแบบผสมผสานความรู้", "Multidisciplinary Service Learning Project", 3], [5, "TU331", "การฝึกปฏิบัติงานด้วยทักษะระดับสูงในสถานประกอบการจริง 1", "Learning through Advanced Practices in Selected Organizations 1", 9], [5, "TU332", "การฝึกปฏิบัติงานด้วยทักษะระดับสูงในสถานประกอบการจริง 2", "Learning through Advanced Practices in Selected Organizations 2", 9], [5, "TU333", "การปฏิบัติงานเต็มเวลาในสถานประกอบการจริง", "Full-time Practices for Credits", 15], [5, "TU431", "การเรียนรู้จากการสร้างสตาร์ทอัพของตนเอง", "Learning through Own Startup", 15]];
+// Thammasat Business School BBA International 2023 (source-checked rows from PR #19).
+var TU_TBS_SOURCE = 'https://bba.tbs.tu.ac.th/coursedescription.php?CourseYear=2023';
+var TU_TBS = [["AC201","Fundamental Accounting",3],["AC202","Management Accounting",3],["AC221","Business Acumen & Financial Reporting",3],["AC295","Special Topics in Accounting 1",3],["AC296","Special Topics in Accounting 2",1.5],["AC311","Intermediate Accounting 1",3],["AC312","Intermediate Accounting 2",3],["AC313","Cost Accounting",3],["AC314","Cost Management",3],["AC315","Accounting Information Systems",3],["AC316","Auditing",3],["AC317","Enterprise Risk Management and Internal Control",3],["AC318","Tax Accounting",3],["FN201","Business Finance",3],["FN211","Financial Mathematics and Statistics",3],["FN311","Financial Management",3],["FN312","Investments",3],["IS201","Digital Technology for Business",3],["IS315","Systems Analysis and Modelling",3],["IS361","Artificial Intelligence",3],["HR201","Modern Management and Entrepreneurship",3]];
+var TU_CATALOG = (function () {
+  var out = {};
+  TU_GENED.forEach(function (r) { out[r[1]] = { code: r[1], n: r[3], aka: r[3], th: r[2], cr: r[4], ge: true, group: r[0], sourceUrl: TU_GENED_SOURCE }; });
+  TU_TBS.forEach(function (r) { if (!out[r[0]]) out[r[0]] = { code: r[0], n: r[1], aka: r[1], th: '', cr: r[2], sourceUrl: TU_TBS_SOURCE }; });
+  return out;
+})();
+function tuCode(code) { return String(code || '').toUpperCase().replace(/\s+/g, '').split('.')[0]; }
+(function () {
+  var cuGet = CATALOG.get, cuSearch = CATALOG.search;
+  CATALOG.get = function (code) { if (isCU()) return cuGet(code); var x = TU_CATALOG[tuCode(code)]; return x ? Object.assign({}, x) : null; };
+  CATALOG.search = function (q, limit) {
+    if (isCU()) return cuSearch(q, limit);
+    var n = function (x) { return String(x || '').toLowerCase().replace(/\s+/g, ''); }, qq = n(q);
+    if (!qq) return [];
+    return Object.keys(TU_CATALOG).map(function (k) { return TU_CATALOG[k]; })
+      .filter(function (x) { return [x.code, x.n, x.th].some(function (v) { return n(v).indexOf(qq) >= 0; }); })
+      .sort(function (a, b) { return (n(b.code).indexOf(qq) === 0) - (n(a.code).indexOf(qq) === 0) || a.code.localeCompare(b.code); })
+      .slice(0, limit || 8).map(function (x) { return Object.assign({}, x); });
+  };
+})();
+// Thammasat red/gold accent (contrast-checked; helpers adapted from PR #18). Chula keeps the default look.
+function uniMix(a, b, k) { var o = '#'; for (var i = 1; i < 7; i += 2) o += Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - k) + parseInt(b.slice(i, i + 2), 16) * k).toString(16).padStart(2, '0'); return o; }
+function uniLum(hex) { var c = [1, 3, 5].map(function (i) { var v = parseInt(hex.slice(i, i + 2), 16) / 255; return v <= .04045 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; }
+function uniContrast(a, b) { var x = uniLum(a), y = uniLum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); }
+function uniReadable(col, bg, dark) { for (var i = 0; i < 30 && uniContrast(col, bg) < 4.5; i++) col = uniMix(col, dark ? '#FFFFFF' : '#000000', .16); return col; }
+function applyUniTheme(uni, dark) {
+  var el = document.documentElement, keys = ['--accent', '--accent-hover', '--accent-ink', '--accent-soft', '--accent-text', '--uni-secondary'];
+  if (uni !== 'tu') { keys.forEach(function (k) { el.style.removeProperty(k); }); el.removeAttribute('data-uni'); return; }
+  var bg = dark ? '#171A20' : '#FFFFFF', soft = uniMix(bg, '#BC3346', dark ? .14 : .09), a = uniReadable('#BC3346', bg, dark), txt = uniReadable(a, soft, dark);
+  var ink = uniContrast(a, '#000000') >= uniContrast(a, '#FFFFFF') ? '#000000' : '#FFFFFF', hover = uniMix(a, dark ? '#FFFFFF' : '#000000', .10);
+  if (uniContrast(hover, ink) < 4.5) hover = a;
+  var v = { '--accent': a, '--accent-hover': hover, '--accent-ink': ink, '--accent-soft': soft, '--accent-text': txt, '--uni-secondary': '#E3B849' };
+  keys.forEach(function (k) { el.style.setProperty(k, v[k]); }); el.setAttribute('data-uni', 'tu');
+}
+function UniPicker(p) {
+  return html`<${Seg} label=${t('uni.label')} value=${p.value} onChange=${p.onChange} options=${[{ v: 'cu', l: t('uni.cu') }, { v: 'tu', l: t('uni.tu') }]} />`;
+}
+function setUni(v) { update(function (d) { d.settings.institution = v; if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull'); }); }
+function TuGenEdModal(p) {
+  var state = useApp(), semId = p.props.semesterId || (latestSemester(state) || {}).id;
+  var have = {}; state.courses.forEach(function (c) { have[tuCode(c.code)] = 1; });
+  var qs = useState(''), q = qs[0], setQ = qs[1], n = function (x) { return String(x || '').toLowerCase().replace(/\s+/g, ''); };
+  var rows = TU_GENED.filter(function (r) { return !q || [r[1], r[2], r[3]].some(function (v) { return n(v).indexOf(n(q)) >= 0; }); });
+  return html`<${Modal} title=${t('tuge.title')} onClose=${closeModal} wide=${true}>
+    <p className="small muted" style=${{ marginTop: 0 }}>${t('tuge.intro')}</p>
+    <input className="input" type="search" value=${q} placeholder=${t('ge.search')} aria-label=${t('ge.search')} onChange=${function (e) { setQ(e.target.value); }} />
+    ${[1, 2, 3, 4, 5].map(function (g) {
+      var list = rows.filter(function (r) { return r[0] === g; }); if (!list.length) return null;
+      return html`<div key=${g} className="tuge-group"><h3>${g}. ${t('tuge.g' + g)}</h3>
+        ${list.map(function (r) { return html`<div key=${r[1]} className="tuge-row"><div className="grow"><b className="num">${r[1]}</b> ${LANG === 'th' ? r[2] : r[3]}<div className="tiny muted">${LANG === 'th' ? r[3] : r[2]} · ${t('nCredits', { n: r[4] })}</div></div>
+          ${have[r[1]] ? html`<span className="small muted">${t('tuge.have')}</span>` : html`<button className="btn sm" disabled=${!semId} onClick=${function () { closeModal(); openModal('course', { semesterId: semId, catalogCode: r[1] }); }}><${Icon} n="plus" s=${14} />${t('tuge.add')}</button>`}</div>`; })}</div>`;
+    })}
+    <p className="tiny muted">${t('tuge.source')} <a href=${TU_GENED_SOURCE} target="_blank" rel="noopener noreferrer">↗</a></p><//>`;
+}
 function t(k, v) {
   var s = I18N[LANG] && I18N[LANG][k];
   if (s == null) s = I18N.en[k];
@@ -4107,7 +4195,7 @@ var RegData = (function () {
     var sem = state.semesters.find(function (x) { return x.id === c.semesterId; }); if (!sem) return null;
     var y = state.years.find(function (x) { return x.id === sem.yearId; });
     var m = String(sem.kind || '').match(/^s([123])$/), code = String(c.code || '').trim().split('.')[0];
-    if (!y || !m || !/^\d{7}$/.test(code) || !/^25\d\d$/.test(String(y.academic || ''))) return null;
+    if (!isCU(state) || !y || !m || !/^\d{7}$/.test(code) || !/^25\d\d$/.test(String(y.academic || ''))) return null;
     return { year: String(y.academic), term: m[1], code: code };
   }
   function get(c, state) { var x = ctx(c, state); return x ? map[x.year + '|' + x.term + '|' + x.code] || null : null; }
@@ -4859,13 +4947,14 @@ function planCourseNames(pl) {
 function semPlanButton(state, sem) {
   var y = sem && state.years.find(function (x) { return x.id === sem.yearId; });
   var term = sem && (sem.kind === 's1' ? 1 : sem.kind === 's2' ? 2 : 0);
-  if (!y || !term || !y.level) return null;
+  if (!y || !term || !y.level || !isCU(state)) return null;
   var sp = studyPlanOf(state), mk = majorForYear(sp, y.level), pl = planFor(mk, y.level, term);
   if (!sp || !mk) return html`<div style=${{ marginBottom: 10 }}><button className="btn primary" onClick=${function () { openModal('studyplan', { year: y.level }); }}>${sp ? t('sp.pickMajorFor', { y: y.level }) : t('sp.setup')}</button></div>`;
   if (!pl) return null;
   return html`<div style=${{ marginBottom: 10 }}><button className="btn primary" onClick=${function () { openModal('plan', { planId: pl.id, semesterId: sem.id }); }}><${Icon} n="plus" />${t('sp.addReq', { n: pl.items.filter(function (it) { return !it.opt; }).length })}</button></div>`;
 }
 function showNextTerm(state, cur) {
+  if (!isCU(state)) return false;
   var nx = nextPlanTerm(state);
   if (!nx || !cur) return false;
   if (!state.courses.some(function (c) { return c.semesterId === cur.id; })) return true;
@@ -5117,7 +5206,7 @@ function GenEdModal(p) {
 }
 // The latest term in the student's list: where new GenEd courses usually go.
 function latestSemester(state) { var all = C.orderedSemesters(state); return all.length ? all[all.length - 1] : null; }
-function openGenEd(state, semId) { var s = semId || (latestSemester(state) || {}).id; if (s) openModal('gened', { semesterId: s }); else openModal('studyplan', {}); }
+function openGenEd(state, semId) { var s = semId || (latestSemester(state) || {}).id; if (!isCU(state)) { openModal('tuGened', { semesterId: s }); return; } if (s) openModal('gened', { semesterId: s }); else openModal('studyplan', {}); }
 
 /* ================= course card ================= */
 // One short line about the target: what the remaining exams need, in raw points when possible.
@@ -5525,7 +5614,7 @@ function usePersonalExams(state){
   var rs=useState(null), result=rs[0], setResult=rs[1];
   useEffect(function(){
     var alive=true;
-    if(!email||!client)return function(){alive=false;};
+    if(!email||!client||!isCU(state))return function(){alive=false;};
     (async function(){
       try{
         var device=examDeviceKey(email);
@@ -5561,6 +5650,7 @@ function usePersonalExams(state){
     })();
     return function(){alive=false;};
   },[client,key]);
+  if(!isCU(state))return {status:'guest',byId:{}};
   return email ? result&&result.key===key?result:{status:'loading',byId:{}} : {status:'guest',byId:{}};
 }
 function displayExamsFor(c,state,personal){
@@ -5789,6 +5879,7 @@ function Dashboard(p) {
       <div className="card pad dashboard-exam-panel">
         <div className="section-head"><h2>${t('upcoming')}</h2>
           <button className="btn ghost sm" onClick=${function () { downloadICS(state, cur.id, personal); }}><${Icon} n="calendar" s=${15} />${t('ics.btn')}</button></div>
+        ${!isCU(state) && html`<p className="tiny muted" data-testid="tu-exam-note">${t('tu.examNote')}</p>`}
         ${personal.status==='missing' && html`<button className="btn sm ghost" onClick=${goAuth}>${t('examroom.addId')}</button>`}
         ${personal.status==='error' && html`<p className="tiny muted">${t('examroom.lookupError')}</p>`}
         ${personal.status==='ready' && courses.some(c=>personal.eligible.includes(c.id)&&!personal.byId[c.id]) && html`<p className="tiny muted">${t('examroom.noMatch')}</p>`}
@@ -5836,7 +5927,7 @@ function YearsPage(p) {
   return html`<div>
     <div className="page-head"><div><h1>${t('nav.years')}</h1><p>${t('yearsSub')}</p></div>
       <button className="btn" onClick=${function () { openModal('year', {}); }}><${Icon} n="plus" />${t('addYear')}</button></div>
-    <div style=${{ marginBottom: 16 }}><${StudyPlanPanel} state=${state} /></div>
+    ${isCU(state) ? html`<div style=${{ marginBottom: 16 }}><${StudyPlanPanel} state=${state} /></div>` : html`<div style=${{ marginBottom: 16 }}><button className="btn" data-testid="tu-gened-open" onClick=${function () { openGenEd(state); }}><${Icon} n="plus" s=${15} />${t('ge.btn')}</button></div>`}
     ${state.years.length ? html`<div className="card pad" style=${{ marginBottom: 16 }}>
       <div className="stat-inline"><span>${t('cumGPA')} <b>${cumC.gpa != null ? fmt(cumC.gpa) : '–'}</b></span>
         <span>${t('withEstimates')} <b>${cumE.gpa != null ? fmt(cumE.gpa) : '–'}</b></span>
@@ -6689,6 +6780,7 @@ function Preferences(p) {
       </section>
       <section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('profile')}</h2>
         <div className="grid3">
+          <div className="field"><label>${t('uni.label')}</label><${UniPicker} value=${uniOf(state)} onChange=${setUni} /><div className="hint">${t('uni.hint')}</div></div>
           <${Field} label=${t('university')} id="pf-u" hint=${t('optional')}><input id="pf-u" className="input" value=${st.university || ''} placeholder=${t('universityPh')} onChange=${function (e) { var v = e.target.value; update(function (d) { d.settings.university = v; }); }} /><//>
           <${Field} label=${t('programCredits')} id="pf-c" hint=${t('programCreditsHint')}><${NumCell} label=${t('programCredits')} value=${st.plannedCredits} placeholder=${t('eg', { v: '128' })} onChange=${function (v) { update(function (d) { d.settings.plannedCredits = v; }); }} /><//>
           <${Field} label=${t('targetCGPA')} id="pf-t"><${NumCell} label=${t('targetCGPA')} value=${st.targetCGPA} placeholder=${t('eg', { v: '3.50' })} onChange=${function (v) { update(function (d) { d.settings.targetCGPA = v; }); }} /><//>
@@ -7706,7 +7798,7 @@ function AssistantModal(p) {
     <p style=${{ margin: 0 }} className="muted">${t('ai.intro')}</p>
     <div className="ai-actions">
       <button className="ai-action" disabled=${!canScan()} onClick=${function () { go('scan', { semesterId: cur && cur.id }); }}><${Icon} n="zap" /><div><b>${t('ai.scanT')}</b><span>${canScan() ? t('ai.scanP') : t('ai.noScan')}</span></div></button>
-      <button className="ai-action" disabled=${!hasCourse} onClick=${function () { go('paste', { courseId: firstOpen ? firstOpen.id : S.state.courses.find(function (c) { return !c.finalGrade; }).id }); }}><${Icon} n="clipboard" /><div><b>${t('ai.pasteT')}</b><span>${hasCourse ? t('ai.pasteP') : t('ai.noCourse')}</span></div></button>
+      <button className="ai-action" disabled=${!hasCourse} onClick=${function () { go('paste', { courseId: firstOpen ? firstOpen.id : S.state.courses.find(function (c) { return !c.finalGrade; }).id }); }}><${Icon} n="clipboard" /><div><b>${t(isCU() ? 'ai.pasteT' : 'ai.pasteTGeneric')}</b><span>${hasCourse ? t(isCU() ? 'ai.pasteP' : 'ai.pastePGeneric') : t('ai.noCourse')}</span></div></button>
       <button className="ai-action" onClick=${function () { go('quick', {}); }}><${Icon} n="edit" /><div><b>${t('ai.quickT')}</b><span>${t('ai.quickP')}</span></div></button>
     </div>
     <p className="tiny muted" style=${{ marginBottom: 0 }}>${t('ai.soon')}</p><//>`;
@@ -7787,7 +7879,7 @@ function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal, tuGened: TuGenEdModal }[m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 
@@ -8049,6 +8141,7 @@ function MePage(p) {
     </a>
     <h2 className="me-h">${t('me.display')}</h2>
     <div className="card me-list">
+      <div className="me-row"><${Icon} n="book" /><span className="grow">${t('uni.label')}</span><${UniPicker} value=${uniOf(state)} onChange=${setUni} /></div>
       <div className="me-row"><${Icon} n="globe" /><span className="grow">${t('language')}</span><${Seg} label=${t('language')} value=${LANG} onChange=${function (v) { update(function (d) { d.settings.lang = v; }); }} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} /></div>
       <div className="me-row"><${Icon} n=${theme === 'dark' ? 'moon' : 'sun'} /><span className="grow">${t('theme')}</span><${Seg} label=${t('theme')} value=${theme} onChange=${function (v) { update(function (d) { d.settings.theme = v; }); }} options=${[{ v: 'light', l: t('theme.light') }, { v: 'dark', l: t('theme.dark') }]} /></div>
     </div>
@@ -8076,6 +8169,12 @@ function App() {
     return function () { document.removeEventListener('keydown', k); };
   }, []);
   var isDark = state.settings.theme === 'dark' || (state.settings.theme !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  useEffect(function () { applyUniTheme(uniOf(state), isDark); }, [uniOf(state), isDark]);
+  useEffect(function () {
+    // A university picked on the sign-in screen fills in a profile that has none yet
+    // (also after the saved copy loads from the account, which may replace the first state).
+    if (!state.settings.institution && (uniPending === 'cu' || uniPending === 'tu')) setUni(uniPending);
+  }, [state.settings.institution]);
   var active = route.page === 'course' ? 'courses' : route.page;
   var page;
   if (route.page === 'dashboard') page = html`<${Dashboard} state=${state} />`;
@@ -8396,12 +8495,16 @@ function AuthScreen() {
   var es = useState(existing ? existing.email : ''), email = es[0], setEmail = es[1];
   var ers = useState(null), err = ers[0], setErr = ers[1];
   var sidS=useState(''), sid=sidS[0], setSid=sidS[1];
+  var uniS=useState(function(){try{return localStorage.getItem(UNI_PENDING_KEY)||'cu';}catch(e){return 'cu';}}), uni=uniS[0], setUniLocal=uniS[1];
+  var pickUni=function(v){setUniLocal(v);setErr(null);uniPending=v;try{localStorage.setItem(UNI_PENDING_KEY,v);}catch(e){/* ignore */}};
   var savingS=useState(false), saving=savingS[0], setSaving=savingS[1];
   var pending=useRef(false);
   useEffect(function () { document.documentElement.lang = LANG; document.title = 'GradeSpace – ' + t('taglineShort'); });
+  useEffect(function () { applyUniTheme(uni, !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) && document.documentElement.getAttribute('data-theme') !== 'light'); }, [uni]);
   var enter = async function () {
     if(pending.current)return;
-    var em = email.trim().toLowerCase(), id=sid.replace(/\s/g,'');
+    var em = email.trim().toLowerCase(), id=uni==='cu'?sid.replace(/\s/g,''):'';
+    uniPending=uni;try{localStorage.setItem(UNI_PENDING_KEY,uni);}catch(e){/* ignore */}
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { setErr(t('auth.err.email')); return; }
     if(id && !/^\d{10}$/.test(id)){setErr(t('examroom.badId'));return;}
     setErr(null);
@@ -8428,7 +8531,8 @@ function AuthScreen() {
       <div className="stack" style=${{ marginTop: 8 }} onKeyDown=${function (e) { if (e.key === 'Enter' && e.target.tagName === 'INPUT') enter(); }}>
         <p className="muted" style=${{ margin: 0 }}>${t('auth.intro')}</p>
         <${Field} label=${t('auth.email')} id="au-e"><input id="au-e" className="input" type="email" autoComplete="email" inputMode="email" autoFocus=${true} value=${email} readOnly=${!!existing} disabled=${saving} onChange=${function (e) { setEmail(e.target.value); setErr(null); }} /><//>
-        <${Field} label=${t('examroom.loginId')} id="au-student" hint=${t('examroom.loginHint')}><input id="au-student" className="input" type="text" inputMode="numeric" autoComplete="off" maxLength=${12} value=${sid} disabled=${saving} onChange=${e=>{setSid(e.target.value);setErr(null);}} /><//>
+        <div className="field"><label>${t('uni.label')}</label><${UniPicker} value=${uni} onChange=${pickUni} /></div>
+        ${uni==='cu' && html`<${Field} label=${t('examroom.loginId')} id="au-student" hint=${t('examroom.loginHint')}><input id="au-student" className="input" type="text" inputMode="numeric" autoComplete="off" maxLength=${12} value=${sid} disabled=${saving} onChange=${e=>{setSid(e.target.value);setErr(null);}} /><//>`}
         ${err && html`<${Banner} kind="bad">${err}<//>`}
         <button className="btn primary" style=${{ padding: '11px 14px' }} disabled=${saving} onClick=${enter}>${t(saving?'examroom.saving':'auth.enter')}</button>
         <p className="auth-privacy" style=${{ margin: '0' }}>${LANG === 'th'
@@ -8445,7 +8549,7 @@ function AccountSection() {
   return html`<section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('account')}</h2>
     ${u ? html`<div className="row wrap between">
         <div className="row"><span className="avatar lg">${initialOf(u)}</span><div className="small muted">${t('account.signedInAs', { e: u.email })}</div></div>
-        <button className="btn ghost" onClick=${goAuth}>${t('examroom.changeId')}</button>
+        ${isCU() && html`<button className="btn ghost" onClick=${goAuth}>${t('examroom.changeId')}</button>`}
          <button className="btn" onClick=${function () { confirmDialog({ title: t('account.signOutQ'), body: t('account.signOutBody'), confirmLabel: t('account.signOut'), onConfirm: signOut }); }}>${t('account.signOut')}</button>
       </div>`
       : html`<p className="small muted" style=${{ margin: 0 }}>${t('account.guestP')}</p><div><button className="btn primary" onClick=${goAuth}>${t('account.signInBtn')}</button></div>`}
@@ -8514,7 +8618,7 @@ function boot() {
     emit();
   });
 }
-window.GradeSpace = { S: S, update: update, Calc: C };
+window.GradeSpace = { S: S, update: update, Calc: C, catalogSearch: function (q) { return CATALOG.search(q, 8); } };
 boot();
 })();
 

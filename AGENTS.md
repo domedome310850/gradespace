@@ -60,6 +60,9 @@ Find code with search (`grep -n "^function CourseCard"`), not by line number —
   top bar = logo + search (`.top-search`) + `AccountMenu` (desktop only); phones get a 5-tab `BOTTOM_NAV`, and
   less-used pages live under the “You” tab (`MePage`, `ME_PAGES`); the sidebar `NAV` uses `group` labels.
   The AI assistant is the floating `AiFab`. Don't add a sixth bottom tab — put it under You instead.
+  **Universities:** `uniOf(state)` / `isCU(state)` read `settings.institution` (`''` → Chula). Anything that talks
+  to Reg Chula, Chula GenEd, CBS study plans or exam rooms must stay behind `isCU`. Thammasat data lives in
+  `TU_GENED` / `TU_TBS` / `TU_CATALOG`; `CATALOG.get/search` switch by university.
   Other helpers: `RegData` (Reg Chula data per course), `GenEdData`, `examsFor(c, state)`,
   `gradingModeFor(c)`, `sectionOf(c)`, `niceName(name)`, `courseDisplayTitle(c)`.
 - **Pages**: `Dashboard`, `CoursesPage`, `CourseDetail`, `YearsPage`, `SimulatorPage`, `GPAPage`, settings.
@@ -112,6 +115,11 @@ data and fails on any error or sideways scrolling. Also click through what you c
 
 - **Exam rooms (owner requested on 2026-11-22):** 310 private rules covering 110 courses in `gs_room_data.rules` for 2569/s1/fin. PR #7 now uses `gs_exam_device` and `gs_room_data.device_profiles` with a random browser-specific secret stored per email; no email verification or extra login. Different browsers must re-enter the ID. The original grade store is unchanged (email-only access is not verified identity). One malformed PDF p.3 interval omitted pending faculty confirmation. SQL device-isolation tests passed, browser smoke and deployment pending.
 - **GradeSpace Connect (2026-11-25, planned):** external AI (ChatGPT/Claude via one MCP server, MCP Apps review widget, Universal JSON import). See `docs/grade-space-connect-roadmap.md`. Do not expose real student data to external AI until OAuth 2.1 (Epic Auth) ships; sandbox data only.
+- **Thammasat (2026-11-26):** TU mode shipped without automatic schedules. TU’s class/exam search
+  (`https://vnweb68.reg.tu.ac.th/registrar/classinfo`, linked from reg.tu.ac.th) is a JavaScript app; its data API
+  was not inspected yet (needs a real browser’s network tab). Next: capture that API, add a `tu-sync` edge function +
+  migration mirroring `reg-sync`, then feed exam dates into `examsFor`. Also missing: TU faculty study plans (TBS 2566
+  curriculum PDFs on tbs.tu.ac.th), more TU faculties’ course lists, TU-specific outcomes ACC/EXE.
 - Installable app (PWA) and a privacy (PDPA) page.
 - Move the two Google Sheets into Supabase tables.
 - MyCourseVille: official API needs an app key from the MCV team; meanwhile "Paste from MCV" and

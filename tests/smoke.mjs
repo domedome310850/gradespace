@@ -16,7 +16,7 @@ const LIBS = {
   'htm.umd': resolve(here, 'node_modules/htm/dist/htm.umd.js'),
 };
 // Stand-in for supabase-js: gs_load returns the fixture, every other call succeeds with nothing.
-const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{},functions:{},rpc:async(fn,args)=>{
+const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{},functions:{},rpc:async(fn,args)=>{(window.__rpcs=window.__rpcs||[]).push(fn);
   if(fn==='gs_load')return {data:[{data:window.__D,client_updated_at:Date.now()}],error:null};
   if(fn==='gs_exam_device'){
     if(args.p_email!=='test@example.com'||!(/^[0-9a-f]{64}$/).test(args.p_device))throw Error('invalid device scope');
@@ -257,9 +257,68 @@ async function run(browser, lang, width) {
   return errors.length + overflow.length;
 }
 
+// Thammasat mode (2026-11-26): pick TU on the sign-in screen; Chula-only features stay off.
+async function runTU(browser, lang, width) {
+  const errors = [], overflow = [];
+  const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await ctx.newPage();
+  await page.addInitScript(([d]) => { window.__D = d; localStorage.removeItem('gradespace.email'); localStorage.removeItem('gradespace.mode'); }, [state]);
+  await page.route('**/*', (route) => {
+    const u = route.request().url();
+    if (u.startsWith('file:') || u.startsWith('data:') || u.startsWith('blob:')) return route.continue();
+    for (const [k, f] of Object.entries(LIBS)) if (u.includes(k)) return route.fulfill({ path: f, contentType: 'application/javascript' });
+    if (u.includes('supabase.js')) return route.fulfill({ body: FAKE_SUPABASE, contentType: 'application/javascript' });
+    if (u.includes('gs-scan')) return route.fulfill({ body: '{"ready":true}', contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' } });
+    return route.abort();
+  });
+  page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
+  page.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('Failed to load resource')) errors.push('console: ' + m.text()); });
+  await page.clock.setFixedTime(new Date('2026-11-22T07:00:00Z'));
+  await page.goto(PAGE);
+  if(lang==='en'){await page.locator('.auth-card button',{hasText:'EN'}).first().click();}
+  await page.locator('.auth-card button',{hasText:lang==='th'?'ธรรมศาสตร์':'Thammasat'}).click();
+  if(await page.locator('#au-student').count()) errors.push('TU sign-in should not ask for a Chula student ID');
+  await page.locator('#au-e').fill('tu@example.com');
+  await page.locator('#au-e').press('Enter');
+  await page.locator('.dashboard-exam-panel').first().waitFor();
+  await page.waitForTimeout(400);
+  if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
+  if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
+  const rpcs=await page.evaluate(()=>window.__rpcs||[]);
+  for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
+  if(!(await page.getByTestId('tu-exam-note').isVisible())) errors.push('TU exam note missing');
+  if(await page.locator('.sp-card').count()) errors.push('CBS study plan card shown for TU');
+  // GenEd: TU list, add TU101 through the course form.
+  await page.evaluate(()=>{location.hash='years';}); await page.waitForTimeout(300);
+  await page.getByTestId('tu-gened-open').click();
+  await page.locator('.tuge-row').first().waitFor();
+  if(await page.locator('.tuge-row').count()<50) errors.push('TU GenEd list incomplete');
+  await page.locator('.tuge-row').filter({hasText:'TU101'}).getByRole('button').click();
+  await page.waitForTimeout(300);
+  await page.locator('.modal .btn.primary').last().click();
+  await page.waitForTimeout(300);
+  const added=await page.evaluate(()=>GradeSpace.S.state.courses.find(c=>c.code==='TU101'));
+  if(!added||added.credits!==3||added.kind!=='gened') errors.push('TU101 not added as 3-credit GenEd: '+JSON.stringify(added&&{c:added.credits,k:added.kind}));
+  // Course search suggests Thammasat codes.
+  await page.evaluate(()=>{location.hash='courses';}); await page.waitForTimeout(300);
+  const hashes = ['dashboard', 'years', 'courses', 'gpa', 'me', 'preferences'];
+  for (const h of hashes) {
+    await page.evaluate((x) => { location.hash = x; }, h);
+    await page.waitForTimeout(250);
+    const extra = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (extra > 1) overflow.push(h + ' +' + extra + 'px');
+  }
+  const sugg=await page.evaluate(()=>GradeSpace.catalogSearch?GradeSpace.catalogSearch('AC201').length:-1);
+  if(sugg===0) errors.push('TU catalog search found nothing for AC201');
+  await ctx.close();
+  console.log(`TU ${lang} ${width}px: ${hashes.length} pages, overflow ${overflow.length ? overflow.join(', ') : 'none'}, errors ${errors.length ? errors.join(' | ') : 'none'}`);
+  return errors.length + overflow.length;
+}
+
 const browser = await chromium.launch();
 let bad = 0;
 for (const lang of ['th', 'en']) for (const w of [390, 1280, 1800]) bad += await run(browser, lang, w);
+for (const lang of ['th', 'en']) for (const w of [390, 1280]) bad += await runTU(browser, lang, w);
 await browser.close();
 if (bad) { console.error('FAILED'); process.exit(1); }
 console.log('OK');
