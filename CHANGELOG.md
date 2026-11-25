@@ -1,3 +1,9 @@
+## 2026-11-25 — ChatGPT: Multi-university academic foundation
+
+- `scripts/export-academic-catalog.mjs`, `data/staging/cu-legacy-catalog.json`: extract 149 legacy CU courses and 53 term plans, retain source blob SHA and original payload, mark all records unverified. All plan references resolve; six source URLs, eight templates, 58 exam date records.
+- `tests/academic-catalog.mjs`, `.github/workflows/academic-catalog.yml`: consistency and edge-case tests; extraction and fixture assertions executed in connector JS, Node/Browser CI pending (local git network unavailable).
+- `docs/multi-university-delivery.md`: owner defers authentication; next PRs cover academic profile, themes, public catalog and local AI bulk review/queue before protected storage integration. No change to existing app, account, database or deployment.
+
 ## 2026-11-24 — ChatGPT: Overview action hub redesign
 
 - `public/index.html`: unify planning modules into one actionable hub with an emphasized first recommendation, colored day counters and concise target/exam score explanations. Keep top three by default, explicit completed-course summary and smaller GPA/alerts tiles; remove duplicated export action (calendar retains export). Differentiate exam urgency by time and score pressure; hide finished/fully graded courses from study recommendations. Thai and English.

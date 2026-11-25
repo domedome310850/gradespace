@@ -1,0 +1,20 @@
+name: Academic catalog staging
+on:
+  pull_request:
+    paths:
+      - 'public/index.html'
+      - 'data/staging/**'
+      - 'scripts/export-academic-catalog.mjs'
+      - 'tests/academic-catalog.mjs'
+      - '.github/workflows/academic-catalog.yml'
+permissions:
+  contents: read
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/academic-catalog.mjs

@@ -106,6 +106,8 @@ data and fails on any error or sideways scrolling. Also click through what you c
 
 ## Open work
 
+- **Multi-university expansion (2026-11-25):** owner defers authentication redesign. See `docs/multi-university-delivery.md`. Public catalog staging/export and validation added; next: verified CU/TU imports, profile/theme UI, public catalog browser and local AI chat/bulk review. Do not expose new private endpoints, persistent uploads or AI writes through email-only identity. Browser/Node CI and release verification pending.
+
 - **Exam rooms (owner requested on 2026-11-22):** 310 private rules covering 110 courses in `gs_room_data.rules` for 2569/s1/fin. PR #7 now uses `gs_exam_device` and `gs_room_data.device_profiles` with a random browser-specific secret stored per email; no email verification or extra login. Different browsers must re-enter the ID. The original grade store is unchanged (email-only access is not verified identity). One malformed PDF p.3 interval omitted pending faculty confirmation. SQL device-isolation tests passed, browser smoke and deployment pending.
 - Installable app (PWA) and a privacy (PDPA) page.
 - Move the two Google Sheets into Supabase tables.
