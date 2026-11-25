@@ -204,6 +204,29 @@ async function run(browser, lang, width) {
   await reverse.getByText(/^GPA [0-9]/).first().waitFor();
   await reverse.locator('input').fill('4.1');
   if(await reverse.getByText(/^GPA [0-9]/).count())errors.push('invalid GPA target has scenarios');
+  // Browse public curriculum data without altering saved academic or grade state.
+  await page.evaluate(()=>location.hash='courses');
+  const launch=page.getByTestId('library-launch');await launch.waitFor();
+  const beforeLibrary=await page.evaluate(()=>JSON.stringify(GradeSpace.S.state));
+  await launch.click();
+  const lib=page.getByTestId('course-library');await lib.waitFor();
+  if(await lib.locator('.library-row').count()!==20)errors.push('library pagination');
+  await lib.locator('#library-institution').selectOption('tu');
+  await lib.getByTestId('library-search').fill('AC 296');
+  const tuCourse=lib.locator('[data-course-id="tu:AC296:2023"]');
+  await tuCourse.waitFor();
+  if(!(await tuCourse.innerText()).includes('1.5'))errors.push('fractional credits lost');
+  await lib.getByTestId('library-search').fill('');
+  await lib.locator('#library-prefix').selectOption('AC');
+  await lib.locator('#library-range').selectOption('300');
+  if(await lib.locator('.library-row').count()!==8)errors.push('TU suffix and prefix filter');
+  await lib.locator('#library-institution').selectOption('cu');
+  if(await lib.locator('#library-prefix').inputValue()!=='')errors.push('prefix not reset on institution change');
+  await lib.locator('#library-status').selectOption('checked');
+  if(await lib.locator('.library-row').count())errors.push('legacy records incorrectly verified');
+  if(await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth)>1)errors.push('library overflow');
+  await page.keyboard.press('Escape');await lib.waitFor({state:'detached'});
+  if(await page.evaluate(()=>JSON.stringify(GradeSpace.S.state))!==beforeLibrary)errors.push('catalog changed saved academic state');
   const ids = await page.evaluate(() => GradeSpace.S.state.courses.map((c) => c.id));
   const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', ...ids.map((i) => 'course-' + i)];
   for (const h of hashes) {
