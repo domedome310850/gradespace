@@ -1,3 +1,8 @@
+## 2026-11-25 — ChatGPT: Adaptive appearance preview
+
+- `public/index.html`: device-local institution/faculty preview in Settings, CU/CBS/TU inspired palettes, independent palette override and custom color, reset, bilingual UI. Contrast-safe accent variables in light/dark/system modes, neutral surfaces and unchanged semantic/course colors. The chosen institution is a preview only; no catalog, grade rule, account or cloud-state change. No official logos used.
+- `tests/smoke.mjs`: check palette changes, faculty reset, persistence across routes, no grade-state mutation, and contrast across 56 palette/mode/color combinations. Exact embedded pure functions passed these 56 checks in isolated JavaScript; browser CI pending. No production deployment.
+
 ## 2026-11-24 — ChatGPT: Overview action hub redesign
 
 - `public/index.html`: unify planning modules into one actionable hub with an emphasized first recommendation, colored day counters and concise target/exam score explanations. Keep top three by default, explicit completed-course summary and smaller GPA/alerts tiles; remove duplicated export action (calendar retains export). Differentiate exam urgency by time and score pressure; hide finished/fully graded courses from study recommendations. Thai and English.
