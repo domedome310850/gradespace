@@ -113,3 +113,4 @@ data and fails on any error or sideways scrolling. Also click through what you c
   screenshot scanning exist. A bookmarklet that sends the Portfolio table was proposed, not built.
 - Study plans cover Accounting, BBA majors and Statistics from the faculty's 2569 timetable; some terms
   (e.g. MIS year 4) have no published plan.
+- Multi-university course library preview: read-only browser for legacy CU and source-checked TU 2023 sample records. Next normalize public catalog imports and verified curriculum versions, then safely connect profile/enrollment; no rule inference from numeric suffix. Authentication redesign deferred by owner; do not expose new private AI storage or writes without ownership checks. Browser CI pending.
