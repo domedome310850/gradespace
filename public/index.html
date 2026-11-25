@@ -833,6 +833,7 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .dashboard-summary .metric .m-value { font-size: 22px; }
   .dashboard-summary .metric .m-label { font-size: 11px; }
 }
+.library-ui{display:flex;flex-direction:column;gap:10px;min-width:0;}.library-ui p{margin:0;}.library-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}.library-filters .select,.library-ui .input{width:100%;min-width:0;}.library-results{display:grid;gap:0;}.library-row{min-width:0;display:grid;gap:3px;padding:12px 0;border-top:1px solid var(--line);overflow-wrap:anywhere;}.library-row strong{font-size:15px;line-height:1.4;}.library-launch{min-height:42px;}.library-row .row{gap:6px;}@media(max-width:350px){.library-filters{grid-template-columns:1fr;}.library-launch{width:100%;}}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -2618,6 +2619,31 @@ var SharedCatalog = (function () {
 
 var I18N = {
 en: {
+  "library.title": "Course library",
+  "library.sub": "Browse academic catalog records. Availability and degree eligibility are not confirmed.",
+  "library.institution": "Institution",
+  "library.all": "All institutions",
+  "library.cu": "Chulalongkorn University",
+  "library.tu": "Thammasat University",
+  "library.search": "Course name or code",
+  "library.prefix": "Code prefix",
+  "library.prefixAll": "All prefixes",
+  "library.level": "Code range",
+  "library.levelAll": "All codes",
+  "library.level300": "Suffix 300–599",
+  "library.status": "Source status",
+  "library.statusAll": "All records",
+  "library.legacy": "Legacy · review needed",
+  "library.checked": "Source checked",
+  "library.count": "{n} courses found",
+  "library.empty": "No matching courses in this sample catalog.",
+  "library.source": "Source",
+  "library.year": "Curriculum {y}",
+  "library.more": "Show more",
+  "library.note": "Read-only preview. Adding courses, academic rules and current sections are not connected yet.",
+  "library.legacySource": "Existing GradeSpace catalog",
+  "library.tuSource": "TBS BBA International · 2023",
+  "library.clear": "Clear filters",
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -3046,6 +3072,31 @@ en: {
   'onb4Note': 'Anything not graded yet is counted as still to come, never as zero.', 'goToCourse': 'Go to my course'
 },
 th: {
+  "library.title": "คลังรายวิชา",
+  "library.sub": "ค้นข้อมูลรายวิชา ยังไม่ยืนยันการเปิดสอนหรือการนับหน่วยกิตตามหลักสูตร",
+  "library.institution": "มหาวิทยาลัย",
+  "library.all": "ทุกมหาวิทยาลัย",
+  "library.cu": "จุฬาลงกรณ์มหาวิทยาลัย",
+  "library.tu": "มหาวิทยาลัยธรรมศาสตร์",
+  "library.search": "ชื่อหรือรหัสวิชา",
+  "library.prefix": "รหัสนำหน้า",
+  "library.prefixAll": "ทุกรหัสนำหน้า",
+  "library.level": "ช่วงรหัส",
+  "library.levelAll": "ทุกช่วง",
+  "library.level300": "ท้าย 300–599",
+  "library.status": "สถานะข้อมูล",
+  "library.statusAll": "ทั้งหมด",
+  "library.legacy": "ข้อมูลเดิม · รอตรวจ",
+  "library.checked": "ตรวจแหล่งที่มาแล้ว",
+  "library.count": "พบ {n} รายวิชา",
+  "library.empty": "ไม่พบรายวิชาในชุดข้อมูลนี้",
+  "library.source": "แหล่งข้อมูล",
+  "library.year": "หลักสูตร {y}",
+  "library.more": "แสดงเพิ่มเติม",
+  "library.note": "ดูข้อมูลเท่านั้น ยังไม่เชื่อมการเพิ่มวิชา กฎหลักสูตร หรือตอนเรียนปัจจุบัน",
+  "library.legacySource": "คลังรายวิชา GradeSpace เดิม",
+  "library.tuSource": "TBS BBA นานาชาติ · 2566",
+  "library.clear": "ล้างตัวกรอง",
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -5930,6 +5981,52 @@ function CourseSearch(p) {
   </div>`;
 }
 
+/* Read-only multi-institution library. Never use these records as enrollment or grading rules. */
+var LIBRARY_TU_SOURCE="https://bba.tbs.tu.ac.th/coursedescription.php?CourseYear=2023";
+var LIBRARY_TU_ROWS=[["AC201","Fundamental Accounting",3],["AC202","Management Accounting",3],["AC221","Business Acumen & Financial Reporting",3],["AC295","Special Topics in Accounting 1",3],["AC296","Special Topics in Accounting 2",1.5],["AC311","Intermediate Accounting 1",3],["AC312","Intermediate Accounting 2",3],["AC313","Cost Accounting",3],["AC314","Cost Management",3],["AC315","Accounting Information Systems",3],["AC316","Auditing",3],["AC317","Enterprise Risk Management and Internal Control",3],["AC318","Tax Accounting",3],["FN201","Business Finance",3],["FN211","Financial Mathematics and Statistics",3],["FN311","Financial Management",3],["FN312","Investments",3],["IS201","Digital Technology for Business",3],["IS315","Systems Analysis and Modelling",3],["IS361","Artificial Intelligence",3],["HR201","Modern Management and Entrepreneurship",3]];
+function libraryRows(legacy,tu){
+  var out=Object.keys(legacy).map(function(code){var c=legacy[code];return {id:'cu:'+code,institution:'cu',code:code,title:c.aka||c.n,titleTh:c.th||'',aliases:[c.n,c.aka],credits:c.cr,status:'legacy',year:null,source:c.sourceUrl||null};});
+  return out.concat(tu.map(function(r){return {id:'tu:'+r[0]+':2023',institution:'tu',code:r[0],title:r[1],titleTh:'',aliases:[],credits:r[2],status:'checked',year:2023,source:LIBRARY_TU_SOURCE};}));
+}
+function libraryPrefix(c){return c.institution==='cu'?c.code.slice(0,4):c.code.replace(/\d+$/,'');}
+function libraryFilter(rows,o){
+  var norm=function(x){return String(x||'').normalize('NFKC').toLowerCase().replace(/\s+/g,'');};
+  var q=norm(o.q);
+  return rows.filter(function(c){
+    var suffix=/\d{3}$/.test(c.code)?Number(c.code.slice(-3)):null;
+    return (!o.institution||c.institution===o.institution)&&(!o.prefix||libraryPrefix(c)===o.prefix)&&(!o.status||c.status===o.status)&&(!o.range||(suffix!==null&&suffix>=300&&suffix<=599))&&(!q||[c.code,c.title,c.titleTh].concat(c.aliases||[]).some(function(x){return norm(x).includes(q);}));
+  }).sort(function(a,b){return a.institution.localeCompare(b.institution)||a.code.localeCompare(b.code);});
+}
+function CourseLibraryModal(){
+  var st=useState({q:'',institution:'',prefix:'',status:'',range:''}),o=st[0],set=st[1];
+  var lim=useState(20),limit=lim[0],setLimit=lim[1];
+  var rows=libraryRows(CATALOG.COURSES,LIBRARY_TU_ROWS),filtered=libraryFilter(rows,o);
+  var prefixes=Array.from(new Set(rows.filter(function(c){return !o.institution||c.institution===o.institution;}).map(libraryPrefix))).sort();
+  function change(k,v){set(function(prev){var n=Object.assign({},prev);n[k]=v;if(k==='institution')n.prefix='';return n;});setLimit(20);}
+  function select(id,label,values){return html`<${Field} label=${t(label)} id=${'library-'+id}><select id=${'library-'+id} className="select" value=${o[id]} onChange=${function(e){change(id,e.target.value);}}>${values.map(function(x){return html`<option key=${x[0]} value=${x[0]}>${x[1]}</option>`;})}</select><//>`;}
+  return html`<${Modal} title=${t('library.title')} onClose=${closeModal} wide=${true}>
+    <div className="library-ui" data-testid="course-library">
+      <p className="small muted">${t('library.sub')}</p>
+      <input className="input" type="search" data-testid="library-search" aria-label=${t('library.search')} placeholder=${t('library.search')} value=${o.q} onInput=${function(e){change('q',e.target.value);}} />
+      <div className="library-filters">
+        ${select('institution','library.institution',[['',t('library.all')],['cu',t('library.cu')],['tu',t('library.tu')]])}
+        ${select('prefix','library.prefix',[['',t('library.prefixAll')]].concat(prefixes.map(function(k){return [k,k];})))}
+        ${select('range','library.level',[['',t('library.levelAll')],['300',t('library.level300')]])}
+        ${select('status','library.status',[['',t('library.statusAll')],['legacy',t('library.legacy')],['checked',t('library.checked')]])}
+      </div>
+      <div className="row between wrap"><span className="small muted" role="status">${t('library.count',{n:filtered.length})}</span><button className="btn sm ghost" type="button" onClick=${function(){set({q:'',institution:'',prefix:'',status:'',range:''});setLimit(20);}}>${t('library.clear')}</button></div>
+      <div className="library-results">${filtered.slice(0,limit).map(function(c){return html`<article key=${c.id} className="library-row" data-course-id=${c.id}>
+        <div className="row between wrap"><span className="tiny muted num">${c.institution.toUpperCase()} · ${c.code}</span><span className="small num">${t('nCredits',{n:c.credits})}</span></div>
+        <strong>${LANG==='th'&&c.titleTh?c.titleTh:c.title}</strong>
+        <div className="tiny muted">${t(c.status==='checked'?'library.checked':'library.legacy')} · ${t(c.institution==='tu'?'library.tuSource':'library.legacySource')}</div>
+        ${c.source&&html`<a className="small" href=${c.source} target="_blank" rel="noopener noreferrer">${t('library.source')} ↗</a>`}
+      </article>`;})}</div>
+      ${!filtered.length&&html`<p className="muted">${t('library.empty')}</p>`}
+      ${filtered.length>limit&&html`<button type="button" className="btn" onClick=${function(){setLimit(limit+20);}}>${t('library.more')}</button>`}
+      <p className="tiny muted">${t('library.note')}</p>
+    </div><//>`;
+}
+
 function CoursesPage(p) {
   var state = p.state;
   var fs = useState(''), filter = fs[0], setFilter = fs[1];
@@ -5947,6 +6044,7 @@ function CoursesPage(p) {
       <${SemesterSelect} state=${state} value=${filter} allowAll=${true} label=${t('filterSemester')} onChange=${setFilter} style=${{ width: 'auto', minWidth: 180 }} />
       <${CourseSearch} state=${state} q=${q} setQ=${setQ} courseFields=${courseFields} semesterId=${filter || (curSemester(state) || {}).id} />
     </div>` : html`<${EmptyStart} />`}
+    <button type="button" className="btn library-launch" data-testid="library-launch" onClick=${function(){openModal('courseLibrary',{});}}><${Icon} n="book" />${t('library.title')}</button>
     ${sems.map(function (s) {
       var cs = sortCourses(state.courses.filter(function (c) { return c.semesterId === s.id && match(c); }));
       if (!cs.length) return null;
@@ -7637,7 +7735,7 @@ function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, courseLibrary: CourseLibraryModal }[m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 
