@@ -56,8 +56,8 @@ Find code with search (`grep -n "^function CourseCard"`), not by line number —
 - **App** (inside one IIFE): global state `S`, `update(fn, {undo:true})` to change data, `emit()`,
   `toast()`, `openModal(type, props)`; the modal registry is the object ending in
   `…studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal }[m.type]` — add new modals there.
-  New features should get an entry point in the `cmd` menu (`commandItems`) and, when announced, a line in
-  `WhatsNew` with a new `WHATS_NEW_VERSION` so the card reappears once.
+  New features should get an entry point in the `cmd` menu (`commandItems`). Keep the top bar minimal
+  (logo + `AccountMenu`); the AI assistant is the floating `AiFab`, search sits beside the semester picker.
   Other helpers: `RegData` (Reg Chula data per course), `GenEdData`, `examsFor(c, state)`,
   `gradingModeFor(c)`, `sectionOf(c)`, `niceName(name)`, `courseDisplayTitle(c)`.
 - **Pages**: `Dashboard`, `CoursesPage`, `CourseDetail`, `YearsPage`, `SimulatorPage`, `GPAPage`, settings.

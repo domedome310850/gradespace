@@ -663,7 +663,6 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 }
 @media (max-width: 440px) {
   .topbar { gap: 6px; padding-left: 12px; padding-right: 10px; }
-  .topbar .brand-name { display: none; }
 }
 .main { overflow-x: clip; }
 
@@ -833,21 +832,34 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .dashboard-summary .metric .m-value { font-size: 22px; }
   .dashboard-summary .metric .m-label { font-size: 11px; }
 }
-/* AI assistant entry, command menu (Ctrl/⌘K) and what's-new card (2026-11-25). */
-.cmdk{display:flex;align-items:center;gap:8px;height:38px;min-width:240px;padding:0 8px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font-size:13.5px;cursor:pointer;text-align:left}
-.cmdk kbd{margin-left:auto;font:600 11px var(--font);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px;color:var(--muted)}
-.ai-btn{color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
-@media(max-width:900px){.cmdk{min-width:0;width:38px;flex:0 0 38px;padding:0;justify-content:center}.cmdk .cmdk-l,.cmdk kbd{display:none}.topbar .ai-btn .lbl-l{display:none}.topbar .ai-btn{flex:0 0 38px;width:38px;padding:0;justify-content:center}}
+/* AI assistant (floating button), command search and account menu (2026-11-25). */
+.dash-view{flex-wrap:nowrap;gap:8px;align-items:center}
+.dash-search{display:flex;align-items:center;gap:8px;height:34px;min-width:200px;padding:0 8px 0 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
+.dash-search:hover{border-color:var(--line-strong);color:var(--ink)}
+.dash-search kbd{margin-left:auto;font:600 11px var(--font);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px}
+@media(max-width:900px){.dash-view{display:flex;width:100%}.dash-search{flex:1;min-width:0}.dash-search kbd{display:none}}
+.ai-fab-wrap{position:fixed;right:20px;bottom:24px;z-index:24;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+@media(max-width:900px){.ai-fab-wrap{right:14px;bottom:calc(78px + env(safe-area-inset-bottom,0px))}.page{padding-bottom:calc(160px + env(safe-area-inset-bottom,0px))}}
+.ai-fab{width:56px;height:56px;border-radius:50%;border:0;display:grid;place-items:center;color:#fff;cursor:pointer;background:linear-gradient(135deg,#8C71FE,#6654E8 55%,#3F51C9);box-shadow:0 8px 22px rgba(79,70,229,.38),0 0 0 4px color-mix(in srgb,var(--bg) 70%,transparent);transition:transform .15s ease}
+.ai-fab:hover{transform:translateY(-2px)}.ai-fab:active{transform:scale(.96)}
+.ai-fab-x{position:absolute;right:-4px;bottom:40px;width:22px;height:22px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.ai-fab-intro{position:relative;width:min(280px,calc(100vw - 28px));padding:12px 14px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));border-radius:14px;background:var(--surface);box-shadow:var(--shadow-lg,0 10px 30px rgba(0,0,0,.25));display:grid;gap:6px;animation:fabIn .25s ease-out}
+.ai-fab-intro span{font-size:13px;color:var(--muted);line-height:1.45}.ai-fab-intro .row{gap:6px;margin-top:2px}
+.ai-fab-intro::after{content:"";position:absolute;right:22px;bottom:-7px;width:12px;height:12px;background:var(--surface);border-right:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));border-bottom:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));transform:rotate(45deg)}
+@keyframes fabIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.ai-fab-intro{animation:none}.ai-fab{transition:none}}
+.acct{position:relative}.acct-btn{position:relative}
+.acct-dot{position:absolute;right:3px;bottom:3px;width:9px;height:9px;border-radius:50%;background:var(--ok);border:2px solid var(--bg)}.acct-dot.busy{background:var(--warn)}.acct-dot.bad{background:var(--bad)}
+.acct-menu{position:absolute;right:0;top:calc(100% + 8px);width:260px;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 12px 32px rgba(0,0,0,.22);display:grid;gap:4px;z-index:40}
+.acct-head{padding:6px 8px 8px;border-bottom:1px solid var(--line);display:grid;gap:3px;min-width:0}.acct-head b{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.acct-head .save-label{display:inline !important}.acct .acct-head .save-state{width:auto;min-width:0;justify-content:flex-start;overflow:visible}
+.acct-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;font-size:13.5px}.acct-row .seg{flex:none}
+.acct-link{display:flex;align-items:center;gap:8px;padding:8px;border-radius:9px;color:var(--ink);text-decoration:none;font-size:13.5px}.acct-link:hover{background:var(--surface-2)}
 .ai-actions{display:grid;gap:8px;margin-top:12px}.ai-action{display:flex;gap:12px;align-items:center;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-align:left;cursor:pointer}
 .ai-action:hover{background:var(--surface-2)}.ai-action:disabled{opacity:.55;cursor:default}.ai-action>.ic{color:var(--accent-text);flex:none}.ai-action b{display:block;font-weight:650}.ai-action span{font-size:13px;color:var(--muted)}
 .cmd-input{width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface)}
 .cmd-list{display:grid;gap:2px;margin-top:10px;max-height:min(55vh,420px);overflow:auto}.cmd-group{font-size:11.5px;font-weight:650;color:var(--muted);margin:8px 6px 2px}
 .cmd-item{display:flex;gap:10px;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:9px;background:none;text-align:left;cursor:pointer;color:var(--ink)}
 .cmd-item[aria-selected="true"],.cmd-item:hover{background:var(--accent-soft);color:var(--accent-text)}.cmd-item small{margin-left:auto;color:var(--muted);font-size:12px}
-.whats-new{margin:12px 0;border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}.whats-new-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
-.whats-new-item{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:11px;background:var(--surface-2);min-width:0}.whats-new-item>.ic{color:var(--accent-text);flex:none}
-.whats-new-item div{flex:1;min-width:0}.whats-new-item b{display:block;font-size:13.5px}.whats-new-item span{font-size:12px;color:var(--muted)}
-@media(max-width:650px){.whats-new-grid{grid-template-columns:1fr}}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -2640,12 +2652,11 @@ en: {
   'ai.quickT': 'Quick score entry', 'ai.quickP': 'Type one score at a time',
   'ai.noScan': 'Screenshot scanning needs a signed-in account.', 'ai.noCourse': 'Add a course first, then you can paste scores into it.',
   'ai.soon': 'Coming next: speak your scores and chat with the assistant.',
-  'cmd.btn': 'Search courses, pages, actions…', 'cmd.title': 'Search', 'cmd.ph': 'Try “accounting”, “scan”, “GPA”',
+  'cmd.btn': 'Search courses, pages, actions…', 'cmd.title': 'Search', 'cmd.ph': 'Try “GPA”, “scan” or a course code',
   'cmd.none': 'No results', 'cmd.hint': 'Press Ctrl+K (⌘K on Mac) on any page', 'cmd.gPages': 'Pages', 'cmd.gActions': 'Actions', 'cmd.gCourses': 'Courses',
   'cmd.theme': 'Toggle light/dark mode', 'cmd.lang': 'Switch language (TH/EN)',
-  'new.title': 'What’s new in GradeSpace', 'new.ok': 'Got it',
-  'new.aiT': 'AI assistant in the top bar', 'new.aiP': 'Scan, paste or type scores from one place', 'new.aiBtn': 'Open',
-  'new.cmdT': 'Find anything with Ctrl+K', 'new.cmdP': 'Courses, pages and actions in one search box', 'new.cmdBtn': 'Try it',
+  'fab.hide': 'Hide for now', 'fab.introT': 'Let AI fill in your scores', 'fab.introP': 'Scan a screenshot, paste from MyCourseVille or type. You check every row before it saves.',
+  'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -3081,12 +3092,11 @@ th: {
   'ai.quickT': 'กรอกคะแนนด่วน', 'ai.quickP': 'พิมพ์คะแนนทีละรายการ',
   'ai.noScan': 'การสแกนภาพต้องเข้าสู่ระบบด้วยบัญชีก่อน', 'ai.noCourse': 'เพิ่มวิชาก่อน แล้วจึงวางคะแนนลงในวิชานั้นได้',
   'ai.soon': 'กำลังพัฒนา: พูดบอกคะแนนและแชทกับผู้ช่วย',
-  'cmd.btn': 'ค้นหาวิชา หน้า หรือคำสั่ง…', 'cmd.title': 'ค้นหา', 'cmd.ph': 'ลองพิมพ์ “บัญชี”, “สแกน”, “GPA”',
+  'cmd.btn': 'ค้นหาวิชา หน้า หรือคำสั่ง…', 'cmd.title': 'ค้นหา', 'cmd.ph': 'ลองพิมพ์ “GPA”, “สแกน” หรือรหัสวิชา',
   'cmd.none': 'ไม่พบ', 'cmd.hint': 'กด Ctrl+K (⌘K บน Mac) ได้ทุกหน้า', 'cmd.gPages': 'หน้า', 'cmd.gActions': 'คำสั่ง', 'cmd.gCourses': 'วิชา',
   'cmd.theme': 'สลับโหมดสว่าง/มืด', 'cmd.lang': 'สลับภาษา (TH/EN)',
-  'new.title': 'มีอะไรใหม่ใน GradeSpace', 'new.ok': 'รับทราบ',
-  'new.aiT': 'ปุ่มผู้ช่วย AI บนหัวเว็บ', 'new.aiP': 'สแกน วาง หรือพิมพ์คะแนนได้จากที่เดียว', 'new.aiBtn': 'เปิดดู',
-  'new.cmdT': 'ค้นหาทุกอย่างด้วย Ctrl+K', 'new.cmdP': 'วิชา หน้า และคำสั่งในช่องค้นหาเดียว', 'new.cmdBtn': 'ลองค้นหา',
+  'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'ให้ AI ช่วยกรอกคะแนนสิ', 'fab.introP': 'สแกนภาพหน้าจอ วางจาก MyCourseVille หรือพิมพ์เอง ตรวจได้ทุกแถวก่อนบันทึก',
+  'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -3713,7 +3723,7 @@ var ICONS = {
   user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
   zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
-  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
+  spark: '<path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"/><path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',
   cap: '<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
   clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
   flag: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/>',
@@ -3729,8 +3739,12 @@ function Icon(p) {
   return h('svg', { className: 'ic', width: s, height: s, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2,
     strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true', dangerouslySetInnerHTML: { __html: ICONS[p.n] || '' } });
 }
+var logoSeq = 0;
 function Logo() {
-  return html`<span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"> <defs> <linearGradient id="gsGradient" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" stop-color="#8C71FE"/> <stop offset="55%" stop-color="#6654E8"/> <stop offset="100%" stop-color="#3F51C9"/> </linearGradient> </defs> <rect width="48" height="48" rx="14" fill="url(#gsGradient)"/> <path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke="#fff" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/> <circle cx="34.8" cy="12.6" r="3" fill="#C5ECFF"/> </svg></span>`;
+  // Each logo needs its own gradient id: the sidebar copy is hidden on phones, and a
+  // gradient referenced from a hidden (display:none) SVG renders black.
+  var gid = useRef(null); if (!gid.current) gid.current = 'gsGradient' + (++logoSeq);
+  return html`<span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"> <defs> <linearGradient id=${gid.current} x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" stop-color="#8C71FE"/> <stop offset="55%" stop-color="#6654E8"/> <stop offset="100%" stop-color="#3F51C9"/> </linearGradient> </defs> <rect width="48" height="48" rx="14" fill=${'url(#' + gid.current + ')'}/> <path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke="#fff" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/> <circle cx="34.8" cy="12.6" r="3" fill="#C5ECFF"/> </svg></span>`;
 }
 function Tip(p) {
   var posState = useState(null), pos = posState[0], setPos = posState[1];
@@ -5728,19 +5742,18 @@ function Dashboard(p) {
   return html`<div>
     <div className="page-head">
       <div><h1>${t('nav.dashboard')}</h1>
-        <div className="row wrap" style=${{ marginTop: 6 }}>
+        <div className="row dash-view" style=${{ marginTop: 6 }}>
           <label className="small muted" htmlFor="cur-sem">${t('viewingSemester')}</label>
           <${SemesterSelect} id="cur-sem" state=${state} value=${cur.id} label=${t('viewingSemester')} style=${{ width: 'auto', padding: '5px 10px', fontSize: 14 }}
             onChange=${function (v) { update(function (d) { d.settings.currentSemesterId = v; }); }} />
+          <button className="dash-search" onClick=${function () { openModal('cmd', {}); }} aria-label=${t('cmd.btn')} title=${t('cmd.hint')}><${Icon} n="search" s=${16} /><span>${t('search.short')}</span><kbd>${/Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘K' : 'Ctrl K'}</kbd></button>
         </div>
       </div>
       <div className="dash-actions">
-        <${ScanButton} semesterId=${cur.id} short=${true} />
         <button className="btn" onClick=${function () { openModal('course', { semesterId: cur.id }); }}><${Icon} n="plus" />${t('addCourse')}</button>
         <button className="btn primary" onClick=${function () { openModal('quick', {}); }}><${Icon} n="edit" /><span className="lbl-l">${t('quickScore')}</span><span className="lbl-s">${t('quickScoreShort')}</span></button>
       </div>
     </div>
-    <${WhatsNew} />
     <div className=${"metrics dashboard-summary" + (showNextTerm(state,cur) ? " has-plan" : "")}>
       <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).gpaCount,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
         sub=${semC.gpa == null ? (semE.gpa != null ? t('gpa.estOnly') : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length }))
@@ -7692,14 +7705,15 @@ function AssistantModal(p) {
 }
 function commandItems(state) {
   var cur = curSemester(state), isDark = state.settings.theme === 'dark' || (state.settings.theme !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  var items = NAV.map(function (n) { return { g: 'cmd.gPages', icon: n.icon, label: t('nav.' + (n.key || n.id)), run: function () { location.hash = n.id; } }; });
+  var both = function (k) { return [I18N.en[k], I18N.th[k]].join(' '); };
+  var items = NAV.map(function (n) { var k = 'nav.' + (n.key || n.id); return { g: 'cmd.gPages', icon: n.icon, label: t(k), meta2: both(k), run: function () { location.hash = n.id; } }; });
   items = items.concat([
-    { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), run: function () { openModal('assistant', {}); } },
-    { g: 'cmd.gActions', icon: 'plus', label: t('addCourse'), run: function () { openModal('course', { semesterId: cur && cur.id }); } },
-    { g: 'cmd.gActions', icon: 'edit', label: t('quickScore'), run: function () { openModal('quick', {}); } },
-    canScan() && { g: 'cmd.gActions', icon: 'zap', label: t('scan.btn'), run: function () { openModal('scan', { semesterId: cur && cur.id }); } },
-    { g: 'cmd.gActions', icon: isDark ? 'sun' : 'moon', label: t('cmd.theme'), run: function () { update(function (d) { d.settings.theme = isDark ? 'light' : 'dark'; }); } },
-    { g: 'cmd.gActions', icon: 'info', label: t('cmd.lang'), run: function () { update(function (d) { d.settings.lang = LANG === 'th' ? 'en' : 'th'; }); } }
+    { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), meta2: both('ai.btn'), run: function () { openModal('assistant', {}); } },
+    { g: 'cmd.gActions', icon: 'plus', label: t('addCourse'), meta2: both('addCourse'), run: function () { openModal('course', { semesterId: cur && cur.id }); } },
+    { g: 'cmd.gActions', icon: 'edit', label: t('quickScore'), meta2: both('quickScore'), run: function () { openModal('quick', {}); } },
+    canScan() && { g: 'cmd.gActions', icon: 'zap', label: t('scan.btn'), meta2: both('scan.btn'), run: function () { openModal('scan', { semesterId: cur && cur.id }); } },
+    { g: 'cmd.gActions', icon: isDark ? 'sun' : 'moon', label: t('cmd.theme'), meta2: both('cmd.theme'), run: function () { update(function (d) { d.settings.theme = isDark ? 'light' : 'dark'; }); } },
+    { g: 'cmd.gActions', icon: 'info', label: t('cmd.lang'), meta2: both('cmd.lang'), run: function () { update(function (d) { d.settings.lang = LANG === 'th' ? 'en' : 'th'; }); } }
   ].filter(Boolean));
   state.courses.forEach(function (c) { items.push({ g: 'cmd.gCourses', icon: 'book', label: courseDisplayTitle(c), meta: c.code || '', run: function () { location.hash = 'course-' + c.id; } }); });
   return items;
@@ -7707,7 +7721,7 @@ function commandItems(state) {
 function CommandModal(p) {
   var state = useApp(), qs = useState(''), q = qs[0], setQ = qs[1], ss = useState(0), sel = ss[0], setSel = ss[1];
   var norm = function (x) { return String(x || '').toLowerCase(); };
-  var list = commandItems(state).filter(function (x) { return !q || norm(x.label + ' ' + (x.meta || '')).indexOf(norm(q).trim()) >= 0; }).slice(0, 30);
+  var list = commandItems(state).filter(function (x) { return !q || norm(x.label + ' ' + (x.meta || '') + ' ' + (x.meta2 || '')).indexOf(norm(q).trim()) >= 0; }).slice(0, 30);
   function run(x) { if (!x) return; closeModal(); x.run(); }
   var lastG = null;
   return html`<${Modal} title=${t('cmd.title')} onClose=${closeModal}>
@@ -7722,17 +7736,44 @@ function CommandModal(p) {
     </div>
     <p className="tiny muted" style=${{ marginBottom: 0 }}>${t('cmd.hint')}</p><//>`;
 }
-var WHATS_NEW_KEY = 'gradespace.whatsnew', WHATS_NEW_VERSION = '2026-11-ai-cmdk';
-function WhatsNew() {
-  var seen = useState(function () { try { return localStorage.getItem(WHATS_NEW_KEY) === WHATS_NEW_VERSION; } catch (e) { return true; } }), hidden = seen[0], setHidden = seen[1];
-  if (hidden) return null;
-  function dismiss() { try { localStorage.setItem(WHATS_NEW_KEY, WHATS_NEW_VERSION); } catch (e) { /* ignore */ } setHidden(true); }
-  return html`<section className="card pad whats-new" aria-labelledby="whats-new-h">
-    <div className="row between"><h2 id="whats-new-h" style=${{ fontSize: 16 }}>${t('new.title')}</h2><button className="btn ghost sm" onClick=${dismiss}>${t('new.ok')}</button></div>
-    <div className="whats-new-grid">
-      <div className="whats-new-item"><${Icon} n="spark" /><div><b>${t('new.aiT')}</b><span>${t('new.aiP')}</span></div><button className="btn sm" onClick=${function () { openModal('assistant', {}); }}>${t('new.aiBtn')}</button></div>
-      <div className="whats-new-item"><${Icon} n="search" /><div><b>${t('new.cmdT')}</b><span>${t('new.cmdP')}</span></div><button className="btn sm" onClick=${function () { openModal('cmd', {}); }}>${t('new.cmdBtn')}</button></div>
-    </div></section>`;
+var AI_FAB_INTRO_KEY = 'gradespace.aifab.intro';
+// Floating AI button (bottom right, like campus apps). The ✕ hides it for this browser session;
+// the first visit shows a one-time bubble inviting the student to try it.
+function AiFab() {
+  var hs = useState(function () { try { return sessionStorage.getItem('gradespace.aifab') === 'hidden'; } catch (e) { return false; } }), hidden = hs[0], setHidden = hs[1];
+  var is = useState(function () { try { return !localStorage.getItem(AI_FAB_INTRO_KEY); } catch (e) { return false; } }), intro = is[0], setIntro = is[1];
+  if (hidden || S.modal) return null;
+  function seen() { try { localStorage.setItem(AI_FAB_INTRO_KEY, '1'); } catch (e) { /* ignore */ } setIntro(false); }
+  function open() { seen(); openModal('assistant', {}); }
+  function hide() { seen(); try { sessionStorage.setItem('gradespace.aifab', 'hidden'); } catch (e) { /* ignore */ } setHidden(true); }
+  return html`<div className="ai-fab-wrap">
+    ${intro && html`<div className="ai-fab-intro" role="dialog" aria-labelledby="ai-fab-t"><b id="ai-fab-t">${t('fab.introT')}</b><span>${t('fab.introP')}</span>
+      <div className="row"><button className="btn primary sm" onClick=${open}>${t('fab.try')}</button><button className="btn ghost sm" onClick=${seen}>${t('fab.later')}</button></div></div>`}
+    <button className="ai-fab" onClick=${open} aria-label=${t('ai.title')} title=${t('ai.title')}><${Icon} n="spark" s=${26} /></button>
+    <button className="ai-fab-x" onClick=${hide} aria-label=${t('fab.hide')} title=${t('fab.hide')}><${Icon} n="x" s=${12} /></button>
+  </div>`;
+}
+function AccountMenu(p) {
+  var os = useState(false), open = os[0], setOpen = os[1], ref = useRef(null), state = p.state;
+  useEffect(function () {
+    if (!open) return;
+    function out(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
+    function key(e) { if (e.key === 'Escape') setOpen(false); }
+    document.addEventListener('pointerdown', out); document.addEventListener('keydown', key);
+    return function () { document.removeEventListener('pointerdown', out); document.removeEventListener('keydown', key); };
+  }, [open]);
+  var user = S.web && S.web.user;
+  var face = user ? html`<span className="avatar">${initialOf(user)}</span>` : html`<${Icon} n=${S.web ? 'user' : 'sliders'} />`;
+  var theme = state.settings.theme === 'light' || state.settings.theme === 'dark' ? state.settings.theme : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  return html`<div className="acct" ref=${ref}>
+    <button className="btn ghost icon acct-btn" aria-haspopup="true" aria-expanded=${open ? 'true' : 'false'} aria-label=${t('acct.menu')} title=${t('acct.menu')} onClick=${function () { setOpen(!open); }}>${face}<span className=${'acct-dot' + (S.sync === 'saving' ? ' busy' : S.sync === 'error' ? ' bad' : '')}></span></button>
+    ${open && html`<div className="acct-menu">
+      <div className="acct-head"><b>${user ? user.email : (S.cloud ? t('store.accountShort') : t('store.deviceShort'))}</b><${SaveState} /></div>
+      <div className="acct-row"><span>${t('language')}</span><${Seg} label=${t('language')} value=${LANG} onChange=${function (v) { update(function (d) { d.settings.lang = v; }); }} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} /></div>
+      <div className="acct-row"><span>${t('theme')}</span><${Seg} label=${t('theme')} value=${theme} onChange=${function (v) { update(function (d) { d.settings.theme = v; }); }} options=${[{ v: 'light', l: t('theme.light') }, { v: 'dark', l: t('theme.dark') }]} /></div>
+      <a className="acct-link" href="#preferences" onClick=${function () { setOpen(false); }}><${Icon} n="sliders" s=${16} />${t('nav.settings')}</a>
+    </div>`}
+  </div>`;
 }
 function ModalHost(p) {
   var m = S.modal;
@@ -8020,21 +8061,15 @@ function App() {
     <div className="main">
       <header className="topbar">
         <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div></a>
-        <button className="cmdk" onClick=${function () { openModal('cmd', {}); }} aria-label=${t('cmd.btn')} title=${t('cmd.hint')}><${Icon} n="search" s=${16} /><span className="cmdk-l">${t('cmd.btn')}</span><kbd>${/Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘K' : 'Ctrl K'}</kbd></button>
         <div className="topbar-spacer"></div>
-        <button className="btn sm ai-btn" onClick=${function () { openModal('assistant', {}); }} aria-label=${t('ai.btn')}><${Icon} n="spark" s=${16} /><span className="lbl-l">${t('ai.btn')}</span></button>
-        <${SaveState} />
-        <${Seg} label=${t('language')} value=${LANG} onChange=${function (v) { update(function (d) { d.settings.lang = v; }); }} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} />
-        <button className="btn ghost icon" aria-label=${isDark ? t('toLight') : t('toDark')} title=${isDark ? t('toLight') : t('toDark')} onClick=${function () { update(function (d) { d.settings.theme = isDark ? 'light' : 'dark'; }); }}><${Icon} n=${isDark ? 'sun' : 'moon'} /></button>
-        ${S.web && S.web.user ? html`<a className="btn ghost icon" href="#preferences" aria-label=${t('account')} title=${S.web.user.email}><span className="avatar">${initialOf(S.web.user)}</span></a>`
-          : S.web ? html`<a className="btn ghost icon" href="#preferences" aria-label=${t('account')} title=${t('account')}><${Icon} n="user" /></a>`
-          : html`<a className="btn ghost icon" href="#preferences" aria-label=${t('nav.settings')} title=${t('nav.settings')}><${Icon} n="sliders" /></a>`}
+        <${AccountMenu} state=${state} />
       </header>
       <main className="page" id="main">${page}</main>
     </div>
     <nav className="bottomnav" aria-label=${t('mainNav')}>
       ${NAV.filter(function (n) { return n.id !== 'preferences'; }).map(function (n) { return html`<a key=${n.id} href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} s=${20} /><span>${t('navShort.' + n.id)}</span></a>`; })}
     </nav>
+    <${AiFab} />
     <${ModalHost} />
     <div className="toasts" role="status" aria-live="polite">${S.toasts.map(function (x) {
       return html`<div key=${x.id} className="toast"><span>${x.msg}</span>${x.undo && S.undo && html`<button onClick=${function () { doUndo(x.id); }}>${t('undo')}</button>`}</div>`;
