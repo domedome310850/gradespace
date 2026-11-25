@@ -308,6 +308,11 @@ async function runTU(browser, lang, width) {
     const extra = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     if (extra > 1) overflow.push(h + ' +' + extra + 'px');
   }
+  await page.evaluate(()=>{location.hash='gpa';}); await page.waitForTimeout(300);
+  if(!(await page.getByTestId('tu-rules').isVisible())) errors.push('TU rules card missing on GPA page');
+  const outs=await page.evaluate(()=>GradeSpace.S.state.outcomes.map(o=>o.label));
+  for (const l of ['ACC','EXE','AUD','W','I','S','U']) if(!outs.includes(l)) errors.push('TU outcome missing '+l);
+  if(await page.evaluate(()=>[GradeSpace.Calc.fmt(2.345),GradeSpace.Calc.fmt(3.4949),GradeSpace.Calc.fmt(1.005)].join())!=='2.35,3.49,1.01') errors.push('GPA rounding is not half-up (TU ข้อ 48)');
   const sugg=await page.evaluate(()=>GradeSpace.catalogSearch?GradeSpace.catalogSearch('AC201').length:-1);
   if(sugg===0) errors.push('TU catalog search found nothing for AC201');
   await ctx.close();

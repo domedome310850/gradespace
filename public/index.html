@@ -1240,7 +1240,7 @@ var Calc = (function () {
   function fmt(n, d) {
     if (!isNum(n)) return '–';
     if (d === undefined) d = 2;
-    var s = n.toFixed(d);
+    var f = Math.pow(10, d), s = (Math.round(n * f + (n >= 0 ? 1e-7 : -1e-7)) / f).toFixed(d);
     if (/^-0(\.0+)?$/.test(s)) s = s.slice(1);
     return s;
   }
@@ -2664,6 +2664,19 @@ en: {
   'cmd.btn': 'Search courses, pages, actions…', 'cmd.title': 'Search', 'cmd.ph': 'Try “GPA”, “scan” or a course code',
   'cmd.none': 'No results', 'cmd.hint': 'Press Ctrl+K (⌘K on Mac) on any page', 'cmd.gPages': 'Pages', 'cmd.gActions': 'Actions', 'cmd.gCourses': 'Courses',
   'cmd.theme': 'Toggle light/dark mode', 'cmd.lang': 'Switch language (TH/EN)',
+  'tur.title': 'Thammasat rules check', 'tur.noGrades': 'Record official grades to check your standing and honours.',
+  'tur.standing.ok': 'GPAX {g}: normal standing (2.00 or above). You also need at least 2.00 to graduate.',
+  'tur.standing.warn': 'GPAX {g} is below 2.00: this means a warning. Each further term below 2.00 moves you towards probation and dismissal.',
+  'tur.standing.bad': 'GPAX {g} is below 1.50. Students already on warning are dismissed below 1.50 — talk to your faculty’s academic adviser.',
+  'tur.hon.first': 'On track for first-class honours (GPAX {g} ≥ 3.50 and no grade below C).',
+  'tur.hon.second': 'Within second-class honours range (GPAX {g}).', 'tur.hon.none': 'Honours need GPAX ≥ 3.25 (second class) or ≥ 3.50 with no grade below C (first class).',
+  'tur.honBlock': 'But an F/U or a repeated course rules out honours.', 'tur.honMajor': 'Second class also has major-subject conditions (C or above, or major GPA ≥ 2.00) that GradeSpace can’t check.',
+  'tur.load': '{s}: {n} credits, above the limit of {m}. More needs the dean’s approval (final-year students only).',
+  'tur.source': 'Based on Thammasat’s undergraduate regulation 2568 (ข้อ 20, 37–49, 65–68). Only recorded grades count; confirm with the Registrar.',
+  'ai.intro@tu': 'Send score screenshots, paste a score table or type a score. You always review the list before anything is saved.',
+  'paste.btn@tu': 'Paste scores', 'paste.title@tu': 'Paste a score table',
+  'paste.intro@tu': 'Open {c} on your class website, select the score table (each row: item, score / full), copy, and paste it here.',
+  'scan.intro@tu': 'Pick screenshots from your class website: the syllabus grading page and the score page work best. AI reads them and shows you what it found before anything is added.',
   'uni.label': 'University', 'uni.cu': 'Chulalongkorn', 'uni.tu': 'Thammasat', 'uni.cuFull': 'Chulalongkorn University', 'uni.tuFull': 'Thammasat University',
   'uni.hint': 'Sets the course list, GenEd and exam features for your university.',
   'tuge.title': 'Thammasat GenEd courses', 'tuge.intro': 'General Education Program (2023 revision): 30 credits across 5 groups. Check your faculty’s structure for which groups you need.',
@@ -2672,7 +2685,7 @@ en: {
   'tu.examNote': 'Thammasat exam dates are not synced yet. Add the date to the Midterm/Final item in each course and it will show in your calendar.',
   'ai.pasteTGeneric': 'Paste a score table', 'ai.pastePGeneric': 'Copy scores from your class site, paste them and check each row',
   'fab.hide': 'Hide for now', 'fab.introT': 'Let AI fill in your scores', 'fab.introP': 'Scan a screenshot, paste from MyCourseVille or type. You check every row before it saves.',
-  'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
+  'fab.introPGeneric': 'Scan a screenshot, paste a score table or type. You check every row before it saves.', 'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -3112,6 +3125,19 @@ th: {
   'cmd.btn': 'ค้นหาวิชา หน้า หรือคำสั่ง…', 'cmd.title': 'ค้นหา', 'cmd.ph': 'ลองพิมพ์ “GPA”, “สแกน” หรือรหัสวิชา',
   'cmd.none': 'ไม่พบ', 'cmd.hint': 'กด Ctrl+K (⌘K บน Mac) ได้ทุกหน้า', 'cmd.gPages': 'หน้า', 'cmd.gActions': 'คำสั่ง', 'cmd.gCourses': 'วิชา',
   'cmd.theme': 'สลับโหมดสว่าง/มืด', 'cmd.lang': 'สลับภาษา (TH/EN)',
+  'tur.title': 'ตรวจตามข้อบังคับ มธ.', 'tur.noGrades': 'บันทึกเกรดจริงก่อน แล้วจะตรวจสถานภาพและเกียรตินิยมให้',
+  'tur.standing.ok': 'GPAX {g} สถานภาพปกติ (ตั้งแต่ 2.00) และต้องไม่ต่ำกว่า 2.00 จึงจะจบได้',
+  'tur.standing.warn': 'GPAX {g} ต่ำกว่า 2.00 อยู่ในสถานะเตือน ถ้ายังต่ำกว่า 2.00 ต่อไปจะเป็นเตือนครั้งที่ 2 รอพินิจ และพ้นสภาพ',
+  'tur.standing.bad': 'GPAX {g} ต่ำกว่า 1.50 ถ้าเคยถูกเตือนแล้วจะถูกถอนชื่อ ควรปรึกษาอาจารย์ที่ปรึกษาของคณะ',
+  'tur.hon.first': 'อยู่ในเกณฑ์เกียรตินิยมอันดับหนึ่ง (GPAX {g} ตั้งแต่ 3.50 และไม่มีวิชาต่ำกว่า C)',
+  'tur.hon.second': 'อยู่ในช่วงเกียรตินิยมอันดับสอง (GPAX {g})', 'tur.hon.none': 'เกียรตินิยมต้องได้ GPAX ตั้งแต่ 3.25 (อันดับสอง) หรือ 3.50 และไม่มีวิชาต่ำกว่า C (อันดับหนึ่ง)',
+  'tur.honBlock': 'แต่ถ้ามี F/U หรือเคยเรียนซ้ำ จะไม่ได้เกียรตินิยม', 'tur.honMajor': 'อันดับสองมีเงื่อนไขวิชาเอกด้วย (ได้ C ขึ้นไป หรือเกรดเฉลี่ยวิชาเอกตั้งแต่ 2.00) ซึ่ง GradeSpace ตรวจให้ไม่ได้',
+  'tur.load': '{s}: {n} หน่วยกิต เกินเพดาน {m} หน่วยกิต ถ้าจะลงเกินต้องได้รับอนุมัติจากคณบดี (เฉพาะปีที่จะจบ)',
+  'tur.source': 'อ้างอิงข้อบังคับ มธ. ว่าด้วยการศึกษาระดับปริญญาตรี พ.ศ. 2568 (ข้อ 20, 37–49, 65–68) นับเฉพาะเกรดจริง ควรยืนยันกับสำนักทะเบียน',
+  'ai.intro@tu': 'ส่งภาพหน้าจอคะแนน วางตารางคะแนน หรือพิมพ์คะแนนได้เลย ระบบจะให้คุณตรวจรายการก่อนบันทึกเสมอ',
+  'paste.btn@tu': 'วางคะแนน', 'paste.title@tu': 'วางตารางคะแนน',
+  'paste.intro@tu': 'เปิดวิชา {c} ในเว็บรายวิชา ลากเลือกตารางคะแนน (แต่ละแถว: ชื่องาน คะแนน / เต็ม) คัดลอก แล้ววางที่นี่',
+  'scan.intro@tu': 'เลือกภาพหน้าจอจากเว็บรายวิชา หน้าเกณฑ์การให้คะแนนในประมวลรายวิชาและหน้าคะแนนจะได้ผลดีที่สุด AI จะอ่านแล้วสรุปให้ดูก่อนเพิ่มข้อมูล',
   'uni.label': 'มหาวิทยาลัย', 'uni.cu': 'จุฬาฯ', 'uni.tu': 'ธรรมศาสตร์', 'uni.cuFull': 'จุฬาลงกรณ์มหาวิทยาลัย', 'uni.tuFull': 'มหาวิทยาลัยธรรมศาสตร์',
   'uni.hint': 'ใช้เลือกรายชื่อวิชา GenEd และฟีเจอร์วันสอบให้ตรงกับมหาวิทยาลัยของคุณ',
   'tuge.title': 'วิชาศึกษาทั่วไป ธรรมศาสตร์', 'tuge.intro': 'หลักสูตรวิชาศึกษาทั่วไป (ปรับปรุง พ.ศ. 2566) รวม 30 หน่วยกิตใน 5 หมวด ดูโครงสร้างหลักสูตรของคณะว่าต้องเรียนหมวดใดบ้าง',
@@ -3120,7 +3146,7 @@ th: {
   'tu.examNote': 'ยังไม่ได้ดึงวันสอบของธรรมศาสตร์อัตโนมัติ ใส่วันที่ในงาน “สอบกลางภาค/ปลายภาค” ของแต่ละวิชา แล้ววันสอบจะขึ้นในปฏิทิน',
   'ai.pasteTGeneric': 'วางตารางคะแนน', 'ai.pastePGeneric': 'คัดลอกคะแนนจากเว็บรายวิชามาวาง แล้วตรวจทีละแถว',
   'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'ให้ AI ช่วยกรอกคะแนนสิ', 'fab.introP': 'สแกนภาพหน้าจอ วางจาก MyCourseVille หรือพิมพ์เอง ตรวจได้ทุกแถวก่อนบันทึก',
-  'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
+  'fab.introPGeneric': 'สแกนภาพหน้าจอ วางตารางคะแนน หรือพิมพ์เอง ตรวจได้ทุกแถวก่อนบันทึก', 'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -3569,7 +3595,7 @@ var LANG = 'th';
 // settings.institution is a new optional field ('' = not chosen yet, treated as 'cu' so existing
 // students see no change). Chula-only features (Reg Chula sync, Chula GenEd, CBS study plans,
 // exam rooms) only run for 'cu'. Thammasat uses its own course list below.
-function uniOf(state) { var st = state || S.state; var u = (st && st.settings && st.settings.institution) || uniPending; return u === 'tu' ? 'tu' : 'cu'; }
+function uniOf(state) { var st = state || (S && S.state); var u = (st && st.settings && st.settings.institution) || uniPending; return u === 'tu' ? 'tu' : 'cu'; }
 function isCU(state) { return uniOf(state) === 'cu'; }
 var UNI_PENDING_KEY = 'gradespace.institution';
 // Choice made on the sign-in screen, used until it is copied into the profile.
@@ -3617,7 +3643,37 @@ function applyUniTheme(uni, dark) {
 function UniPicker(p) {
   return html`<${Seg} label=${t('uni.label')} value=${p.value} onChange=${p.onChange} options=${[{ v: 'cu', l: t('uni.cu') }, { v: 'tu', l: t('uni.tu') }]} />`;
 }
-function setUni(v) { update(function (d) { d.settings.institution = v; if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull'); }); }
+// Thammasat result letters without grade points (ข้อบังคับ มธ. ว่าด้วยการศึกษาระดับปริญญาตรี 2568 ข้อ 39, 42).
+var TU_OUTCOMES = [
+  { id: 'o-acc', label: 'ACC', name: 'Accreditation (credits, no GPA)', attempted: true, earned: true, gpa: false, points: 0 },
+  { id: 'o-exe', label: 'EXE', name: 'Exempted (no credits)', attempted: false, earned: false, gpa: false, points: 0 },
+  { id: 'o-aud', label: 'AUD', name: 'Audit (no credits)', attempted: false, earned: false, gpa: false, points: 0 }
+];
+function setUni(v) { update(function (d) { d.settings.institution = v;
+  if (v === 'tu') { d.outcomes = Array.isArray(d.outcomes) ? d.outcomes : []; TU_OUTCOMES.forEach(function (o) { if (!d.outcomes.some(function (x) { return x.label === o.label; })) d.outcomes.push(Object.assign({}, o)); }); } if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull'); }); }
+// Thammasat standing, honours and credit-load checks (regulation 2568 ข้อ 20, 49, 67–68). Recorded grades only.
+function TuRulesCard(p) {
+  var state = p.state, cum = C.cumulativeStats(state, 'confirmed'), gpa = cum.gpa;
+  var low = { 'D+': 1, 'D': 1, 'F': 1, 'U': 1 }, recorded = state.courses.filter(function (c) { return C.courseGrade(c, state).kind === 'confirmed'; });
+  var below = recorded.filter(function (c) { return low[C.courseGrade(c, state).label]; });
+  var failed = recorded.filter(function (c) { var l = C.courseGrade(c, state).label; return l === 'F' || l === 'U'; });
+  var codes = {}, repeated = false; state.courses.forEach(function (c) { var k = tuCode(c.code); if (!k) return; if (codes[k]) repeated = true; codes[k] = 1; });
+  var heavy = state.semesters.map(function (s) {
+    var cr = C.sum(state.courses.filter(function (c) { return c.semesterId === s.id; }).map(function (c) { return toNum(c.credits) || 0; }));
+    var max = s.kind === 'summer' ? 6 : 22; return cr > max ? { s: s, cr: cr, max: max } : null; }).filter(Boolean);
+  var standing = gpa == null ? null : gpa < 1.5 ? 'bad' : gpa < 2 ? 'warn' : 'ok';
+  var hon = gpa == null ? null : (gpa >= 3.5 - 1e-9 && !below.length ? 'first' : gpa >= 3.25 - 1e-9 ? 'second' : 'none');
+  var blockers = (failed.length ? 1 : 0) + (repeated ? 1 : 0);
+  return html`<section className="section card pad stack" data-testid="tu-rules">
+    <div className="section-head"><h2>${t('tur.title')}</h2></div>
+    ${gpa == null ? html`<p className="muted small">${t('tur.noGrades')}</p>` : html`<div className="stack" style=${{ gap: 8 }}>
+      <div className=${'banner ' + (standing === 'ok' ? 'ok' : standing === 'warn' ? 'info' : 'bad')}><${Icon} n=${standing === 'ok' ? 'check' : 'alert'} s=${16} /><div>${t('tur.standing.' + standing, { g: fmt(gpa) })}</div></div>
+      <div className="banner info"><${Icon} n="info" s=${16} /><div>${t('tur.hon.' + hon, { g: fmt(gpa), n: below.length })}${hon !== 'none' && blockers ? ' ' + t('tur.honBlock') : ''}${hon === 'second' ? ' ' + t('tur.honMajor') : ''}</div></div>
+    </div>`}
+    ${heavy.map(function (x) { return html`<div key=${x.s.id} className="banner bad"><${Icon} n="alert" s=${16} /><div>${t('tur.load', { s: semFull(state, x.s), n: fmtT(x.cr), m: x.max })}</div></div>`; })}
+    <p className="tiny muted" style=${{ margin: 0 }}>${t('tur.source')} <a href="https://db.legal.tu.ac.th/05010201-01/" target="_blank" rel="noopener noreferrer">↗</a></p>
+  </section>`;
+}
 function TuGenEdModal(p) {
   var state = useApp(), semId = p.props.semesterId || (latestSemester(state) || {}).id;
   var have = {}; state.courses.forEach(function (c) { have[tuCode(c.code)] = 1; });
@@ -3635,7 +3691,8 @@ function TuGenEdModal(p) {
     <p className="tiny muted">${t('tuge.source')} <a href=${TU_GENED_SOURCE} target="_blank" rel="noopener noreferrer">↗</a></p><//>`;
 }
 function t(k, v) {
-  var s = I18N[LANG] && I18N[LANG][k];
+  // Thammasat overrides: keys ending in "@tu" replace Chula/MyCourseVille wording.
+  var s = I18N[LANG] && (!isCU() && I18N[LANG][k + '@tu'] || I18N[LANG][k]);
   if (s == null) s = I18N.en[k];
   if (s == null) s = k;
   if (v) s = s.replace(/\{(\w+)\}/g, function (m, n) { return v[n] != null ? v[n] : m; });
@@ -6656,6 +6713,7 @@ function GPAPage(p) {
       <${Metric} label=${t('targetCGPA')} value=${isNum(state.settings.targetCGPA) ? fmt(state.settings.targetCGPA) : '–'}
         sub=${isNum(state.settings.targetCGPA) && cum.gpa != null ? (cum.gpa >= state.settings.targetCGPA - 1e-9 ? t('aboveTarget') : t('belowTargetBy', { n: fmt(state.settings.targetCGPA - cum.gpa) })) : t('setBelow')} />
     </div>
+    ${!isCU(state) && html`<${TuRulesCard} state=${state} />`}
     <div className="section card pad">
       <div className="section-head"><h2>${t('gpaBySemester')}</h2></div>
       ${hasTrend ? html`<${TrendChart} data=${tr} mode=${mode} maxPts=${maxPts} state=${state} />` : html`<p className="muted small">${mode === 'confirmed' ? t('trendEmptyConfirmed') : t('trendEmpty')}</p>`}
@@ -7847,7 +7905,7 @@ function AiFab() {
   function open() { seen(); openModal('assistant', {}); }
   function hide() { seen(); try { sessionStorage.setItem('gradespace.aifab', 'hidden'); } catch (e) { /* ignore */ } setHidden(true); }
   return html`<div className="ai-fab-wrap">
-    ${intro && html`<div className="ai-fab-intro" role="dialog" aria-labelledby="ai-fab-t"><b id="ai-fab-t">${t('fab.introT')}</b><span>${t('fab.introP')}</span>
+    ${intro && html`<div className="ai-fab-intro" role="dialog" aria-labelledby="ai-fab-t"><b id="ai-fab-t">${t('fab.introT')}</b><span>${t(isCU() ? 'fab.introP' : 'fab.introPGeneric')}</span>
       <div className="row"><button className="btn primary sm" onClick=${open}>${t('fab.try')}</button><button className="btn ghost sm" onClick=${seen}>${t('fab.later')}</button></div></div>`}
     <button className="ai-fab" onClick=${open} aria-label=${t('ai.title')} title=${t('ai.title')}><${Icon} n="spark" s=${26} /></button>
     <button className="ai-fab-x" onClick=${hide} aria-label=${t('fab.hide')} title=${t('fab.hide')}><${Icon} n="x" s=${12} /></button>
