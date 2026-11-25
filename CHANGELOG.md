@@ -1,3 +1,19 @@
+## 2026-11-26 — Claude (claude.ai): ask your own AI by copy-paste (free plans)
+
+- `public/index.html`: most students use free ChatGPT, which can’t add custom connectors, so until GradeSpace is in ChatGPT’s directory there is a copy-paste bridge (`AskAiModal`, modal `askAi`; card in the AI hub and a command-menu item). Step 1 copies this term’s courses/items/scores as JSON plus rules (score null ≠ 0, never invent; answer new scores in a ```gradespace-scores block) and opens ChatGPT or Claude; no email or student ID is included. Step 2 parses the pasted answer (`parseAskAi`), matches only existing courses/items, shows each row to approve (unknown course/item or impossible score is skipped), and saves with undo. TH/EN.
+- `tests/smoke.mjs`: copied text has course data and no email/student ID; a pasted answer with one real and one invented item saves only the real one and creates nothing.
+
+## 2026-11-26 — Claude (claude.ai): GradeSpace as the bridge to your own AI (no built-in chat)
+
+- `public/index.html`: owner decided GradeSpace should not have its own AI; it connects the student’s own ChatGPT/Claude to their grades. Removed the local chat (`ChatBrain`, `ChatModal`). The AI button (centre of the phone bar, floating button on desktop) now opens `AiHubModal` (“AI ของคุณ”): first the ChatGPT (`@GradeSpace`) / Claude connector card (coming soon, explains the bridge and that every change is approved in GradeSpace), then the in-site tools (screenshot scan, paste, quick score). First-visit bubble reworded. TH/EN.
+- `tests/smoke.mjs`: AI hub shows the connect card with ChatGPT and Claude, no chat box, and 3 tools.
+- Next (needs owner steps): secure sign-in live (PR #25 checklist) → Supabase OAuth 2.1 server + consent page → MCP server for ChatGPT/Claude. Using the student’s ChatGPT plan *inside* GradeSpace (“Sign in with ChatGPT” plan usage) needs OpenAI partner approval; fallback would be the student’s own API key.
+
+## 2026-11-26 — Claude (claude.ai): one space per university
+
+- `public/index.html`: choosing a university now switches to that university’s own space. `switchSpace` / `applyUni` move the current `years`, `semesters`, `courses`, `categories`, `assessments` (and `currentSemesterId`, `studyPlan`, `genEdRequired`, `plannedCredits`, `targetCGPA`) into `settings.spaces[<old>]` and bring back `settings.spaces[<new>]` or an empty space. Kept inside `settings` because every copy of the site (`normalize`) and `gs_save` keep unknown settings keys; nothing is deleted. Switching with courses asks first (“your N courses are kept aside, not deleted”). A university picked on the sign-in screen applies quietly. TH/EN.
+- `tests/smoke.mjs`: TU sign-in starts an empty TU space with the Chula courses kept aside; switch TU → CU → TU restores each space exactly, with no course leaking between them.
+
 ## 2026-11-26 — Claude (claude.ai): secure sign-in step 1 (one-time email code), switched off
 
 - `supabase/migrations/20261126_verified_email_signin.sql` (**not applied**): adds `gradespace_by_email.verified_at`; `gs_me_load` / `gs_me_save` for signed-in Supabase Auth users (email taken from the confirmed session, `authenticated` only); `gs_save_core` shares the existing save logic (daily backup, course keep-list); `gs_load` / `gs_save` refuse rows already verified. No data copied, renamed or removed; rollback block included. Checked on local Postgres 16 with `tests/sql/verified-signin.*` (anon/unconfirmed/no-session refused, keep-list and backup kept, email-only blocked only for verified rows).

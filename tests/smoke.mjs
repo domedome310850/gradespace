@@ -81,29 +81,32 @@ async function run(browser, lang, width) {
   // Floating AI button with one-time intro bubble, and search beside the semester picker.
   if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('AI intro bubble not shown on first visit');
   await page.locator('.ai-fab-intro .btn.primary').click();
-  if(await page.locator('.chat-q').count()!==3) errors.push('AI chat should offer 3 quick actions');
+  if(await page.locator('[data-testid="ai-hub"] .ai-action').count()!==3) errors.push('AI hub should offer 3 tools');
   await page.keyboard.press('Escape');
-  if(await page.locator('.chat').count()) errors.push('AI chat did not close on Escape');
+  if(await page.locator('[data-testid="ai-hub"]').count()) errors.push('AI hub did not close on Escape');
   if(await page.locator('.ai-fab-intro').count()) errors.push('AI intro bubble should not return after use');
   if(width>900 && !(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
-  // AI chat: local answers + confirmed score entry, never invents items (2026-11-26).
+  // AI hub: GradeSpace has no AI of its own; connect cards first, then in-site tools (2026-11-26).
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
-  if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card should be first in the AI sheet');
-  await page.locator('.chat-input input').fill('GPA');
-  await page.locator('.chat-input input').press('Enter');
-  if(!/GPA/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat GPA answer missing');
-  await page.locator('.chat-input input').fill('HW5 econ 4/5');
-  await page.locator('.chat-input input').press('Enter');
-  await page.getByTestId('chat-save').waitFor();
-  await page.getByTestId('chat-save').click();
-  if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.max===5&&a.status==='graded';}))) errors.push('chat did not save HW5 4/5');
-  await page.locator('.chat-input input').fill('Quiz 99 econ 3/5');
-  await page.locator('.chat-input input').press('Enter');
-  if(await page.evaluate(()=>GradeSpace.S.state.assessments.some(x=>/quiz 99/i.test(x.name||'')))) errors.push('chat invented an assessment');
-  await page.locator('.chat-input input').fill(lang==='th'?'ต้องได้เท่าไหร่ถึงได้ A econ':'what do I need for A econ');
-  await page.locator('.chat-input input').press('Enter');
-  if(!/Economics/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat need-for-grade answer missing');
+  await page.getByTestId('ai-hub').waitFor();
+  if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card missing');
+  if(await page.locator('.connect-tile').count()!==2) errors.push('connect card should list ChatGPT and Claude');
+  if(await page.locator('.chat-input').count()) errors.push('GradeSpace should not have its own chat');
+  if(await page.locator('[data-testid="ai-hub"] .ai-action').count()!==3) errors.push('AI hub should keep 3 tools');
   await page.keyboard.press('Escape');
+  // Copy-paste bridge to the student's own AI (works on free plans).
+  if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
+  await page.getByTestId('askai-open').click();
+  const prompt=await page.getByTestId('askai-prompt').inputValue();
+  if(!prompt.includes('"gradespace":1')||!prompt.includes('2900111')) errors.push('ask-AI text lacks course data');
+  if(prompt.includes('test@example.com')||prompt.includes('6940102426')) errors.push('ask-AI text leaks email or student ID');
+  await page.getByTestId('ask-ai').locator('.seg button').nth(1).click();
+  await page.getByTestId('askai-paste').fill('Sure!\n```gradespace-scores\n{"updates":[{"code":"2900111","item":"HW5","score":4,"max":5},{"code":"2900111","item":"Quiz 99","score":3,"max":5}]}\n```');
+  await page.getByTestId('ask-ai').getByRole('button',{name:lang==='th'?'ตรวจ':'Check',exact:true}).click();
+  if(await page.locator('.askai-row').count()!==2||await page.locator('.askai-row.bad').count()!==1) errors.push('ask-AI review should list 1 valid and 1 skipped row');
+  await page.getByTestId('askai-save').click();
+  if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.status==='graded';}))) errors.push('ask-AI did not save HW5');
+  if(await page.evaluate(()=>GradeSpace.S.state.assessments.some(x=>/quiz 99/i.test(x.name||'')))) errors.push('ask-AI created an item');
   await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
@@ -304,8 +307,15 @@ async function runTU(browser, lang, width) {
   if(await page.locator('#au-student').count()) errors.push('TU sign-in should not ask for a Chula student ID');
   await page.locator('#au-e').fill('tu@example.com');
   await page.locator('#au-e').press('Enter');
-  await page.locator('.dashboard-exam-panel').first().waitFor();
+  await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.state&&GradeSpace.S.state.settings.institution==='tu'&&GradeSpace.S.state.settings.spaces);
   await page.waitForTimeout(400);
+  // Separate spaces: the fixture's Chula courses are put aside, Thammasat starts empty.
+  const sp=await page.evaluate(()=>({n:GradeSpace.S.state.courses.length,cu:(GradeSpace.S.state.settings.spaces.cu||{}).courses}));
+  if(sp.n!==0||!sp.cu||sp.cu.length<5) errors.push('TU should start in its own empty space with Chula courses kept aside: '+JSON.stringify({n:sp.n,cu:sp.cu&&sp.cu.length}));
+  // Student sets up a Thammasat year/term (as with "Add year").
+  await page.evaluate(()=>GradeSpace.update(d=>{d.years.push({id:'y-tu',level:1,academic:2569});d.semesters.push({id:'s-tu',yearId:'y-tu',kind:'s1'});d.settings.currentSemesterId='s-tu';}));
+  await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
+  await page.locator('.dashboard-exam-panel').first().waitFor();
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
   const rpcs=await page.evaluate(()=>window.__rpcs||[]);
@@ -323,6 +333,22 @@ async function runTU(browser, lang, width) {
   await page.waitForTimeout(300);
   const added=await page.evaluate(()=>GradeSpace.S.state.courses.find(c=>c.code==='TU101'));
   if(!added||added.credits!==3||added.kind!=='gened') errors.push('TU101 not added as 3-credit GenEd: '+JSON.stringify(added&&{c:added.credits,k:added.kind}));
+  // Switch to Chula and back: each space comes back intact, nothing deleted.
+  const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
+  await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
+  await page.evaluate(()=>{location.hash='preferences';}); await page.waitForTimeout(300);
+  await page.locator('.seg button',{hasText:/^(จุฬาฯ|Chulalongkorn)$/}).first().click();
+  await page.locator('.modal .btn.primary, .modal .btn.danger').last().click();
+  await page.waitForTimeout(300);
+  const cuBack=await page.evaluate(()=>({u:GradeSpace.S.state.settings.institution,n:GradeSpace.S.state.courses.length,tu:(GradeSpace.S.state.settings.spaces.tu||{}).courses}));
+  if(cuBack.u!=='cu'||cuBack.n<5||!cuBack.tu||!cuBack.tu.some(c=>c.code==='TU101')) errors.push('switch to Chula did not restore its space: '+JSON.stringify({u:cuBack.u,n:cuBack.n,tu:cuBack.tu&&cuBack.tu.length}));
+  if(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='TU101'))) errors.push('Thammasat course leaked into Chula space');
+  await page.locator('.seg button',{hasText:/^(ธรรมศาสตร์|Thammasat)$/}).first().click();
+  await page.locator('.modal .btn.primary, .modal .btn.danger').last().click();
+  await page.waitForTimeout(300);
+  const after=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
+  if(JSON.stringify(after)!==JSON.stringify(before)) errors.push('Thammasat space not restored: '+JSON.stringify(after));
+  if(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>/^\d{7}/.test(c.code)))) errors.push('Chula course leaked into Thammasat space');
   // Course search suggests Thammasat codes.
   await page.evaluate(()=>{location.hash='courses';}); await page.waitForTimeout(300);
   const hashes = ['dashboard', 'years', 'courses', 'gpa', 'me', 'preferences'];

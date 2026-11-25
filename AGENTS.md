@@ -59,13 +59,16 @@ Find code with search (`grep -n "^function CourseCard"`), not by line number —
   New features should get an entry point in the `cmd` menu (`commandItems`). Navigation follows YouTube:
   top bar = logo + search (`.top-search`) + `AccountMenu` (desktop only); phones get a 5-tab `BOTTOM_NAV`, and
   less-used pages live under the “You” tab (`MePage`, `ME_PAGES`); the sidebar `NAV` uses `group` labels.
-  The AI chat (`ChatModal`, local `ChatBrain`) opens from the centre button of the phone bottom bar
-  (`BOTTOM_NAV` item with `center: true`) and from the desktop floating `AiFab`. Chat rules: only match
-  existing courses/assessments, always confirm before saving, never send data off the device without the
-  owner's approval. Help and Feedback share `HelpHub`. Don't add a sixth bottom item — put it under You instead.
+  GradeSpace has **no AI of its own** (owner, 2026-11-26): the AI button (centre of the phone bar, `AiFab` on
+  desktop) opens `AiHubModal` — ChatGPT/Claude connector card first (coming soon), then scan/paste/quick tools.
+  Connectors: student's own AI reads/proposes, the student approves every change in GradeSpace.
+  Until the connector is in ChatGPT's directory (free plans can't add custom ones), `AskAiModal` is a copy-paste
+  bridge: copy JSON → AI answers with a ```gradespace-scores block → paste → approve rows. Never creates items. Help and Feedback share `HelpHub`. Don't add a sixth bottom item — put it under You instead.
   **Universities:** `uniOf(state)` / `isCU(state)` read `settings.institution` (`''` → Chula). Anything that talks
   to Reg Chula, Chula GenEd, CBS study plans or exam rooms must stay behind `isCU`. Thammasat data lives in
   `TU_GENED` / `TU_TBS` / `TU_CATALOG`; `CATALOG.get/search` switch by university.
+  Each university is a separate space: inactive ones live in `settings.spaces[cu|tu]` (`SPACE_KEYS`,
+  `SPACE_SETTINGS`, `switchSpace`). Always switch with `setUni`; never copy courses between spaces.
   Thammasat-only wording: add `'key@tu'` next to `'key'` in both languages; `t()` picks it when not Chula.
   TU grade rules (regulation 2568) are in `TU_OUTCOMES` and `TuRulesCard`.
   Other helpers: `RegData` (Reg Chula data per course), `GenEdData`, `examsFor(c, state)`,

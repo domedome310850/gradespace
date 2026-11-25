@@ -850,10 +850,15 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 /* Connect ChatGPT / Claude card, shown first in the AI sheet (2026-11-26). */
 .connect-card{display:grid;gap:8px;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;background:var(--accent-soft)}
 .connect-soon{font-size:11.5px;font-weight:650;color:var(--accent-text);border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:999px;padding:1px 8px;white-space:nowrap}
-.connect-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}.connect-tile{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--muted)}
+.connect-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}.connect-tile>div{display:grid;gap:2px;min-width:0}.connect-tile{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--muted)}
 .chat-own{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);margin-top:2px}
 /* One-time-code sign-in (2026-11-26). */
 .otp-input{font-size:22px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
+/* Ask your AI by copy-paste (2026-11-26). */
+.askai-card{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.askai-text{width:100%;min-height:150px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
+.askai-rows{display:grid;gap:6px}.askai-row{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}.askai-row input{margin-top:3px}
+.askai-row.bad{opacity:.65}.askai-row.bad .small{color:var(--bad)}
 /* Help + feedback tabs (2026-11-26). */
 .help-tabs{margin:4px 0 6px}.help-tabs .seg{max-width:360px}
 /* Thammasat GenEd picker (2026-11-26). */
@@ -2710,6 +2715,17 @@ en: {
   'connect.title': 'Use GradeSpace from ChatGPT or Claude', 'connect.soon': 'Coming soon', 'connect.with': 'Connect {n}',
   'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
   'connect.own': 'Or ask GradeSpace AI now:',
+  'askai.title': 'Ask ChatGPT or Claude', 'askai.step1': '1. Copy to your AI', 'askai.step2': '2. Paste the answer',
+  'askai.cardT': 'Use your AI now (works on free plans)', 'askai.cardP': 'Copy this term’s courses into ChatGPT or Claude, ask anything, then paste its answer back to save new scores.', 'askai.cardBtn': 'Ask your AI',
+  'askai.copyIntro': 'Copy this text, paste it into ChatGPT or Claude, then type your question at the end.', 'askai.copy': 'Copy text', 'askai.copiedBtn': 'Copied ✓', 'askai.copied': 'Copied. Paste it into your AI.',
+  'askai.openGpt': 'Open ChatGPT', 'askai.openClaude': 'Open Claude', 'askai.next': 'Got an answer? Paste it',
+  'askai.privacy': 'Only course names, items and scores are copied — no email or student ID. Your AI provider’s own privacy terms apply to what you paste there.',
+  'askai.pasteIntro': 'Paste the AI’s whole answer. GradeSpace reads the gradespace-scores block and shows each change for you to approve.', 'askai.pastePh': 'Paste the answer here',
+  'askai.check': 'Check', 'askai.noBlock': 'No score list found. Ask your AI to “give the gradespace-scores block”.', 'askai.badJson': 'The score list is broken. Ask your AI to send the gradespace-scores block again.',
+  'askai.noCourse': 'Course not found here — skipped', 'askai.noItem': 'Item not found in this course — skipped (GradeSpace never creates items)', 'askai.badScore': 'Score doesn’t fit full marks — skipped',
+  'askai.was': 'was {o}', 'askai.save': 'Save {n} scores', 'askai.saved': 'Saved {n} scores',
+  'aihub.title': 'Your AI', 'hub.bridge': 'GradeSpace connects your own AI to your grades. Ask in ChatGPT or Claude; it reads your courses and suggests scores, and you approve every change here.',
+  'hub.chatgptHow': 'Type @GradeSpace in ChatGPT', 'hub.claudeHow': 'Add GradeSpace as a connector', 'hub.tools': 'Tools you can use now:',
   'chat.title': 'GradeSpace AI', 'chat.ph': 'Ask or type a score, e.g. “quiz 2 econ 18/20”', 'chat.send': 'Send', 'chat.nav': 'AI',
   'chat.hello': 'Hi! I can check your GPA, work out what you need for a grade, list upcoming exams and work, and record scores you type. Everything stays on this device.',
   'chat.s.gpa': 'My GPA now', 'chat.s.need': 'What do I need for an A?', 'chat.s.exam': 'Upcoming exams', 'chat.s.due': 'Work due soon', 'chat.s.score': 'Record a score',
@@ -2728,6 +2744,9 @@ en: {
   'otp.intro': 'Enter your email and we’ll send a one-time code. No password needed.', 'otp.send': 'Send code', 'otp.sent': 'We sent a code to {e}. Enter it below (check spam too).',
   'otp.code': 'Code from your email', 'otp.verify': 'Sign in', 'otp.resend': 'Send a new code', 'otp.wait': 'New code in {n}s', 'otp.change': 'Use another email',
   'otp.err.send': 'Couldn’t send the code. Check the email and try again in a minute.', 'otp.err.code': 'That code didn’t work. Check it or send a new one.',
+  'space.q': 'Switch to {u}?', 'space.body': 'Each university has its own space. Your {n} courses at {a} are kept aside, not deleted.',
+  'space.back': 'Your {n} courses there come back.', 'space.new': 'You start with an empty space there.', 'space.go': 'Switch',
+  'space.switched': 'Now using {u}', 'space.note': 'Each university keeps its own courses and scores. Switching never deletes anything.',
   'uni.label': 'University', 'uni.cu': 'Chulalongkorn', 'uni.tu': 'Thammasat', 'uni.cuFull': 'Chulalongkorn University', 'uni.tuFull': 'Thammasat University',
   'uni.hint': 'Sets the course list, GenEd and exam features for your university.',
   'tuge.title': 'Thammasat GenEd courses', 'tuge.intro': 'General Education Program (2023 revision): 30 credits across 5 groups. Check your faculty’s structure for which groups you need.',
@@ -2735,8 +2754,8 @@ en: {
   'tuge.add': 'Add', 'tuge.have': 'Added', 'tuge.source': 'List from TU’s General Education Program document (2566). Confirm what is open on reg.tu.ac.th before registering.',
   'tu.examNote': 'Thammasat exam dates are not synced yet. Add the date to the Midterm/Final item in each course and it will show in your calendar.',
   'ai.pasteTGeneric': 'Paste a score table', 'ai.pastePGeneric': 'Copy scores from your class site, paste them and check each row',
-  'fab.hide': 'Hide for now', 'fab.introT': 'Let AI fill in your scores', 'fab.introP': 'Scan a screenshot, paste from MyCourseVille or type. You check every row before it saves.',
-  'fab.introPGeneric': 'Scan a screenshot, paste a score table or type. You check every row before it saves.', 'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
+  'fab.hide': 'Hide for now', 'fab.introT': 'Your AI + GradeSpace', 'fab.introP': 'Scan, paste or type scores here. Soon: use ChatGPT or Claude with your grades.',
+  'fab.introPGeneric': 'Scan, paste or type scores here. Soon: use ChatGPT or Claude with your grades.', 'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -3192,6 +3211,17 @@ th: {
   'connect.title': 'ใช้ GradeSpace ผ่าน ChatGPT หรือ Claude', 'connect.soon': 'เร็ว ๆ นี้', 'connect.with': 'เชื่อม {n}',
   'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
   'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
+  'askai.title': 'ถาม ChatGPT หรือ Claude', 'askai.step1': '1. คัดลอกไปถาม', 'askai.step2': '2. วางคำตอบ',
+  'askai.cardT': 'ใช้ AI ของคุณได้เลยตอนนี้ (แพ็กเกจฟรีก็ได้)', 'askai.cardP': 'คัดลอกวิชาเทอมนี้ไปถาม ChatGPT หรือ Claude ได้ทุกเรื่อง แล้ววางคำตอบกลับมาเพื่อบันทึกคะแนนใหม่', 'askai.cardBtn': 'ถาม AI ของคุณ',
+  'askai.copyIntro': 'คัดลอกข้อความนี้ไปวางใน ChatGPT หรือ Claude แล้วพิมพ์คำถามต่อท้าย', 'askai.copy': 'คัดลอกข้อความ', 'askai.copiedBtn': 'คัดลอกแล้ว ✓', 'askai.copied': 'คัดลอกแล้ว ไปวางใน AI ได้เลย',
+  'askai.openGpt': 'เปิด ChatGPT', 'askai.openClaude': 'เปิด Claude', 'askai.next': 'ได้คำตอบแล้ว? วางที่นี่',
+  'askai.privacy': 'คัดลอกเฉพาะชื่อวิชา งาน และคะแนน ไม่มีอีเมลหรือเลขนิสิต ข้อมูลที่คุณวางในบริการ AI จะอยู่ภายใต้นโยบายความเป็นส่วนตัวของผู้ให้บริการนั้น',
+  'askai.pasteIntro': 'วางคำตอบของ AI ทั้งหมด GradeSpace จะอ่านเฉพาะบล็อก gradespace-scores แล้วแสดงทีละรายการให้คุณยืนยัน', 'askai.pastePh': 'วางคำตอบที่นี่',
+  'askai.check': 'ตรวจ', 'askai.noBlock': 'ไม่พบรายการคะแนน ลองบอก AI ว่า “ขอบล็อก gradespace-scores”', 'askai.badJson': 'รายการคะแนนเสียหาย ลองให้ AI ส่งบล็อก gradespace-scores ใหม่',
+  'askai.noCourse': 'ไม่พบวิชานี้ — ข้าม', 'askai.noItem': 'ไม่พบงานนี้ในวิชา — ข้าม (GradeSpace ไม่สร้างงานเอง)', 'askai.badScore': 'คะแนนไม่สอดคล้องกับคะแนนเต็ม — ข้าม',
+  'askai.was': 'เดิม {o}', 'askai.save': 'บันทึก {n} คะแนน', 'askai.saved': 'บันทึก {n} คะแนนแล้ว',
+  'aihub.title': 'AI ของคุณ', 'hub.bridge': 'GradeSpace เป็นตัวเชื่อม AI ของคุณเองเข้ากับคะแนน ถามใน ChatGPT หรือ Claude ได้เลย AI จะอ่านวิชาและเสนอคะแนน แล้วคุณกดยืนยันทุกครั้งในนี้',
+  'hub.chatgptHow': 'พิมพ์ @GradeSpace ใน ChatGPT', 'hub.claudeHow': 'เพิ่ม GradeSpace เป็นตัวเชื่อมใน Claude', 'hub.tools': 'เครื่องมือที่ใช้ได้ตอนนี้:',
   'chat.title': 'GradeSpace AI', 'chat.ph': 'ถามหรือพิมพ์คะแนน เช่น “quiz 2 econ 18/20”', 'chat.send': 'ส่ง', 'chat.nav': 'AI',
   'chat.hello': 'สวัสดี! ถามเกรดเฉลี่ย ถามว่าต้องได้เท่าไหร่ถึงจะได้เกรดที่อยากได้ ดูสอบและงานที่ใกล้ถึง หรือพิมพ์คะแนนให้บันทึกได้เลย ข้อมูลอยู่ในเครื่องนี้ทั้งหมด',
   'chat.s.gpa': 'GPA ตอนนี้เท่าไหร่', 'chat.s.need': 'ต้องได้เท่าไหร่ถึงได้ A', 'chat.s.exam': 'สอบอะไรเร็ว ๆ นี้', 'chat.s.due': 'งานที่ใกล้ส่ง', 'chat.s.score': 'บันทึกคะแนน',
@@ -3210,6 +3240,9 @@ th: {
   'otp.intro': 'กรอกอีเมล แล้วเราจะส่งรหัสใช้ครั้งเดียวไปให้ ไม่ต้องตั้งรหัสผ่าน', 'otp.send': 'ส่งรหัส', 'otp.sent': 'ส่งรหัสไปที่ {e} แล้ว กรอกรหัสด้านล่าง (ดูในอีเมลขยะด้วย)',
   'otp.code': 'รหัสจากอีเมล', 'otp.verify': 'เข้าสู่ระบบ', 'otp.resend': 'ส่งรหัสใหม่', 'otp.wait': 'ส่งใหม่ได้ใน {n} วินาที', 'otp.change': 'ใช้อีเมลอื่น',
   'otp.err.send': 'ส่งรหัสไม่สำเร็จ ตรวจอีเมลแล้วลองใหม่ในอีกสักครู่', 'otp.err.code': 'รหัสไม่ถูกต้อง ตรวจอีกครั้งหรือขอรหัสใหม่',
+  'space.q': 'สลับไป{u}?', 'space.body': 'แต่ละมหาวิทยาลัยมีพื้นที่ของตัวเอง วิชาของ{a} {n} วิชาจะถูกเก็บแยกไว้ ไม่ได้ลบ',
+  'space.back': 'วิชาที่เคยบันทึกไว้ที่นั่น {n} วิชาจะกลับมา', 'space.new': 'ที่นั่นจะเริ่มจากพื้นที่ว่าง', 'space.go': 'สลับ',
+  'space.switched': 'ตอนนี้ใช้พื้นที่ของ{u}', 'space.note': 'แต่ละมหาวิทยาลัยเก็บวิชาและคะแนนแยกกัน สลับไปมาได้ ไม่มีอะไรถูกลบ',
   'uni.label': 'มหาวิทยาลัย', 'uni.cu': 'จุฬาฯ', 'uni.tu': 'ธรรมศาสตร์', 'uni.cuFull': 'จุฬาลงกรณ์มหาวิทยาลัย', 'uni.tuFull': 'มหาวิทยาลัยธรรมศาสตร์',
   'uni.hint': 'ใช้เลือกรายชื่อวิชา GenEd และฟีเจอร์วันสอบให้ตรงกับมหาวิทยาลัยของคุณ',
   'tuge.title': 'วิชาศึกษาทั่วไป ธรรมศาสตร์', 'tuge.intro': 'หลักสูตรวิชาศึกษาทั่วไป (ปรับปรุง พ.ศ. 2566) รวม 30 หน่วยกิตใน 5 หมวด ดูโครงสร้างหลักสูตรของคณะว่าต้องเรียนหมวดใดบ้าง',
@@ -3217,8 +3250,8 @@ th: {
   'tuge.add': 'เพิ่ม', 'tuge.have': 'เพิ่มแล้ว', 'tuge.source': 'รายชื่อจากเอกสารหลักสูตรวิชาศึกษาทั่วไป มธ. (พ.ศ. 2566) ตรวจวิชาที่เปิดสอนใน reg.tu.ac.th ก่อนลงทะเบียน',
   'tu.examNote': 'ยังไม่ได้ดึงวันสอบของธรรมศาสตร์อัตโนมัติ ใส่วันที่ในงาน “สอบกลางภาค/ปลายภาค” ของแต่ละวิชา แล้ววันสอบจะขึ้นในปฏิทิน',
   'ai.pasteTGeneric': 'วางตารางคะแนน', 'ai.pastePGeneric': 'คัดลอกคะแนนจากเว็บรายวิชามาวาง แล้วตรวจทีละแถว',
-  'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'ให้ AI ช่วยกรอกคะแนนสิ', 'fab.introP': 'สแกนภาพหน้าจอ วางจาก MyCourseVille หรือพิมพ์เอง ตรวจได้ทุกแถวก่อนบันทึก',
-  'fab.introPGeneric': 'สแกนภาพหน้าจอ วางตารางคะแนน หรือพิมพ์เอง ตรวจได้ทุกแถวก่อนบันทึก', 'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
+  'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'AI ของคุณ + GradeSpace', 'fab.introP': 'สแกน วาง หรือพิมพ์คะแนนได้ที่นี่ เร็ว ๆ นี้ใช้ ChatGPT หรือ Claude กับคะแนนของคุณได้',
+  'fab.introPGeneric': 'สแกน วาง หรือพิมพ์คะแนนได้ที่นี่ เร็ว ๆ นี้ใช้ ChatGPT หรือ Claude กับคะแนนของคุณได้', 'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -3721,8 +3754,49 @@ var TU_OUTCOMES = [
   { id: 'o-exe', label: 'EXE', name: 'Exempted (no credits)', attempted: false, earned: false, gpa: false, points: 0 },
   { id: 'o-aud', label: 'AUD', name: 'Audit (no credits)', attempted: false, earned: false, gpa: false, points: 0 }
 ];
-function setUni(v) { update(function (d) { d.settings.institution = v;
-  if (v === 'tu') { d.outcomes = Array.isArray(d.outcomes) ? d.outcomes : []; TU_OUTCOMES.forEach(function (o) { if (!d.outcomes.some(function (x) { return x.label === o.label; })) d.outcomes.push(Object.assign({}, o)); }); } if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull'); }); }
+// Each university is its own space: switching stores the current years, terms, courses and scores under
+// settings.spaces[<old>] and brings back settings.spaces[<new>] (or an empty space). Stored inside settings
+// because every copy of the site keeps unknown settings keys as they are; nothing is ever deleted.
+var SPACE_KEYS = ['years', 'semesters', 'courses', 'categories', 'assessments'];
+var SPACE_SETTINGS = ['currentSemesterId', 'studyPlan', 'genEdRequired', 'plannedCredits', 'targetCGPA'];
+function spaceHasData(d) { return SPACE_KEYS.some(function (k) { return Array.isArray(d[k]) && d[k].length; }); }
+function switchSpace(d, from, to) {
+  if (from === to) return;
+  var st = d.settings, spaces = st.spaces && typeof st.spaces === 'object' ? st.spaces : {};
+  var keep = { savedAt: Date.now() };
+  SPACE_KEYS.forEach(function (k) { keep[k] = Array.isArray(d[k]) ? d[k] : []; });
+  keep.settings = {}; SPACE_SETTINGS.forEach(function (k) { if (st[k] !== undefined) keep.settings[k] = st[k]; });
+  spaces[from] = keep;
+  var back = spaces[to];
+  SPACE_KEYS.forEach(function (k) { d[k] = back && Array.isArray(back[k]) ? back[k] : []; });
+  SPACE_SETTINGS.forEach(function (k) { st[k] = back && back.settings && back.settings[k] !== undefined ? back.settings[k] : (k === 'currentSemesterId' ? null : st[k] === undefined ? undefined : null); });
+  delete spaces[to];
+  st.spaces = spaces;
+}
+function applyUni(d, v) {
+  var from = d.settings.institution === 'tu' ? 'tu' : 'cu';
+  switchSpace(d, from, v);
+  d.settings.institution = v;
+  if (v === 'tu') { d.outcomes = Array.isArray(d.outcomes) ? d.outcomes : []; TU_OUTCOMES.forEach(function (o) { if (!d.outcomes.some(function (x) { return x.label === o.label; })) d.outcomes.push(Object.assign({}, o)); }); }
+  if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull');
+}
+// Picker: ask first when the current space has courses (they are kept, just put aside).
+function setUni(v, quiet) {
+  // The space the data currently belongs to (an unset profile is Chula), not the sign-in screen's choice.
+  var st = S.state, cur = st.settings.institution === 'tu' ? 'tu' : 'cu';
+  if (v === cur && st.settings.institution) return;
+  if (v === cur) { update(function (d) { d.settings.institution = v; }); return; }
+  var go = function () {
+    update(function (d) { applyUni(d, v); });
+    toast(t('space.switched', { u: t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull') }));
+    if (location.hash && location.hash !== '#dashboard' && !/^#(me|preferences)$/.test(location.hash)) location.hash = 'dashboard';
+  };
+  if (quiet || !spaceHasData(st)) { go(); return; }
+  var back = st.settings.spaces && st.settings.spaces[v], n = back && Array.isArray(back.courses) ? back.courses.length : 0;
+  confirmDialog({ title: t('space.q', { u: t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull') }),
+    body: t('space.body', { a: t(cur === 'tu' ? 'uni.tuFull' : 'uni.cuFull'), n: st.courses.length }) + ' ' + (n ? t('space.back', { n: n }) : t('space.new')),
+    confirmLabel: t('space.go'), onConfirm: go });
+}
 // Thammasat standing, honours and credit-load checks (regulation 2568 ข้อ 20, 49, 67–68). Recorded grades only.
 function TuRulesCard(p) {
   var state = p.state, cum = C.cumulativeStats(state, 'confirmed'), gpa = cum.gpa;
@@ -6912,7 +6986,7 @@ function Preferences(p) {
       </section>
       <section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('profile')}</h2>
         <div className="grid3">
-          <div className="field"><label>${t('uni.label')}</label><${UniPicker} value=${uniOf(state)} onChange=${setUni} /><div className="hint">${t('uni.hint')}</div></div>
+          <div className="field"><label>${t('uni.label')}</label><${UniPicker} value=${uniOf(state)} onChange=${setUni} /><div className="hint">${t('uni.hint')} ${t('space.note')}</div></div>
           <${Field} label=${t('university')} id="pf-u" hint=${t('optional')}><input id="pf-u" className="input" value=${st.university || ''} placeholder=${t('universityPh')} onChange=${function (e) { var v = e.target.value; update(function (d) { d.settings.university = v; }); }} /><//>
           <${Field} label=${t('programCredits')} id="pf-c" hint=${t('programCreditsHint')}><${NumCell} label=${t('programCredits')} value=${st.plannedCredits} placeholder=${t('eg', { v: '128' })} onChange=${function (v) { update(function (d) { d.settings.plannedCredits = v; }); }} /><//>
           <${Field} label=${t('targetCGPA')} id="pf-t"><${NumCell} label=${t('targetCGPA')} value=${st.targetCGPA} placeholder=${t('eg', { v: '3.50' })} onChange=${function (v) { update(function (d) { d.settings.targetCGPA = v; }); }} /><//>
@@ -7936,166 +8010,127 @@ function AssistantModal(p) {
     <p className="tiny muted" style=${{ marginBottom: 0 }}>${t('ai.soon')}</p><//>`;
 }
 
-/* ================= GradeSpace AI chat (local) =================
-   Answers from the student's own data in this browser; nothing is sent to an AI service.
-   Never invents courses, assessments or scores: it only matches existing ones, and every
-   change is shown as a card the student must confirm (saved with undo). */
-var ChatBrain = (function () {
-  function openCourses(state) { var cur = curSemester(state); return state.courses.filter(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); }); }
-  function courseFields(c) { return [c.code || '', c.name || '', courseDisplayTitle(c), (CATALOG.get(c.code) || {}).th || '']; }
-  function bestCourse(q, state) {
-    // Match the whole phrase or any single word ("HW5 econ" → Economics), best score wins.
-    var toks = [q].concat(String(q).split(/\s+/).filter(function (w) { return w.length >= 3 && !/^\d+$/.test(w); }));
-    var list = openCourses(state).map(function (c) { var f = courseFields(c), best = -1; toks.forEach(function (w) { var v = Fuzzy.score(w, f); if (v >= 0 && (best < 0 || v < best)) best = v; }); return { c: c, s: best }; }).filter(function (x) { return x.s >= 0; })
-      .sort(function (a, b) { return a.s - b.s; });
-    if (!list.length) return null;
-    if (list.length > 1 && list[1].s - list[0].s < 0.5) return { many: list.slice(0, 4).map(function (x) { return x.c; }) };
-    return { c: list[0].c };
-  }
-  function letterIn(text) { var m = String(text).toUpperCase().match(/(?:^|[^A-Z])([A-D]\+?|F)(?![A-Z+])/); return m ? m[1] : null; }
-  function stripMeta(text) { return String(text).replace(/\d+(?:\.\d+)?\s*(?:\/|จาก|เต็ม|out of|of)\s*\d+(?:\.\d+)?/gi, ' ').replace(/ได้|คะแนน|บันทึก|score|got|ต้อง|เท่าไหร่|เท่าไร|ถึงจะ|ถึง|need|for|grade|เกรด|วิชา|ไหม|มั้ย|\?/gi, ' '); }
-  function gpaReply(state) {
-    var cur = curSemester(state), semC = cur ? C.semesterStats(state, cur.id, 'confirmed') : {}, semE = cur ? C.semesterStats(state, cur.id, 'estimated') : {};
-    var cumC = C.cumulativeStats(state, 'confirmed'), cumE = C.cumulativeStats(state, 'estimated');
-    var a = semC.gpa != null ? fmt(semC.gpa) : semE.gpa != null ? fmt(semE.gpa) + t('chat.gpaEst') : '–';
-    var b = cumC.gpa != null ? fmt(cumC.gpa) : cumE.gpa != null ? fmt(cumE.gpa) + t('chat.gpaEst') : '–';
-    if (a === '–' && b === '–') return { text: t('chat.gpaNone') };
-    return { text: t('chat.gpa', { s: cur ? semFull(state, cur) : '–', a: a, b: b }), actions: [{ label: t('nav.gpa'), hash: 'gpa' }] };
-  }
-  function needReply(c, letter, state) {
-    var name = courseDisplayTitle(c), grades = C.gradesFor(c, state), g = grades.find(function (x) { return x.label === letter; });
-    if (!g || !isNum(g.min) || gradingModeFor(c) !== 'criterion') return { text: t('chat.needRule', { c: name }), actions: [{ label: t('chat.open'), hash: 'course-' + c.id }] };
-    var sm = C.courseSummary(c, state);
-    if (sm.pendingWeight <= C.EPS) { var cg = C.letterFor(sm.earned, grades); return { text: t('chat.needNoLeft', { c: name, p: fmt(sm.earned, 1), g: cg ? cg.label : '–' }) }; }
-    if (sm.earned >= g.min - C.EPS) return { text: t('chat.needSecured', { c: name, g: letter }) };
-    var best = C.bestReachable(sm, grades);
-    if (sm.earned + sm.pendingWeight < g.min - C.EPS) return { text: t('chat.needImpossible', { c: name, g: letter, b: best ? best.label : '–' }) };
-    var ex = C.requiredExamAverage(g.min, sm);
-    if (ex && ex.pct > 0 && ex.pct <= 100) return { text: t('chat.needExam', { c: name, g: letter, p: fmt(ex.pct, 0) }), actions: [{ label: t('chat.open'), hash: 'course-' + c.id }] };
-    var av = C.requiredAverage(g.min, sm);
-    return { text: t('chat.needPct', { c: name, g: letter, p: fmt(Math.max(0, av.pct), 0), w: fmtT(sm.pendingWeight, 1) }), actions: [{ label: t('chat.open'), hash: 'course-' + c.id }] };
-  }
-  function dayWord(d) { return d === 0 ? t('chat.today') : d === 1 ? t('chat.tomorrow') : t('chat.inDays', { n: d }); }
-  function examReply(state) {
-    var rows = [];
-    openCourses(state).forEach(function (c) {
-      var ex = examsFor(c, state) || {};
-      [['mid', 'midterm'], ['fin', 'final']].forEach(function (k) {
-        var a = state.assessments.find(function (x) { return x.courseId === c.id && x.type === k[1] && x.due; });
-        var date = (ex[k[0]] && ex[k[0]].date) || (a && a.due), d = date ? daysUntil(date) : null;
-        if (d != null && d >= 0) rows.push({ d: d, line: courseDisplayTitle(c) + ' · ' + t('type.' + k[1]) + ' · ' + fmtDate(date) + ' (' + dayWord(d) + ')' + (ex[k[0]] && ex[k[0]].time ? ' ' + ex[k[0]].time : '') });
-      });
-    });
-    rows.sort(function (a, b) { return a.d - b.d; });
-    return rows.length ? { text: t('chat.examList'), list: rows.slice(0, 8).map(function (r) { return r.line; }) } : { text: t('chat.examNone') };
-  }
-  function dueReply(state) {
-    var ids = openCourses(state).map(function (c) { return c.id; });
-    var rows = state.assessments.filter(function (a) { return ids.indexOf(a.courseId) >= 0 && a.due && !C.isGraded(a) && a.type !== 'midterm' && a.type !== 'final'; })
-      .map(function (a) { return { a: a, d: daysUntil(a.due), c: state.courses.find(function (c) { return c.id === a.courseId; }) }; })
-      .filter(function (x) { return x.d != null && x.d >= 0 && x.d <= 14; }).sort(function (a, b) { return a.d - b.d; });
-    return rows.length ? { text: t('chat.dueList'), list: rows.slice(0, 8).map(function (x) { return courseDisplayTitle(x.c) + ' · ' + aName(x.a) + ' · ' + fmtDate(x.a.due) + ' (' + dayWord(x.d) + ')'; }) } : { text: t('chat.dueNone') };
-  }
-  function scoreReply(text, state, m, forced) {
-    var sc = Number(m[1]), mx = Number(m[2]), rest = stripMeta(text);
-    var bc = forced && forced.course ? { c: forced.course } : bestCourse(rest, state);
-    if (!bc) return { text: t('chat.noCourse'), pick: openCourses(state).map(function (c) { return { label: courseDisplayTitle(c), course: c.id }; }), pending: { kind: 'score', text: text } };
-    if (bc.many) return { text: t('chat.whichCourse'), pick: bc.many.map(function (c) { return { label: courseDisplayTitle(c), course: c.id }; }), pending: { kind: 'score', text: text } };
-    var c = bc.c, items = state.assessments.filter(function (a) { return a.courseId === c.id; });
-    var cfield = courseFields(c).join(' ').toLowerCase().split(/\s+/), words = rest.split(/\s+/).filter(function (w) { return w && cfield.indexOf(w.toLowerCase()) < 0; }).join(' ');
-    var a = forced && forced.item ? items.find(function (x) { return x.id === forced.item; }) : null;
-    if (!a) {
-      var wt = words ? [words].concat(words.split(/\s+/).filter(function (w) { return w.length >= 2; })) : [];
-      var ranked = items.map(function (x) { var f = [aName(x), t('type.' + x.type), x.type], best = -1; wt.forEach(function (w) { var v = Fuzzy.score(w, f); if (v >= 0 && (best < 0 || v < best)) best = v; }); return { x: x, s: best }; }).filter(function (r) { return r.s >= 0; }).sort(function (p, q) { return p.s - q.s; });
-      if (ranked.length && (ranked.length === 1 || ranked[1].s - ranked[0].s >= 0.5)) a = ranked[0].x;
-      else {
-        var opts = (ranked.length ? ranked.map(function (r) { return r.x; }) : items.filter(function (x) { return !C.isGraded(x); })).slice(0, 6);
-        return { text: t(ranked.length ? 'chat.whichItem' : 'chat.noItem', { c: courseDisplayTitle(c) }), pick: opts.map(function (x) { return { label: aName(x), course: c.id, item: x.id }; }), pending: { kind: 'score', text: text } };
-      }
-    }
-    if (!(mx > 0) || sc < 0 || (sc > mx + C.EPS && !a.extra)) return { text: t('chat.badScore') };
-    return { text: t('chat.confirm', { s: fmtT(sc), m: fmtT(mx), a: aName(a), c: courseDisplayTitle(c) }), note: isNum(a.max) && Math.abs(a.max - mx) > C.EPS ? t('chat.maxChange', { o: fmtT(a.max), m: fmtT(mx) }) : null,
-      confirm: { id: a.id, score: sc, max: mx, name: aName(a) } };
-  }
-  function reply(text, state, forced) {
-    var q = String(text || '').trim(), low = q.toLowerCase();
-    var m = q.match(/(\d+(?:\.\d+)?)\s*(?:\/|จาก|เต็ม|out of|of)\s*(\d+(?:\.\d+)?)/i);
-    if (m) return scoreReply(q, state, m, forced);
-    var letter = letterIn(q);
-    if (letter && /ต้อง|need|ถึง|ได้|get|reach|เกรด|grade/i.test(q)) {
-      var bc = forced && forced.course ? { c: state.courses.find(function (c) { return c.id === forced.course; }) } : bestCourse(stripMeta(q).replace(/(?:^|\s)([A-Da-d]\+?|[Ff])(?=\s|$)/g, ' '), state);
-      if (!bc || bc.many) return { text: t('chat.whichCourse'), pick: (bc && bc.many || openCourses(state)).map(function (c) { return { label: courseDisplayTitle(c), course: c.id }; }), pending: { kind: 'need', text: q } };
-      return needReply(bc.c, letter, state);
-    }
-    if (/gpa|gpax|เกรดเฉลี่ย|เกรดเทอม|เกรดรวม/i.test(low)) return gpaReply(state);
-    if (/สอบ|exam|midterm|final|ปลายภาค|กลางภาค/i.test(low)) return examReply(state);
-    if (/งาน|due|deadline|ส่ง|การบ้าน|homework|assignment/i.test(low)) return dueReply(state);
-    if (/สแกน|scan|screenshot|ภาพ|รูป/i.test(low)) return { text: t('ai.scanP'), actions: [{ label: t('ai.scanT'), modal: 'scan' }] };
-    if (/วาง|paste|mcv|mycourseville/i.test(low)) return { text: t('ai.pasteP'), actions: [{ label: t('ai.pasteT'), modal: 'paste' }] };
-    if (/บันทึกคะแนน|กรอกคะแนน|record a score|enter score/i.test(low)) return { text: t('chat.ph'), actions: [{ label: t('quickScore'), modal: 'quick' }] };
-    return { text: t('chat.help') };
-  }
-  return { reply: reply };
-})();
-function ChatModal(p) {
-  var state = useApp(), endRef = useRef(null), inputRef = useRef(null);
-  var ms = useState(function () { return [{ who: 'ai', text: t('chat.hello') }]; }), msgs = ms[0], setMsgs = ms[1];
-  var is = useState(''), text = is[0], setText = is[1];
-  useEffect(function () { if (endRef.current && endRef.current.scrollIntoView) endRef.current.scrollIntoView({ block: 'end' }); }, [msgs.length]);
-  var cur = curSemester(state), firstOpen = state.courses.find(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); });
-  function push(list) { setMsgs(function (old) { return old.concat(list); }); }
-  function ask(q, forced, shown) {
-    if (!String(q || '').trim()) return;
-    var r = ChatBrain.reply(q, S.state, forced);
-    push([{ who: 'me', text: shown || q }, Object.assign({ who: 'ai' }, r)]);
-    setText('');
-  }
-  function runAction(a) {
-    if (a.hash) { closeModal(); location.hash = a.hash; return; }
-    if (a.modal === 'scan') { closeModal(); openModal('scan', { semesterId: cur && cur.id }); return; }
-    if (a.modal === 'paste' && firstOpen) { closeModal(); openModal('paste', { courseId: firstOpen.id }); return; }
-    if (a.modal === 'quick') { closeModal(); openModal('quick', {}); }
-  }
-  function decide(i, ok) {
-    var m = msgs[i], cf = m.confirm;
-    setMsgs(function (old) { return old.map(function (x, j) { return j === i ? Object.assign({}, x, { done: ok ? 'saved' : 'cancelled' }) : x; }); });
-    if (!ok) { push([{ who: 'ai', text: t('chat.cancelled') }]); return; }
-    update(function (d) { var x = d.assessments.find(function (y) { return y.id === cf.id; }); if (!x) return; x.max = cf.max; x.score = cf.score; x.status = 'graded'; }, { undo: true });
-    toast(t('chat.saved', { s: fmtT(cf.score), m: fmtT(cf.max), a: cf.name }), { undo: true });
-    push([{ who: 'ai', text: t('chat.saved', { s: fmtT(cf.score), m: fmtT(cf.max), a: cf.name }) }]);
-  }
-  var quick = [
-    { label: t('ai.scanT'), icon: 'zap', run: function () { closeModal(); openModal('scan', { semesterId: cur && cur.id }); }, off: !canScan() },
-    { label: t(isCU() ? 'ai.pasteT' : 'ai.pasteTGeneric'), icon: 'clipboard', run: function () { closeModal(); openModal('paste', { courseId: firstOpen && firstOpen.id }); }, off: !firstOpen },
-    { label: t('ai.quickT'), icon: 'edit', run: function () { closeModal(); openModal('quick', {}); } }
-  ];
-  var sugg = ['chat.s.gpa', 'chat.s.need', 'chat.s.exam', 'chat.s.due'];
-  return html`<${Modal} title=${t('chat.title')} onClose=${closeModal} wide=${true}>
-    <div className="chat" data-testid="chat">
+/* ================= AI hub =================
+   GradeSpace has no AI of its own (owner decision 2026-11-26): it is the bridge between the student's
+   own AI (ChatGPT, Claude) and their grades. Until secure sign-in + OAuth ship, the connect options are
+   shown as coming soon; the in-site tools (screenshot scan, paste, quick score) stay here. */
+function AiHubModal(p) {
+  var state = useApp(), cur = curSemester(state);
+  var firstOpen = state.courses.find(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); });
+  function go(type, props) { closeModal(); openModal(type, props); }
+  var apps = [{ n: 'ChatGPT', how: t('hub.chatgptHow') }, { n: 'Claude', how: t('hub.claudeHow') }];
+  return html`<${Modal} title=${t('aihub.title')} onClose=${closeModal}>
+    <div className="stack" data-testid="ai-hub" style=${{ gap: 12 }}>
       <section className="connect-card" data-testid="connect-card" aria-labelledby="connect-h">
         <div className="row between" style=${{ gap: 8 }}><b id="connect-h">${t('connect.title')}</b><span className="connect-soon">${t('connect.soon')}</span></div>
-        <div className="connect-tiles">${['ChatGPT', 'Claude'].map(function (n) { return html`<div key=${n} className="connect-tile" aria-disabled="true"><${Icon} n="link" s=${16} /><span>${t('connect.with', { n: n })}</span></div>`; })}</div>
+        <p className="small" style=${{ margin: 0 }}>${t('hub.bridge')}</p>
+        <div className="connect-tiles">${apps.map(function (a) { return html`<div key=${a.n} className="connect-tile" aria-disabled="true"><${Icon} n="link" s=${16} /><div><b>${a.n}</b><span className="tiny muted">${a.how}</span></div></div>`; })}</div>
         <p className="tiny muted" style=${{ margin: 0 }}>${t('connect.why')}</p>
       </section>
-      <div className="chat-own"><${Icon} n="spark" s=${14} />${t('connect.own')}</div>
-      <div className="chat-quick">${quick.map(function (x, i) { return html`<button key=${i} className="chat-q" disabled=${x.off} onClick=${x.run}><${Icon} n=${x.icon} s=${16} />${x.label}</button>`; })}</div>
-      <div className="chat-log" role="log" aria-live="polite">
-        ${msgs.map(function (m, i) { return html`<div key=${i} className=${'chat-msg ' + m.who}>
-          <div className="chat-bubble">${m.text}
-            ${m.list && html`<ul>${m.list.map(function (l, j) { return html`<li key=${j}>${l}</li>`; })}</ul>`}
-            ${m.note && html`<div className="tiny muted">${m.note}</div>`}
-            ${m.pick && html`<div className="chat-chips">${m.pick.map(function (o, j) { return html`<button key=${j} className="chat-chip" onClick=${function () { ask(m.pending ? m.pending.text : o.label, { course: o.course, item: o.item }, o.label); }}>${o.label}</button>`; })}</div>`}
-            ${m.actions && html`<div className="chat-chips">${m.actions.map(function (a, j) { return html`<button key=${j} className="chat-chip" onClick=${function () { runAction(a); }}>${a.label} ›</button>`; })}</div>`}
-            ${m.confirm && !m.done && html`<div className="row" style=${{ gap: 6, marginTop: 8 }}><button className="btn primary sm" data-testid="chat-save" onClick=${function () { decide(i, true); }}>${t('chat.save')}</button><button className="btn sm" onClick=${function () { decide(i, false); }}>${t('chat.cancel')}</button></div>`}
-          </div></div>`; })}
-        <div ref=${endRef}></div>
+      <section className="askai-card" data-testid="askai-card">
+        <div><b>${t('askai.cardT')}</b><div className="small muted">${t('askai.cardP')}</div></div>
+        <div className="row wrap" style=${{ gap: 8 }}><button className="btn primary sm" data-testid="askai-open" onClick=${function () { closeModal(); openModal('askAi', {}); }}><${Icon} n="clipboard" s=${15} />${t('askai.cardBtn')}</button>
+          <button className="btn sm" onClick=${function () { closeModal(); openModal('askAi', { step: 'paste' }); }}>${t('askai.step2')}</button></div>
+      </section>
+      <div className="chat-own"><${Icon} n="spark" s=${14} />${t('hub.tools')}</div>
+      <div className="ai-actions" style=${{ marginTop: 0 }}>
+        <button className="ai-action" disabled=${!canScan()} onClick=${function () { go('scan', { semesterId: cur && cur.id }); }}><${Icon} n="zap" /><div><b>${t('ai.scanT')}</b><span>${canScan() ? t('ai.scanP') : t('ai.noScan')}</span></div></button>
+        <button className="ai-action" disabled=${!firstOpen} onClick=${function () { go('paste', { courseId: firstOpen && firstOpen.id }); }}><${Icon} n="clipboard" /><div><b>${t(isCU() ? 'ai.pasteT' : 'ai.pasteTGeneric')}</b><span>${firstOpen ? t(isCU() ? 'ai.pasteP' : 'ai.pastePGeneric') : t('ai.noCourse')}</span></div></button>
+        <button className="ai-action" onClick=${function () { go('quick', {}); }}><${Icon} n="edit" /><div><b>${t('ai.quickT')}</b><span>${t('ai.quickP')}</span></div></button>
       </div>
-      ${msgs.length < 3 && html`<div className="chat-chips">${sugg.map(function (k) { return html`<button key=${k} className="chat-chip" onClick=${function () { ask(t(k)); }}>${t(k)}</button>`; })}</div>`}
-      <form className="chat-input" onSubmit=${function (e) { e.preventDefault(); ask(text); }}>
-        <input ref=${inputRef} className="input" value=${text} placeholder=${t('chat.ph')} aria-label=${t('chat.ph')} onChange=${function (e) { setText(e.target.value); }} />
-        <button className="btn primary" type="submit" aria-label=${t('chat.send')} disabled=${!text.trim()}><${Icon} n="send" s=${16} /></button>
-      </form>
-      <p className="tiny muted" style=${{ margin: 0 }}>${t('chat.localNote')}</p>
+    </div><//>`;
+}
+
+/* ===== Ask your own AI by copy-paste (works on every ChatGPT/Claude plan, incl. Free) =====
+   The student copies a summary of this term's courses into their AI; the AI answers with a small JSON
+   block; the student pastes it back and approves each row. Only existing courses/items are matched;
+   nothing is created. No email, student ID or account data goes into the copied text. */
+var ASKAI_TAG = 'gradespace-scores';
+function askAiPrompt(state) {
+  var cur = curSemester(state);
+  var courses = state.courses.filter(function (c) { return !cur || c.semesterId === cur.id; }).map(function (c) {
+    var sm = C.courseSummary(c, state), g = C.courseGrade(c, state);
+    return { code: String(c.code || '').split('.')[0], name: courseDisplayTitle(c), credits: toNum(c.credits),
+      grade: c.finalGrade || null, estimate: g.label || null, totalPct: isNum(sm.earned) ? +sm.earned.toFixed(2) : null,
+      items: state.assessments.filter(function (a) { return a.courseId === c.id; }).map(function (a) {
+        return { item: aName(a), type: a.type, weightPct: +(toNum(C.effectiveWeights(c.id, state)[a.id]) || 0).toFixed(2), max: toNum(a.max), score: C.isGraded(a) ? a.score : null, due: a.due || null };
+      }) };
+  });
+  var th = LANG === 'th';
+  var rules = th ? [
+    'นี่คือข้อมูลวิชาและคะแนนของฉันจาก GradeSpace (' + (cur ? semFull(state, cur) : '') + ') score: null แปลว่ายังไม่มีคะแนน ไม่ใช่ 0',
+    'ช่วยตอบคำถามของฉันจากข้อมูลนี้ ห้ามเดาหรือสร้างคะแนนหรือชื่องานขึ้นเอง',
+    'ถ้าฉันบอกคะแนนใหม่ ให้ตอบท้ายด้วยโค้ดบล็อก ```' + ASKAI_TAG + ' ที่มี JSON แบบนี้ {"updates":[{"code":"รหัสวิชา","item":"ชื่องานตรงตามข้อมูล","score":ตัวเลข,"max":ตัวเลข}]} ใช้เฉพาะวิชาและงานที่มีอยู่ในข้อมูลเท่านั้น',
+    'คำถามของฉัน: '
+  ] : [
+    'Here are my courses and scores from GradeSpace (' + (cur ? semFull(state, cur) : '') + '). score: null means not graded yet, not zero.',
+    'Answer my questions from this data. Never guess or invent scores or item names.',
+    'If I tell you new scores, end your reply with a ```' + ASKAI_TAG + ' code block containing JSON like {"updates":[{"code":"course code","item":"exact item name from the data","score":number,"max":number}]}. Only use courses and items that exist in the data.',
+    'My question: '
+  ];
+  return rules.slice(0, 3).join('\n') + '\n\n```json\n' + JSON.stringify({ gradespace: 1, courses: courses }) + '\n```\n\n' + rules[3];
+}
+function parseAskAi(text, state) {
+  var raw = String(text || ''), m = raw.match(new RegExp('```\\s*' + ASKAI_TAG + '\\s*([\\s\\S]*?)```')) || raw.match(/(\{[\s\S]*"updates"[\s\S]*\})/);
+  if (!m) return { error: 'askai.noBlock' };
+  var data; try { data = JSON.parse(m[1].trim()); } catch (e) { return { error: 'askai.badJson' }; }
+  var list = Array.isArray(data.updates) ? data.updates.slice(0, 60) : [];
+  if (!list.length) return { error: 'askai.noBlock' };
+  var low = function (x) { return String(x || '').trim().toLowerCase(); };
+  return { rows: list.map(function (u, i) {
+    var c = state.courses.find(function (x) { return low(String(x.code || '').split('.')[0]) === low(u.code); });
+    var a = c && state.assessments.find(function (x) { return x.courseId === c.id && low(aName(x)) === low(u.item); });
+    var sc = Number(u.score), mx = u.max == null ? (a ? Number(a.max) : NaN) : Number(u.max);
+    var bad = !c ? 'askai.noCourse' : !a ? 'askai.noItem' : !(isFinite(sc) && isFinite(mx) && mx > 0 && sc >= 0 && (sc <= mx + C.EPS || a.extra)) ? 'askai.badScore' : null;
+    return { i: i, code: u.code, item: u.item, score: sc, max: mx, c: c, a: a, bad: bad, old: a && C.isGraded(a) ? a.score + '/' + a.max : null };
+  }) };
+}
+function AskAiModal(p) {
+  var state = useApp();
+  var ts = useState(p.props && p.props.step === 'paste' ? 'paste' : 'copy'), tab = ts[0], setTab = ts[1];
+  var prompt = askAiPrompt(state);
+  var ps = useState(''), pasted = ps[0], setPasted = ps[1];
+  var rs = useState(null), res = rs[0], setRes = rs[1];
+  var ks = useState({}), keep = ks[0], setKeep = ks[1];
+  var cs = useState(false), copied = cs[0], setCopied = cs[1];
+  function copy() {
+    var done = function () { setCopied(true); toast(t('askai.copied')); };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(prompt).then(done, function () { setCopied(true); }); return; } } catch (e) { /* fall back */ }
+    setCopied(true);
+  }
+  function check() { var r = parseAskAi(pasted, S.state); setRes(r); var k = {}; (r.rows || []).forEach(function (x) { if (!x.bad) k[x.i] = true; }); setKeep(k); }
+  function save() {
+    var rows = (res && res.rows || []).filter(function (x) { return !x.bad && keep[x.i]; });
+    if (!rows.length) return;
+    update(function (d) { rows.forEach(function (x) { var a = d.assessments.find(function (y) { return y.id === x.a.id; }); if (a) { a.score = x.score; a.max = x.max; a.status = 'graded'; } }); }, { undo: true });
+    toast(t('askai.saved', { n: rows.length }), { undo: true }); closeModal();
+  }
+  var good = res && res.rows ? res.rows.filter(function (x) { return !x.bad && keep[x.i]; }).length : 0;
+  return html`<${Modal} title=${t('askai.title')} onClose=${closeModal} wide=${true}>
+    <div className="stack" data-testid="ask-ai" style=${{ gap: 12 }}>
+      <${Seg} label=${t('askai.title')} value=${tab} onChange=${setTab} options=${[{ v: 'copy', l: t('askai.step1') }, { v: 'paste', l: t('askai.step2') }]} />
+      ${tab === 'copy' ? html`<${React.Fragment}>
+        <p className="small" style=${{ margin: 0 }}>${t('askai.copyIntro')}</p>
+        <textarea className="input askai-text" readOnly=${true} value=${prompt} data-testid="askai-prompt" onFocus=${function (e) { e.target.select(); }} aria-label=${t('askai.step1')}></textarea>
+        <div className="row wrap" style=${{ gap: 8 }}>
+          <button className="btn primary" onClick=${copy}><${Icon} n="clipboard" s=${16} />${copied ? t('askai.copiedBtn') : t('askai.copy')}</button>
+          <a className="btn" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">${t('askai.openGpt')} ↗</a>
+          <a className="btn" href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">${t('askai.openClaude')} ↗</a>
+        </div>
+        <p className="tiny muted" style=${{ margin: 0 }}>${t('askai.privacy')}</p>
+        <button className="btn ghost sm" style=${{ justifySelf: 'start' }} onClick=${function () { setTab('paste'); }}>${t('askai.next')} ›</button>
+      <//>` : html`<${React.Fragment}>
+        <p className="small" style=${{ margin: 0 }}>${t('askai.pasteIntro')}</p>
+        <textarea className="input askai-text" value=${pasted} data-testid="askai-paste" placeholder=${t('askai.pastePh')} onChange=${function (e) { setPasted(e.target.value); setRes(null); }} aria-label=${t('askai.step2')}></textarea>
+        <div><button className="btn" disabled=${!pasted.trim()} onClick=${check}>${t('askai.check')}</button></div>
+        ${res && res.error && html`<${Banner} kind="bad">${t(res.error)}<//>`}
+        ${res && res.rows && html`<div className="askai-rows">${res.rows.map(function (x) {
+          return html`<label key=${x.i} className=${'askai-row' + (x.bad ? ' bad' : '')}>
+            <input type="checkbox" disabled=${!!x.bad} checked=${!x.bad && !!keep[x.i]} onChange=${function (e) { var k = Object.assign({}, keep); k[x.i] = e.target.checked; setKeep(k); }} />
+            <div className="grow"><b>${x.c ? courseDisplayTitle(x.c) : x.code} · ${x.a ? aName(x.a) : x.item}</b>
+              <div className="small">${x.bad ? t(x.bad) : fmtT(x.score) + '/' + fmtT(x.max) + (x.old ? ' · ' + t('askai.was', { o: x.old }) : '')}</div></div></label>`; })}</div>
+          <button className="btn primary" data-testid="askai-save" disabled=${!good} onClick=${save}>${t('askai.save', { n: good })}</button>`}
+      <//>`}
     </div><//>`;
 }
 function commandItems(state) {
@@ -8103,7 +8138,8 @@ function commandItems(state) {
   var both = function (k) { return [I18N.en[k], I18N.th[k]].join(' '); };
   var items = NAV.map(function (n) { var k = 'nav.' + (n.key || n.id); return { g: 'cmd.gPages', icon: n.icon, label: t(k), meta2: both(k), run: function () { location.hash = n.id; } }; });
   items = items.concat([
-    { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), meta2: both('ai.btn') + ' chat แชท', run: function () { openModal('chat', {}); } },
+    { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), meta2: both('ai.btn') + ' chatgpt claude', run: function () { openModal('chat', {}); } },
+    { g: 'cmd.gActions', icon: 'clipboard', label: t('askai.title'), meta2: both('askai.title') + ' chatgpt claude', run: function () { openModal('askAi', {}); } },
     { g: 'cmd.gActions', icon: 'plus', label: t('addCourse'), meta2: both('addCourse'), run: function () { openModal('course', { semesterId: cur && cur.id }); } },
     { g: 'cmd.gActions', icon: 'edit', label: t('quickScore'), meta2: both('quickScore'), run: function () { openModal('quick', {}); } },
     canScan() && { g: 'cmd.gActions', icon: 'zap', label: t('scan.btn'), meta2: both('scan.btn'), run: function () { openModal('scan', { semesterId: cur && cur.id }); } },
@@ -8174,7 +8210,7 @@ function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal, tuGened: TuGenEdModal, chat: ChatModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal, tuGened: TuGenEdModal, chat: AiHubModal, askAi: AskAiModal }[m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 
@@ -8476,7 +8512,7 @@ function App() {
   useEffect(function () {
     // A university picked on the sign-in screen fills in a profile that has none yet
     // (also after the saved copy loads from the account, which may replace the first state).
-    if (!state.settings.institution && (uniPending === 'cu' || uniPending === 'tu')) setUni(uniPending);
+    if (!state.settings.institution && (uniPending === 'cu' || uniPending === 'tu')) setUni(uniPending, true);
   }, [state.settings.institution]);
   var active = route.page === 'course' ? 'courses' : route.page === 'feedback' ? 'help' : route.page;
   var page;
