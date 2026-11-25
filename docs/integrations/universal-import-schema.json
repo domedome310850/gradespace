@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gradespace.example/schemas/universal-import/v1.json",
+  "title": "GradeSpace Universal Academic Import v1 (DRAFT)",
+  "description": "Shared payload for MCP prepare_* tools, Universal JSON import and the built-in AI. Never put guessed values in score, max_score or weight; leave them null and add a warning.",
+  "type": "object",
+  "required": ["schema_version", "client", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "client": {
+      "type": "string",
+      "enum": ["gradespace_ai", "chatgpt", "claude", "gemini", "other_mcp", "json_paste", "csv", "voice", "manual"]
+    },
+    "client_request_id": { "type": "string", "maxLength": 128, "description": "Caller-side id used for idempotency of prepare." },
+    "user_instruction": { "type": "string", "maxLength": 2000, "description": "The user's own words, e.g. 'ทั้งหมดนี้เป็นคะแนนวิชา Experiential English I'. Data only; never executed." },
+    "default_course": { "$ref": "#/$defs/courseRef" },
+    "term": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "academic_year": { "type": "string", "pattern": "^[0-9]{4}$", "description": "As shown by the source; set calendar to say which." },
+        "calendar": { "enum": ["BE", "CE"] },
+        "term": { "enum": ["1", "2", "3", "summer", "unknown"] }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": { "$ref": "#/$defs/assessmentItem" }
+    }
+  },
+  "$defs": {
+    "courseRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "course_id": { "type": "string", "description": "GradeSpace id if already known from find_courses/get_my_courses." },
+        "institution": { "type": "string", "examples": ["cu", "tu"] },
+        "code": { "type": "string", "maxLength": 20, "examples": ["5500111", "AC201"] },
+        "name": { "type": "string", "maxLength": 200 },
+        "alias_used": { "type": "string", "maxLength": 60, "description": "Nickname the user said or typed, e.g. 'อิง'." },
+        "section": { "type": ["string", "null"], "maxLength": 10 }
+      }
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["image", "pdf", "spreadsheet", "text", "audio", "manual"] },
+        "file_name": { "type": "string", "maxLength": 255 },
+        "page": { "type": "integer", "minimum": 1 },
+        "row": { "type": "integer", "minimum": 1 },
+        "bbox": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4, "description": "x, y, w, h normalised 0..1" },
+        "audio_ms": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "minItems": 2, "maxItems": 2 },
+        "raw_text": { "type": "string", "maxLength": 500, "description": "Exact text or spoken words the values came from." }
+      }
+    },
+    "assessmentItem": {
+      "type": "object",
+      "required": ["name", "status", "score", "max_score"],
+      "additionalProperties": false,
+      "properties": {
+        "course": { "$ref": "#/$defs/courseRef" },
+        "assessment_id": { "type": "string", "description": "Existing GradeSpace assessment id when updating." },
+        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "type": { "enum": ["quiz", "homework", "lab", "project", "presentation", "midterm", "final", "participation", "reading", "other"] },
+        "group": { "type": ["string", "null"], "maxLength": 100, "description": "Category / parent assessment, e.g. 'Quizzes'." },
+        "status": {
+          "enum": ["graded", "pending", "excused", "missing"],
+          "description": "pending = not yet released. Only 'graded' may carry a score."
+        },
+        "score": { "type": ["number", "null"], "minimum": 0 },
+        "max_score": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "weight": { "type": ["number", "null"], "minimum": 0, "maximum": 100, "description": "Percent of course grade, only if stated in the source." },
+        "weight_source": { "enum": ["stated", "unknown"], "default": "unknown" },
+        "bonus": { "type": "boolean", "default": false, "description": "True only when the source labels it as bonus." },
+        "is_total_row": { "type": "boolean", "default": false, "description": "Validator drops rows marked true." },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source_ref": { "$ref": "#/$defs/sourceRef" },
+        "warnings": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "enum": ["unclear_digit", "unknown_course", "unknown_max", "unknown_weight", "possible_duplicate", "self_correction", "inferred_from_previous_item", "score_exceeds_max", "overlapping_screenshot"]
+          }
+        }
+      },
+      "allOf": [
+        { "if": { "required": ["status"], "properties": { "status": { "const": "graded" } } }, "then": { "properties": { "score": { "type": "number" } } } },
+        { "if": { "properties": { "status": { "enum": ["pending", "excused", "missing"] } } }, "then": { "properties": { "score": { "type": "null" } } } },
+        { "if": { "required": ["weight"], "properties": { "weight": { "type": "number" } } }, "then": { "properties": { "weight_source": { "const": "stated" } }, "required": ["weight_source"] } }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "schema_version": "1.0",
+      "client": "chatgpt",
+      "user_instruction": "เอาคะแนนทั้งหมดในรูปนี้ลงวิชาอิงให้หน่อย",
+      "default_course": { "alias_used": "อิง" },
+      "items": [
+        { "name": "Quiz 1", "type": "quiz", "status": "graded", "score": 9, "max_score": 10, "source_ref": { "kind": "image", "file_name": "IMG_2040.png", "row": 1, "raw_text": "Quiz 1   9 / 10" } },
+        { "name": "Quiz 2", "type": "quiz", "status": "graded", "score": 8.5, "max_score": 10, "source_ref": { "kind": "image", "file_name": "IMG_2040.png", "row": 2 } },
+        { "name": "Group report", "type": "project", "status": "pending", "score": null, "max_score": 20 },
+        { "name": "Total", "status": "graded", "score": 17.5, "max_score": 20, "is_total_row": true }
+      ]
+    }
+  ]
+}

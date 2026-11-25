@@ -1,3 +1,10 @@
+## 2026-11-25 — Claude (claude.ai): GradeSpace Connect plan (docs only)
+
+- `docs/grade-space-connect-roadmap.md`: feasibility of ChatGPT Apps SDK / Claude connectors / MCP Apps (checked against official docs 2026-11-25), PRD, journey, architecture, security, cost comparison, CONNECT-01…18 roadmap, submission checklist, testing strategy, open questions (Claude Free-plan connector access and directory eligibility conflict between official pages).
+- `docs/integrations/universal-import-schema.json`: Universal Import JSON Schema v1 draft (null ≠ 0, stated-only weights, total-row flag, source refs); example and negative cases validated with Ajv 2020.
+- `docs/integrations/mcp-tools.md`: Read / Calculate / Prepare / Confirm tool spec and MCP Apps UI resources.
+- Status Planned / Deferred Implementation. No runtime, database, deployment or authentication changes.
+
 ## 2026-11-24 — ChatGPT: Overview action hub redesign
 
 - `public/index.html`: unify planning modules into one actionable hub with an emphasized first recommendation, colored day counters and concise target/exam score explanations. Keep top three by default, explicit completed-course summary and smaller GPA/alerts tiles; remove duplicated export action (calendar retains export). Differentiate exam urgency by time and score pressure; hide finished/fully graded courses from study recommendations. Thai and English.
