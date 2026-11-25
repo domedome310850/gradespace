@@ -1,3 +1,8 @@
+## 2026-11-25 — Claude (claude.ai): AI assistant button, Ctrl/⌘K search, “what’s new” card
+
+- `public/index.html`: topbar gets a search box (Ctrl+K / ⌘K) and a “ผู้ช่วย AI / AI assistant” button (icon-only under 900px). New modals `assistant` (one place for screenshot scan, paste from MCV, quick score — reuses the existing `scan`/`paste`/`quick` flows; voice/chat marked “coming soon”) and `cmd` (search pages, actions and courses, arrow keys + Enter). Dismissible “what’s new” card on the overview (localStorage `gradespace.whatsnew` = `2026-11-ai-cmdk`). New icons `search`, `spark`; CSS before `.thumb-badge`; all strings in TH and EN. No data, backend or login changes. GPA term/GPAX tiles were already side by side, so unchanged.
+- `tests/smoke.mjs`: checks the card, the assistant popup (3 actions, Escape closes), Ctrl+K → course jump, and dismissing the card. Local run: planning 40 passed; smoke TH/EN × 390/1280/1800 px, 15 pages each, no errors or overflow.
+
 ## 2026-11-25 — Claude (claude.ai): GradeSpace Connect plan (docs only)
 
 - `docs/grade-space-connect-roadmap.md`: feasibility of ChatGPT Apps SDK / Claude connectors / MCP Apps (checked against official docs 2026-11-25), PRD, journey, architecture, security, cost comparison, CONNECT-01…18 roadmap, submission checklist, testing strategy, open questions (Claude Free-plan connector access and directory eligibility conflict between official pages).

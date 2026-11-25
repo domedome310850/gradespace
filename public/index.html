@@ -833,6 +833,21 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .dashboard-summary .metric .m-value { font-size: 22px; }
   .dashboard-summary .metric .m-label { font-size: 11px; }
 }
+/* AI assistant entry, command menu (Ctrl/⌘K) and what's-new card (2026-11-25). */
+.cmdk{display:flex;align-items:center;gap:8px;height:38px;min-width:240px;padding:0 8px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font-size:13.5px;cursor:pointer;text-align:left}
+.cmdk kbd{margin-left:auto;font:600 11px var(--font);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px;color:var(--muted)}
+.ai-btn{color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+@media(max-width:900px){.cmdk{min-width:0;width:38px;flex:0 0 38px;padding:0;justify-content:center}.cmdk .cmdk-l,.cmdk kbd{display:none}.topbar .ai-btn .lbl-l{display:none}.topbar .ai-btn{flex:0 0 38px;width:38px;padding:0;justify-content:center}}
+.ai-actions{display:grid;gap:8px;margin-top:12px}.ai-action{display:flex;gap:12px;align-items:center;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-align:left;cursor:pointer}
+.ai-action:hover{background:var(--surface-2)}.ai-action:disabled{opacity:.55;cursor:default}.ai-action>.ic{color:var(--accent-text);flex:none}.ai-action b{display:block;font-weight:650}.ai-action span{font-size:13px;color:var(--muted)}
+.cmd-input{width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface)}
+.cmd-list{display:grid;gap:2px;margin-top:10px;max-height:min(55vh,420px);overflow:auto}.cmd-group{font-size:11.5px;font-weight:650;color:var(--muted);margin:8px 6px 2px}
+.cmd-item{display:flex;gap:10px;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:9px;background:none;text-align:left;cursor:pointer;color:var(--ink)}
+.cmd-item[aria-selected="true"],.cmd-item:hover{background:var(--accent-soft);color:var(--accent-text)}.cmd-item small{margin-left:auto;color:var(--muted);font-size:12px}
+.whats-new{margin:12px 0;border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}.whats-new-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.whats-new-item{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:11px;background:var(--surface-2);min-width:0}.whats-new-item>.ic{color:var(--accent-text);flex:none}
+.whats-new-item div{flex:1;min-width:0}.whats-new-item b{display:block;font-size:13.5px}.whats-new-item span{font-size:12px;color:var(--muted)}
+@media(max-width:650px){.whats-new-grid{grid-template-columns:1fr}}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -2618,6 +2633,19 @@ var SharedCatalog = (function () {
 
 var I18N = {
 en: {
+  'ai.btn': 'AI assistant', 'ai.title': 'GradeSpace AI',
+  'ai.intro': 'Send score screenshots, paste from MyCourseVille or type a score. You always review the list before anything is saved.',
+  'ai.scanT': 'Scan screenshots', 'ai.scanP': 'Read courses and scores from several images at once',
+  'ai.pasteT': 'Paste from MyCourseVille', 'ai.pasteP': 'Copy the score table, paste it and check each row',
+  'ai.quickT': 'Quick score entry', 'ai.quickP': 'Type one score at a time',
+  'ai.noScan': 'Screenshot scanning needs a signed-in account.', 'ai.noCourse': 'Add a course first, then you can paste scores into it.',
+  'ai.soon': 'Coming next: speak your scores and chat with the assistant.',
+  'cmd.btn': 'Search courses, pages, actions…', 'cmd.title': 'Search', 'cmd.ph': 'Try “accounting”, “scan”, “GPA”',
+  'cmd.none': 'No results', 'cmd.hint': 'Press Ctrl+K (⌘K on Mac) on any page', 'cmd.gPages': 'Pages', 'cmd.gActions': 'Actions', 'cmd.gCourses': 'Courses',
+  'cmd.theme': 'Toggle light/dark mode', 'cmd.lang': 'Switch language (TH/EN)',
+  'new.title': 'What’s new in GradeSpace', 'new.ok': 'Got it',
+  'new.aiT': 'AI assistant in the top bar', 'new.aiP': 'Scan, paste or type scores from one place', 'new.aiBtn': 'Open',
+  'new.cmdT': 'Find anything with Ctrl+K', 'new.cmdP': 'Courses, pages and actions in one search box', 'new.cmdBtn': 'Try it',
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -3046,6 +3074,19 @@ en: {
   'onb4Note': 'Anything not graded yet is counted as still to come, never as zero.', 'goToCourse': 'Go to my course'
 },
 th: {
+  'ai.btn': 'ผู้ช่วย AI', 'ai.title': 'GradeSpace AI',
+  'ai.intro': 'ส่งภาพหน้าจอคะแนน วางคะแนนจาก MyCourseVille หรือพิมพ์คะแนนได้เลย ระบบจะให้คุณตรวจรายการก่อนบันทึกเสมอ',
+  'ai.scanT': 'สแกนภาพหน้าจอ', 'ai.scanP': 'อ่านวิชาและคะแนนจากหลายภาพพร้อมกัน',
+  'ai.pasteT': 'วางคะแนนจาก MyCourseVille', 'ai.pasteP': 'คัดลอกตารางคะแนนมาวาง แล้วตรวจทีละแถว',
+  'ai.quickT': 'กรอกคะแนนด่วน', 'ai.quickP': 'พิมพ์คะแนนทีละรายการ',
+  'ai.noScan': 'การสแกนภาพต้องเข้าสู่ระบบด้วยบัญชีก่อน', 'ai.noCourse': 'เพิ่มวิชาก่อน แล้วจึงวางคะแนนลงในวิชานั้นได้',
+  'ai.soon': 'กำลังพัฒนา: พูดบอกคะแนนและแชทกับผู้ช่วย',
+  'cmd.btn': 'ค้นหาวิชา หน้า หรือคำสั่ง…', 'cmd.title': 'ค้นหา', 'cmd.ph': 'ลองพิมพ์ “บัญชี”, “สแกน”, “GPA”',
+  'cmd.none': 'ไม่พบ', 'cmd.hint': 'กด Ctrl+K (⌘K บน Mac) ได้ทุกหน้า', 'cmd.gPages': 'หน้า', 'cmd.gActions': 'คำสั่ง', 'cmd.gCourses': 'วิชา',
+  'cmd.theme': 'สลับโหมดสว่าง/มืด', 'cmd.lang': 'สลับภาษา (TH/EN)',
+  'new.title': 'มีอะไรใหม่ใน GradeSpace', 'new.ok': 'รับทราบ',
+  'new.aiT': 'ปุ่มผู้ช่วย AI บนหัวเว็บ', 'new.aiP': 'สแกน วาง หรือพิมพ์คะแนนได้จากที่เดียว', 'new.aiBtn': 'เปิดดู',
+  'new.cmdT': 'ค้นหาทุกอย่างด้วย Ctrl+K', 'new.cmdP': 'วิชา หน้า และคำสั่งในช่องค้นหาเดียว', 'new.cmdBtn': 'ลองค้นหา',
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -3671,6 +3712,8 @@ var ICONS = {
   users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
   user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
   zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
   cap: '<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
   clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
   flag: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/>',
@@ -5697,6 +5740,7 @@ function Dashboard(p) {
         <button className="btn primary" onClick=${function () { openModal('quick', {}); }}><${Icon} n="edit" /><span className="lbl-l">${t('quickScore')}</span><span className="lbl-s">${t('quickScoreShort')}</span></button>
       </div>
     </div>
+    <${WhatsNew} />
     <div className=${"metrics dashboard-summary" + (showNextTerm(state,cur) ? " has-plan" : "")}>
       <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).gpaCount,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
         sub=${semC.gpa == null ? (semE.gpa != null ? t('gpa.estOnly') : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length }))
@@ -7633,11 +7677,68 @@ function PlanModal(p) {
     <div className="hint">${t(plan && plan.term === 1 && plan.ay === '2569' ? 'plan.sourceFall' : 'plan.source')}</div>
   <//>`;
 }
+function AssistantModal(p) {
+  var cur = S.state && curSemester(S.state), hasCourse = S.state && S.state.courses.some(function (c) { return !c.finalGrade; });
+  function go(type, props) { closeModal(); openModal(type, props); }
+  var firstOpen = cur && S.state.courses.find(function (c) { return c.semesterId === cur.id && !c.finalGrade; });
+  return html`<${Modal} title=${t('ai.title')} onClose=${closeModal}>
+    <p style=${{ margin: 0 }} className="muted">${t('ai.intro')}</p>
+    <div className="ai-actions">
+      <button className="ai-action" disabled=${!canScan()} onClick=${function () { go('scan', { semesterId: cur && cur.id }); }}><${Icon} n="zap" /><div><b>${t('ai.scanT')}</b><span>${canScan() ? t('ai.scanP') : t('ai.noScan')}</span></div></button>
+      <button className="ai-action" disabled=${!hasCourse} onClick=${function () { go('paste', { courseId: firstOpen ? firstOpen.id : S.state.courses.find(function (c) { return !c.finalGrade; }).id }); }}><${Icon} n="clipboard" /><div><b>${t('ai.pasteT')}</b><span>${hasCourse ? t('ai.pasteP') : t('ai.noCourse')}</span></div></button>
+      <button className="ai-action" onClick=${function () { go('quick', {}); }}><${Icon} n="edit" /><div><b>${t('ai.quickT')}</b><span>${t('ai.quickP')}</span></div></button>
+    </div>
+    <p className="tiny muted" style=${{ marginBottom: 0 }}>${t('ai.soon')}</p><//>`;
+}
+function commandItems(state) {
+  var cur = curSemester(state), isDark = state.settings.theme === 'dark' || (state.settings.theme !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  var items = NAV.map(function (n) { return { g: 'cmd.gPages', icon: n.icon, label: t('nav.' + (n.key || n.id)), run: function () { location.hash = n.id; } }; });
+  items = items.concat([
+    { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), run: function () { openModal('assistant', {}); } },
+    { g: 'cmd.gActions', icon: 'plus', label: t('addCourse'), run: function () { openModal('course', { semesterId: cur && cur.id }); } },
+    { g: 'cmd.gActions', icon: 'edit', label: t('quickScore'), run: function () { openModal('quick', {}); } },
+    canScan() && { g: 'cmd.gActions', icon: 'zap', label: t('scan.btn'), run: function () { openModal('scan', { semesterId: cur && cur.id }); } },
+    { g: 'cmd.gActions', icon: isDark ? 'sun' : 'moon', label: t('cmd.theme'), run: function () { update(function (d) { d.settings.theme = isDark ? 'light' : 'dark'; }); } },
+    { g: 'cmd.gActions', icon: 'info', label: t('cmd.lang'), run: function () { update(function (d) { d.settings.lang = LANG === 'th' ? 'en' : 'th'; }); } }
+  ].filter(Boolean));
+  state.courses.forEach(function (c) { items.push({ g: 'cmd.gCourses', icon: 'book', label: courseDisplayTitle(c), meta: c.code || '', run: function () { location.hash = 'course-' + c.id; } }); });
+  return items;
+}
+function CommandModal(p) {
+  var state = useApp(), qs = useState(''), q = qs[0], setQ = qs[1], ss = useState(0), sel = ss[0], setSel = ss[1];
+  var norm = function (x) { return String(x || '').toLowerCase(); };
+  var list = commandItems(state).filter(function (x) { return !q || norm(x.label + ' ' + (x.meta || '')).indexOf(norm(q).trim()) >= 0; }).slice(0, 30);
+  function run(x) { if (!x) return; closeModal(); x.run(); }
+  var lastG = null;
+  return html`<${Modal} title=${t('cmd.title')} onClose=${closeModal}>
+    <input className="cmd-input" autoFocus=${true} value=${q} placeholder=${t('cmd.ph')} aria-label=${t('cmd.title')}
+      onChange=${function (e) { setQ(e.target.value); setSel(0); }}
+      onKeyDown=${function (e) { if (e.key === 'ArrowDown') { e.preventDefault(); setSel(Math.min(sel + 1, list.length - 1)); } else if (e.key === 'ArrowUp') { e.preventDefault(); setSel(Math.max(sel - 1, 0)); } else if (e.key === 'Enter') { e.preventDefault(); run(list[sel]); } }} />
+    <div className="cmd-list" role="listbox" aria-label=${t('cmd.title')}>
+      ${list.length ? list.map(function (x, i) {
+        var head = x.g !== lastG ? html`<div className="cmd-group" key=${'g' + i}>${t(x.g)}</div>` : null; lastG = x.g;
+        return [head, html`<button key=${i} className="cmd-item" role="option" aria-selected=${i === sel} onMouseEnter=${function () { setSel(i); }} onClick=${function () { run(x); }}><${Icon} n=${x.icon} s=${16} />${x.label}${x.meta ? html`<small>${x.meta}</small>` : null}</button>`];
+      }) : html`<p className="muted small">${t('cmd.none')}</p>`}
+    </div>
+    <p className="tiny muted" style=${{ marginBottom: 0 }}>${t('cmd.hint')}</p><//>`;
+}
+var WHATS_NEW_KEY = 'gradespace.whatsnew', WHATS_NEW_VERSION = '2026-11-ai-cmdk';
+function WhatsNew() {
+  var seen = useState(function () { try { return localStorage.getItem(WHATS_NEW_KEY) === WHATS_NEW_VERSION; } catch (e) { return true; } }), hidden = seen[0], setHidden = seen[1];
+  if (hidden) return null;
+  function dismiss() { try { localStorage.setItem(WHATS_NEW_KEY, WHATS_NEW_VERSION); } catch (e) { /* ignore */ } setHidden(true); }
+  return html`<section className="card pad whats-new" aria-labelledby="whats-new-h">
+    <div className="row between"><h2 id="whats-new-h" style=${{ fontSize: 16 }}>${t('new.title')}</h2><button className="btn ghost sm" onClick=${dismiss}>${t('new.ok')}</button></div>
+    <div className="whats-new-grid">
+      <div className="whats-new-item"><${Icon} n="spark" /><div><b>${t('new.aiT')}</b><span>${t('new.aiP')}</span></div><button className="btn sm" onClick=${function () { openModal('assistant', {}); }}>${t('new.aiBtn')}</button></div>
+      <div className="whats-new-item"><${Icon} n="search" /><div><b>${t('new.cmdT')}</b><span>${t('new.cmdP')}</span></div><button className="btn sm" onClick=${function () { openModal('cmd', {}); }}>${t('new.cmdBtn')}</button></div>
+    </div></section>`;
+}
 function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal }[m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 
@@ -7892,6 +7993,11 @@ function App() {
     if (state.settings.theme === 'light' || state.settings.theme === 'dark') el.setAttribute('data-theme', state.settings.theme); else el.removeAttribute('data-theme');
     document.title = 'GradeSpace – ' + t('taglineShort');
   });
+  useEffect(function () {
+    var k = function (e) { if ((e.metaKey || e.ctrlKey) && !e.altKey && String(e.key).toLowerCase() === 'k') { e.preventDefault(); openModal('cmd', {}); } };
+    document.addEventListener('keydown', k);
+    return function () { document.removeEventListener('keydown', k); };
+  }, []);
   var isDark = state.settings.theme === 'dark' || (state.settings.theme !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   var active = route.page === 'course' ? 'courses' : route.page;
   var page;
@@ -7914,7 +8020,9 @@ function App() {
     <div className="main">
       <header className="topbar">
         <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div></a>
+        <button className="cmdk" onClick=${function () { openModal('cmd', {}); }} aria-label=${t('cmd.btn')} title=${t('cmd.hint')}><${Icon} n="search" s=${16} /><span className="cmdk-l">${t('cmd.btn')}</span><kbd>${/Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘K' : 'Ctrl K'}</kbd></button>
         <div className="topbar-spacer"></div>
+        <button className="btn sm ai-btn" onClick=${function () { openModal('assistant', {}); }} aria-label=${t('ai.btn')}><${Icon} n="spark" s=${16} /><span className="lbl-l">${t('ai.btn')}</span></button>
         <${SaveState} />
         <${Seg} label=${t('language')} value=${LANG} onChange=${function (v) { update(function (d) { d.settings.lang = v; }); }} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} />
         <button className="btn ghost icon" aria-label=${isDark ? t('toLight') : t('toDark')} title=${isDark ? t('toLight') : t('toDark')} onClick=${function () { update(function (d) { d.settings.theme = isDark ? 'light' : 'dark'; }); }}><${Icon} n=${isDark ? 'sun' : 'moon'} /></button>
