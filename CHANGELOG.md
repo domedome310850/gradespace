@@ -3,6 +3,7 @@
 - `docs/grade-space-connect-roadmap.md`: feasibility of ChatGPT Apps SDK / Claude connectors / MCP Apps (checked against official docs 2026-11-25), PRD, journey, architecture, security, cost comparison, CONNECT-01…18 roadmap, submission checklist, testing strategy, open questions (Claude Free-plan connector access and directory eligibility conflict between official pages).
 - `docs/integrations/universal-import-schema.json`: Universal Import JSON Schema v1 draft (null ≠ 0, stated-only weights, total-row flag, source refs); example and negative cases validated with Ajv 2020.
 - `docs/integrations/mcp-tools.md`: Read / Calculate / Prepare / Confirm tool spec and MCP Apps UI resources.
+- `docs/prototype/gradespace-v2-prototype.html`: standalone clickable prototype (20 screens, CU/CBS/TU themes, TH/EN, light/dark, simulated voice flow, bulk review, Connected AI). Built on the production stylesheet from `public/index.html` (ee506bb) and the original 8-item menu; new features live in buttons/popups, a ⌘K command menu and a dismissible “what’s new” card. Sample data only. Playwright: 20 routes × TH/EN × light/dark × 360/1280 px, no errors or overflow.
 - Status Planned / Deferred Implementation. No runtime, database, deployment or authentication changes.
 
 ## 2026-11-24 — ChatGPT: Overview action hub redesign
