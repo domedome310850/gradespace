@@ -16,7 +16,7 @@ const LIBS = {
   'htm.umd': resolve(here, 'node_modules/htm/dist/htm.umd.js'),
 };
 // Stand-in for supabase-js: gs_load returns the fixture, every other call succeeds with nothing.
-const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{},functions:{},rpc:async(fn,args)=>{
+const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{},functions:{},rpc:async(fn,args)=>{(window.__rpcs=window.__rpcs||[]).push(fn);
   if(fn==='gs_load')return {data:[{data:window.__D,client_updated_at:Date.now()}],error:null};
   if(fn==='gs_exam_device'){
     if(args.p_email!=='test@example.com'||!(/^[0-9a-f]{64}$/).test(args.p_device))throw Error('invalid device scope');
@@ -54,13 +54,36 @@ async function run(browser, lang, width) {
   if(await page.locator('.side .nav-item').first().getAttribute('href')!=='#dashboard') errors.push('overview is not first menu');
   if(await page.locator('.side .nav-item[aria-current="page"]').getAttribute('href')!=='#dashboard') errors.push('overview is not default');
   if(await page.locator('#exam-student-id').count()) errors.push('student ID form leaked into dashboard');
-  if(lang==='en'){await page.locator('button',{hasText:'EN'}).first().click();await page.waitForTimeout(300);}
-  // AI assistant entry, command menu and what's-new card (2026-11-25).
-  if(!(await page.locator('.whats-new').isVisible())) errors.push("what's-new card not shown on first visit");
-  await page.locator('.topbar .ai-btn').click();
+  // Top bar: only logo + account menu; language/theme live inside the menu (2026-11-25).
+  if(await page.locator('.topbar .seg').count()) errors.push('language switch should be inside the account menu');
+  if(width<=900){
+    // Phones: YouTube-style bottom bar (5 tabs); language/theme live under the “You” tab.
+    if(await page.locator('.bottomnav a').count()!==5) errors.push('bottom bar should have 5 tabs');
+    await page.locator('.bottomnav a[href="#me"]').click();
+    await page.locator('.me-page').waitFor();
+    if(lang==='en'){await page.locator('.me-page button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
+    if(await page.locator('.me-page a.me-row').count()<4) errors.push('You page should link years, feedback, help, settings');
+    await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
+  } else {
+    await page.locator('.topbar .acct-btn').click();
+    if(!(await page.locator('.acct-menu').isVisible())) errors.push('account menu did not open');
+    if(lang==='en'){await page.locator('.acct-menu button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
+    await page.keyboard.press('Escape');
+    if(await page.locator('.acct-menu').count()) errors.push('account menu did not close on Escape');
+    if(await page.locator('.side .nav-group').count()!==2) errors.push('sidebar should have 2 labelled groups');
+  }
+  if(await page.evaluate(()=>{const s=document.querySelectorAll('.brand-mark linearGradient');return new Set([...s].map(x=>x.id)).size!==s.length;})) errors.push('logo gradient ids are not unique');
+  // Floating AI button with one-time intro bubble, and search beside the semester picker.
+  if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('AI intro bubble not shown on first visit');
+  await page.locator('.ai-fab-intro .btn.primary').click();
   if(await page.locator('.ai-action').count()!==3) errors.push('assistant popup should offer 3 actions');
   await page.keyboard.press('Escape');
   if(await page.locator('.ai-action').count()) errors.push('assistant popup did not close on Escape');
+  if(await page.locator('.ai-fab-intro').count()) errors.push('AI intro bubble should not return after use');
+  if(!(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
+  await page.locator('.topbar .top-search').click();
+  await page.locator('.cmd-input').waitFor();
+  await page.keyboard.press('Escape');
   await page.keyboard.press('Control+k');
   await page.locator('.cmd-input').waitFor();
   await page.locator('.cmd-input').fill('2900111');
@@ -69,9 +92,9 @@ async function run(browser, lang, width) {
   await page.waitForTimeout(200);
   if(!(await page.evaluate(()=>location.hash)).startsWith('#course-')) errors.push('command menu Enter did not open the course');
   await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(200);
-  await page.locator('.whats-new .btn.ghost').click();
-  if(await page.locator('.whats-new').count()) errors.push("what's-new card did not dismiss");
-  if(await page.evaluate(()=>localStorage.getItem('gradespace.whatsnew'))!=='2026-11-ai-cmdk') errors.push("what's-new dismissal not remembered");
+  await page.keyboard.press('Control+k'); await page.locator('.cmd-input').fill(lang==='th'?'GPA':'สรุป');
+  if(await page.locator('.cmd-item').count()<1) errors.push('command search should match both languages');
+  await page.keyboard.press('Escape');
   const lookup=await page.evaluate(()=>window.__examRequest);
   if(lookup.p_year!=='2569'||lookup.p_term!=='s1'||lookup.p_round!=='fin'||!lookup.p_courses.some(c=>c.code==='2900111'&&c.sec==='4')) errors.push('incorrect exam lookup payload');
   const upcoming=page.locator('.dashboard-upcoming-row').filter({hasText:'TEST-ROOM-A'});
@@ -222,7 +245,7 @@ async function run(browser, lang, width) {
   await reverse.locator('input').fill('4.1');
   if(await reverse.getByText(/^GPA [0-9]/).count())errors.push('invalid GPA target has scenarios');
   const ids = await page.evaluate(() => GradeSpace.S.state.courses.map((c) => c.id));
-  const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', ...ids.map((i) => 'course-' + i)];
+  const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', 'me', ...ids.map((i) => 'course-' + i)];
   for (const h of hashes) {
     await page.evaluate((x) => { location.hash = x; }, h);
     await page.waitForTimeout(250);
@@ -234,9 +257,68 @@ async function run(browser, lang, width) {
   return errors.length + overflow.length;
 }
 
+// Thammasat mode (2026-11-26): pick TU on the sign-in screen; Chula-only features stay off.
+async function runTU(browser, lang, width) {
+  const errors = [], overflow = [];
+  const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await ctx.newPage();
+  await page.addInitScript(([d]) => { window.__D = d; localStorage.removeItem('gradespace.email'); localStorage.removeItem('gradespace.mode'); }, [state]);
+  await page.route('**/*', (route) => {
+    const u = route.request().url();
+    if (u.startsWith('file:') || u.startsWith('data:') || u.startsWith('blob:')) return route.continue();
+    for (const [k, f] of Object.entries(LIBS)) if (u.includes(k)) return route.fulfill({ path: f, contentType: 'application/javascript' });
+    if (u.includes('supabase.js')) return route.fulfill({ body: FAKE_SUPABASE, contentType: 'application/javascript' });
+    if (u.includes('gs-scan')) return route.fulfill({ body: '{"ready":true}', contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' } });
+    return route.abort();
+  });
+  page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
+  page.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('Failed to load resource')) errors.push('console: ' + m.text()); });
+  await page.clock.setFixedTime(new Date('2026-11-22T07:00:00Z'));
+  await page.goto(PAGE);
+  if(lang==='en'){await page.locator('.auth-card button',{hasText:'EN'}).first().click();}
+  await page.locator('.auth-card button',{hasText:lang==='th'?'ธรรมศาสตร์':'Thammasat'}).click();
+  if(await page.locator('#au-student').count()) errors.push('TU sign-in should not ask for a Chula student ID');
+  await page.locator('#au-e').fill('tu@example.com');
+  await page.locator('#au-e').press('Enter');
+  await page.locator('.dashboard-exam-panel').first().waitFor();
+  await page.waitForTimeout(400);
+  if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
+  if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
+  const rpcs=await page.evaluate(()=>window.__rpcs||[]);
+  for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
+  if(!(await page.getByTestId('tu-exam-note').isVisible())) errors.push('TU exam note missing');
+  if(await page.locator('.sp-card').count()) errors.push('CBS study plan card shown for TU');
+  // GenEd: TU list, add TU101 through the course form.
+  await page.evaluate(()=>{location.hash='years';}); await page.waitForTimeout(300);
+  await page.getByTestId('tu-gened-open').click();
+  await page.locator('.tuge-row').first().waitFor();
+  if(await page.locator('.tuge-row').count()<50) errors.push('TU GenEd list incomplete');
+  await page.locator('.tuge-row').filter({hasText:'TU101'}).getByRole('button').click();
+  await page.waitForTimeout(300);
+  await page.locator('.modal .btn.primary').last().click();
+  await page.waitForTimeout(300);
+  const added=await page.evaluate(()=>GradeSpace.S.state.courses.find(c=>c.code==='TU101'));
+  if(!added||added.credits!==3||added.kind!=='gened') errors.push('TU101 not added as 3-credit GenEd: '+JSON.stringify(added&&{c:added.credits,k:added.kind}));
+  // Course search suggests Thammasat codes.
+  await page.evaluate(()=>{location.hash='courses';}); await page.waitForTimeout(300);
+  const hashes = ['dashboard', 'years', 'courses', 'gpa', 'me', 'preferences'];
+  for (const h of hashes) {
+    await page.evaluate((x) => { location.hash = x; }, h);
+    await page.waitForTimeout(250);
+    const extra = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (extra > 1) overflow.push(h + ' +' + extra + 'px');
+  }
+  const sugg=await page.evaluate(()=>GradeSpace.catalogSearch?GradeSpace.catalogSearch('AC201').length:-1);
+  if(sugg===0) errors.push('TU catalog search found nothing for AC201');
+  await ctx.close();
+  console.log(`TU ${lang} ${width}px: ${hashes.length} pages, overflow ${overflow.length ? overflow.join(', ') : 'none'}, errors ${errors.length ? errors.join(' | ') : 'none'}`);
+  return errors.length + overflow.length;
+}
+
 const browser = await chromium.launch();
 let bad = 0;
 for (const lang of ['th', 'en']) for (const w of [390, 1280, 1800]) bad += await run(browser, lang, w);
+for (const lang of ['th', 'en']) for (const w of [390, 1280]) bad += await runTU(browser, lang, w);
 await browser.close();
 if (bad) { console.error('FAILED'); process.exit(1); }
 console.log('OK');
