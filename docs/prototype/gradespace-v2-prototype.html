@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GradeSpace Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Inter:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F7F7FB; --surface: #FFFFFF; --surface-2: #F2F1FA; --surface-3: #E9E7F7;
+  --line: #E5E3F0; --line-strong: #D2CFE5;
+  --ink: #1D1B36; --ink-2: #47456A; --muted: #75739A;
+  --accent: #4F46E5; --accent-hover: #4338CA; --accent-ink: #FFFFFF; --accent-soft: #ECEBFF; --accent-text: #4338CA;
+  --lav: #A5A0F5; --sky: #4C9BEA; --sky-soft: #E2EFFD;
+  --earned: #4F46E5; --lost: #DCD9EE; --pending-a: #CFE3FB; --pending-b: #E6F0FD;
+  --ok: #157A52; --ok-soft: #E2F4EB; --warn: #9A5B00; --warn-soft: #FFF2DA; --bad: #BF3434; --bad-soft: #FCE7E7;
+  --shadow: 0 1px 2px rgba(29,27,54,.05), 0 6px 18px -8px rgba(29,27,54,.10);
+  --shadow-lg: 0 20px 60px -20px rgba(29,27,54,.35);
+  --r-xl: 20px; --r-lg: 16px; --r-md: 11px; --r-sm: 8px;
+  --font: "IBM Plex Sans Thai", "Noto Sans Thai", "Leelawadee UI", "Thonburi", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --c-indigo: #5B55E8; --c-blue: #3B8BEB; --c-teal: #14A39A; --c-green: #3E9B4F; --c-amber: #D99118; --c-rose: #E0567A; --c-violet: #9558E0; --c-slate: #6B7393;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    color-scheme: dark;
+    --bg: #0F1115; --surface: #171A20; --surface-2: #1E2229; --surface-3: #282D36;
+    --line: #2A2F38; --line-strong: #3A404B;
+    --ink: #E8EBF0; --ink-2: #C3C8D1; --muted: #8D95A3;
+    --accent: #78A9F5; --accent-hover: #93BBF8; --accent-ink: #0C1424; --accent-soft: #1A2638; --accent-text: #9CC2FA;
+    --lav: #5D7EAE; --sky: #6CC6D4; --sky-soft: #142D33;
+    --earned: #78A9F5; --lost: #343A45; --pending-a: #233449; --pending-b: #1A2636;
+    --ok: #5CC795; --ok-soft: #142A20; --warn: #E5B055; --warn-soft: #2D2413; --bad: #EF8080; --bad-soft: #331B1D;
+    --c-indigo: #7E8CF0; --c-blue: #5E9EF0; --c-teal: #3EBFB2; --c-green: #63B86F; --c-amber: #E0A43A; --c-rose: #E87595; --c-violet: #A983E8; --c-slate: #8B95AE;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
+    --shadow-lg: 0 24px 70px -20px rgba(0,0,0,.75);
+  }
+}
+:root[data-mode="dark"] {
+  color-scheme: dark;
+  --bg: #0F1115; --surface: #171A20; --surface-2: #1E2229; --surface-3: #282D36;
+  --line: #2A2F38; --line-strong: #3A404B;
+  --ink: #E8EBF0; --ink-2: #C3C8D1; --muted: #8D95A3;
+  --accent: #78A9F5; --accent-hover: #93BBF8; --accent-ink: #0C1424; --accent-soft: #1A2638; --accent-text: #9CC2FA;
+  --lav: #5D7EAE; --sky: #6CC6D4; --sky-soft: #142D33;
+  --earned: #78A9F5; --lost: #343A45; --pending-a: #233449; --pending-b: #1A2636;
+  --ok: #5CC795; --ok-soft: #142A20; --warn: #E5B055; --warn-soft: #2D2413; --bad: #EF8080; --bad-soft: #331B1D;
+  --c-indigo: #7E8CF0; --c-blue: #5E9EF0; --c-teal: #3EBFB2; --c-green: #63B86F; --c-amber: #E0A43A; --c-rose: #E87595; --c-violet: #A983E8; --c-slate: #8B95AE;
+  --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
+  --shadow-lg: 0 24px 70px -20px rgba(0,0,0,.75);
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; min-height: 100%; background: var(--bg); color: var(--ink);
+  font-family: var(--font); font-size: 15px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  overflow-wrap: break-word; line-break: auto;
+}
+html[lang="th"] body { line-height: 1.7; }
+button, input, select, textarea { font: inherit; color: inherit; }
+img, svg { max-width: 100%; }
+.num { font-variant-numeric: tabular-nums; }
+a { color: var(--accent-text); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* ---------- shell ---------- */
+/* Help & Q&A: compact, responsive and consistent with existing cards. */
+.help-h2{font-size:18px;margin:0 0 12px}.help-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.help-step{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);min-width:0}
+.help-step span{flex:0 0 29px;width:29px;height:29px;display:grid;place-items:center;border-radius:9px;background:var(--accent-soft);color:var(--accent-text);font-weight:750}
+.help-step p{margin:0;font-size:13px;min-width:0}.help-faq{display:grid;gap:8px}.help-accordion{border:1px solid var(--line);border-radius:11px;padding:11px 14px}
+.help-accordion summary{font-weight:650;cursor:pointer}.help-accordion p{font-size:13px;color:var(--muted);margin:9px 0 0}
+.help-question-list{display:grid;gap:10px;margin-top:17px}.help-question{border:1px solid var(--line);border-radius:12px;padding:13px;display:grid;gap:7px;overflow-wrap:anywhere}
+.help-answer{padding:11px;background:var(--accent-soft);border-radius:9px}.help-answer p{white-space:pre-wrap;margin:5px 0 0;font-size:13px}
+@media(max-width:650px){.help-steps{grid-template-columns:1fr}}
+
+/* Keep topbar controls anchored when save/status translations change width. */
+.topbar .save-state { width:150px; min-width:150px; justify-content:flex-end; overflow:hidden; }
+.topbar .seg { flex:0 0 115px; width:115px; justify-content:center; }
+.topbar .seg button { flex:1; min-width:0; }
+.topbar > .btn.icon, .topbar > a.btn.icon { flex:0 0 38px; width:38px; }
+@media(max-width:900px){.topbar .save-state{width:18px;min-width:18px;justify-content:center}.topbar .seg{width:100px;flex-basis:100px}}
+
+.shell { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
+.side {
+  position: sticky; top: 0; height: 100vh; padding: 20px 14px; border-right: 1px solid var(--line);
+  background: var(--surface); display: flex; flex-direction: column; gap: 4px;
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 18px; text-decoration: none; color: var(--ink); }
+.brand-mark { width: 39px; height: 39px; border-radius: 13px; display: grid; place-items: center; flex: none; box-shadow: 0 4px 11px rgba(79,70,229,.19); overflow: hidden; }
+.brand-mark svg { width: 100%; height: 100%; display: block; }
+.brand-name { font-weight: 700; font-size: 19px; letter-spacing: -.045em; line-height: 1.12; white-space: nowrap; }
+.brand-name-accent { color: var(--accent-text); }
+.brand:hover .brand-mark { box-shadow: 0 6px 14px rgba(79,70,229,.24); }
+.auth-card .brand-mark { width: 44px; height: 44px; border-radius: 15px; }
+.auth-card .brand-name { font-size: 22px; }
+.brand-tag { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+.nav-item {
+  display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: 10px; color: var(--ink-2);
+  text-decoration: none; font-weight: 500; font-size: 14.5px; border: 0; background: none; text-align: left; cursor: pointer; width: 100%;
+}
+.nav-item:hover { background: var(--surface-2); color: var(--ink); }
+.nav-item[aria-current="page"] { background: var(--accent-soft); color: var(--accent-text); }
+.nav-item svg { flex: none; }
+.side-foot { margin-top: auto; padding: 12px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); }
+.main { min-width: 0; display: flex; flex-direction: column; }
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; align-items: center; gap: 10px;
+  padding: 12px 28px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid transparent;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.topbar .brand { display: none; padding: 0; }
+.topbar-spacer { flex: 1; }
+.save-state { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.save-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+.save-dot.busy { background: var(--warn); }
+.page { padding: 8px 28px 48px; max-width: 1160px; width: 100%; margin: 0 auto; }
+.bottomnav { display: none; }
+@media(max-width:900px){.bottomnav{grid-template-columns: repeat(7,minmax(48px,1fr)) !important;}}
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; }
+  .side { display: none; }
+  .topbar { padding: 10px 16px; }
+  .topbar .brand { display: flex; }
+  .topbar .brand-tag { display: none; }
+  .save-state .save-label { display: none; }
+  .page { padding: 4px 16px calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .bottomnav {
+    display: grid; grid-template-columns: repeat(6, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+  }
+  .bottomnav a {
+    display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10.5px; color: var(--muted);
+    text-decoration: none; padding: 4px 2px; border-radius: 10px; line-height: 1.25; text-align: center;
+  }
+  .bottomnav a[aria-current="page"] { color: var(--accent-text); }
+}
+
+/* ---------- primitives ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 8px 14px; border-radius: 10px;
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-weight: 500; font-size: 14px;
+  cursor: pointer; white-space: nowrap; transition: background .15s, border-color .15s, color .15s; line-height: 1.4; text-decoration: none;
+}
+.btn:hover { background: var(--surface-2); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--ink-2); }
+.btn.ghost:hover { background: var(--surface-2); color: var(--ink); }
+.btn.danger { color: var(--bad); }
+.btn.danger.solid { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn.sm { padding: 5px 10px; font-size: 13px; border-radius: 8px; }
+.btn.icon { padding: 7px; }
+.btn.icon.sm { padding: 5px; }
+.seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--surface-2); border-radius: 10px; border: 1px solid var(--line); }
+.seg button {
+  border: 0; background: transparent; padding: 4px 11px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  color: var(--muted); cursor: pointer; white-space: nowrap;
+}
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); }
+.card.pad { padding: 20px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  background: var(--surface-2); color: var(--ink-2); white-space: nowrap; line-height: 1.6;
+}
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.bad { background: var(--bad-soft); color: var(--bad); }
+.chip.accent { background: var(--accent-soft); color: var(--accent-text); }
+.chip.sky { background: var(--sky-soft); color: var(--sky); }
+.chip.outline { background: transparent; border: 1px dashed var(--line-strong); color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.tiny { font-size: 12px; }
+.row { display: flex; align-items: center; gap: 10px; }
+.row.wrap { flex-wrap: wrap; }
+.row.between { justify-content: space-between; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.grow { flex: 1; min-width: 0; }
+.hide-sm { }
+@media (max-width: 640px) { .hide-sm { display: none !important; } }
+
+h1, h2, h3, h4 { margin: 0; line-height: 1.3; letter-spacing: -0.01em; }
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 14px 0 22px; }
+.page-head h1 { font-size: 28px; font-weight: 700; }
+.page-head p { margin: 4px 0 0; color: var(--muted); }
+.section { margin-top: 30px; }
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.section-head h2 { font-size: 18px; font-weight: 650; }
+
+
+/* Dashboard 2026: compact vertical upcoming list beside a real date-driven exam calendar. */
+.dashboard-planning-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:10px;align-items:start}
+.dashboard-planning-mini{display:grid;gap:10px;min-width:0}
+.planning-card.card{padding:12px 14px;min-width:0;box-shadow:none}
+.planning-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px}
+.planning-head h2{font-size:14px;line-height:1.35;margin:0}
+.planning-mini .planning-head{margin-bottom:5px}
+.planning-value{font-size:22px;font-weight:750;line-height:1.25;display:flex;align-items:baseline;flex-wrap:wrap;gap:5px}
+.planning-value span{font-size:11px;color:var(--muted);font-weight:500}
+.planning-range{height:6px;background:var(--surface-3);border-radius:8px;position:relative;margin:7px 0;overflow:hidden}
+.planning-range>div{position:absolute;height:100%;border-radius:8px;background:var(--accent)}
+.planning-link{font-size:12px;font-weight:600;text-decoration:none}
+.planning-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.planning-actions .btn{font-size:11px;min-height:28px;padding:4px 7px;white-space:normal}
+.study-list{display:grid;gap:6px}
+.study-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px;border-radius:9px;border:1px solid var(--line);border-inline-start:3px solid var(--line-strong);color:var(--ink);text-decoration:none;min-width:0}
+.study-row:hover{outline:1px solid var(--accent)}
+.study-row.urgent{background:var(--bad-soft);border-inline-start-color:var(--bad)}
+.study-row.soon{background:var(--warn-soft);border-inline-start-color:var(--warn)}
+.study-row.normal{background:var(--surface-2);border-inline-start-color:var(--accent)}
+.study-row.done{background:var(--ok-soft);border-inline-start-color:var(--ok)}
+.study-row.review{background:var(--surface-2);border-inline-start-color:var(--warn)}
+.study-copy{min-width:0;flex:1;display:grid;gap:2px}
+.study-copy b{font-size:13px;line-height:1.3;overflow-wrap:anywhere}
+.study-copy>span,.study-empty,.study-finished{font-size:11px;line-height:1.4;color:var(--ink-2)}
+.study-badge{display:inline-block;flex:none;font-size:11px;font-weight:700;line-height:1.3;padding:4px 6px;border-radius:6px;white-space:normal;text-align:center}
+.study-badge.urgent{background:var(--bad);color:var(--surface)}
+.study-badge.soon,.study-badge.review{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.study-badge.done{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok)}
+.study-badge.normal{background:var(--accent-soft);color:var(--accent-text)}
+.study-finished{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:7px}
+.planning-more.btn{font-size:11px;min-height:28px;margin-top:5px;padding:3px 6px}
+.exam-status-panel{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px}
+.exam-status-title{display:grid;gap:2px}
+.exam-status-actions{display:flex;gap:10px;flex-wrap:wrap}
+.exam-status-item{display:flex;align-items:center;gap:6px;font-size:12px}
+@media(max-width:1050px){.dashboard-planning-grid{grid-template-columns:1fr}.dashboard-planning-mini{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.planning-card.card{padding:10px}.planning-head h2{font-size:13px}.planning-value{font-size:18px}.planning-actions .btn{padding:4px 5px}.study-row{padding:7px}.study-badge{max-width:38%}.dashboard-planning-grid,.dashboard-planning-mini{gap:8px}}
+.overview-hub.card{margin-top:12px;padding:14px;background:var(--surface);box-shadow:none;border-color:var(--line-strong)}
+.hub-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:9px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.hub-kicker>span:first-child{display:flex;align-items:center;gap:6px;color:var(--accent-text);font-size:12px;font-weight:750;letter-spacing:.035em}
+.overview-hub .dashboard-planning-grid{grid-template-columns:minmax(0,1fr) minmax(200px,.46fr);gap:12px}
+.overview-hub .dashboard-planning-mini{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;align-items:stretch}
+.focus-panel{min-width:0}
+.focus-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:7px}
+.focus-heading h2{font-size:16px;line-height:1.2;margin:0}
+.focus-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.focus-list{display:grid;gap:5px}
+.study-row.focus-row{--tone:var(--accent-text);--tone-bg:var(--accent-soft);display:grid;grid-template-columns:46px minmax(0,1fr) 13px;gap:9px;background:var(--surface-2);border:0;border-radius:8px;padding:7px 9px}
+.study-row.focus-row.urgent{--tone:var(--bad);--tone-bg:var(--bad-soft)}
+.study-row.focus-row.soon,.study-row.focus-row.review{--tone:var(--warn);--tone-bg:var(--warn-soft)}
+.study-row.focus-row.done{--tone:var(--ok);--tone-bg:var(--ok-soft)}
+.study-row.focus-row.featured{background:var(--tone-bg);box-shadow:inset 3px 0 var(--tone)}
+.focus-day{background:var(--tone-bg);color:var(--tone);border-radius:6px;min-height:41px;display:grid;place-content:center;text-align:center}
+.focus-day b{font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
+.focus-day small{font-size:10px;line-height:1.2;margin-top:3px}
+.focus-row.featured .focus-day{background:var(--tone);color:var(--surface)}
+.focus-row .study-copy{gap:1px}
+.focus-row .study-copy b{font-size:13px}
+.focus-row .study-copy .focus-action{color:var(--tone);font-weight:750;font-size:10px}
+.focus-arrow{color:var(--tone);font-size:21px;line-height:1}
+.focus-footer{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap;margin-top:5px}
+.focus-complete{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ok)}
+.focus-history{display:grid;gap:3px;font-size:11px;margin-top:6px}
+.hub-mini{background:var(--surface-2);border-radius:8px;min-width:0;padding:9px;display:flex;flex-direction:column;gap:5px;align-self:start}
+.hub-mini-label{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:11px;font-weight:600;color:var(--ink-2);line-height:1.25}
+.hub-mini-label>.ic{color:var(--accent-text)}
+.hub-mini-value{font-size:20px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1.2;white-space:nowrap;letter-spacing:-.04em}
+.hub-mini-value small{font-size:10px;font-weight:500;margin-left:4px;letter-spacing:0;color:var(--muted)}
+.hub-mini-action{font:inherit;font-size:11px;line-height:1.4;font-weight:650;color:var(--accent-text);padding:4px 0;background:none;border:0;text-align:left;text-decoration:none;cursor:pointer;min-height:25px;margin-top:auto}
+.hub-mini-action:hover{text-decoration:underline}
+.hub-status{font-size:10px;color:var(--muted);line-height:1.3;overflow-wrap:anywhere}
+@media(min-width:1051px){.overview-hub .dashboard-planning-mini{grid-template-columns:1fr;gap:7px}.hub-mini{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px 8px}.hub-mini-label{grid-column:1/-1}.hub-mini-action{text-align:right}.hub-status{grid-column:1/-1}}
+@media(max-width:1050px){.overview-hub .dashboard-planning-grid{grid-template-columns:1fr;gap:9px}}
+@media(max-width:640px){.overview-hub.card{padding:10px;margin-top:10px}.hub-mini{padding:8px;gap:4px}.hub-mini-value{font-size:18px}.focus-heading h2{font-size:15px}.study-row.focus-row{grid-template-columns:42px minmax(0,1fr) 10px;padding:6px;gap:6px}.focus-day{min-height:38px}.focus-row .study-copy b{font-size:12px}}
+.dashboard-exam-layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start; }
+.dashboard-exam-panel { min-width:0; }
+.dashboard-exam-panel .section-head { margin-bottom:12px; }
+.dashboard-upcoming-list { list-style:none;padding:0;margin:0; }
+.dashboard-upcoming-row { display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);min-width:0; }
+.dashboard-upcoming-row:first-child { padding-top:2px; }
+.dashboard-upcoming-row:last-child { border-bottom:0;padding-bottom:2px; }
+.dashboard-upcoming-row .date-pill { width:45px;padding:5px 2px;border-radius:11px; }
+.dashboard-upcoming-row .upcoming-info { flex:1;min-width:0; }
+.dashboard-upcoming-row .upcoming-course-title { font-size:13.5px;line-height:1.35;font-weight:680; }
+.dashboard-upcoming-row .upcoming-meta { margin-top:4px;gap:4px 7px; }
+.dashboard-upcoming-row .btn { flex:none;white-space:nowrap; }
+.dashboard-calendar-head { display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px; }
+.dashboard-calendar-heading { font-size:14px;font-weight:700; }
+.dashboard-calendar-controls { display:flex;align-items:center;gap:6px; }
+.dashboard-calendar-controls .btn { padding:4px 7px;min-width:28px; }
+.dashboard-cal-grid { display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px; }
+.dashboard-cal-weekday { font-size:11px;color:var(--muted);font-weight:650;text-align:center;padding:7px 0; }
+.dashboard-cal-cell { min-height:34px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--ink-2);font-size:12px;font-weight:550;position:relative; }
+button.dashboard-cal-cell { cursor:pointer; }
+.dashboard-cal-cell.has-exam { background:var(--accent-soft);color:var(--accent-text);font-weight:800; }
+.dashboard-cal-cell.has-exam::after { content:'';position:absolute;bottom:3px;left:calc(50% - 2px);width:4px;height:4px;border-radius:50%;background:var(--accent); }
+.dashboard-cal-cell.chosen { border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent); }
+.dashboard-cal-cell.today { border-color:var(--line-strong); }
+.dashboard-calendar-legend { font-size:12px;font-weight:650;color:var(--muted);margin:12px 0 4px; }
+.dashboard-cal-event { display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line);min-width:0; }
+.dashboard-cal-event .date-pill { width:39px;padding:4px 0;border-radius:8px; }
+.dashboard-cal-event .date-pill b { font-size:13px; }
+.dashboard-cal-event-main { min-width:0;flex:1; }
+.dashboard-cal-event-name { font-size:12.5px;font-weight:650;line-height:1.35;overflow-wrap:anywhere; }
+.dashboard-cal-event-type { font-size:11px;color:var(--muted);margin-top:2px; }
+.dashboard-calendar-note { margin-top:9px;font-size:11px;line-height:1.5;color:var(--muted); }
+@media (max-width: 1050px) { .dashboard-exam-layout { grid-template-columns:1fr; } }
+@media (max-width: 640px) { .dashboard-exam-layout { gap:12px; } .dashboard-upcoming-row { padding:10px 0;gap:9px; } .dashboard-upcoming-row .upcoming-course-title { font-size:13px; } .dashboard-exam-panel { padding:13px !important; } }
+
+/* ---------- forms ---------- */
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field > label, .label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.req { color: var(--bad); margin-left: 2px; }
+.input, .select, .textarea {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface);
+  font-size: 15px; transition: border-color .15s, box-shadow .15s; min-width: 0;
+}
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.input.err { border-color: var(--bad); box-shadow: 0 0 0 3px var(--bad-soft); }
+.textarea { min-height: 76px; resize: vertical; }
+.hint { font-size: 12.5px; color: var(--muted); }
+.error-text { font-size: 12.5px; color: var(--bad); font-weight: 500; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 560px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+.check { display: flex; align-items: flex-start; gap: 9px; font-size: 14px; cursor: pointer; }
+.check input { margin-top: 4px; accent-color: var(--accent); width: 16px; height: 16px; flex: none; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; outline-offset: 2px; }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
+.input-group { display: flex; align-items: stretch; }
+.input-group .input { border-radius: 10px 0 0 10px; }
+.input-group .addon { display: grid; place-items: center; padding: 0 12px; border: 1px solid var(--line-strong); border-left: 0; border-radius: 0 10px 10px 0; background: var(--surface-2); color: var(--muted); font-size: 14px; white-space: nowrap; }
+
+/* ---------- metrics ---------- */
+.metrics { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1180px) { .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+.metric { padding: 14px 16px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); min-width: 0; }
+.metric .m-label { font-size: 12.5px; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 5px; line-height: 1.35; }
+.metric .m-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.metric .m-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.metric.hero { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.metric.hero .m-label, .metric.hero .m-sub { color: color-mix(in srgb, var(--accent-ink) 78%, transparent); }
+
+/* ---------- grade bar (signature element) ---------- */
+.gbar { position: relative; }
+.gbar-track { position: relative; display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--surface-2); }
+.gbar.lg .gbar-track { height: 22px; border-radius: 8px; }
+.gbar-seg { height: 100%; transition: width .45s cubic-bezier(.2,.8,.2,1); }
+.gbar-seg.earned { background: var(--earned); }
+.gbar-seg.lost { background: var(--lost); }
+.gbar-seg.pending { background: repeating-linear-gradient(-45deg, var(--pending-a) 0 6px, var(--pending-b) 6px 12px); }
+.gbar-seg.unassigned { background: transparent; }
+.gbar-ticks { position: absolute; inset: 0; pointer-events: none; }
+.gbar-tick { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--ink); opacity: .55; border-radius: 2px; }
+.gbar-tick.target { opacity: 1; background: var(--ink); width: 2px; }
+.gbar.lg .gbar-tick { opacity: .28; top: 0; bottom: 0; width: 1px; }
+.gbar.lg .gbar-tick.target { opacity: 1; width: 2px; top: -5px; bottom: -5px; }
+.gbar-labels { position: relative; height: 18px; margin-top: 6px; font-size: 11.5px; color: var(--muted); }
+.gbar-labels span { position: absolute; transform: translateX(-50%); white-space: nowrap; font-weight: 600; }
+.gbar-labels span.target { color: var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend i.earned { background: var(--earned); }
+.legend i.lost { background: var(--lost); }
+.legend i.pending { background: repeating-linear-gradient(-45deg, var(--pending-a) 0 3px, var(--pending-b) 3px 6px); border: 1px solid var(--pending-a); }
+.legend i.unassigned { border: 1px dashed var(--line-strong); }
+
+/* ---------- course cards ---------- */
+.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .course-grid { grid-template-columns: 1fr; } }
+.ccard { position: relative; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+.ccard::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--cc, var(--accent)); }
+.ccard-top { display: flex; align-items: flex-start; gap: 12px; }
+.ccard-name { font-weight: 650; font-size: 16px; line-height: 1.35; }
+.ccard-meta { font-size: 12.5px; color: var(--muted); }
+.grade-badge {
+  flex: none; min-width: 52px; text-align: center; padding: 4px 8px 5px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--surface-2); line-height: 1.15;
+}
+.grade-badge b { display: block; font-size: 21px; font-weight: 700; letter-spacing: -0.02em; }
+.grade-badge small { display: block; font-size: 10.5px; color: var(--muted); font-weight: 600; margin-top: 2px; white-space: nowrap; }
+.grade-badge.confirmed { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+.grade-badge.confirmed small { color: var(--ok); }
+.grade-badge.calculated { background: var(--accent-soft); border-color: transparent; color: var(--accent-text); }
+.grade-badge.calculated small { color: var(--accent-text); }
+.grade-badge.estimated { border-style: dashed; border-color: var(--line-strong); background: transparent; }
+.grade-badge.none b { color: var(--muted); }
+.ccard-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ccard-stats div { min-width: 0; }
+.ccard-stats .k { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+.ccard-stats .v { font-weight: 650; font-size: 14.5px; font-variant-numeric: tabular-nums; }
+.ccard-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--cc, var(--accent)); }
+
+/* ---------- course detail ---------- */
+.back { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-size: 14px; margin-top: 10px; }
+.back:hover { color: var(--ink); }
+.course-head { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; margin: 12px 0 18px; }
+.course-head h1 { font-size: 26px; font-weight: 700; }
+.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+@media (max-width: 720px) { .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sum-cell { background: var(--surface); padding: 14px 16px; min-width: 0; }
+.sum-cell .k { font-size: 12.5px; color: var(--muted); display: flex; gap: 6px; align-items: center; line-height: 1.35; }
+.sum-cell .k b { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 5px; background: var(--surface-2); color: var(--ink-2); font-size: 11px; flex: none; }
+.sum-cell .v { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.sum-cell .v small { font-size: 14px; font-weight: 500; color: var(--muted); }
+.sum-cell .d { font-size: 12px; color: var(--muted); line-height: 1.4; margin-top: 2px; }
+.banner { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: 12px; font-size: 13.5px; line-height: 1.5; }
+.banner svg { flex: none; margin-top: 2px; }
+.banner.warn { background: var(--warn-soft); color: var(--warn); }
+.banner.bad { background: var(--bad-soft); color: var(--bad); }
+.banner.info { background: var(--sky-soft); color: var(--ink-2); }
+.banner.ok { background: var(--ok-soft); color: var(--ok); }
+
+/* assessment list */
+.alist { display: flex; flex-direction: column; }
+.arow {
+  display: grid; grid-template-columns: minmax(0, 2.2fr) 74px minmax(150px, 1.25fr) 86px minmax(110px, 1fr) 72px;
+  gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid var(--line);
+}
+.arow.head { border-top: 0; font-size: 12px; color: var(--muted); font-weight: 600; padding-top: 10px; padding-bottom: 8px; }
+.arow.cat { background: var(--surface-2); padding-top: 10px; padding-bottom: 10px; }
+.arow.child { padding-left: 34px; }
+.a-name { font-weight: 600; line-height: 1.35; }
+.a-meta { display: flex; flex-wrap: wrap; gap: 4px 8px; font-size: 12px; color: var(--muted); margin-top: 3px; align-items: center; }
+.score-in { display: flex; align-items: center; gap: 6px; }
+.score-in .input { width: 76px; padding: 6px 9px; font-size: 14.5px; text-align: right; font-variant-numeric: tabular-nums; }
+.score-in span { color: var(--muted); white-space: nowrap; font-size: 14px; }
+.contrib b { font-variant-numeric: tabular-nums; font-size: 15px; }
+.contrib small { color: var(--muted); font-size: 12.5px; }
+.minibar { height: 4px; border-radius: 4px; background: var(--surface-3); margin-top: 5px; overflow: hidden; }
+.minibar i { display: block; height: 100%; background: var(--earned); border-radius: 4px; }
+.r-actions { display: flex; justify-content: flex-end; gap: 2px; }
+.cell-label { display: none; }
+@media (max-width: 820px) {
+  .arow { grid-template-columns: 1fr 1fr; gap: 8px 14px; padding: 14px 14px; }
+  .arow.head { display: none; }
+  .arow .a-main { grid-column: 1 / -1; display: flex; gap: 10px; align-items: flex-start; }
+  .arow .r-actions { position: static; }
+  .arow.child { padding-left: 24px; }
+  .cell-label { display: block; font-size: 11.5px; color: var(--muted); }
+}
+.status-btn { border: 0; cursor: pointer; }
+@media (max-width: 560px) {
+  .arow:not(.head):not(.cat) { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "main main act" "w ctr sc"; gap: 6px 12px; padding: 11px 12px; align-items: end; }
+  .arow .a-main { grid-area: main; } .arow .r-actions { grid-area: act; align-self: start; margin: -4px -6px 0 0; }
+  .arow .c-w { grid-area: w; } .arow .contrib { grid-area: ctr; } .arow .c-s { grid-area: sc; }
+  .arow .c-p { display: none; }
+  .arow.child:not(.cat) { padding-left: 22px; }
+  .arow .score-in .input { width: 62px; padding: 5px 7px; }
+  .arow .cell-label { font-size: 11px; margin-bottom: 1px; }
+  .arow .contrib b { font-size: 14px; }
+  .alist-actions { width: 100%; }
+  .alist-actions .btn { flex: 1 1 auto; justify-content: center; }
+  .summary-grid { display: flex; flex-direction: column; }
+  .sum-cell { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 9px 13px; }
+  .sum-cell .v { font-size: 17px; margin-top: 0; white-space: nowrap; }
+  .sum-cell .v small { font-size: 12.5px; }
+  .sum-cell .d { display: none; }
+}
+
+/* ---------- simulator ---------- */
+.sim-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: start; }
+@media (max-width: 720px) { .sim-head { grid-template-columns: 1fr; } }
+.verdict { padding: 18px 20px; border-radius: var(--r-lg); background: var(--accent-soft); color: var(--ink); }
+.verdict.impossible { background: var(--bad-soft); }
+.verdict.secured { background: var(--ok-soft); }
+.verdict-main { font-size: 19px; font-weight: 650; line-height: 1.45; }
+.verdict-main .big { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.verdict-sub { font-size: 13.5px; color: var(--ink-2); margin-top: 6px; }
+.ladder { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.rung { padding: 9px 10px; border-radius: 11px; border: 1px solid var(--line); background: var(--surface); text-align: left; cursor: pointer; }
+.rung[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.rung b { font-size: 17px; display: block; }
+.rung span { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--ink-2); display: block; line-height: 1.35; }
+.rung.impossible span { color: var(--bad); }
+.rung.secured span { color: var(--ok); }
+.slider-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr) 120px; gap: 14px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+.slider-row:first-child { border-top: 0; }
+@media (max-width: 640px) { .slider-row { grid-template-columns: 1fr auto; } .slider-row input[type=range] { grid-column: 1 / -1; grid-row: 2; } }
+input[type=range] { width: 100%; accent-color: var(--accent); height: 28px; }
+.sim-result { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 640px) { .sim-result { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sim-result div { padding: 12px 14px; border-radius: 12px; background: var(--surface-2); }
+.sim-result .k { font-size: 12px; color: var(--muted); line-height: 1.35; }
+.sim-result .v { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) {
+  .sim-result { display: flex; flex-direction: column; gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; }
+  .sim-result > div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-radius: 0; padding: 9px 13px; }
+  .sim-result > div > * { margin: 0 !important; }
+  .sim-result .v { font-size: 17px; white-space: nowrap; }
+  .sim-result .tiny { display: none; }
+}
+
+/* ---------- tables ---------- */
+.table-wrap { overflow-x: auto; border-radius: var(--r-md); }
+table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl th { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td.r, .tbl th.r { text-align: right; font-variant-numeric: tabular-nums; }
+.tbl .input, .tbl .select { padding: 6px 9px; font-size: 14px; }
+.tbl tr.sub td { background: var(--surface-2); font-weight: 600; }
+
+/* ---------- years ---------- */
+.year { padding: 0; overflow: hidden; }
+.year-head { display: flex; align-items: center; gap: 12px; padding: 16px 18px; flex-wrap: wrap; }
+.year-head h3 { font-size: 18px; font-weight: 650; }
+.sem { border-top: 1px solid var(--line); padding: 14px 18px; }
+.sem-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sem-head h4 { font-size: 15.5px; font-weight: 650; }
+.sem-courses { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.sem-course { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--surface-2); flex-wrap: wrap; }
+.sem-course a { color: var(--ink); text-decoration: none; font-weight: 550; }
+.sem-course a:hover { color: var(--accent-text); }
+.sem-course .select { width: auto; max-width: 200px; padding: 4px 8px; font-size: 13px; }
+.stat-inline { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.stat-inline b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* ---------- chart ---------- */
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--font); }
+.chart-tip { font-size: 13px; color: var(--ink-2); min-height: 22px; margin-top: 4px; }
+
+/* ---------- modal ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 50; background: rgba(20, 19, 38, .42); display: flex; align-items: center; justify-content: center;
+  padding: 20px; padding-top: calc(20px + env(safe-area-inset-top, 0px)); padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  animation: fade .16s ease-out;
+}
+.modal {
+  width: 100%; max-width: 560px; max-height: 100%; overflow-y: auto; background: var(--surface); border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg); border: 1px solid var(--line); animation: rise .2s cubic-bezier(.2,.8,.2,1);
+}
+.modal.wide { max-width: 720px; }
+.modal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 22px 4px; }
+.modal-head h2 { font-size: 19px; font-weight: 650; }
+.modal-body { padding: 14px 22px 8px; display: flex; flex-direction: column; gap: 14px; }
+.modal-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px 20px; flex-wrap: wrap; }
+@media (max-width: 560px) {
+  .overlay { align-items: flex-end; padding: 0; padding-top: calc(24px + env(safe-area-inset-top, 0px)); }
+  .modal { border-radius: 20px 20px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .modal-foot .btn { flex: 1; }
+}
+@keyframes fade { from { opacity: 0; } }
+@keyframes rise { from { transform: translateY(14px); opacity: 0; } }
+.calc-preview { padding: 12px 14px; border-radius: 12px; background: var(--surface-2); font-size: 14px; display: flex; gap: 8px 18px; flex-wrap: wrap; align-items: baseline; }
+.calc-preview b { font-variant-numeric: tabular-nums; font-size: 16px; }
+
+/* ---------- toast ---------- */
+.toasts { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60; display: flex; flex-direction: column; gap: 8px; align-items: center; width: max-content; max-width: calc(100vw - 24px); }
+@media (max-width: 900px) { .toasts { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
+.toast {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px; border-radius: 12px; background: var(--ink); color: var(--bg);
+  box-shadow: var(--shadow-lg); font-size: 14px; animation: rise .2s ease-out;
+}
+.toast button { background: transparent; border: 0; color: var(--lav); font-weight: 700; cursor: pointer; padding: 4px 6px; }
+
+/* ---------- empty course guidance (inline, not a setup wizard) ---------- */
+.empty { text-align: center; padding: 40px 20px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-xl); background: var(--surface); }
+.empty h3 { font-size: 18px; margin-bottom: 6px; }
+.empty p { color: var(--muted); margin: 0 auto 16px; max-width: 46ch; }
+.empty p.no-wrap { max-width: none; white-space: nowrap; }
+@media (max-width: 900px) { .empty p.no-wrap { white-space: normal; max-width: 46ch; } }
+.course-start {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 18px;
+  padding: 20px 22px; border: 1px solid var(--line-strong);
+  border-radius: 18px; background: var(--surface);
+  box-shadow: var(--shadow); max-width: 860px; margin: 6px auto 0;
+}
+.course-start-kicker {
+  grid-column: 1 / -1; display: inline-flex; align-items: center; gap: 7px; width: fit-content;
+  padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-text);
+  font-size: 11.5px; font-weight: 700;
+}
+.course-start h2 {
+  grid-column: 1; font-size: clamp(18px, 2.3vw, 24px); line-height: 1.28; margin: 0; letter-spacing: -.02em;
+}
+.course-start-desc {
+  grid-column: 1; margin: 0; max-width: 56ch; color: var(--ink-2); font-size: 14px; line-height: 1.65;
+}
+.course-start-steps {
+  grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; margin: 2px 0 0;
+}
+.course-start-step {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px;
+  font-size: 12.5px; color: var(--ink-2); background: var(--surface-2);
+}
+.course-start-step b {
+  display: grid; place-items: center; width: 20px; height: 20px; flex: none;
+  border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-size: 11px;
+}
+.course-start-action {
+  grid-column: 2; grid-row: 2 / span 2; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  justify-content: flex-end; align-self: center;
+}
+.course-start-action .btn { padding: 9px 14px; }
+.course-start-action .btn.primary { font-weight: 700; }
+@media (max-width: 720px) {
+  .course-start {
+    grid-template-columns: 1fr; gap: 10px; padding: 18px;
+  }
+  .course-start-kicker, .course-start h2, .course-start-desc, .course-start-steps, .course-start-action {
+    grid-column: auto; grid-row: auto;
+  }
+  .course-start-steps { margin-top: 4px; }
+  .course-start-action { justify-content: flex-start; }
+}
+@media (max-width: 540px) {
+  .course-start-action { align-items: stretch; flex-direction: column; }
+  .course-start-action .btn { justify-content: center; }
+}
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.list-plain { margin: 0; padding: 0; list-style: none; }
+.upcoming li { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid var(--line); }
+.upcoming li:first-child { border-top: 0; }
+.upcoming-info { min-width: 0; }
+.upcoming-course-title { font-size: 14px; font-weight: 650; line-height: 1.35; color: var(--ink); overflow-wrap: anywhere; }
+.upcoming-meta { display: flex; align-items: center; gap: 5px 8px; flex-wrap: wrap; margin-top: 5px; min-width: 0; }
+.upcoming-type { display: inline-flex; align-items: center; flex: none; border-radius: 6px; padding: 2px 7px; line-height: 1.4; background: var(--accent-soft); color: var(--accent-text); font-size: 11px; font-weight: 650; }
+.upcoming-detail { min-width: 0; color: var(--ink-2); font-size: 12px; overflow-wrap: anywhere; }
+.upcoming-due { color: var(--muted); font-size: 12px; }
+@media (max-width: 440px) { .upcoming li { gap: 8px; } .upcoming li > .btn { padding: 5px 8px; font-size: 12px; } }
+.date-pill { flex: none; width: 46px; text-align: center; border-radius: 10px; background: var(--surface-2); padding: 4px 0; line-height: 1.2; }
+.date-pill b { display: block; font-size: 16px; }
+.date-pill small { font-size: 11px; color: var(--muted); }
+.two-col { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 960px) { .two-col { grid-template-columns: 1fr; } }
+.tip { position: relative; display: inline-flex; color: var(--muted); cursor: help; vertical-align: middle; }
+.tip:focus-visible { outline: 2px solid var(--accent); }
+.tip .tip-body {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 260px;
+  background: var(--ink); color: var(--bg); font-size: 12.5px; font-weight: 400; line-height: 1.5; padding: 8px 10px; border-radius: 9px;
+  opacity: 0; pointer-events: none; transition: opacity .12s; z-index: 40; white-space: normal; text-align: left;
+}
+.tip:hover .tip-body, .tip:focus .tip-body { opacity: 1; }
+.kbd { font-size: 11.5px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; color: var(--muted); }
+.ch-grid { stroke: var(--line); stroke-width: 1; }
+.ch-txt { fill: var(--muted); font-size: 11.5px; }
+.ch-txt.sub { font-size: 10.5px; opacity: .8; }
+.ch-sem { fill: none; stroke: var(--lav); stroke-width: 2; stroke-dasharray: 5 4; }
+.ch-cum { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.ch-dot-sem { fill: var(--surface); stroke: var(--lav); stroke-width: 2; }
+.ch-dot-cum { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.ch-hover { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 3; }
+
+.ic { flex: none; }
+.btn { flex: none; }
+@media (max-width: 560px) {
+  .gbar-labels span.minor { display: none; }
+  .head-actions { width: 100%; }
+  .head-actions > .row { flex: 1; }
+}
+@media (max-width: 440px) {
+  .topbar { gap: 6px; padding-left: 12px; padding-right: 10px; }
+  .topbar .brand-name { display: none; }
+}
+.main { overflow-x: clip; }
+
+.field > label.check { font-weight: 400; color: var(--ink); }
+
+.auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+.auth-card { width: 100%; max-width: 430px; padding: 26px 24px; }
+.auth-title { font-size: 25px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.3; }
+.auth-card .seg { display: flex; }
+.auth-card .seg button { flex: 1; padding: 7px 10px; }
+.auth-card .row.between .seg { display: inline-flex; }
+.auth-card .row.between .seg button { flex: none; }
+.auth-divider { height: 1px; background: var(--line); margin: 20px 0 14px; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: inline-grid; place-items: center; font-weight: 700; font-size: 13px; flex: none; }
+.avatar.lg { width: 40px; height: 40px; font-size: 17px; }
+
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
+.thumb { position: relative; aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb .btn { position: absolute; top: 5px; right: 5px; padding: 3px; border-radius: 8px; }
+.thumb.add { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: 1.5px dashed var(--line-strong); color: var(--accent-text); font-size: 13px; font-weight: 600; }
+.scan-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; }
+.scan-item input[type=checkbox] { margin-top: 4px; width: 17px; height: 17px; accent-color: var(--accent); flex: none; }
+.scan-item.col { flex-direction: column; align-items: stretch; gap: 8px; cursor: default; }
+.scan-item.off { opacity: .6; }
+.scan-warn { color: var(--warn); background: var(--warn-soft); border-radius: 8px; padding: 6px 10px; }
+.scan-rows { display: flex; flex-direction: column; border-top: 1px solid var(--line); margin: 2px -14px -12px; }
+.scan-row { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--line); }
+.scan-row:last-child { border-bottom: 0; }
+.scan-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); flex: none; margin: 0; }
+.scan-row.flag { background: var(--bad-soft); }
+.scan-row.off .scan-row-name { text-decoration: line-through; color: var(--muted); }
+.scan-row-name { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.scan-flag { color: var(--bad); font-weight: 600; }
+.scan-score { display: flex; align-items: center; gap: 4px; flex: none; }
+.scan-score .input { width: 64px; padding: 6px 8px; font-size: 14.5px; text-align: right; font-variant-numeric: tabular-nums; }
+.scan-imgs summary { cursor: pointer; color: var(--accent-text); font-weight: 600; }
+.scan-imgs figure { margin: 10px 0 0; }
+.scan-imgs img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; display: block; }
+.paste-box { width: 100%; min-height: 120px; font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; resize: vertical; }
+.paste-sel { width: auto; max-width: 46%; flex: none; padding: 6px 8px; font-size: 13.5px; }
+.goal-raw { font-weight: 600; color: var(--ink-2); }
+.tt-days { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.tt-day-name { font-weight: 700; font-size: 13.5px; margin-bottom: 6px; color: var(--ink-2); }
+.tt-list { display: flex; flex-direction: column; gap: 6px; }
+.tt-slot { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; color: inherit; text-decoration: none; background: var(--surface-2); }
+.tt-slot:hover { border-color: var(--line-strong); }
+.tt-slot.clash { border-color: var(--bad); background: var(--bad-soft); }
+.tt-time { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.tt-name { font-size: 13.5px; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.tt-place { grid-column: 2; }
+.ccard-meta .chip { vertical-align: 1px; margin-left: 2px; }
+.ccard-progress { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.ccard-lines { display: flex; flex-direction: column; gap: 5px; }
+.ccard-line { display: flex; gap: 7px; align-items: flex-start; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+.ccard-line svg { flex: none; margin-top: 2px; color: var(--muted); }
+.ccard-line.ok { color: var(--ok); } .ccard-line.ok svg { color: var(--ok); }
+.ccard-line.bad { color: var(--bad); } .ccard-line.bad svg { color: var(--bad); }
+.basis-box.fold { padding: 8px 12px; }
+.basis-box.fold > summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; }
+.basis-box.fold > summary::-webkit-details-marker { display: none; }
+.basis-box.fold > summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); margin: -3px 2px 0 0; flex: none; transition: transform .15s ease; }
+.basis-box.fold[open] > summary::after { transform: rotate(-135deg); margin-top: 3px; }
+.basis-box.fold[open] > summary { margin-bottom: 6px; }
+.dash-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.lbl-s { display: none; }
+.metrics.m2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.m-est { font-size: 12px; font-weight: 600; letter-spacing: 0; margin-left: 8px; padding: 2px 8px; border-radius: 999px; border: 1px dashed currentColor; vertical-align: 5px; opacity: .85; }
+.dash-facts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; font-size: 13.5px; color: var(--ink-2); }
+.dash-facts span { display: inline-flex; align-items: center; gap: 4px; }
+@media (max-width: 560px) {
+  .page-head > div:first-child { width: 100%; }
+  .dash-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; gap: 6px; }
+  .dash-actions .btn { padding: 8px 6px; font-size: 13.5px; justify-content: center; gap: 5px; min-width: 0; white-space: nowrap; }
+  .dash-actions .lbl-l { display: none; } .dash-actions .lbl-s { display: inline; }
+  .metrics.m2 .metric { padding: 12px 13px; }
+  .metrics.m2 .m-value { font-size: 24px; }
+  .dash-facts { font-size: 12.5px; gap: 4px 12px; margin-top: 10px; }
+}
+.fold-card > summary { list-style: none; cursor: pointer; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; padding-right: 26px; position: relative; }
+.fold-card > summary::-webkit-details-marker { display: none; }
+.fold-card > summary h2 { font-size: 16px; margin: 0; }
+.fold-card > summary::after { content: ""; position: absolute; right: 4px; top: 50%; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: translateY(-70%) rotate(45deg); transition: transform .15s ease; }
+.fold-card[open] > summary::after { transform: translateY(-30%) rotate(-135deg); }
+.fold-card[open] > summary { margin-bottom: 10px; }
+.sp-title { font-size: 17px; margin: 0; }
+.sp-next { margin: 10px 0 0; line-height: 1.55; color: var(--ink-2); }
+.sp-all { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.sp-all > summary { cursor: pointer; color: var(--accent-text); font-weight: 600; }
+.sp-terms { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin-top: 10px; }
+.sp-term { border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; display: flex; flex-direction: column; gap: 4px; }
+.sp-term.next { border-color: var(--accent); }
+.sp-term.done { opacity: .75; }
+.sp-term-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13.5px; }
+.sp-switch { margin-top: 10px; }
+.sp-switch > summary { cursor: pointer; font-weight: 600; color: var(--accent-text); }
+.sp-switch-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+.ge-tools { display: flex; flex-direction: column; gap: 10px; }
+.ge-tools .pick-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.ge-tools .pick-chips .pick-chip { flex: none; }
+.ge-list { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.ge-row { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-top: 1px solid var(--line); }
+.ge-row:first-child { border-top: 0; }
+.ge-name { font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
+.ge-name .num { font-weight: 500; font-size: 12.5px; margin-right: 4px; }
+.ge-meta { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 12px; color: var(--muted); margin: 3px 0 2px; }
+.ge-act { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+.ge-sec { width: auto; padding: 4px 8px; font-size: 13px; }
+.ge-clash { color: var(--bad); }
+.date-pill.cc { background: color-mix(in srgb, var(--cc) 16%, var(--surface-2)); box-shadow: inset 3px 0 0 var(--cc); }
+.date-pill.cc b { color: var(--cc); }
+.cc-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--cc); margin-right: 7px; vertical-align: 1px; }
+.dashboard-cal-cell { flex-direction: column; gap: 2px; }
+.dashboard-cal-cell.past { opacity: .55; }
+.dashboard-cal-cell.has-exam { background: color-mix(in srgb, var(--cc, var(--accent)) 24%, transparent); color: var(--ink); font-weight: 800; opacity: 1; }
+.dashboard-cal-cell.has-exam.past { opacity: .6; }
+.dashboard-cal-cell.has-exam::after { display: none; }
+.cal-dots { display: flex; gap: 2px; height: 5px; }
+.cal-dots i { width: 5px; height: 5px; border-radius: 50%; display: block; }
+.dashboard-cal-cell.today { background: var(--accent); color: var(--accent-ink, #fff); border-color: var(--accent); font-weight: 800; opacity: 1; }
+.dashboard-cal-cell.today.has-exam { box-shadow: 0 0 0 2px var(--cc) inset; }
+.dashboard-cal-cell.today .cal-dots i { box-shadow: 0 0 0 1px #fff; }
+.gm-cuts { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.gm-cut { display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 10px; padding: 6px 9px; }
+.gm-cut b { min-width: 24px; }
+.gm-cut .input { width: 56px; padding: 5px 7px; text-align: right; }
+/* UI polish: content-sized cards, consistent controls, readable timetable and portable tips. */
+select.select { appearance: none; -webkit-appearance: none; padding-right: 38px !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6' fill='none' stroke='%23838b9e' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-size: 16px; }
+.tt-days { grid-template-columns: repeat(auto-fit,minmax(min(100%,210px),1fr)); }
+.tt-slot { grid-template-columns: minmax(0,1fr); gap: 3px; border-left: 3px solid var(--cc,var(--accent)); }
+.tt-place { grid-column: 1; }
+.tt-name { overflow-wrap: normal; }
+.ccard-foot .btn, .head-actions .btn, .m-est { white-space: nowrap; }
+.metric.metric .m-label { min-height: 0; }
+.metric .m-value { margin-top: 8px; }
+.metric .m-sub { margin-top: 4px; }
+.metric .m-extra { margin-top: 12px; padding-top: 10px; border-top: 1px solid currentColor; font-size: 12px; opacity: .8; }
+.metric.hero .tip { color: inherit; }
+.sim-result .v.grade-summary-short { font-size: clamp(12px,1.6vw,16px); white-space: nowrap; }
+.gs-floating-tip { position: fixed; z-index: 2147483647; max-width: min(280px,calc(100vw - 24px)); background: var(--ink); color: var(--bg); padding: 8px 10px; border-radius: 9px; font-size: 12.5px; font-weight: 400; line-height: 1.5; white-space: normal; pointer-events: none; box-shadow: 0 4px 16px #0003; }
+.swatches input[type=color] { width: 36px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; }
+.swatch:disabled { opacity: .35; cursor: not-allowed; }
+.exam-event-detail { margin-top: 4px; font-size: 12px; color: var(--ink-2); line-height: 1.5; overflow-wrap: anywhere; }
+.exam-event-source { display: block; color: var(--muted); font-size: 10.5px; }
+/* Compact overview: GPA, cumulative GPA and next-term plan in one responsive strip. */
+.metrics.dashboard-summary { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; align-items: stretch; }
+.metrics.dashboard-summary.has-plan { grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1.7fr); }
+.dashboard-summary .metric, .dashboard-summary .sp-card { padding: 10px 12px; border-radius: var(--r-lg); min-width: 0; box-shadow: none; }
+.dashboard-summary .metric .m-label { min-height: 0; font-size: 12px; }
+.dashboard-summary .metric .m-value { font-size: 24px; line-height: 1.15; margin-top: 4px; display:flex; align-items:baseline; flex-wrap:wrap; gap: 3px 5px; }
+.dashboard-summary .m-est { font-size: 10px; margin-left: 0; padding: 1px 6px; vertical-align: baseline; }
+.dashboard-summary .metric .m-sub, .dashboard-summary .metric .m-extra { font-size: 11px; line-height: 1.4; margin-top: 3px; }
+.dashboard-summary .metric .m-extra { border: 0; padding-top: 0; }
+.dashboard-summary .sp-card { display:flex; flex-direction:column; justify-content:center; gap: 5px; }
+.dashboard-summary .sp-title { font-size: 14px; line-height: 1.35; }
+.dashboard-summary .sp-card .small { font-size: 11px; line-height:1.4; }
+.dashboard-summary .sp-mini-actions { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+.dashboard-summary .sp-mini-actions .btn { font-size: 11px; min-height: 28px; padding: 4px 7px; white-space: normal; line-height:1.35; }
+.dashboard-summary .sp-mini-actions .btn svg { width:12px;height:12px;flex:none; }
+.dashboard-summary + .dash-facts { margin-top: 7px; font-size: 12px; gap: 4px 14px; }
+@media (max-width: 950px) {
+  .metrics.dashboard-summary.has-plan { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .dashboard-summary .sp-card { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .dashboard-summary .metric, .dashboard-summary .sp-card { padding: 9px 10px; }
+  .dashboard-summary .metric .m-value { font-size: 22px; }
+  .dashboard-summary .metric .m-label { font-size: 11px; }
+}
+.thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
+@media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
+
+.cat-list { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; max-height: 300px; overflow-y: auto; }
+.cat-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 0; border-top: 1px solid var(--line); background: var(--surface); text-align: left; cursor: pointer; width: 100%; }
+.cat-opt:first-child { border-top: 0; }
+.cat-opt:hover, .cat-opt:focus-visible { background: var(--accent-soft); }
+.cat-code { font-size: 13px; color: var(--muted); flex: none; }
+.cat-name { font-weight: 600; font-size: 14px; }
+
+/* Keep Midterm and Final on their own explicit rows on every screen. */
+.exam-l { display: block; }
+.exam-lines { display: flex; flex-direction: column; align-items: stretch; gap: 5px; width: 100%; }
+.exam-entry { display: flex; align-items: flex-start; gap: 7px; line-height: 1.55; min-width: 0; }
+.exam-entry-icon { display: inline-flex; flex: none; margin-top: 2px; color: var(--accent-text); }
+.exam-entry-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.exam-detail { margin-top: 8px; color: var(--ink-2); }
+.exam-detail .exam-lines { gap: 6px; }
+.exam-detail-note { display: block; margin-top: 5px; }
+
+.chip.course-kind-chip { font-size: 10.5px; font-weight: 550; line-height: 1.4; white-space: nowrap; padding: 2px 7px; }
+.chip.kind-required { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+.chip.kind-gened { background: var(--sky-soft); color: var(--sky); }
+.chip.kind-elective { background: var(--warn-soft); color: var(--warn); }
+.credit-row { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.credit-row:first-of-type { border-top: 0; padding-top: 0; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) .metric.hero { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--ink); }
+  :root:not([data-mode="light"]) .metric.hero .m-label, :root:not([data-mode="light"]) .metric.hero .m-sub { color: var(--ink-2); }
+  :root:not([data-mode="light"]) .metric.hero .m-value { color: var(--accent-text); }
+}
+:root[data-mode="dark"] .metric.hero { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--ink); }
+:root[data-mode="dark"] .metric.hero .m-label, :root[data-mode="dark"] .metric.hero .m-sub { color: var(--ink-2); }
+:root[data-mode="dark"] .metric.hero .m-value { color: var(--accent-text); }
+
+.grade-badge.confirmed.neutral { background: var(--surface-2); color: var(--muted); }
+.grade-badge.confirmed.neutral small { color: var(--muted); }
+
+/* drag to reorder */
+.sortable { position: relative; }
+.sort-item { position: relative; display: flex; min-width: 0; }
+.sort-item > .ccard { flex: 1; min-width: 0; }
+.sort-item.dragging { z-index: 20; }
+.sort-item.dragging > .ccard { box-shadow: var(--shadow-lg); transform: scale(1.02); transition: transform 160ms ease, box-shadow 160ms ease; }
+.sort-item > .ccard { transition: transform 160ms ease, box-shadow 160ms ease; }
+.drag-handle { touch-action: none; cursor: grab; color: var(--muted); margin-left: -6px; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.drag-handle:hover { color: var(--ink); }
+/* Highlight the intended drop slot without triggering a React re-render while dragging. */
+.sort-item.dragging { z-index: 10; pointer-events: none; }
+.sort-item.sort-drop-before > .ccard,
+.sort-item.sort-drop-after > .ccard { outline: 2px dashed var(--accent); outline-offset: 3px; }
+.sort-item.sort-drop-before::after, .sort-item.sort-drop-after::after {
+  content: ''; position: absolute; left: 8px; right: 8px; height: 3px;
+  border-radius: 3px; background: var(--accent); pointer-events: none; z-index: 11;
+}
+.sort-item.sort-drop-before::after { top: -6px; }
+.sort-item.sort-drop-after::after { bottom: -6px; }
+body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-select: none; user-select: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.goal-insight{display:flex;flex-direction:column;gap:7px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);margin-top:10px}
+.goal-insight.compact{padding:8px 10px;font-size:13px}
+.goal-gap{display:flex;flex-direction:column;gap:3px}
+.goal-gap b{font-size:14px;color:var(--ink-2)}
+.exam-preview{margin-top:8px;display:block;font-size:12px;color:var(--ink-2)}
+.auth-privacy{font-size:12px;line-height:1.5;color:var(--muted)}
+
+
+/* Inline grade goal picker: selectable from the course card, usable by touch and keyboard. */
+.goal-pick { position: relative; flex: 0 1 auto; min-width: 0; }
+.goal-pick-button { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 5px 9px; border: 1px solid var(--line-strong); border-radius: 11px; background: var(--surface-2); color: var(--ink-2); font: inherit; font-weight: 650; line-height: 1.3; cursor: pointer; }
+.goal-pick-button:hover, .goal-pick-button[aria-expanded="true"] { color: var(--accent-text); border-color: var(--accent); background: var(--accent-soft); }
+.goal-pick-button:focus-visible, .goal-pick-option:focus-visible, .gbar-grade-option:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.goal-pick-button .goal-pick-edit { opacity: .75; }
+.goal-pick-panel { position: absolute; bottom: calc(100% + 7px); left: 0; width: min(300px, calc(100vw - 42px)); padding: 12px; z-index: 35; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 15px; box-shadow: var(--shadow-lg); }
+.goal-pick-heading { font-size: 12px; font-weight: 650; color: var(--muted); margin-bottom: 9px; }
+.goal-pick-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.goal-pick-option { display: grid; place-items: center; min-height: 43px; padding: 6px 3px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; font: inherit; color: var(--ink); cursor: pointer; }
+.goal-pick-option b { line-height: 1.2; font-size: 14px; }
+.goal-pick-option small { line-height: 1.3; font-size: 10px; color: var(--muted); }
+.goal-pick-option[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-text); }
+.goal-pick-option:hover { border-color: var(--accent); }
+.goal-pick-clear { width: 100%; font: inherit; cursor: pointer; text-align: center; font-size: 12px; min-height: 29px; border: 0; background: transparent; color: var(--muted); margin-top: 5px; }
+.goal-pick-clear:hover { color: var(--ink); }
+.ccard:has(.goal-pick-panel) { overflow: visible; z-index: 5; }
+.ccard-foot { flex-wrap: wrap; }
+.gbar-labels button.gbar-grade-option { position: absolute; transform: translateX(-50%); margin: 0; padding: 2px 3px; min-width: 23px; min-height: 24px; border: 1px solid transparent; border-radius: 7px; font: inherit; font-weight: 650; font-size: 11.5px; line-height: 1.1; background: transparent; color: var(--muted); cursor: pointer; touch-action: manipulation; }
+.gbar-labels button.gbar-grade-option:hover, .gbar-labels button.gbar-grade-option[aria-pressed="true"] { border-color: var(--accent); color: var(--accent-text); background: var(--accent-soft); z-index: 2; }
+.gbar.lg:has(.gbar-grade-option) .gbar-labels { height: 28px; }
+.goal-bar-hint { font-size: 12px; color: var(--muted); margin-top: 3px; }
+@media (max-width: 480px) { .goal-pick-panel { left: 0; width: min(276px, calc(100vw - 42px)); } .goal-pick-button { font-size: 12px; } }
+
+/* Class statistics are provisional reference evidence, never grading cutoffs. */
+.courseville-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin: 14px 0; }
+.courseville-metric { min-width: 0; display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 11px; background: var(--surface-2); }
+.courseville-metric strong { font-size: 21px; font-weight: 720; font-variant-numeric: tabular-nums; }
+.courseville-histogram { display: grid; gap: 7px; }
+.courseville-row { display: grid; align-items: center; grid-template-columns: 76px minmax(0, 1fr) 32px; gap: 10px; }
+.courseville-bar-track { height: 13px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+.courseville-bar { display: block; min-height: 13px; height: 100%; background: var(--accent); border-radius: 5px; }
+.courseville-count { text-align: right; font-variant-numeric: tabular-nums; }
+.courseville-caution { margin-top: 14px; padding: 11px 13px; border-radius: 10px; background: var(--surface-2); color: var(--ink-2); line-height: 1.7; }
+@media (max-width: 620px) { .courseville-metrics { grid-template-columns: repeat(2, minmax(0,1fr)); } .courseville-row { grid-template-columns: 64px minmax(0,1fr) 26px; gap: 6px; } }
+
+
+/* Responsive rhythm: compact sections, consistent alignment across all course cards. */
+.page-head { margin: 10px 0 16px; gap: 12px; }
+.section { margin-top: 22px; }
+.section-head { margin-bottom: 10px; }
+.card.pad { padding: 16px 18px; }
+.stack { gap: 12px; }
+.course-grid { gap: 12px; align-items: stretch; }
+.ccard { padding: 15px 16px 14px; gap: 9px; min-height: 0; }
+.ccard-top { min-width: 0; }
+.ccard-performance { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+.ccard-details { display: flex; flex-direction: column; gap: 7px; align-items: stretch; min-width: 0; }
+.ccard-details .goal-insight { margin-top: 0; }
+.ccard-details .exam-preview { margin-top: 0; }
+.ccard-foot { margin-top: auto; min-width: 0; padding-top: 8px; border-top: 1px solid var(--line); }
+.ccard-foot > .row { min-width: 0; }
+.ccard-foot > .btn { flex: none; }
+/* Nine shared tracks: title, metadata, bar, progress, warnings, forecast, goal, exam, footer.
+   The sortable wrapper must also be a subgrid so dragging retains the same card geometry. */
+.ccard-slot { min-width: 0; }
+.ccard-slot:empty { display: none; }
+.ccard-top > .grow { min-width: 0; overflow-wrap: anywhere; }
+.ccard-foot { align-self: stretch; }
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 641px) {
+    .course-grid > .ccard,
+    .course-grid > .sort-item { grid-row: span 9; }
+    .course-grid > .sort-item { display: grid; grid-template-rows: subgrid; }
+    .course-grid > .ccard,
+    .course-grid > .sort-item > .ccard {
+      display: grid;
+      grid-template-rows: subgrid;
+      row-gap: 9px;
+      align-content: stretch;
+      min-width: 0;
+      width: 100%;
+    }
+    .course-grid > .sort-item > .ccard { grid-row: 1 / -1; }
+    .course-grid .ccard-top {
+      display: grid;
+      grid-row: span 2;
+      grid-template-rows: subgrid;
+      grid-template-columns: minmax(0,1fr) auto;
+      column-gap: 12px;
+      row-gap: 3px;
+      align-items: start;
+    }
+    .course-grid .ccard-top > .grow {
+      display: grid;
+      grid-column: 1;
+      grid-row: 1 / -1;
+      grid-template-rows: subgrid;
+      align-items: start;
+    }
+    .course-grid .ccard-top > .grade-badge {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: start;
+    }
+    .course-grid .ccard-slot:empty { display: block; }
+    /* Fill the entire shared footer track, even when a course has no goal picker.
+       Bottom-aligning an intrinsically shorter footer offsets its top border. */
+    .course-grid .ccard-foot {
+      margin-top: 0;
+      align-self: stretch;
+      align-items: center;
+    }
+    .course-grid .ccard-foot > .btn,
+    .course-grid .ccard-foot .goal-pick-button {
+      min-height: 34px;
+    }
+    .course-grid .ccard-slot { align-self: start; }
+    .course-grid .ccard-top { grid-row: 1 / 3; }
+    .course-grid .ccard-bar-slot { grid-row: 3; }
+    .course-grid .ccard-progress-slot { grid-row: 4; }
+    .course-grid .ccard-warning-slot { grid-row: 5; }
+    .course-grid .ccard-forecast-slot { grid-row: 6; }
+    .course-grid .ccard-goal-slot { grid-row: 7; }
+    .course-grid .ccard-exam-slot { grid-row: 8; }
+    .course-grid .ccard-foot { grid-row: 9; }
+  }
+}
+@media (max-width: 640px) {
+  .page-head { margin: 8px 0 12px; }
+  .section { margin-top: 18px; }
+  .card.pad { padding: 14px; }
+  .ccard { padding: 14px 15px 13px; }
+  .course-grid { gap: 10px; }
+  .ccard-foot { flex-wrap: nowrap; }
+}
+
+/* Every repeated control and stat value aligns, even with longer Thai labels. */
+.ccard-stats > div { display: flex; flex-direction: column; }
+.ccard-stats .v { margin-top: auto; }
+.ccard-foot { flex-wrap: nowrap; }
+.ccard-foot > .row { flex: 1 1 auto; }
+.ccard-foot .goal-pick { flex: 1 1 auto; min-width: 0; }
+.ccard-foot .goal-pick-button { width: 100%; justify-content: flex-start; min-width: 0; }
+.goal-pick-label { min-width: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.goal-pick-button > svg, .goal-pick-edit { flex: none; }
+.goal-pick-edit { margin-left: auto; }
+.metric { display: flex; flex-direction: column; }
+.metric .m-label { min-height: 34px; }
+@media (max-width: 360px) {
+  .ccard-foot { gap: 5px; }
+  .ccard-foot .goal-pick-button { padding: 5px 7px; gap: 4px; }
+}
+
+/* ----- community feedback ----- */
+.feedback-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.feedback-list { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items:start; gap:14px; }
+.feedback-post { min-width:0; display:flex; flex-direction:column; gap:12px; }
+.feedback-post p { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; }
+.feedback-meta { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); }
+.feedback-status { padding:4px 10px; font-size:12px; border-radius:999px; border:1px solid var(--line); color:var(--muted); background:var(--surface-2); }
+.feedback-status.done { color:var(--ok); border-color:var(--ok); background:var(--ok-soft); }
+.feedback-images { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.feedback-images a { display:block; aspect-ratio:4/3; border-radius:10px; border:1px solid var(--line); overflow:hidden; background:var(--surface-2); }
+.feedback-images img { width:100%; height:100%; object-fit:cover; }
+.feedback-reactions { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.feedback-react { border:1px solid var(--line); border-radius:999px; background:var(--surface); padding:6px 11px; display:flex; gap:5px; align-items:center; cursor:pointer; font-size:13px; }
+.feedback-react:hover,.feedback-react.active { border-color:var(--accent); background:var(--accent-soft); }
+.feedback-form { display:grid; gap:12px; }
+.feedback-note { color:var(--muted); font-size:12.5px; line-height:1.55; }
+.feedback-form textarea { min-height:112px; resize:vertical; }
+.feedback-file-thumbs { display:flex; flex-wrap:wrap; gap:8px; }
+.feedback-file-thumbs img { width:72px; height:72px; object-fit:cover; border:1px solid var(--line); border-radius:9px; }
+.feedback-pending { color:var(--muted); font-size:13px; }
+@media (max-width:720px) { .feedback-list{grid-template-columns:1fr;} .feedback-head { align-items:flex-start; } }
+
+/* course search suggestions */
+.cs-box { position: relative; width: 100%; max-width: 340px; }
+.cs-list { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30; background: var(--surface); border: 1px solid var(--line-strong);
+  border-radius: 14px; box-shadow: var(--shadow-lg); max-height: min(420px, 60vh); overflow-y: auto; padding: 6px; animation: rise .14s ease-out; }
+.cs-head { font-size: 11.5px; font-weight: 700; color: var(--muted); padding: 8px 10px 4px; }
+.cs-opt { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; cursor: pointer; }
+.cs-opt.on { background: var(--accent-soft); }
+.cs-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+.cs-text b { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; }
+.cs-act { font-size: 12.5px; font-weight: 600; color: var(--accent-text); flex: none; }
+.cs-plus { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; background: var(--surface-2); color: var(--accent-text); flex: none; }
+.cs-empty { padding: 12px 10px; font-size: 13px; color: var(--muted); }
+@media (max-width: 560px) { .cs-box { max-width: none; } .filters { flex-direction: column; align-items: stretch; } .filters .select { width: 100% !important; } }
+
+/* study plan: major / year / term pickers */
+.plan-steps { display: flex; flex-direction: column; gap: 14px; padding: 14px; border-radius: 14px; background: var(--surface-2); }
+.plan-step { display: flex; flex-direction: column; gap: 8px; }
+.pick-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick-chip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
+  font-size: 14px; font-weight: 500; cursor: pointer; line-height: 1.3; transition: background .15s, border-color .15s, color .15s; }
+.pick-chip:hover { border-color: var(--accent); }
+.pick-chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+
+.major-groups { display: flex; flex-direction: column; gap: 10px; }
+.major-group { display: flex; flex-direction: column; gap: 6px; }
+.major-group-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+
+/* audit fixes: readable rows on phones */
+.sem-head h4 { flex: 1 1 auto; min-width: 72px; white-space: nowrap; }
+.sem-course > a.grow { flex: 1 1 170px; min-width: 150px; }
+.tbl .input { min-width: 64px; }
+.tbl td:nth-child(2) .input[aria-label] { min-width: 72px; }
+.tbl input.input:not([inputmode]) { min-width: 120px; }
+@media (max-width: 560px) { .sem-head .stat-inline { flex-basis: 100%; } }
+
+/* Per-course section selection is compact and independent per subject. */
+.plan-course-sec { margin-top: 8px; display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+.plan-course-sec .select, .plan-course-sec .input { padding: 6px 10px; min-height: 36px; font-size: 13px; }
+.plan-course-sec .tiny { flex-basis: 100%; }
+
+/* study-plan picker */
+.planner { display: flex; flex-direction: column; gap: 18px; }
+.planner-step { display: flex; flex-direction: column; gap: 10px; }
+.planner-label { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: 14.5px; color: var(--ink); }
+.planner-num { width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 12px; font-weight: 700;
+  background: var(--accent-soft); color: var(--accent-text); flex: none; }
+.planner-sublabel { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.prog-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.prog-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 14px; border-radius: 14px; text-align: left;
+  border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; transition: border-color .15s, background .15s, box-shadow .15s; min-width: 0; }
+.prog-tile:hover { border-color: var(--line-strong); }
+.prog-tile[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.prog-icon { font-size: 20px; line-height: 1.2; }
+.prog-name { font-weight: 700; font-size: 15px; line-height: 1.3; }
+.prog-sub { font-size: 12px; color: var(--muted); }
+.major-row { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); }
+.when-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.seg-pick { display: inline-flex; padding: 3px; gap: 2px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); }
+.seg-pick button { border: 0; background: transparent; color: var(--ink-2); font: inherit; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
+.seg-pick button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.seg-pick button:disabled { color: var(--muted); opacity: .45; cursor: not-allowed; }
+.planner-summary { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px;
+  background: var(--ok-soft); color: var(--ok); font-size: 13.5px; font-weight: 600; }
+.planner-summary b { margin-left: auto; }
+.planner-source { font-size: 12.5px; color: var(--muted); }
+@media (max-width: 560px) {
+  .prog-tiles { grid-template-columns: 1fr; }
+  .prog-tile { flex-direction: row; align-items: center; gap: 10px; padding: 10px 12px; }
+  .prog-sub { margin-left: auto; }
+}
+
+/* what the estimate is based on */
+.basis-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 12.5px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+.basis-line.warn { color: var(--warn); font-weight: 600; }
+.linkish { border: 0; background: none; padding: 0; font: inherit; font-weight: 600; color: var(--accent-text); text-decoration: underline; cursor: pointer; }
+.chip-x { border: 0; background: none; color: inherit; font: inherit; font-size: 14px; line-height: 1; padding: 0 0 0 4px; cursor: pointer; opacity: .7; }
+.chip-x:hover { opacity: 1; }
+
+/* estimate explanation */
+.basis-box { margin-top: 10px; padding: 9px 11px; border-radius: 10px; background: var(--surface-2); font-size: 12.5px; line-height: 1.55; }
+.basis-box.warn { background: var(--warn-soft); }
+.basis-head { font-weight: 650; color: var(--ink); }
+.basis-box ul { margin: 3px 0 0; padding-left: 18px; color: var(--ink-2); }
+.basis-box li.warn { color: var(--warn); font-weight: 600; }
+.basis-box .linkish { margin-top: 6px; font-size: 12.5px; }
+.ccard .basis-box { margin-top: 0; }
+.reg-sec { margin-top: 4px; }
+
+
+/* ===== Prototype layer: reuses GradeSpace tokens above (copied from public/index.html @ ee506bb) ===== */
+:root{--ink2:var(--ink-2);--ink3:var(--muted);--line2:var(--line-strong);--surface2:var(--surface-2);--good:var(--ok);--info:var(--sky);
+--num:"IBM Plex Sans Thai",system-ui,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,monospace}
+:root[data-font=noto]{--font:"Noto Sans Thai",system-ui,sans-serif}
+:root[data-font=inter]{--font:"Inter","IBM Plex Sans Thai",system-ui,sans-serif;--num:"Inter",system-ui,sans-serif}
+body{font-family:var(--font)}
+/* Institution accents (preview; PR #18 palettes) — accent only, course colours unchanged */
+:root[data-inst=cu]{--accent:light-dark(#C2185B,#F06BA8);--accent-hover:light-dark(#A3134C,#F48BBB);--accent-soft:light-dark(#FCEAF2,#3A1626);--accent-text:light-dark(#A3134C,#F59CC4);--accent-ink:light-dark(#fff,#1A0A10);--earned:var(--accent);--bg:light-dark(#FBF7F9,#0F1115)}
+:root[data-inst=cbs]{--accent:light-dark(#1E6FB8,#6FB1F0);--accent-hover:light-dark(#185E9C,#8CC2F4);--accent-soft:light-dark(#E7F0FB,#14273B);--accent-text:light-dark(#185E9C,#9CCBF6);--accent-ink:light-dark(#fff,#0A1624);--earned:var(--accent)}
+:root[data-inst=tu]{--accent:light-dark(#B3261E,#F2867E);--accent-hover:light-dark(#941F18,#F5A19A);--accent-soft:light-dark(#FBEAE9,#3A1513);--accent-text:light-dark(#941F18,#F6A8A1);--accent-ink:light-dark(#fff,#240A08);--earned:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}.btn.pri:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.danger{color:var(--bad)}.btn[disabled]{opacity:.45;cursor:default}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.chip{cursor:default}button.chip{cursor:pointer;min-height:32px}.chip.on{background:var(--accent-soft);color:var(--accent-text)}
+svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-item .chip{margin-inline-start:auto;font-size:10.5px;padding:1px 7px}
+.side h6{margin:12px 12px 4px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.side{overflow:auto}
+input.f,select.f,textarea.f{width:100%;min-height:42px;border:1px solid var(--line-strong);border-radius:var(--r-md);background:var(--surface);padding:8px 12px;font-size:16px}
+textarea.f{min-height:88px;resize:vertical;line-height:1.6}
+.n{font-variant-numeric:tabular-nums}.code{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px;color:var(--muted)}
+.pad{padding:16px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{flex:1}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+.sec{margin:24px 0 10px;font-size:16px;font-weight:650;color:var(--ink)}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+.ovstats{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr);gap:10px;margin-bottom:12px}.ovstats .metric{padding:12px 14px}.ovstats .m-value{font-size:26px;margin-top:2px}.ovstats .sp-card{padding:12px 14px}
+@media(max-width:700px){.ovstats{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ovstats .sp-card{grid-column:1/-1}.ovstats .m-value{font-size:24px}.ovstats .m-sub{font-size:11.5px}}
+.cmdk{display:flex;align-items:center;gap:8px;height:38px;padding:0 10px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font-size:13.5px;cursor:pointer;min-width:260px;margin-inline-start:4px}
+.cmdk kbd{margin-inline-start:auto;font:600 11px var(--font);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px;color:var(--muted)}
+@media(max-width:900px){.cmdk{min-width:0;width:38px;padding:0;justify-content:center}.cmdk .lbl-l,.cmdk kbd{display:none}}
+.cmdsheet{border-radius:var(--r-lg)!important;max-width:560px;padding:12px}
+.ai-btn{position:relative}.newdot{position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:var(--bad);box-shadow:0 0 0 2px var(--surface)}
+.whatsnew{margin-bottom:12px;border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}.wn-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}@media(max-width:800px){.wn-grid{grid-template-columns:1fr}}
+.wn{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:var(--r-md);background:var(--surface-2)}.wn>svg{color:var(--accent-text)}.wn b{display:block;font-size:13.5px;font-weight:600;line-height:1.35}
+.ctxhint{display:flex;gap:8px;align-items:center;width:100%;padding:8px 10px;border-radius:var(--r-md);border:1px dashed color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft);color:var(--accent-text);font-size:13px;text-align:start;cursor:pointer}.ctxhint span{flex:1}
+.aiscrim{position:fixed;inset:0;background:rgb(15 17 21/.35);z-index:45}
+.aidrawer{position:fixed;top:0;right:0;bottom:0;width:min(480px,100%);background:var(--bg);z-index:46;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);border-left:1px solid var(--line)}
+.aihead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.aihead svg{color:var(--accent)}.aibody{flex:1;overflow:auto;padding:14px}.aidrawer .composer{bottom:0}.aidrawer .msg{max-width:92%}
+.ai-btn{color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+@media(max-width:900px){.topbar .ai-btn .lbl-l{display:none}.topbar .ai-btn{padding:0 10px}}
+.newtag{font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);border-radius:999px;padding:1px 8px;margin-inline-start:6px;vertical-align:2px}
+.pfab{position:fixed;right:16px;bottom:16px;z-index:60;height:38px;padding:0 14px;border-radius:19px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);font-size:13px;cursor:pointer;color:var(--ink-2)}
+.ppanel{position:fixed;right:16px;bottom:62px;z-index:60;width:min(320px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:14px;display:grid;gap:10px}
+.ppanel[hidden]{display:none}.ppanel label{display:grid;grid-template-columns:72px 1fr;align-items:center;font-size:13px;color:var(--muted)}
+.ppanel select{height:36px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);padding:0 8px;font-size:14px}.ppanel .tag{font-size:12px;color:var(--warn)}
+@media(max-width:900px){.pfab{bottom:78px}.ppanel{bottom:124px}.page{padding-bottom:110px}}
+.bottomnav.five{grid-template-columns:repeat(5,minmax(48px,1fr)) !important}
+.msg.a{border-color:var(--line)}.cbox{border-color:var(--line-strong)}
+
+--bg:light-dark(#f6f6f4,#0f1012);--surface:light-dark(#ffffff,#17181b);--surface2:light-dark(#f0f0ed,#1e2024);
+--ink:light-dark(#16171a,#ececea);--ink2:light-dark(#5d6068,#a3a6ad);--ink3:light-dark(#8a8d94,#7b7e86);
+--line:light-dark(#e4e4e0,#2a2c31);--line2:light-dark(#cfcfca,#3a3d44);
+--good:light-dark(#1d7a46,#5cc98a);--warn:light-dark(#9a5b00,#f0b35a);--bad:light-dark(#b42318,#f28b82);--info:light-dark(#2559c7,#86a8f0);
+--accent:light-dark(#4f46e5,#8f8bff);--accent-soft:light-dark(#eeedfd,#24234a);--accent-ink:light-dark(#fff,#111);--accent2:light-dark(#8b87ff,#4f46e5);
+--font:"IBM Plex Sans Thai",system-ui,sans-serif;--num:"Inter","IBM Plex Sans Thai",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;
+--r1:6px;--r2:10px;--r3:14px;}
+.n{font-family:var(--num);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.code{font-family:var(--mono);font-size:12.5px;color:var(--ink2)}
+.muted{color:var(--ink2)}.small{font-size:13px}.tiny{font-size:12px;color:var(--ink3)}
+.pad{padding:16px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{flex:1}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+.sec{margin:22px 0 8px;font-size:13px;font-weight:600;color:var(--ink2)}
+.trust{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);white-space:nowrap}
+.trust::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink3)}
+.trust.v::before{background:var(--good)}.trust.p::before{background:var(--info)}.trust.a::before{background:var(--warn)}.trust.x::before{background:var(--bad)}
+.bar{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden;position:relative}.bar>i{position:absolute;inset:0 auto 0 0;border-radius:3px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}.t th{font-weight:500;color:var(--ink2);font-size:12.5px;text-align:start;padding:8px 10px;border-bottom:1px solid var(--line)}
+.t td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}.t td.r,.t th.r{text-align:end}.scroll{overflow-x:auto}
+.list>*+*{border-top:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;display:flex;gap:12px;align-items:center;z-index:40;box-shadow:0 8px 24px rgb(0 0 0/.2)}
+.toast button{background:none;border:0;color:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
+.scrim{position:fixed;inset:0;background:rgb(0 0 0/.4);z-index:30;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:min(560px,100%);border-radius:16px 16px 0 0;padding:8px 16px 24px;max-height:86vh;overflow:auto}
+.grab{width:36px;height:4px;border-radius:2px;background:var(--line2);margin:4px auto 12px}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.cc{position:relative;overflow:hidden;padding:14px 16px 14px 20px;cursor:pointer}
+.cc::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--cc)}
+.cc h3{margin:0;font-size:16px;line-height:1.35;font-weight:600}.cc .big{font-size:28px;font-weight:600;line-height:1.1;letter-spacing:-.01em}
+.cc .meta{display:flex;gap:6px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin-top:2px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px}.kv dt{color:var(--ink2)}.kv dd{margin:0;text-align:end}
+.chat{display:flex;flex-direction:column;gap:12px;padding-bottom:12px}
+.msg{max-width:min(620px,92%);padding:10px 14px;border-radius:14px;line-height:1.6}
+.msg.u{align-self:flex-end;background:var(--accent-soft);border-bottom-right-radius:4px}.msg.a{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.composer{position:sticky;bottom:64px;background:var(--bg);padding:8px 0}
+@media(min-width:900px){.composer{bottom:0}}
+.cbox{border:1px solid var(--line2);border-radius:16px;background:var(--surface);padding:8px}
+.cbox textarea{border:0;outline:0;background:none;width:100%;resize:none;min-height:44px;font-size:16px;padding:6px 8px}
+.ibtn{width:40px;height:40px;border-radius:20px;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--ink2)}.ibtn:hover{background:var(--surface2)}
+.ibtn.send{background:var(--accent);color:var(--accent-ink)}.ibtn.rec{background:var(--bad);color:#fff}
+.wave{display:flex;align-items:center;gap:2px;height:32px;flex:1;overflow:hidden}.wave i{width:3px;border-radius:2px;background:var(--bad);opacity:.8}
+.paused .wave i{background:var(--ink3)}
+@keyframes pulse{50%{opacity:.35}}.rdot{width:10px;height:10px;border-radius:50%;background:var(--bad);animation:pulse 1.2s infinite}
+@media(prefers-reduced-motion:reduce){.rdot{animation:none}}
+.hl{background:var(--accent-soft);border-bottom:2px solid var(--accent);border-radius:3px;padding:0 2px}
+.steps{display:flex;flex-direction:column;gap:6px;font-size:13.5px}.steps div{display:flex;gap:8px;align-items:center}
+.att{display:flex;gap:8px;overflow-x:auto;padding:4px 0}.att .a1{flex:none;width:68px;height:68px;border-radius:10px;background:var(--surface2);border:1px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--ink2);position:relative;text-align:center;padding:4px}
+.rv td input{width:100%;min-width:56px;border:1px solid transparent;background:none;border-radius:6px;padding:4px 6px;font-size:14px}
+.rv td input:hover,.rv td input:focus{border-color:var(--line2);background:var(--surface)}
+.rv tr.skip td{opacity:.45;text-decoration:line-through}
+.st{font-size:12px;padding:2px 8px;border-radius:10px;white-space:nowrap;background:var(--surface2);color:var(--ink2)}
+.st.new{color:var(--good)}.st.upd{color:var(--info)}.st.dup{color:var(--ink3)}.st.chk{color:var(--warn)}.st.bad{color:var(--bad)}
+.rcard{padding:12px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center}
+@media(min-width:760px){.rcards{display:none}}@media(max-width:759px){.rtable{display:none}}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.cal div{min-height:64px;border:1px solid var(--line);border-radius:8px;padding:4px 6px;font-size:12px;background:var(--surface)}
+.cal div.o{background:none;border-color:transparent}.cal .ev{display:block;margin-top:3px;padding:1px 4px;border-radius:4px;font-size:11px;color:#fff;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cal .today{outline:2px solid var(--accent)}
+@media(max-width:600px){.cal div{min-height:48px;padding:2px 3px}.cal .ev{font-size:0;height:6px;padding:0}}
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.map a{display:block;padding:12px 14px;text-decoration:none;color:inherit}.map a b{display:block;font-weight:500}
+.empty{padding:28px;text-align:center;color:var(--ink2)}
+.swatch{width:18px;height:18px;border-radius:50%;display:inline-block;border:1px solid var(--line2)}
+.note{font-size:12.5px;color:var(--ink3);margin-top:10px}
+</style>
+</head>
+<body>
+<button class="pfab" id="pfab" aria-expanded="false" aria-controls="ppanel">ต้นแบบ · ธีม</button><div class="ppanel" id="ppanel" role="region" aria-label="Prototype controls" hidden>
+  <b>ตั้งค่าต้นแบบ</b>
+  <label>ธีม <select id="pTheme"><option value="gs">GradeSpace</option><option value="cu">Chula</option><option value="cbs">CBS</option><option value="tu">Thammasat</option></select></label>
+  <label>โหมด <select id="pMode"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+  <label>ภาษา <select id="pLang"><option value="th">ไทย</option><option value="en">English</option></select></label>
+  <label>ฟอนต์ <select id="pFont"><option value="plex">IBM Plex Sans Thai</option><option value="noto">Noto Sans Thai</option><option value="inter">Inter + fallback</option></select></label>
+  <span class="tag">ข้อมูลคะแนนทั้งหมดเป็นข้อมูลสมมติ · Sample data</span>
+</div>
+<div class="shell"><aside class="side" id="side" aria-label="เมนูหลัก"></aside><div class="main"><header class="topbar" id="topbar"></header><main class="page" id="main"></main></div></div>
+<nav class="bottomnav" id="bnav" aria-label="เมนูหลัก"></nav>
+<div id="aiLayer"></div><div id="layer"></div>
+<script>
+{
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ic={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>',spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',clip:'<path d="M20 11l-8.5 8.5a5 5 0 0 1-7-7L13 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L14 7"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',pause:'<path d="M9 5v14M15 5v14"/>',play:'<path d="M7 5l12 7-12 7z"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="2"/>',check:'<path d="M5 12l5 5 9-10"/>',plus:'<path d="M12 5v14M5 12h14"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',undo:'<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h0"/>',grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',layers:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',db:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/>'};
+const I=(n)=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ic[n]||''}</svg>`;
+
+/* ---------- sample state (สมมติ) ---------- */
+const S={lang:'th',theme:'gs',mode:'system',font:'plex',route:'overview',openCourse:'c1',profileStep:0,
+ profile:{inst:'',fac:'',prog:'',major:'',entry:'2567'},accentCustom:'',
+ courses:[
+  {id:'c1',code:'2900111',name:'Economics I',th:'เศรษฐศาสตร์ 1',sec:'4',cr:3,col:'#5b5bd6',got:52.45,of:60,pred:85.22,remain:40,target:'A (80)',need:'Final ≥ 22.78/35',exam:'2026-12-08 08:30',room:'MAHIT 301',mode:'criterion',alias:['อีโค','econ']},
+  {id:'c2',code:'5500111',name:'Experiential English I',th:'ภาษาอังกฤษเชิงประสบการณ์ 1',sec:'21',cr:3,col:'#0f9d8a',got:38.5,of:45,pred:84.0,remain:55,target:'A (80)',need:'≥ 45.2/55 ที่เหลือ',exam:'2026-12-10 13:00',room:'—',mode:'criterion',alias:['เอ็กซ์พี','exp eng','อิง']},
+  {id:'c3',code:'2601113',name:'Principles of Accounting',th:'หลักการบัญชี',sec:'2',cr:3,col:'#c27c0e',got:31,of:40,pred:77.5,remain:60,target:'B+ (75)',need:'Final ≥ 43/60',exam:'2026-12-12 08:30',room:'—',mode:'norm',alias:['บัญชี','acc']},
+  {id:'c4',code:'2603245',name:'Intro to Business Statistics',th:'สถิติธุรกิจเบื้องต้น',sec:'1',cr:3,col:'#d1435b',got:20,of:30,pred:66.7,remain:70,target:'B (70)',need:'≥ 50.3/70 ที่เหลือ',exam:'2026-12-15 13:00',room:'—',mode:'norm',alias:['สถิติ','stat']},
+  {id:'c5',code:'2604161',name:'Introduction to Finance',th:'การเงินเบื้องต้น',sec:'3',cr:3,col:'#2f8f3a',got:0,of:0,pred:null,remain:100,target:'—',need:'ยังไม่มีคะแนน',exam:'2026-12-17 08:30',room:'—',mode:'unknown',alias:['การเงิน','fin']},
+  {id:'c6',code:'2301119',name:'Calculus for Business',th:'แคลคูลัสธุรกิจ',sec:'5',cr:4,col:'#2b87c9',got:44,of:50,pred:88,remain:50,target:'A (80)',need:'≥ 36/50 ที่เหลือ',exam:'2026-12-09 13:00',room:'—',mode:'criterion',alias:['แคล','calc']}],
+ assess:{c1:[['Midterm','exam',33.45,40,'40%'],['Quiz 1–4','quiz',9,10,'10%'],['Problem sets','hw',10,10,'10%'],['Final','exam',null,35,'35%'],['Participation','other',null,5,'5%']],
+  c2:[['Quiz 1','quiz',9,10,'—'],['Quiz 2','quiz',8.5,10,'—'],['Presentation','proj',21,25,'—'],['Final','exam',null,'—','—']]},
+ history:[{id:'h1',when:'24 พ.ย. 14:10',src:'img',n:12,course:'Calculus for Business',undone:false}],
+ review:null,reviewFilter:'all',voice:{st:'idle',t:0,txt:''},chat:[],uploads:null,
+ gpaSim:{c1:'A',c2:'A',c3:'B+',c4:'B',c5:'B',c6:'A'},plan:{'2/2569':['2604271','2605311','3401255'],'1/2570':['2601212','2603330']},
+ conns:{chatgpt:true},seen:{},whatsNew:true,cmdQ:'',catQ:'',catInst:'all',catRange:false,catStatus:'all',catPage:0,admin:[['TU BBA 2023 · 187 วิชาใหม่','source_checked','รอตรวจ'],['CU BBA Handbook ID68 · 9 กลุ่มวิชา','needs_review','รอตรวจ'],['Reg Chula 2/2569 · 412 section','verified','เผยแพร่แล้ว']]};
+const L=(th,en)=>S.lang==='th'?th:en;
+const GP={A:4,'B+':3.5,B:3,'C+':2.5,C:2,'D+':1.5,D:1,F:0};
+
+/* real catalog subset: CU legacy (from repo staging, unverified) + TU BBA 2023 (source-checked) */
+const CU=[["2301101","CALCULUS I",4],["2301119","CAL BUS",4],["2301333","LINEAR ALGEBRA",3],["2601113","PRIN ACCTG",3],["2601212","INTMD ACCTG I",3],["2601213","INTMD ACCTG II",3],["2601251","AIS",3],["2601317","INTRO ACC BUS COMB",3],["2601361","AUDITING",3],["2601414","TAXATION",3],["2601421","ADV ACCOUNTING I",3],["2601431","FIN REP ANA",3],["2602313","MGT / ORGANIZATION",3],["2602349","ERP",3],["2602365","PYTHON BUS ANA",3],["2602367","MACHINE LEARN BUS",3],["2603245","INTRO BUS STAT",3],["2603330","BUSINESS STAT",3],["2603312","STAT THEORY I",3],["2603536","THEORY STAT LEARN",3],["2604161","INTRO FIN",3],["2604271","BUS ECON",3],["2604361","BUS FIN",3],["2604475","FIN MODELLING",3],["2605311","PRIN MKTG",3],["2605425","MKT STRA",3],["2900111","ECONOMICS I",3],["2900112","ECONOMICS II",3],["3401255","BUSINESS LAW I",3],["5500111","EXP ENG I",3],["5500112","EXP ENG II",3]];
+const TU=[["AC201","Fundamental Accounting",3],["AC202","Management Accounting",3],["AC221","Business Acumen & Financial Reporting",3],["AC295","Special Topics in Accounting 1",3],["AC296","Special Topics in Accounting 2",1.5],["AC311","Intermediate Accounting 1",3],["AC312","Intermediate Accounting 2",3],["AC313","Cost Accounting",3],["AC314","Cost Management",3],["AC315","Accounting Information Systems",3],["AC316","Auditing",3],["AC317","Enterprise Risk Management and Internal Control",3],["AC318","Tax Accounting",3],["FN201","Business Finance",3],["FN211","Financial Mathematics and Statistics",3],["FN311","Financial Management",3],["FN312","Investments",3],["IS201","Digital Technology for Business",3],["IS315","Systems Analysis and Modelling",3],["IS361","Artificial Intelligence",3],["HR201","Modern Management and Entrepreneurship",3]];
+const CAT=[...CU.map(r=>({inst:'cu',code:r[0],t:r[1],cr:r[2],st:'legacy'})),...TU.map(r=>({inst:'tu',code:r[0],t:r[1],cr:r[2],st:'checked'}))];
+const suffix=c=>{const m=c.code.match(/(\d{3})$/);return m?+m[1]:0};
+
+/* ---------- routing ---------- */
+const NAV=[['overview','home','ภาพรวม','Overview'],['courses','book','วิชา','Courses'],['ai','spark','AI','AI'],['calendar','cal','ปฏิทิน','Plan'],['more','more','เพิ่มเติม','More']];
+const MORE=[['gpa','GPA & Simulator','GPA & Simulator'],['degree','ความคืบหน้าหลักสูตร','Degree progress'],['planner','วางแผนเทอม','Semester planner'],['catalog','ค้นหารายวิชา','Course catalog'],['history','ประวัติการนำเข้า','Import history'],['connect','AI ที่เชื่อมต่อ','Connected AI'],['profile','สังกัดของฉัน','Academic profile'],['appearance','หน้าตาแอป','Appearance'],['coverage','ความครอบคลุมข้อมูล','Data coverage'],['admin','จัดการข้อมูล (Admin)','Admin data'],['map','แผนผังทุกหน้าจอ','All screens & flows']];
+const TITLES={overview:['ภาพรวม','Overview'],courses:['วิชาของฉัน','My courses'],course:['รายละเอียดวิชา','Course detail'],ai:['GradeSpace AI','GradeSpace AI'],upload:['อัปโหลดหลายไฟล์','Upload files'],review:['ตรวจสอบก่อนบันทึก','Review before saving'],conflict:['แก้ข้อมูลขัดแย้ง','Resolve conflicts'],calendar:['ปฏิทินสอบและงาน','Exams & deadlines'],more:['เพิ่มเติม','More']};
+function go(r){if(r==='ai'){S.aiOpen=true;S.seen.ai=1;render();return}S.aiOpen=false;S.route=r;try{location.hash=r}catch(e){}render();window.scrollTo(0,0)}
+const ROUTES=['settings','feedback','help','simulator','connect','overview','courses','course','ai','upload','review','conflict','calendar','more',...MORE.map(m=>m[0])];
+const BRAND=`<span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><defs><linearGradient id="gsG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8C71FE"/><stop offset="55%" stop-color="#6654E8"/><stop offset="100%" stop-color="#3F51C9"/></linearGradient></defs><rect width="48" height="48" rx="14" fill="url(#gsG)"/><path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke="#fff" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34.8" cy="12.6" r="3" fill="#C5ECFF"/></svg></span>`;
+const SIDE=[['overview','grid',L('ภาพรวม','Overview')],['courses','book',L('วิชาของฉัน','My courses')],['planner','cal',L('ชั้นปีและเทอม','Years & terms')],['simulator','layers',L('จำลองคะแนน','Simulator')],['gpa','trend',L('สรุป GPA','GPA summary')],['feedback','chat',L('ข้อเสนอแนะ','Feedback')],['help','info',L('คู่มือ / ถามตอบ','Guide / Q&A')],['settings','sliders',L('ตั้งค่า','Settings')]];
+const SETSUB=['appearance','profile','connect','history','coverage','admin'];
+const GRP={course:'courses',catalog:'courses',upload:'overview',review:'overview',conflict:'overview',calendar:'overview',degree:'planner',appearance:'settings',profile:'settings',connect:'settings',history:'settings',coverage:'settings',admin:'settings'};
+function navHTML(){
+ const cur=GRP[S.route]||S.route;
+ const item=n=>`<a class="nav-item" href="#${n[0]}" data-go="${n[0]}" ${cur===n[0]?'aria-current="page"':''}>${I(n[1])}<span>${n[2]}</span></a>`;
+ $('#side').innerHTML=`<a class="brand" href="#overview" data-go="overview">${BRAND}<div><div class="brand-name">Grade<span class="brand-name-accent">Space</span></div><div class="brand-tag">${L('รู้เกรดตัวเอง วางแผน GPA ได้','Know your grades, plan your GPA')}</div></div></a>`+SIDE.map(item).join('')+`<div class="side-foot">test@example.com</div>`;
+ $('#topbar').innerHTML=`<a class="brand" href="#overview" data-go="overview">${BRAND.replaceAll('gsG','gsG2')}<div><div class="brand-name">Grade<span class="brand-name-accent">Space</span></div></div></a><button class="cmdk" data-act="cmdOpen" aria-label="${L('ค้นหาหรือสั่งงาน','Search or run a command')}">${I('search')}<span class="lbl-l">${L('ค้นหาวิชา หน้า หรือคำสั่ง…','Search courses, pages, actions…')}</span><kbd>⌘K</kbd></button><div class="topbar-spacer"></div><button class="btn sm ai-btn" data-go="ai" aria-label="${L('ผู้ช่วย AI','AI assistant')}">${I('spark')}<span class="lbl-l">${L('ผู้ช่วย AI','AI assistant')}</span>${S.seen.ai?'':'<i class="newdot" aria-label="new"></i>'}</button><span class="save-state"><span class="save-dot"></span><span class="save-label">${L('บันทึกลงบัญชีแล้ว','Saved to account')}</span></span><div class="seg" role="group" aria-label="ภาษา"><button type="button" aria-pressed="${S.lang==='th'}" data-act="lang" data-v="th">TH</button><button type="button" aria-pressed="${S.lang==='en'}" data-act="lang" data-v="en">EN</button></div><button class="btn ghost icon" data-act="modeToggle" aria-label="${L('สลับโหมดสว่าง/มืด','Toggle light/dark')}">${I('sun')}</button><a class="btn ghost icon" href="#settings" data-go="settings" aria-label="${L('บัญชี','Account')}"><span class="avatar">T</span></a>`;
+ const B=[['overview','grid',L('ภาพรวม','Home')],['courses','book',L('วิชา','Courses')],['planner','cal',L('ชั้นปี','Years')],['simulator','layers',L('จำลอง','Simulate')],['gpa','trend','GPA'],['feedback','chat',L('เสนอแนะ','Feedback')],['help','info',L('ช่วยเหลือ','Help')]];
+ $('#bnav').innerHTML=B.map(n=>`<a href="#${n[0]}" data-go="${n[0]}" ${cur===n[0]?'aria-current="page"':''}>${I(n[1])}<span>${n[2]}</span></a>`).join('');
+}
+const head=(t,sub,right='')=>`<div class="page-head"><div><h1>${t}</h1>${sub?`<p>${sub}</p>`:''}</div>${right?`<div class="dash-actions">${right}</div>`:''}</div>`;
+const trust=(k)=>({v:`<span class="trust v">${L('ยืนยันแล้ว','Confirmed')}</span>`,p:`<span class="trust p">${L('คาดการณ์','Projected')}</span>`,a:`<span class="trust a">${L('สมมติฐานของคุณ','Your assumption')}</span>`,x:`<span class="trust x">${L('ยังยืนยันไม่ได้','Not verifiable')}</span>`}[k]);
+const pct=(a,b)=>b?Math.max(0,Math.min(100,a/b*100)):0;
+
+/* ---------- screens ---------- */
+const letter=p=>p==null?'—':p>=80?'A':p>=75?'B+':p>=70?'B':p>=65?'C+':p>=60?'C':p>=55?'D+':p>=50?'D':'F';
+const fdate=d=>{const dt=new Date(d.slice(0,10)+'T00:00:00');const mth=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],men=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return `${dt.getDate()} ${L(mth.at(dt.getMonth()),men.at(dt.getMonth()))} ${d.slice(11)}`};
+const daysTo=d=>Math.max(0,Math.round((Date.parse(d.slice(0,10))-Date.parse('2026-11-25'))/864e5));
+const KIND={c1:'req',c2:'gened',c3:'req',c4:'req',c5:'req',c6:'req'};
+function courseCard(c,expanded){
+ const lost=Math.max(0,c.of-c.got);const tgt=parseFloat((c.target.match(/\d+/)||[])[0]);
+ const kind=KIND[c.id]==='gened'?`<span class="chip course-kind-chip">GenEd</span>`:`<span class="chip course-kind-chip kind-required">${L('วิชาบังคับ','Required')}</span>`;
+ const mode=c.mode==='norm'?`<span class="chip warn">${L('อิงกลุ่ม','Norm-ref.')}</span>`:c.mode==='criterion'?`<span class="chip ok">${L('อิงเกณฑ์','Criterion')}</span>`:'';
+ const badge=c.pred==null?`<div class="grade-badge none"><b>–</b><small>${L('ยังไม่มีคะแนน','No scores')}</small></div>`:c.mode==='norm'?`<div class="grade-badge none"><b>–</b><small>${L('ยังไม่ระบุวิธีตัดเกรด','No grade rule')}</small></div>`:`<div class="grade-badge calculated"><b>${letter(c.pred)}</b><small>${L('คาดการณ์','Projected')}</small></div>`;
+ return `<article class="card ccard" style="--cc:${c.col}" data-course="${c.id}" tabindex="0">
+ <div class="ccard-top"><div class="grow"><a class="ccard-name" href="#course" data-detail="${c.id}" style="color:inherit;text-decoration:none">${esc(L(c.th,c.name))}</a><div class="ccard-meta">${c.code} · Sec ${c.sec} · ${c.cr} ${L('หน่วยกิต','credits')} ${kind}${mode}</div></div>${badge}</div>
+ <div class="gbar" role="img" aria-label="${L('ได้','Earned')} ${c.got} / ${c.of}"><div class="gbar-track"><div class="gbar-seg earned" style="width:${c.got}%"></div><div class="gbar-seg lost" style="width:${lost}%"></div><div class="gbar-seg pending" style="width:${c.remain}%"></div>${isNaN(tgt)?'':`<div class="gbar-ticks"><i class="gbar-tick target" style="left:${tgt}%"></i></div>`}</div></div>
+ ${c.of?'':`<button class="ctxhint" data-go="ai">${I('spark')}<span>${L('ยังไม่มีเกณฑ์คะแนน · ให้ AI อ่าน Syllabus แล้วสร้างให้','No grading criteria yet · let AI read the syllabus')}</span>›</button>`}
+ <div class="ccard-progress">${c.of?L(`ได้ ${c.got} จาก ${c.of} คะแนนที่ตรวจแล้ว · เหลืออีก ${c.remain}%`,`${c.got} of ${c.of} graded points · ${c.remain}% left`):L('ยังไม่มีคะแนนที่ตรวจแล้ว','No graded work yet')}</div>
+ ${c.pred==null?'':`<details class="basis-box fold" ${expanded?'open':''}><summary class="basis-head">${L(`คาดว่าได้รวม ${c.pred.toFixed(2)}% ถ้า…`,`Projected ${c.pred.toFixed(2)}% if…`)}</summary><ul><li>${L('งานที่เหลือได้สัดส่วนเท่ากับงานที่ตรวจแล้ว','Remaining work scores at your current rate')} <span class="muted">(${(c.got/c.of*100).toFixed(2)}%)</span></li></ul></details>`}
+ <div class="ccard-lines"><div class="ccard-line">${I('target')}<span>${L('ต้องได้อย่างน้อย','Need at least')} ${c.need}</span></div><div class="ccard-line">${I('cal')}<span>${L('สอบปลายภาค','Final')} ${fdate(c.exam)} · ${c.room==='—'?L('ห้องรอประกาศ','room TBA'):c.room} · ${L(`อีก ${daysTo(c.exam)} วัน`,`in ${daysTo(c.exam)} days`)}</span></div></div>
+ <div class="ccard-foot"><button class="btn sm" data-act="toast" data-v="goal">${I('target')}${L('เป้าหมาย','Target')} ${c.target}</button><button class="btn sm" data-detail="${c.id}">${L('ดูรายละเอียด','Details')}</button></div>
+ </article>`}
+function overview(){
+ const up=[...S.courses].sort((a,b)=>a.exam.localeCompare(b.exam));
+ const pr=[...S.courses].filter(c=>c.pred!=null).sort((a,b)=>daysTo(a.exam)-daysTo(b.exam)).slice(0,3);
+ return `<div class="page-head"><div><h1>${L('ภาพรวม','Overview')}</h1><div class="row" style="margin-top:6px"><label class="small muted" for="cur-sem">${L('กำลังดู','Viewing')}</label><select class="select f" id="cur-sem" style="width:auto;min-height:34px;padding:5px 10px;font-size:14px"><option>${L('เทอม 1','Term 1')}</option></select></div></div><div class="dash-actions"><button class="btn" data-go="upload">${I('img')}<span class="lbl-l">${L('สแกนจากภาพหน้าจอ','Scan screenshots')}</span><span class="lbl-s">${L('สแกนภาพ','Scan')}</span></button><button class="btn" data-sheet="add">${I('plus')}${L('เพิ่มวิชา','Add')}</button><button class="btn primary" data-go="ai">${I('spark')}<span class="lbl-l">${L('กรอกคะแนนด้วย AI','Add scores with AI')}</span><span class="lbl-s">${L('กรอกด้วย AI','AI')}</span></button></div></div>
+${S.whatsNew?`<section class="card pad whatsnew"><div class="row" style="margin-bottom:8px"><b class="sp">${L('มีอะไรใหม่ใน GradeSpace','What’s new in GradeSpace')}</b><button class="btn ghost sm" data-act="wnClose">${L('รับทราบ','Got it')}</button></div><div class="wn-grid">${[['spark',L('พูดหรือส่งภาพคะแนนให้ AI','Speak or send score screenshots to AI'),L('ตรวจทั้งชุดก่อนบันทึก ย้อนกลับได้','Review the batch, undo anytime'),'go:ai',L('ลองพูด','Try voice')],['flag',L('ดูว่าเหลืออะไรก่อนจบ','See what’s left to graduate'),L('ในเมนู ชั้นปีและเทอม','Under Years & terms'),'go:degree',L('เปิดดู','Open')],['search',L('กด ⌘K ค้นหาได้ทุกอย่าง','Press ⌘K to find anything'),L('วิชา หน้า และคำสั่ง','Courses, pages and actions'),'cmd',L('ลองค้นหา','Try it')]].map(w=>`<div class="wn">${I(w[0])}<div class="sp"><b>${w[1]}</b><span class="tiny">${w[2]}</span></div><button class="btn sm" ${w[3]==='cmd'?'data-act="cmdOpen"':`data-go="${w[3].slice(3)}"`}>${w[4]}</button></div>`).join('')}</div></section>`:''}
+ <div class="ovstats"><div class="metric hero"><div class="m-label">GPA ${L('เทอมนี้','this term')}</div><div class="m-value">3.55</div><div class="m-sub">${L('คาดการณ์จาก 5 วิชาที่มีคะแนน','Projected from 5 scored courses')}</div></div><div class="metric"><div class="m-label">${L('GPA สะสม (GPAX)','Cumulative GPA (GPAX)')}</div><div class="m-value">3.42</div><div class="m-sub">${L('นับเฉพาะเกรดจริง · 36 หน่วยกิต','Real grades only · 36 credits')}</div></div><section class="card pad sp-card"><h2 class="sp-title" style="font-size:16px">${L('ถัดไป: ปี 2 เทอม 2','Next: Year 2 Term 2')}</h2><div class="small muted">${L('บัญชีบัณฑิต · 3 วิชาในแผน','Accountancy · 3 planned')}</div><div class="row" style="margin-top:10px"><button class="btn sm" data-go="planner">${L('ดูแผน','Open plan')}</button><button class="btn sm ghost" data-go="degree">${L('ความคืบหน้าหลักสูตร','Degree progress')}</button></div></section></div>
+ <div class="card overview-hub"><div class="hub-kicker"><span>${I('target')}${L('สิ่งที่ควรทำต่อ','What to do next')}</span><span class="tiny muted">${L('จากข้อมูลเทอมนี้','From this term')}</span></div><div class="dashboard-planning-grid"><section class="focus-panel"><div class="focus-heading"><div><h2>${L('แนะนำการอ่านหนังสือ','Study suggestions')}</h2><div class="focus-sub">${L('เป็นคำแนะนำ ไม่ใช่ลำดับที่ต้องทำตาม','Suggestions, not a required order')}</div></div></div><div class="focus-list">${pr.map((c,i)=>`<a href="#course" data-detail="${c.id}" class="study-row focus-row ${i===0?'urgent featured':'soon'}"><div class="focus-day"><b>${daysTo(c.exam)}</b><small>${L('วัน','days')}</small></div><div class="study-copy"><span class="focus-action">${i===0?L('เน้นตอนนี้','Focus now'):L('เตรียมตัว','Prepare')}</span><b>${esc(L(c.th,c.name))}</b><span>${c.need}</span></div><span class="focus-arrow" aria-hidden="true">›</span></a>`).join('')}</div></section>
+ <div style="display:grid;gap:10px;align-content:start"><section class="hub-mini planning-mini"><div class="hub-mini-label">${I('spark')}${L('คะแนนใหม่ 3 รายการรอบันทึก','3 new scores to save')}<span class="newtag">${L('ใหม่','New')}</span></div><div class="small muted">${L('พูดหรือส่งภาพให้ AI','Speak or send screenshots')}</div><a class="hub-mini-action" href="#ai" data-go="ai">${L('เปิดผู้ช่วย AI','Open AI')} ›</a></section><section class="hub-mini planning-mini"><div class="hub-mini-label">${I('trend')}${L('ช่วง GPA','GPA range')}</div><div class="hub-mini-value">3.21–3.79</div><a class="hub-mini-action" href="#gpa" data-go="gpa">${L('วางแผน GPA','Plan GPA')} ›</a></section></div></div></div>
+ <div class="grid2" style="margin-top:14px;align-items:start"><section class="card pad dashboard-exam-panel"><div class="row" style="margin-bottom:8px"><h2 class="sp" style="font-size:18px;margin:0">${L('กำลังจะถึง','Coming up')}</h2><button class="btn ghost sm" data-go="calendar">${I('cal')}${L('ปฏิทินสอบ','Exam calendar')}</button></div><ul style="list-style:none;margin:0;padding:0;display:grid;gap:10px">${up.slice(0,4).map(c=>`<li class="dashboard-upcoming-row" style="--cc:${c.col}"><div class="date-pill cc"><b>${+c.exam.slice(8,10)}</b><small>${L('ธ.ค.','Dec')}</small></div><div class="upcoming-info"><div class="upcoming-course-title"><span class="cc-dot" aria-hidden="true"></span>${esc(L(c.th,c.name))}</div><div class="upcoming-meta"><span class="upcoming-type">${L('ไฟนอล','Final')}</span><span class="upcoming-due">${L(`อีก ${daysTo(c.exam)} วัน`,`in ${daysTo(c.exam)} days`)}</span></div><div class="exam-event-detail"><span>${c.exam.slice(11)}</span><span> · ${c.room==='—'?L('ห้องรอประกาศ','room TBA'):L('ห้อง ','Room ')+c.room}</span></div></div><button class="btn sm" data-detail="${c.id}">${L('ดูวิชา','View')}</button></li>`).join('')}</ul></section>
+ <section><div class="sec" style="margin-top:0">${L('วิชาเทอมนี้','This term')}</div><div class="courses" style="grid-template-columns:1fr">${courseCard(S.courses[0],false)}</div><a class="btn ghost sm" href="#courses" data-go="courses" style="margin-top:8px">${L('ดูทั้งหมด 6 วิชา','See all 6 courses')} ›</a></section></div>
+ <p class="note">${L('ตัวเลขทั้งหมดเป็นข้อมูลสมมติสำหรับออกแบบ','All numbers are sample design data.')}</p>`}
+function courses(){
+ return head(L('วิชาของฉัน','My courses'),L('วิชาทั้งหมดที่เพิ่มไว้ แยกตามเทอม','All your courses by term'),`<button class="btn" data-go="upload">${I('img')}<span class="lbl-l">${L('สแกนจากภาพหน้าจอ','Scan screenshots')}</span><span class="lbl-s">${L('สแกนภาพ','Scan')}</span></button><button class="btn" data-go="catalog">${I('layers')}<span class="lbl-l">${L('เลือกวิชาจาก Catalog','From catalog')}</span><span class="lbl-s">Catalog</span></button><button class="btn primary" data-sheet="add">${I('plus')}${L('เพิ่มวิชา','Add course')}</button>`)+
+ `<div class="row" style="margin-bottom:16px"><select class="f" style="flex:0 1 180px" aria-label="term"><option>${L('ทุกเทอม','All terms')}</option><option>1/2569</option></select><input class="f" style="flex:1 1 240px;max-width:340px" placeholder="${L('ค้นหาวิชา เช่น บัญชี, 2601, calc','Search e.g. acct, 2601, calc')}"></div><div class="row" style="margin-bottom:10px"><b style="font-size:17px" class="sp">1/2569</b><span class="tiny">${L('เรียงอัตโนมัติ','Auto-sorted')}</span></div><div class="courses">${S.courses.map(c=>courseCard(c,S.openCourse===c.id)).join('')}</div>`}
+function course(){
+ const c=S.courses.find(x=>x.id===S.openCourse)||S.courses[0];const a=S.assess[c.id]||S.assess.c1;
+ return `<button class="btn ghost sm" data-go="courses">← ${L('วิชาของฉัน','My courses')}</button>`+head(`<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${c.col};margin-inline-end:10px;vertical-align:4px"></span>${esc(L(c.th,c.name))}`,`<span class="code">${c.code}</span> · Sec ${c.sec} · ${c.cr} ${L('หน่วยกิต','credits')}`,`<button class="btn" data-go="ai">${I('mic')}${L('พูดคะแนน','Speak scores')}</button>`)+
+ `<div class="metrics m2" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div class="metric"><div class="m-label">${L('คาดการณ์','Projected')}</div><div class="m-value">${c.pred==null?'—':c.pred.toFixed(2)+'%'}</div><div class="m-sub">${trust('p')}</div></div>
+ <div class="metric"><div class="m-label">${L('ได้จากคะแนนที่ตรวจแล้ว','Earned of graded')}</div><div class="m-value">${c.got}<span class="muted" style="font-size:18px">/${c.of}</span></div><div class="m-sub">${trust('v')}</div></div>
+ <div class="metric"><div class="m-label">${L('เพื่อเป้าหมาย','For target')} ${c.target}</div><div class="m-value" style="font-size:20px">${c.need}</div><div class="m-sub">${trust('a')}</div></div></div><div class="card pad" style="margin-top:12px">${courseCard(c,true).replace('class="card ccard"','class="ccard" style="padding:0;box-shadow:none;border:0"').replace(/<div class="ccard-top">[\s\S]*?<\/div><\/div>/,'')}</div>
+ <div class="sec">${L('งานและคะแนน','Assessments')}</div><div class="card scroll"><table class="t"><thead><tr><th>${L('งาน','Item')}</th><th>${L('ประเภท','Type')}</th><th class="r">${L('ได้','Score')}</th><th class="r">${L('เต็ม','Max')}</th><th class="r">${L('น้ำหนัก','Weight')}</th></tr></thead><tbody>${a.map(r=>`<tr><td>${r[0]}</td><td class="muted">${r[1]}</td><td class="r n">${r[2]==null?`<span class="tiny">${L('ยังไม่ประกาศ','Pending')}</span>`:r[2]}</td><td class="r n">${r[3]}</td><td class="r n">${r[4]}</td></tr>`).join('')}</tbody></table></div>
+ <p class="note">${L('“ยังไม่ประกาศ” ไม่ถูกนับเป็น 0 · น้ำหนัก “—” คือยังไม่ทราบ ระบบจะไม่เดา','“Pending” is never counted as 0 · weight “—” is unknown and never guessed')}</p>`}
+function sheetAdd(){return `<div class="grab"></div><h2 style="margin:0 0 10px;font-size:18px">${L('เพิ่มวิชาหรือคะแนน','Add a course or scores')}</h2><div class="list">${[['spark','AI Assistant',L('พิมพ์ พูด หรือแนบไฟล์','Type, speak or attach'),'ai'],['img',L('สแกนภาพคะแนน','Scan screenshots'),L('หลายภาพพร้อมกัน','Many images at once'),'upload'],['search',L('เพิ่มจาก Catalog','From catalog'),L('ค้นด้วยชื่อหรือรหัส','Search by name or code'),'catalog'],['book',L('เพิ่มจากแผนการศึกษา','From study plan'),L('ตามหลักสูตรของคุณ','From your curriculum'),'planner'],['plus',L('เพิ่มด้วยตัวเอง','Add manually'),L('กรอกเองทุกช่อง','Enter every field'),'courses']].map(o=>`<a href="#${o[3]}" data-go="${o[3]}" class="row pad" style="text-decoration:none;color:inherit;min-height:56px">${I(o[0])}<div class="sp"><b>${o[1]}</b><div class="small muted">${o[2]}</div></div></a>`).join('')}</div>`}
+
+/* AI + voice */
+const SAMPLE_SPEECH='อิง quiz หนึ่งได้เก้าเต็มสิบ ควิซสองแปดครึ่ง presentation ยี่สิบเอ็ดเต็มยี่สิบห้า แล้วก็ มิดเทอมบัญชีได้หกสิบเจ็ดจุดห้า เอ้ยไม่ใช่ หกสิบแปดจุดห้า';
+function aiWelcome(){return `<div class="card pad" style="max-width:640px;margin:0 auto"><h2 style="margin:0 0 6px;font-size:20px">${L('สวัสดีครับ ผมคือ GradeSpace AI','Hi, I’m GradeSpace AI')}</h2><p class="muted" style="margin:0 0 14px">${L('ส่งคะแนนสอบ ภาพหน้าจอจากระบบการเรียน Course Syllabus พิมพ์ หรือพูดบอกคะแนนมาได้เลย ผมจะจัดระเบียบและเตรียมรายการให้คุณตรวจก่อนบันทึก','Send exam scores, LMS screenshots, a syllabus — type or just speak. I’ll organise them into a list you review before anything is saved.')}</p>
+ <div class="steps"><div>${I('check')}${L('ไม่มีอะไรถูกบันทึกจนกว่าคุณจะกดยืนยัน','Nothing is saved until you confirm')}</div><div>${I('check')}${L('ตัวเลขคำนวณโดย Grade Engine ไม่ใช่ AI เดา','Numbers come from the grade engine, not AI guesses')}</div><div>${I('check')}${L('ไมโครโฟนเปิดเฉพาะตอนคุณกดอัด · เสียงไม่ถูกเก็บถาวร','Mic only when you tap record · audio is not kept')}</div></div>
+ <div class="row" style="margin-top:16px"><button class="btn pri" data-act="aiStart">${L('เริ่มใช้งาน','Get started')}</button></div></div>`}
+function prompts(){return [L('วิชาอิง Quiz 1 ได้ 9 เต็ม 10','English quiz 1: 9 out of 10'),L('คะแนนปลายภาคต้องได้เท่าไหร่','What do I need on the final?'),L('อยากได้ GPA 3.50','I want a 3.50 GPA'),L('เหลือวิชาอะไรอีกก่อนจบ','What’s left before graduation?')]}
+function voiceBar(){const v=S.voice;const mm=String(Math.floor(v.t/60)).padStart(1,'0')+':'+String(v.t%60).padStart(2,'0');
+ const bars=Array.from({length:48},(_,i)=>`<i style="height:${v.st==='rec'?6+Math.abs(Math.sin((i+v.t*3)*0.7))*22:6}px"></i>`).join('');
+ return `<div class="cbox ${v.st==='paused'?'paused':''}" aria-live="polite"><div class="row" style="flex-wrap:nowrap;padding:4px">${v.st==='rec'?'<span class="rdot" aria-hidden="true"></span>':`<span class="tiny">${L('หยุดชั่วคราว','Paused')}</span>`}<span class="n small" style="width:40px">${mm}</span><div class="wave">${bars}</div>
+ <button class="ibtn" data-act="vCancel" aria-label="${L('ยกเลิก','Cancel')}">${I('x')}</button>${v.st==='rec'?`<button class="ibtn" data-act="vPause" aria-label="Pause">${I('pause')}</button>`:`<button class="ibtn" data-act="vResume" aria-label="Resume">${I('mic')}</button><button class="ibtn" data-act="vPlay" aria-label="${L('ฟัง','Play')}">${I('play')}</button>`}<button class="ibtn send" data-act="vStop" aria-label="${L('เสร็จ','Done')}">${I('check')}</button></div>
+ ${v.st==='rec'&&v.t>1?`<div class="tiny" style="padding:0 8px 4px">${L('คำบรรยายสด (ตัวอย่าง):','Live caption (preview):')} ${esc(SAMPLE_SPEECH.slice(0,Math.min(SAMPLE_SPEECH.length,v.t*9)))}…</div>`:''}</div>`}
+function highlight(t){return esc(t).replace(/(เก้าเต็มสิบ|แปดครึ่ง|ยี่สิบเอ็ดเต็มยี่สิบห้า|หกสิบเจ็ดจุดห้า|หกสิบแปดจุดห้า)/g,'<span class="hl">$1</span>')}
+function aiChat(){
+ const v=S.voice;
+ const msgs=S.chat.map(m=>{
+  if(m.k==='u')return `<div class="msg u">${m.audio?`<div class="row small muted" style="margin-bottom:4px">${I('mic')} ${L('ข้อความเสียง','Voice message')} · <span class="n">0:${String(m.audio).padStart(2,'0')}</span></div>`:''}${m.files?`<div class="att">${m.files.map(f=>`<div class="a1">${I('img')}<span>${esc(f)}</span></div>`).join('')}</div>`:''}${esc(m.text)}</div>`;
+  if(m.k==='transcribing')return `<div class="msg u"><div class="row small">${I('mic')} ${L('กำลังถอดเสียง…','Transcribing…')}</div><div class="bar" style="margin-top:8px;width:220px"><i style="width:60%;background:var(--accent)"></i></div><button class="btn ghost sm" data-act="vCancel">${L('ยกเลิก','Cancel')}</button></div>`;
+  if(m.k==='transcript')return `<div class="msg u" style="width:min(620px,92%)"><div class="row small muted" style="margin-bottom:6px">${I('mic')} ${L('ตรวจข้อความก่อนวิเคราะห์ · ตัวเลขที่ระบบเข้าใจถูกไฮไลต์','Check the transcript · numbers I understood are highlighted')}</div><div style="margin-bottom:8px">${highlight(m.text)}</div><textarea class="f" id="tEdit" aria-label="transcript">${esc(m.text)}</textarea><div class="row" style="margin-top:8px"><button class="btn sm" data-act="vPlay">${I('play')}${L('ฟังซ้ำ','Replay')}</button><span class="sp"></span><button class="btn sm pri" data-act="vAnalyze">${L('วิเคราะห์','Analyze')}</button></div></div>`;
+  if(m.k==='analyzing')return `<div class="msg a"><div class="steps">${[L('จับคู่วิชา: “อิง” → Experiential English I · “บัญชี” → Principles of Accounting','Matched courses: “อิง” → Experiential English I · “บัญชี” → Principles of Accounting'),L('แยกงาน 4 รายการ · ตรวจตัวเลขภาษาพูดซ้ำ','Split 4 items · re-checked spoken numbers'),L('เทียบกับข้อมูลเดิม','Compared with saved data')].map((s,i)=>`<div>${i<m.step?I('check'):'<span class="rdot" style="background:var(--accent)"></span>'}${s}</div>`).join('')}</div></div>`;
+  if(m.k==='clarify')return `<div class="msg a"><b>${L('ขอถามเพิ่ม 1 ข้อ','One question')}</b><p style="margin:4px 0 8px">${L('มิดเทอมบัญชี 68.5 คะแนน — คะแนนเต็มเท่าไหร่ครับ? (ผมไม่เดาให้)','Accounting midterm 68.5 — out of how many? (I won’t guess)')}</p><div class="row">${['80','100','120'].map(x=>`<button class="chip" data-act="clar" data-v="${x}">${L('เต็ม','out of')} ${x}</button>`).join('')}<button class="chip" data-act="clar" data-v="?">${L('ไม่แน่ใจ ข้ามไปก่อน','Not sure, skip')}</button></div><div class="tiny" style="margin-top:6px">${L('หรือกดไมค์แล้วพูดตอบได้','Or tap the mic and answer by voice')}</div></div>`;
+  if(m.k==='proposal')return `<div class="msg a"><b>${L('พร้อมให้ตรวจ','Ready to review')}</b> · ${m.n} ${L('รายการ จาก','items from')} ${m.src}<div class="small muted">${m.sum}</div><div class="row" style="margin-top:8px"><button class="btn sm pri" data-go="review">${L('เปิดหน้าตรวจสอบ','Open review')}</button></div></div>`;
+  return `<div class="msg a">${m.html||esc(m.text)}</div>`}).join('');
+ const composer=v.st==='rec'||v.st==='paused'?voiceBar():`<div class="cbox"><textarea id="cin" rows="1" placeholder="${L('พิมพ์ หรือกดไมค์เพื่อพูด','Type, or tap the mic to speak')}" aria-label="message"></textarea><div class="row" style="flex-wrap:nowrap"><label class="ibtn" aria-label="${L('แนบไฟล์','Attach')}" style="cursor:pointer">${I('clip')}<input type="file" id="fileIn" multiple accept="image/*,application/pdf,.csv,.xlsx,.txt,audio/*" hidden></label><span class="sp"></span><button class="ibtn" data-act="vStart" aria-label="${L('อัดเสียง','Record')}">${I('mic')}</button><button class="ibtn send" data-act="send" aria-label="${L('ส่ง','Send')}">${I('send')}</button></div></div>`;
+ return `<div class="chat">${S.chat.length?msgs:`<div class="empty">${L('ลองพูดหรือพิมพ์','Try saying or typing')}<div class="row" style="justify-content:center;margin-top:10px">${prompts().map(p=>`<button class="chip" data-act="prompt" data-v="${esc(p)}">${esc(p)}</button>`).join('')}</div><div class="row" style="justify-content:center;margin-top:12px"><button class="btn" data-act="demoVoice">${I('mic')}${L('ดูตัวอย่างการพูดคะแนน','Demo: speak scores')}</button><button class="btn" data-act="demoImg">${I('img')}${L('ตัวอย่าง 10 ภาพ','Demo: 10 screenshots')}</button></div></div>`}</div><div class="composer">${composer}<div class="tiny" style="margin-top:6px">${L('ต้นแบบนี้จำลองการอัดเสียง (หน้า artifact ไม่อนุญาตไมโครโฟน) · แนบไฟล์เสียงจริงได้','This prototype simulates recording (the artifact frame blocks the mic) · real audio files can be attached')}</div></div>`}
+function ai(){return S.aiStarted?aiChat():aiWelcome()}
+
+/* review */
+function mkReview(src){
+ const base=src==='voice'?[
+  {c:'c2',n:'Quiz 1',type:'quiz',s:9,m:10,w:'',st:'upd',old:'8',ev:'🎙 0:01–0:04 “quiz หนึ่งได้เก้าเต็มสิบ”'},
+  {c:'c2',n:'Quiz 2',type:'quiz',s:8.5,m:10,w:'',st:'chk',old:'',ev:'🎙 0:04–0:06 “ควิซสองแปดครึ่ง” · max inferred from Quiz 1'},
+  {c:'c2',n:'Presentation',type:'proj',s:21,m:25,w:'',st:'dup',old:'21',ev:'🎙 0:06–0:10'},
+  {c:'c3',n:'Midterm',type:'exam',s:68.5,m:S.clar||'',w:'',st:S.clar&&S.clar!=='?'?'new':'chk',old:'',ev:'🎙 0:10–0:16 “หกสิบเจ็ดจุดห้า เอ้ยไม่ใช่ หกสิบแปดจุดห้า” → self-correction'}]:
+  Array.from({length:30},(_,i)=>{const kinds=['quiz','hw','lab','read'];const k=kinds[i%4];const m=k==='lab'?20:10;const s=i===6?22:i===12?null:+(m*(0.6+((i*37)%40)/100)).toFixed(1);
+   return {c:'c2',n:(k==='quiz'?'Quiz ':k==='hw'?'Homework ':k==='lab'?'Lab ':'Reading ')+(Math.floor(i/4)+1),type:k,s,m,w:'',st:i===6?'bad':i===12?'chk':i===3||i===18?'dup':i%9===0?'upd':'new',old:i%9===0?String(s-1):i===3||i===18?String(s):'',ev:`🖼 IMG_${2040+Math.floor(i/3)}.png · ${L('แถว','row')} ${i%3+1}`}});
+ return base.map((r,i)=>({...r,id:i,skip:r.st==='dup',sel:false}))}
+function revStatus(r){return {new:['new',L('ใหม่','New')],upd:['upd',L('แก้ไข','Update')],dup:['dup',L('ซ้ำ','Duplicate')],chk:['chk',L('ต้องตรวจ','Check')],bad:['bad',L('เกินเต็ม','Over max')]}[r.st]}
+function review(){
+ if(!S.review){return head(L('ตรวจสอบก่อนบันทึก','Review'),'')+`<div class="card empty">${L('ยังไม่มีรายการรอตรวจ','Nothing to review')}<div class="row" style="justify-content:center;margin-top:10px"><button class="btn" data-act="demoImg">${L('โหลดตัวอย่าง 30 รายการ','Load 30-item sample')}</button><button class="btn" data-act="demoVoiceReview">${L('ตัวอย่างจากเสียง','Voice sample')}</button></div></div>`}
+ const R=S.review.rows;const cnt=k=>R.filter(r=>r.st===k).length;const odd=r=>r.st==='chk'||r.st==='bad';
+ const rows=R.filter(r=>S.reviewFilter==='all'||(S.reviewFilter==='odd'&&odd(r))||(S.reviewFilter==='upd'&&r.st==='upd'));
+ const ready=R.filter(r=>!r.skip&&!odd(r)).length;const cname=id=>(S.courses.find(c=>c.id===id)||{}).name;
+ const opts=id=>S.courses.map(c=>`<option value="${c.id}" ${c.id===id?'selected':''}>${esc(c.name)}</option>`).join('');
+ const st=r=>{const s=revStatus(r);return `<span class="st ${s[0]}">${s[1]}</span>`};
+ return head(L('ตรวจสอบก่อนบันทึก','Review before saving'),`${esc(S.review.title)} · ${L('พบ','found')} <b class="n">${R.length}</b> · ${L('พร้อมบันทึก','ready')} <b class="n">${ready}</b> · ${L('ต้องตรวจ','check')} <b class="n">${cnt('chk')+cnt('bad')}</b> · ${L('ซ้ำ','duplicates')} <b class="n">${cnt('dup')}</b>`,`<button class="btn" data-act="revCancel">${L('ยกเลิก','Cancel')}</button><button class="btn pri" data-act="revSave" ${ready?'':'disabled'}>${L('บันทึก','Save')} <span class="n">${ready}</span> ${L('รายการ','items')}</button>`)+
+ `<div class="row" style="margin-bottom:10px"><div class="seg" role="group" aria-label="filter">${[['all',L('ทั้งหมด','All')],['odd',L('ผิดปกติ','Needs attention')],['upd',L('ค่าเก่า → ใหม่','Old → new')]].map(f=>`<button class="${S.reviewFilter===f[0]?'on':''}" data-act="revF" data-v="${f[0]}">${f[1]}</button>`).join('')}</div><span class="sp"></span><button class="btn sm" data-act="revSkipSel">${L('ข้ามที่เลือก','Skip selected')}</button><button class="btn sm" data-act="revAdd">${I('plus')}${L('เพิ่มแถว','Add row')}</button>${S.review.rows.some(r=>r.st==='upd')?`<button class="btn sm" data-go="conflict">${L('แก้ข้อมูลขัดแย้ง','Resolve conflicts')}</button>`:''}</div>
+ <div class="card scroll rtable"><table class="t rv"><thead><tr><th><input type="checkbox" data-act="revAll" aria-label="select all"></th><th>${L('ชื่องาน','Item')}</th><th>${L('วิชา','Course')}</th><th>${L('ประเภท','Type')}</th><th class="r">${L('ได้','Score')}</th><th class="r">${L('เต็ม','Max')}</th><th class="r">${L('น้ำหนัก','Weight')}</th><th>${L('สถานะ','Status')}</th><th>${L('ที่มา','Source')}</th><th></th></tr></thead><tbody>
+ ${rows.map(r=>`<tr class="${r.skip?'skip':''}"><td><input type="checkbox" data-act="revSel" data-i="${r.id}" ${r.sel?'checked':''} aria-label="select"></td><td><input value="${esc(r.n)}" data-ed="n" data-i="${r.id}"></td><td><select class="f" style="min-height:32px;font-size:13px;padding:2px 6px" data-ed="c" data-i="${r.id}">${opts(r.c)}</select></td><td class="muted">${r.type}</td><td class="r"><input class="n" style="text-align:end;width:64px" value="${r.s==null?'':r.s}" placeholder="—" data-ed="s" data-i="${r.id}"></td><td class="r"><input class="n" style="text-align:end;width:56px" value="${r.m}" placeholder="?" data-ed="m" data-i="${r.id}"></td><td class="r"><input class="n" style="text-align:end;width:56px" value="${r.w}" placeholder="—" data-ed="w" data-i="${r.id}"></td><td>${st(r)}${r.old?`<div class="tiny n">${L('เดิม','was')} ${esc(r.old)}</div>`:''}</td><td class="tiny" title="${esc(r.ev)}">${esc(r.ev.slice(0,34))}</td><td><button class="btn ghost sm" data-act="revSkip" data-i="${r.id}">${r.skip?L('คืน','Restore'):L('ข้าม','Skip')}</button></td></tr>`).join('')}</tbody></table></div>
+ <div class="card rcards list">${rows.map(r=>`<div class="rcard ${r.skip?'skip':''}" style="${r.skip?'opacity:.45':''}"><input type="checkbox" data-act="revSel" data-i="${r.id}" ${r.sel?'checked':''} aria-label="select"><div><b>${esc(r.n)}</b> <span class="tiny">${esc(cname(r.c))}</span><div class="tiny">${esc(r.ev)}</div></div><div style="text-align:end"><span class="n" style="font-size:17px;font-weight:600">${r.s==null?'—':r.s}</span><span class="muted n">/${r.m||'?'}</span><div>${st(r)}</div></div>${r.old?`<div></div><div class="tiny n">${L('เดิม','was')} ${esc(r.old)} → ${r.s}</div><div></div>`:''}<div></div><div class="row" style="gap:6px"><button class="btn sm" data-act="revEdit" data-i="${r.id}">${L('แก้','Edit')}</button><button class="btn sm ghost" data-act="revSkip" data-i="${r.id}">${r.skip?L('คืน','Restore'):L('ข้าม','Skip')}</button></div><div></div></div>`).join('')}</div>
+ <p class="note">${L('แถว “ต้องตรวจ” และ “เกินเต็ม” จะไม่ถูกบันทึกจนกว่าคุณแก้ · ค่าว่างไม่ถูกแปลงเป็น 0 · แถว Total ถูกตัดออกแล้ว','“Check” and “Over max” rows are held until fixed · blanks never become 0 · Total rows were removed')}</p>`}
+function conflict(){
+ const ups=(S.review?.rows||[]).filter(r=>r.st==='upd');
+ return `<button class="btn ghost sm" data-go="review">← ${L('กลับไปตรวจสอบ','Back to review')}</button>`+head(L('ค่าเดิมกับค่าใหม่ไม่ตรงกัน','Saved and new values differ'),L('เลือกค่าที่ถูกต้องทีละรายการ','Pick the correct value for each'))+
+ (ups.length?`<div class="card list">${ups.map(r=>`<div class="pad"><b>${esc(r.n)}</b> <span class="tiny">${esc(r.ev)}</span><div class="grid2" style="margin-top:8px"><button class="card pad" style="text-align:start;cursor:pointer;${r.keepOld?'border-color:var(--accent)':''}" data-act="cfOld" data-i="${r.id}"><div class="tiny">${L('ค่าเดิม','Saved')}</div><div class="n" style="font-size:22px;font-weight:600">${esc(r.old)}/${r.m}</div></button><button class="card pad" style="text-align:start;cursor:pointer;${!r.keepOld?'border-color:var(--accent)':''}" data-act="cfNew" data-i="${r.id}"><div class="tiny">${L('ค่าใหม่จาก','New from')} ${r.ev.startsWith('🎙')?L('เสียง','voice'):L('ภาพ','image')}</div><div class="n" style="font-size:22px;font-weight:600">${r.s}/${r.m}</div></button></div></div>`).join('')}</div>`:`<div class="card empty">${L('ไม่มีข้อมูลขัดแย้ง','No conflicts')}</div>`)}
+function upload(){
+ const U=S.uploads;
+ return head(L('อัปโหลดหลายไฟล์','Upload files'),L('สูงสุด 50 ไฟล์ต่อครั้ง · ไฟล์ละไม่เกิน 50 MB · PNG JPEG WEBP HEIC PDF CSV XLSX TXT และไฟล์เสียง','Up to 50 files · 50 MB each · images, PDF, CSV, XLSX, TXT, audio'))+
+ `<label class="card pad" style="display:block;border-style:dashed;text-align:center;cursor:pointer"><input type="file" id="upIn" multiple hidden accept="image/*,application/pdf,.csv,.xlsx,.txt,audio/*">${I('clip')} <b>${L('เลือกไฟล์หรือวางที่นี่','Choose or drop files')}</b><div class="tiny">${L('ไฟล์อยู่ในเครื่องจนกว่าจะกดส่ง','Files stay on your device until you send')}</div></label>
+ <div class="row" style="margin:10px 0"><button class="btn" data-act="upSample">${L('ใช้ตัวอย่าง 12 ไฟล์','Use 12 sample files')}</button><label class="small muted" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="oneCourse" checked> ${L('ทั้งหมดเป็นวิชา','All are for')} <b>Experiential English I</b></label></div>
+ ${U?`<div class="card"><div class="pad row"><b>${L('ความคืบหน้า','Progress')}</b><span class="sp"></span><span class="n small">${U.done}/${U.batches.length} batch</span></div><div class="list">${U.batches.map((b,i)=>`<div class="pad"><div class="row small"><span class="sp">Batch ${i+1} · ${b.files.length} ${L('ไฟล์','files')} · <span class="muted">${esc(b.files.slice(0,2).join(', '))}${b.files.length>2?'…':''}</span></span>${b.st==='fail'?`<span class="st bad">${L('ล้มเหลว (429)','Failed (429)')}</span><button class="btn sm" data-act="upRetry" data-i="${i}">Retry</button>`:b.st==='done'?`<span class="st new">${L('เสร็จ','Done')} · ${b.rows} ${L('แถว','rows')}</span>`:`<span class="st">${b.st==='up'?L('อัปโหลด','Uploading'):L('กำลังอ่าน','Reading')} ${b.p}%</span>`}</div><div class="bar" style="margin-top:6px"><i style="width:${b.p}%;background:${b.st==='fail'?'var(--bad)':'var(--accent)'}"></i></div></div>`).join('')}</div>
+ <div class="pad row"><button class="btn" data-act="upCancel">${L('ยกเลิกทั้งหมด','Cancel all')}</button><span class="sp"></span><button class="btn pri" data-act="upReview" ${U.done===U.batches.length?'':'disabled'}>${L('รวมผลและตรวจสอบ','Merge & review')}</button></div></div>
+ <p class="note">${L('ระบบแบ่ง batch ตามขนาดและเพดานโมเดลอัตโนมัติ (≤ 20 ภาพ/batch เพื่อคงความละเอียดตัวเลข) · batch ที่ล้มเหลวลองใหม่เฉพาะ batch นั้น','Batches are sized to model limits (≤ 20 images to keep digits legible) · a failed batch retries alone')}</p>`:''}`}
+function history(){return head(L('ประวัติการนำเข้า','Import history'),L('ย้อนกลับได้ทั้งชุด แม้ปิดแอปไปแล้ว','Undo a whole import, even later'))+
+ `<div class="card list">${S.history.map(h=>`<div class="pad row"><span class="st ${h.undone?'dup':'new'}">${h.src==='voice'?'🎙':h.src==='img'?'🖼':h.src==='chatgpt'?'🔗':'⌨'} ${h.undone?L('ย้อนแล้ว','Undone'):L('บันทึกแล้ว','Saved')}</span><div class="sp"><b class="n">${h.n} ${L('รายการ','items')}</b> · ${esc(h.course)}<div class="tiny">${h.when}</div></div><button class="btn sm" data-act="undoH" data-i="${h.id}" ${h.undone?'disabled':''}>${I('undo')}${L('ย้อนกลับ','Undo')}</button></div>`).join('')}</div>`}
+function gpa(){
+ const cs=S.courses;const tot=cs.reduce((a,c)=>a+c.cr,0);const sum=cs.reduce((a,c)=>a+GP[S.gpaSim[c.id]]*c.cr,0);const term=sum/tot;const prevCr=36,prevGPAX=3.42;const gpax=(prevGPAX*prevCr+sum)/(prevCr+tot);
+ return head('GPA & Simulator',L('เลือกเกรดสมมติแต่ละวิชาเพื่อดูผล · ไม่กระทบข้อมูลจริง','Pick hypothetical grades · real data unchanged'),`<button class="btn" data-act="gpaReset">${L('รีเซ็ต','Reset')}</button>`)+
+ `<div class="grid3"><div class="card pad"><div class="tiny">${L('GPA เทอมนี้ (จำลอง)','Term GPA (simulated)')}</div><div class="n" style="font-size:36px;font-weight:600">${(Math.floor(term*100)/100).toFixed(2)}</div>${trust('a')}</div><div class="card pad"><div class="tiny">${L('GPAX หลังเทอมนี้','GPAX after term')}</div><div class="n" style="font-size:36px;font-weight:600">${(Math.floor(gpax*100)/100).toFixed(2)}</div><span class="tiny">${L('จาก','from')} 3.42 · ${prevCr}+${tot} ${L('หน่วยกิต','cr')}</span></div><div class="card pad"><div class="tiny">${L('เป้า GPAX 3.50 ต้องการเฉลี่ย','For GPAX 3.50 you need avg')}</div><div class="n" style="font-size:36px;font-weight:600">${((3.5*(prevCr+tot)-prevGPAX*prevCr)/tot).toFixed(2)}</div><span class="tiny">${L('เทอมนี้','this term')}</span></div></div>
+ <div class="sec">${L('เกรดสมมติ','Hypothetical grades')}</div><div class="card list">${cs.map(c=>`<div class="pad row"><span class="swatch" style="background:${c.col}"></span><span class="sp">${esc(L(c.th,c.name))} <span class="tiny n">${c.cr} cr</span>${c.mode==='norm'?` <span class="tiny">· ${L('อิงกลุ่ม','norm')}</span>`:''}</span><div class="seg">${Object.keys(GP).slice(0,6).map(g=>`<button class="${S.gpaSim[c.id]===g?'on':''}" data-act="gpaSet" data-c="${c.id}" data-v="${g}">${g}</button>`).join('')}</div></div>`).join('')}</div>
+ <p class="note">${L('คำนวณตามข้อบังคับจุฬาฯ พ.ศ. 2565 (A 4.0 … D+ 1.5) · ข้อบังคับไม่ระบุวิธีปัดทศนิยม จึงแสดงแบบตัดทิ้ง 2 ตำแหน่ง · S/U/W ไม่นับใน GPA','Uses CU 2565 regulation points · rounding not specified by regulation, shown truncated to 2 decimals · S/U/W excluded')}</p>`}
+function degree(){const g=[['General Education',18,30],['Core Courses',30,30],['Major Requirements',15,48],['Major Electives',3,21],['Free Electives',2,6]];
+ return head(L('ชั้นปีและเทอม','Years & terms'),L('บัญชีบัณฑิต · หลักสูตร (สมมติ) · ข้อมูลหลักสูตรยังไม่ยืนยัน','Accountancy · sample curriculum · not verified'),planTabs('degree'))+
+ `<div class="card pad" style="margin-bottom:12px"><div class="row"><div class="n" style="font-size:36px;font-weight:600">68<span class="muted" style="font-size:20px"> / 135</span></div><span class="muted">${L('หน่วยกิต','credits')}</span><span class="sp"></span>${trust('x')}</div><div class="bar" style="height:10px;margin-top:8px"><i style="width:${68/135*100}%;background:var(--accent)"></i><i style="left:${68/135*100}%;width:${19/135*100}%;background:var(--accent);opacity:.25"></i></div><div class="tiny" style="margin-top:6px">${L('ผ่านแล้ว 68 · กำลังเรียน 19 · ยังขาด 48','Passed 68 · in progress 19 · missing 48')}</div></div>
+ <div class="card list">${g.map(x=>`<div class="pad"><div class="row"><b class="sp">${x[0]}</b><span class="n">${x[1]}/${x[2]}</span></div><div class="bar" style="margin-top:6px"><i style="width:${x[1]/x[2]*100}%;background:${x[1]>=x[2]?'var(--good)':'var(--accent)'}"></i></div>${x[0]==='Major Electives'?`<div class="row small" style="margin-top:8px"><span class="muted sp">${L('วิชารหัส 300–599 ของคณะที่อาจนับได้: 7 วิชา','Faculty 300–599 courses that may count: 7')} — ${L('ตามช่วงรหัสเท่านั้น ยังไม่ยืนยันกับหลักสูตร','by code range only, not confirmed')}</span><button class="btn sm" data-act="catRange">${L('ดูวิชา','View')}</button></div>`:''}</div>`).join('')}</div>
+ <p class="note">${L('ตัวเลขเป็นข้อมูลสมมติสำหรับออกแบบ · ระบบจะไม่รับรองว่าจบได้เมื่อข้อมูลหลักสูตรไม่ครบ','Sample numbers · never certifies graduation when curriculum data is incomplete')}</p>`}
+function planner(){const find=c=>CAT.find(x=>x.code===c);
+ return head(L('ชั้นปีและเทอม','Years & terms'),L('แผนทดลองแยกจากวิชาที่ลงทะเบียนจริง','Draft plans are separate from real enrolment'),planTabs('planner'))+
+ `<div class="grid2">${Object.entries(S.plan).map(([term,cs])=>{const cr=cs.reduce((a,c)=>a+(find(c)?.cr||0),0);return `<div class="card"><div class="pad row"><b class="sp">${term}</b><span class="n small ${cr>22?'':'muted'}">${cr} ${L('หน่วยกิต','cr')}</span></div><div class="list">${cs.map(c=>{const x=find(c);return `<div class="pad row small"><span class="code">${c}</span><span class="sp">${esc(x?.t||'')}</span>${c==='2601212'?`<span class="st chk">${L('ต้องผ่าน 2601113 ก่อน','Needs 2601113')}</span>`:''}<button class="btn ghost sm" data-act="planDel" data-t="${term}" data-c="${c}" aria-label="remove">${I('x')}</button></div>`}).join('')}<div class="pad"><button class="btn sm" data-act="planAdd" data-t="${term}">${I('plus')}${L('เพิ่มจาก Catalog','Add from catalog')}</button></div></div></div>`}).join('')}</div>
+ <p class="note">${L('ตรวจ prerequisite และตารางสอบชนจากข้อมูล Reg ที่มีอยู่ · ข้อมูลรายวิชา CU เป็น legacy ยังไม่ยืนยัน','Prerequisite and exam-clash checks use available Reg data · CU course data is legacy, unverified')}</p>`}
+function calendar(){const days=[];const first=new Date('2026-12-01T00:00:00');const pad=(first.getDay()+6)%7;for(let i=0;i<pad;i++)days.push(null);for(let d=1;d<=31;d++)days.push(d);
+ const ev=d=>S.courses.filter(c=>+c.exam.slice(8,10)===d);
+ return head(L('ปฏิทินสอบและงาน','Exams & deadlines'),L('ธันวาคม 2026','December 2026'),`<button class="btn" data-act="toast" data-v="ics">${L('ส่งออก .ics','Export .ics')}</button>`)+
+ `<div class="cal" role="grid">${['จ','อ','พ','พฤ','ศ','ส','อา'].map((d,i)=>`<div class="o tiny" style="min-height:0">${L(d,['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i])}</div>`).join('')}${days.map(d=>d?`<div class="${d===7?'today':''}"><span class="n">${d}</span>${ev(d).map(c=>`<span class="ev" style="background:${c.col}" title="${esc(c.name)}">${c.exam.slice(11)} ${esc(c.name)}</span>`).join('')}</div>`:'<div class="o"></div>').join('')}</div>
+ <div class="sec">${L('รายการ','List')}</div><div class="card list">${[...S.courses].sort((a,b)=>a.exam.localeCompare(b.exam)).map(c=>`<div class="pad row small"><span class="swatch" style="background:${c.col}"></span><span class="sp">${esc(c.name)} · Final</span><span class="n">${c.exam}</span><span class="muted">${c.room}</span></div>`).join('')}</div>`}
+function catalog(){
+ const q=S.catQ.trim().toLowerCase();const lev=(a,b)=>{if(Math.abs(a.length-b.length)>2)return 9;const m=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)m[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return m[a.length][b.length]};
+ let rows=CAT.filter(c=>(S.catInst==='all'||c.inst===S.catInst)&&(S.catStatus==='all'||c.st===S.catStatus)&&(!S.catRange||(c.inst==='cu'&&c.code.startsWith('26')&&suffix(c)>=300&&suffix(c)<=599)));
+ if(q)rows=rows.filter(c=>{const t=c.t.toLowerCase();return c.code.toLowerCase().includes(q)||t.includes(q)||t.split(/\W+/).some(w=>w&&lev(w,q)<=1)});
+ const per=10,pages=Math.max(1,Math.ceil(rows.length/per));S.catPage=Math.min(S.catPage,pages-1);const view=rows.slice(S.catPage*per,S.catPage*per+per);
+ return head(L('ค้นหารายวิชา','Course catalog'),`${CAT.length} ${L('รายวิชาในตัวอย่าง (CU 31 legacy + TU 21 ตรวจกับต้นทาง)','records in sample (CU 31 legacy + TU 21 source-checked)')}`)+
+ `<div class="row" style="margin-bottom:10px"><input class="f" style="flex:2 1 220px" id="catQ" value="${esc(S.catQ)}" placeholder="${L('ชื่อ รหัส หรือคำบางส่วน เช่น acctg, AC31, audting','Name, code or part, e.g. acctg, AC31, audting')}" aria-label="search">
+ <select class="f" style="flex:1 1 140px" data-act="catInst"><option value="all">${L('ทุกสถาบัน','All institutions')}</option><option value="cu" ${S.catInst==='cu'?'selected':''}>${L('จุฬาฯ','Chulalongkorn')}</option><option value="tu" ${S.catInst==='tu'?'selected':''}>${L('ธรรมศาสตร์','Thammasat')}</option></select>
+ <select class="f" style="flex:1 1 140px" data-act="catStatus"><option value="all">${L('ทุกสถานะข้อมูล','Any data status')}</option><option value="checked" ${S.catStatus==='checked'?'selected':''}>Source checked</option><option value="legacy" ${S.catStatus==='legacy'?'selected':''}>Legacy</option></select></div>
+ <div class="row" style="margin-bottom:10px"><button class="chip ${S.catRange?'on':''}" data-act="catRange">${L('CBS รหัสท้าย 300–599','CBS suffix 300–599')}</button><span class="tiny">${S.catRange?L('ค้นตามช่วงรหัสเท่านั้น — ยังไม่ได้ยืนยันว่านับเป็นวิชาเลือกในหลักสูตรของคุณ','Code-range search only — not confirmed to count in your curriculum'):''}</span></div>
+ <div class="card list">${view.length?view.map(c=>`<div class="pad row"><span class="code" style="width:72px">${c.code}</span><div class="sp"><b style="font-weight:500">${esc(c.t)}</b><div class="tiny">${c.inst==='cu'?L('จุฬาฯ','CU'):L('ธรรมศาสตร์ · BBA 2023','TU · BBA 2023')}</div></div><span class="n small">${c.cr} cr</span>${c.st==='checked'?'<span class="trust v">Source checked</span>':'<span class="trust a">Legacy</span>'}<button class="btn sm" data-act="catAdd" data-c="${c.code}">${I('plus')}</button></div>`).join(''):`<div class="empty">${L('ไม่พบวิชา · เพิ่มวิชาเองได้','No match · you can add it manually')}<div style="margin-top:8px"><button class="btn sm" data-go="courses">${L('เพิ่มเอง','Add manually')}</button></div></div>`}</div>
+ <div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm" data-act="catPg" data-v="-1" ${S.catPage?'':'disabled'}>←</button><span class="n small">${S.catPage+1} / ${pages}</span><button class="btn sm" data-act="catPg" data-v="1" ${S.catPage<pages-1?'':'disabled'}>→</button></div>
+ <p class="note">${L('ที่มา TU:','TU source:')} <a href="https://bba.tbs.tu.ac.th/coursedescription.php?CourseYear=2023">bba.tbs.tu.ac.th · Curriculum 2023</a> · ${L('CU: catalog เดิมใน repo (PR #17) ยังไม่ยืนยัน','CU: existing repo catalog (PR #17), unverified')}</p>`}
+function profile(){const st=S.profileStep;const P=S.profile;
+ const steps=[[L('มหาวิทยาลัย','University'),'inst',[['cu',L('จุฬาลงกรณ์มหาวิทยาลัย','Chulalongkorn University')],['tu',L('มหาวิทยาลัยธรรมศาสตร์','Thammasat University')],['other',L('ไม่พบมหาวิทยาลัยของฉัน','My university isn’t listed')]]],
+  [L('คณะ','Faculty'),'fac',P.inst==='tu'?[['tbs','Thammasat Business School']]:[['cbs',L('พาณิชยศาสตร์และการบัญชี (CBS)','Commerce & Accountancy (CBS)')],['sci',L('วิทยาศาสตร์','Science')],['arts',L('อักษรศาสตร์','Arts')],['edu',L('ครุศาสตร์','Education')],['comm',L('นิเทศศาสตร์','Communication Arts')]]],
+  [L('หลักสูตร','Program'),'prog',P.inst==='tu'?[['bba','BBA (International)'],['bacc',L('บัญชีบัณฑิต','B.Acc.')]]:[['acc',L('บัญชีบัณฑิต','Accountancy')],['bba','BBA International'],['ba',L('บริหารธุรกิจบัณฑิต','Business Administration')],['stat',L('สถิติ','Statistics')]]],
+  [L('สาขา / วิชาเอก','Major'),'major',[['undecided',L('ยังไม่ได้เลือก','Not decided yet')],['fin',L('การเงิน','Finance')],['mkt',L('การตลาด','Marketing')],['mis',L('ระบบสารสนเทศ','MIS')]]]];
+ const done=st>=steps.length;const s=steps[Math.min(st,steps.length-1)];
+ return head(L('สังกัดของฉัน','Academic profile'),L('ไม่บังคับ · ใช้ Grade Tracker ได้เลยโดยไม่ต้องกรอก','Optional · the tracker works without it'))+
+ `<div class="card pad" style="max-width:640px"><div class="row tiny">${steps.map((x,i)=>`<span style="${i===st?'color:var(--ink);font-weight:600':''}">${i+1}. ${x[0]}</span>`).join(' · ')}</div>
+ ${done?`<h2 style="font-size:18px;margin:12px 0 4px">${L('บันทึกสังกัดแล้ว','Profile saved')}</h2><p class="muted small">${L('แนะนำธีมตามสังกัด — เปลี่ยนได้เสมอ และไม่กระทบกฎการคำนวณเกรด','Suggested theme from your affiliation — always changeable, never affects grade rules')}</p><div class="row"><button class="btn pri" data-act="applySuggested">${L('ใช้ธีมที่แนะนำ','Use suggested theme')}</button><button class="btn" data-act="profReset">${L('แก้ไข','Edit')}</button></div>`:
+ `<h2 style="font-size:18px;margin:12px 0 10px">${s[0]}</h2><div class="list card">${s[2].map(o=>`<button class="pad row" style="width:100%;border:0;background:none;text-align:start;cursor:pointer;min-height:52px" data-act="profPick" data-k="${s[1]}" data-v="${o[0]}"><span class="sp">${o[1]}</span>${P[s[1]]===o[0]?I('check'):''}</button>`).join('')}</div>
+ ${s[1]==='inst'&&P.inst==='other'?`<input class="f" style="margin-top:10px" placeholder="${L('พิมพ์ชื่อมหาวิทยาลัย — เราจะแจ้งเมื่อมีข้อมูล','Type your university — we’ll tell you when data arrives')}">`:''}
+ <div class="row" style="margin-top:12px">${st?`<button class="btn" data-act="profBack">${L('ย้อน','Back')}</button>`:''}<span class="sp"></span><button class="btn ghost" data-act="profNext">${L('ข้าม','Skip')}</button><button class="btn pri" data-act="profNext">${L('ถัดไป','Next')}</button></div>`}</div>
+ <p class="note">${L('หลักสูตรที่ข้อมูลยังไม่ครบจะแสดงป้าย “ยังยืนยันไม่ได้” และยังเพิ่มวิชาเองได้','Incomplete curricula show “not verifiable” and still allow manual courses')}</p>`}
+function contrast(){const cs=getComputedStyle(document.documentElement);const parse=c=>{const x=document.createElement('canvas').getContext('2d');x.fillStyle=c;const h=x.fillStyle;if(h[0]!=='#')return null;return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4)};
+ const pr=document.createElement('span');pr.style.color='var(--accent)';document.body.append(pr);const acc=getComputedStyle(pr).color;pr.style.color='var(--surface)';const sur=getComputedStyle(pr).color;pr.remove();
+ const rgb=s=>{const m=s.match(/[\d.]+/g);if(!m)return null;return m.slice(0,3).map(v=>+v/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4)};const lum=a=>.2126*a[0]+.7152*a[1]+.0722*a[2];
+ const a=rgb(acc),b=rgb(sur);if(!a||!b)return '—';const l1=lum(a),l2=lum(b);return ((Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05)).toFixed(2)}
+function appearance(){const th=[['gs','GradeSpace','#4f46e5','#e4e4e0'],['cu',L('จุฬาฯ','Chula'),'#c2185b','#f8bbd0'],['cbs','CBS','#1e6fb8','#e58fb5'],['tu',L('ธรรมศาสตร์','Thammasat'),'#b3261e','#e8b500']];
+ return head(L('หน้าตาแอป','Appearance'),L('แยกจากสังกัดจริง · ไม่เปลี่ยนข้อมูลวิชาหรือกฎเกรด','Separate from your real affiliation · never changes courses or grade rules'))+
+ `<div class="grid2">${th.map(t=>`<button class="card pad" style="text-align:start;cursor:pointer;${S.theme===t[0]&&!S.accentCustom?'border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)':''}" data-act="theme" data-v="${t[0]}"><div class="row"><span class="swatch" style="background:${t[2]}"></span><span class="swatch" style="background:${t[3]};margin-inline-start:-10px"></span><b>${t[1]}</b></div><div class="tiny" style="margin-top:4px">${L('โทนสีที่ได้แรงบันดาลใจ ไม่ใช่ตราทางการ','Inspired palette, not official branding')}</div></button>`).join('')}</div>
+ <div class="sec">${L('โหมด','Mode')}</div><div class="seg">${[['system','System'],['light','Light'],['dark','Dark']].map(m=>`<button class="${S.mode===m[0]?'on':''}" data-act="mode" data-v="${m[0]}">${m[1]}</button>`).join('')}</div>
+ <div class="sec">${L('สี Accent เอง','Custom accent')}</div><div class="row"><input type="color" id="accIn" value="${S.accentCustom||'#4f46e5'}" style="width:52px;height:44px;border:1px solid var(--line2);border-radius:8px;background:none" aria-label="accent"><button class="btn" data-act="reset">${L('คืนค่าเริ่มต้น','Reset')}</button><span class="small">Contrast ${L('กับพื้น','vs surface')}: <b class="n" id="cr">${contrast()}</b>:1 <span class="tiny">(${L('ต้อง ≥ 4.5','needs ≥ 4.5')})</span></span></div>
+ <div class="sec">${L('ตัวอย่าง','Preview')}</div><div class="courses">${courseCard(S.courses[0],false)}${courseCard(S.courses[1],false)}</div><div class="row" style="margin-top:10px"><button class="btn pri">${L('ปุ่มหลัก','Primary')}</button><span class="trust v">${L('สีสถานะไม่เปลี่ยนตามธีม','Status colours stay fixed')}</span></div>`}
+function coverage(){const R=[['CU · ทุกคณะ (catalog เดิม)','149 legacy','0','0','0','—','58 + Reg'],['CU · บัญชี/BBA/สถิติ','ใน 149','0','0','0','53 legacy','Reg'],['CU · GenEd','sync PDF','บางส่วน','0','6 กลุ่ม','—','—'],['TU · BBA 2023','21 / 208','0','ยังไม่นำเข้า','0','0','0']];
+ return head(L('ความครอบคลุมข้อมูล','Data coverage'),L('สถานะจริง ณ 25 พ.ย. 2026 จาก repo และแหล่งทางการ','Actual state as of 25 Nov 2026'))+
+ `<div class="card scroll"><table class="t"><thead><tr><th>${L('สถาบัน / หลักสูตร','Institution / program')}</th><th>${L('รายวิชา','Courses')}</th><th>${L('ชื่อไทย','Thai names')}</th><th>${L('คำอธิบาย','Descriptions')}</th><th>${L('โครงสร้าง','Structure')}</th><th>${L('แผน','Plans')}</th><th>${L('ตารางสอบ','Exams')}</th></tr></thead><tbody>${R.map(r=>`<tr>${r.map((x,i)=>`<td class="${i?'n small':''}">${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+ <div class="row" style="margin-top:10px;gap:14px">${[['v','Verified'],['v','Source checked'],['a','Legacy'],['a','Needs review'],['x','Conflicting'],['','Unavailable']].map(x=>`<span class="trust ${x[0]}">${x[1]}</span>`).join('')}</div>`}
+function admin(){return head(L('จัดการข้อมูล (Admin)','Admin data management'),'Collect → Staging → Validate → Review → Publish')+
+ `<div class="card list">${S.admin.map((a,i)=>`<div class="pad row"><div class="sp"><b style="font-weight:500">${esc(a[0])}</b><div class="tiny">${a[1]} · ${L('มีหลักฐานหน้า PDF/URL ทุกแถว','evidence on every row')}</div></div><span class="st ${a[2]==='เผยแพร่แล้ว'?'new':'chk'}">${a[2]}</span>${a[2]!=='เผยแพร่แล้ว'?`<button class="btn sm" data-act="admDiff" data-i="${i}">${L('ดู diff','Diff')}</button><button class="btn sm pri" data-act="admPub" data-i="${i}">${L('เผยแพร่','Publish')}</button>`:`<button class="btn sm" data-act="toast" data-v="rollback">${L('ย้อน batch','Roll back')}</button>`}</div>`).join('')}</div>
+ <div class="sec">${L('ความขัดแย้งที่ต้องตัดสิน','Conflicts to decide')}</div><div class="card pad small"><b>BBA majors</b> — ${L('แหล่งหนึ่งระบุ 4 สาขา อีกแหล่งระบุ Digital Business Management · เก็บทั้งสองเป็น curriculum_version แยกตามรุ่น','one source lists 4 majors, another lists Digital Business Management · store both as cohort-specific curriculum versions')}<div class="row" style="margin-top:8px"><button class="btn sm">${L('แยกตามรุ่น','Split by cohort')}</button><button class="btn sm ghost">${L('ทำเครื่องหมาย conflicting','Mark conflicting')}</button></div></div>`}
+function more(){return head(L('เพิ่มเติม','More'),'')+`<div class="card list">${MORE.map(m=>`<a href="#${m[0]}" data-go="${m[0]}" class="pad row" style="text-decoration:none;color:inherit;min-height:52px"><span class="sp">${L(m[1],m[2])}</span>›</a>`).join('')}</div>`}
+function map(){const all=[['overview','1 Overview'],['courses','2 My Courses'],['course','3 Course Detail'],['catalog','4 Course Catalog'],['profile','5 Academic Profile'],['appearance','6 Appearance'],['ai','7 AI Welcome'],['ai','8 AI Chat + Voice'],['upload','9 Multiple File Upload'],['upload','10 Upload Progress'],['review','11 AI Bulk Review'],['conflict','12 Conflict Resolution'],['history','13 Import History'],['gpa','14 GPA & Simulator'],['degree','15 Degree Progress'],['planner','16 Semester Planner'],['calendar','17 Calendar'],['coverage','18 Data Coverage'],['admin','19 Admin Data'],['connect','20 Connected AI + widget ในแชท (Connect)']];
+ return head(L('แผนผังทุกหน้าจอ','All screens & flows'),L('กดเพื่อไปหน้าจอนั้น','Tap to open'))+`<div class="map">${all.map(a=>`<a class="card" href="#${a[0]}" data-go="${a[0]}"><b>${a[1]}</b></a>`).join('')}</div>
+ <div class="sec">${L('Flow หลัก','Key flows')}</div><div class="card pad small"><ol style="margin:0;padding-inline-start:20px;line-height:2">
+ <li>${L('นำเข้าด้วยเสียง','Voice import')}: AI → ${L('ไมค์','mic')} (Recording → Paused) → Transcribing → ${L('แก้ข้อความ','Edit transcript')} → Analyzing → Clarification → Bulk Review → ${L('บันทึก','Save')} → Import History (Undo)</li>
+ <li>${L('นำเข้าภาพจำนวนมาก','Bulk images')}: ${L('เพิ่ม','Add')} → Upload → Progress (retry batch) → Review → Conflict → ${L('บันทึก','Save')}</li>
+ <li>${L('วางแผน','Planning')}: Degree Progress → Catalog (300–599) → Planner → GPA Simulator</li>
+ <li>Onboarding: ${L('ใช้ได้ทันที','Use immediately')} → Academic Profile (${L('ข้ามได้ทุกขั้น','skippable')}) → ${L('แนะนำธีม','Suggest theme')}</li></ol></div>`}
+function connect(){const C=S.conns;
+ return head(L('AI ของคุณ GradeSpace ของคุณ','Your AI, your GradeSpace.'),L('ใช้ AI ที่ถนัด แล้วกลับมาดูทุกอย่างที่นี่ · ต้นแบบ ใช้ข้อมูลจำลอง (ยังไม่เปิดจริงจนกว่าจะมีระบบยืนยันตัวตน)','Use the AI you like, keep everything here · prototype, sample data (not live until sign-in is secured)'))+
+ `<div class="grid2">${[['chatgpt','Continue with ChatGPT',L('แนบภาพในแชท แล้วพิมพ์ @GradeSpace','Attach images and type @GradeSpace')],['claude','Connect Claude',L('เพิ่มเป็น connector ครั้งเดียว','Add once as a connector')],['other','Connect other AI',L('AI ที่รองรับ MCP','Any MCP-capable AI')],['json','Import AI-generated data',L('วาง JSON หรือ CSV จาก AI ใดก็ได้','Paste JSON or CSV from any AI')]].map(o=>`<div class="card pad"><div class="row"><b class="sp">${o[1]}</b>${C[o[0]]?`<span class="trust v">${L('เชื่อมแล้ว','Connected')}</span>`:''}</div><div class="small muted" style="margin:4px 0 10px">${o[2]}</div><button class="btn sm ${C[o[0]]?'':'pri'}" data-act="conn" data-v="${o[0]}">${C[o[0]]?L('ยกเลิกสิทธิ์','Revoke'):o[0]==='json'?L('เปิด','Open'):L('เชื่อมต่อ','Connect')}</button></div>`).join('')}</div>
+ ${C.chatgpt?`<div class="sec">ChatGPT · ${L('สิทธิ์ที่อนุญาต','Permissions')}</div><div class="card list"><div class="pad small">${L('อ่านวิชาและคะแนน · เตรียมรายการนำเข้า · บันทึกหลังคุณยืนยันในแชท','Read courses and scores · prepare imports · save only after you confirm in chat')}<div class="tiny">${L('เชื่อมเมื่อ 25 พ.ย. 2026 · token หมดอายุทุก 1 ชม. และต่ออายุอัตโนมัติ','Connected 25 Nov 2026 · tokens expire hourly and refresh')}</div></div><div class="pad row small"><span class="st new">🔗 ChatGPT</span><span class="sp">${L('อัปเดต 12 คะแนน · Experiential English I','Updated 12 scores · Experiential English I')}</span><span class="tiny">21:52</span><button class="btn sm" data-go="history">${I('undo')}${L('ย้อนกลับ','Undo')}</button></div></div>`:''}
+ <div class="sec">${L('ตัวอย่าง: สิ่งที่ผู้ใช้เห็นในแชท ChatGPT/Claude (MCP App widget)','Example: what users see inside ChatGPT/Claude (MCP App widget)')}</div>
+ <div class="card" style="max-width:520px;margin:0 auto;padding:4px 0 12px;background:var(--surface2)"><div class="msg u" style="margin:12px;margin-inline-start:auto;max-width:80%">@GradeSpace ${L('เอาคะแนนทั้งหมดในรูปนี้ลงวิชาอิงให้หน่อย','put every score in these images into English')} <div class="att">${[1,2,3].map(k=>`<div class="a1">${I('img')}IMG_${2039+k}</div>`).join('')}</div></div>
+ <div class="card" style="margin:0 12px;border-radius:14px"><div class="pad" style="border-bottom:1px solid var(--line)"><div class="tiny">GradeSpace</div><b>Experiential English I</b><div class="small muted">${L('พบ 12 · พร้อมบันทึก 9 · ต้องตรวจ 2 · ซ้ำ 1','12 found · 9 ready · 2 to check · 1 duplicate')}</div></div>
+ <div class="list">${[['Quiz 3','9','10','new'],['Quiz 4','8.5','10','new'],['Reading 2','—','10','chk'],['Presentation','21','25','dup']].map(r=>`<div class="pad row small"><span class="sp">${r[0]}</span><span class="n">${r[1]}/${r[2]}</span><span class="st ${r[3]}">${{new:L('ใหม่','New'),chk:L('ต้องตรวจ','Check'),dup:L('ซ้ำ','Duplicate')}[r[3]]}</span></div>`).join('')}<div class="pad tiny">+ 8 ${L('รายการ','more')}</div></div>
+ <div class="pad row"><button class="btn sm ghost" data-go="review">${L('เปิดใน GradeSpace','Open in GradeSpace')}</button><span class="sp"></span><button class="btn sm">${L('ยกเลิก','Cancel')}</button><button class="btn sm pri" data-act="connConfirm">${L('บันทึก 9 รายการ','Save 9 items')}</button></div></div>
+ <div class="tiny" style="padding:8px 14px">${L('ถ้าแพลตฟอร์มไม่รองรับ widget: AI จะสรุปเป็นข้อความพร้อมลิงก์ไปหน้าตรวจสอบใน GradeSpace','If the host has no widgets: a text summary with a link to the GradeSpace review page')}</div></div>`}
+function settings(){const R=[['appearance','sliders',L('หน้าตาแอป','Appearance'),L('ธีมมหาวิทยาลัย โหมดสว่าง/มืด สี','University theme, light/dark, colours')],['profile','user',L('สังกัดของฉัน','Academic profile'),L('มหาวิทยาลัย คณะ หลักสูตร','University, faculty, program')],['connect','link',L('AI ที่เชื่อมต่อ','Connected AI'),L('ChatGPT, Claude และ AI อื่น','ChatGPT, Claude and others')],['history','undo',L('ประวัติการนำเข้า','Import history'),L('ย้อนกลับการนำเข้าทั้งชุด','Undo whole imports')]];
+ const A=[['coverage','db',L('ความครอบคลุมข้อมูล','Data coverage')],['admin','db',L('จัดการข้อมูลหลักสูตร','Curriculum data')]];
+ const row=r=>`<a class="todo" href="#${r[0]}" data-go="${r[0]}" style="display:flex;gap:14px;align-items:center;padding:14px 16px;text-decoration:none;color:inherit">${I(r[1])}<span class="sp"><b style="display:block;font-weight:600">${r[2]}</b>${r[3]?`<span class="small muted">${r[3]}</span>`:''}</span><span class="muted">›</span></a>`;
+ return head(L('ตั้งค่า','Settings'),'test@example.com')+`<div class="card list">${R.map(row).join('')}</div><div class="sec">${L('สำหรับผู้ดูแลข้อมูล','For data maintainers')}</div><div class="card list">${A.map(row).join('')}</div>`}
+function feedback(){return head(L('ข้อเสนอแนะ','Feedback'),L('บอกเราได้เลยว่าอะไรใช้ยาก','Tell us what is hard to use'))+`<div class="card pad" style="max-width:640px"><textarea class="f" placeholder="${L('เขียนข้อเสนอแนะ…','Write feedback…')}"></textarea><div class="row" style="margin-top:10px"><span class="sp"></span><button class="btn primary" data-act="toast" data-v="fb">${L('ส่ง','Send')}</button></div></div>`}
+function help(){const Q=[[L('ใส่คะแนนเร็วที่สุดทำยังไง','Fastest way to add scores?'),L('กดปุ่ม “ผู้ช่วย AI” บนหัวเว็บ แล้วพูดหรือส่งภาพหน้าจอ ระบบจะให้ตรวจก่อนบันทึกเสมอ','Tap “AI assistant” at the top, speak or send screenshots; you always review before saving.')],[L('“ยังไม่ประกาศ” ต่างจาก 0 ยังไง','“Pending” vs 0?'),L('งานที่ยังไม่ประกาศไม่ถูกนับในคะแนน ส่วน 0 คือได้ศูนย์จริง','Pending is not counted; 0 is a real zero.')],[L('ย้อนการนำเข้าได้ไหม','Can I undo an import?'),L('ได้ ที่ ตั้งค่า › ประวัติการนำเข้า','Yes: Settings › Import history.')]];
+ return head(L('คู่มือ / ถามตอบ','Guide / Q&A'),'',`<button class="btn" data-act="wnShow">${L('ดูสิ่งที่ใหม่อีกครั้ง','Show what’s new again')}</button>`)+`<div class="help-faq" style="max-width:720px">${Q.map(q=>`<details class="help-accordion"><summary>${q[0]}</summary><p>${q[1]}</p></details>`).join('')}</div>`}
+const CMDS=()=>[
+ ['spark',L('พูดคะแนนให้ AI','Speak scores to AI'),L('อัดเสียง แล้วตรวจก่อนบันทึก','Record, then review'),'act:vStart'],
+ ['img',L('สแกนภาพหน้าจอหลายภาพ','Scan many screenshots'),'MyCourseVille / LMS','go:upload'],
+ ['spark',L('ถาม AI ว่า Final ต้องได้เท่าไหร่','Ask AI what I need on the final'),'','go:ai'],
+ ['search',L('ค้นหารายวิชา (Catalog)','Course catalog'),L('จุฬาฯ · ธรรมศาสตร์ · รหัส 300–599','CU · TU · codes 300–599'),'go:catalog'],
+ ['flag',L('ความคืบหน้าหลักสูตร','Degree progress'),L('ในชั้นปีและเทอม','In Years & terms'),'go:degree'],
+ ['cal',L('ปฏิทินสอบ','Exam calendar'),'','go:calendar'],
+ ['layers',L('จำลองคะแนนและ GPA','Simulate scores and GPA'),'','go:simulator'],
+ ['undo',L('ย้อนการนำเข้าล่าสุด','Undo last import'),L('ตั้งค่า › ประวัติการนำเข้า','Settings › Import history'),'go:history'],
+ ['link',L('เชื่อม ChatGPT หรือ Claude','Connect ChatGPT or Claude'),L('ตั้งค่า › AI ที่เชื่อมต่อ','Settings › Connected AI'),'go:connect'],
+ ['sliders',L('เปลี่ยนธีมมหาวิทยาลัย','Change university theme'),L('ตั้งค่า › หน้าตาแอป','Settings › Appearance'),'go:appearance'],
+ ['user',L('ตั้งสังกัด (มหาวิทยาลัย/คณะ)','Set your university & faculty'),'','go:profile'],
+ ...S.courses.map(c=>['book',L(c.th,c.name),c.code+' · Sec '+c.sec,'course:'+c.id])];
+function cmdMenu(){const q=S.cmdQ.trim().toLowerCase();const items=CMDS().filter(x=>!q||(x[1]+' '+x[2]).toLowerCase().includes(q)).slice(0,9);
+ return `<div class="scrim" data-act="closeSheet" style="align-items:flex-start;padding-top:10vh"><div class="sheet cmdsheet" role="dialog" aria-modal="true" aria-label="Command menu"><div class="row" style="flex-wrap:nowrap;border-bottom:1px solid var(--line);padding:4px 4px 10px">${I('search')}<input id="cmdIn" class="f" style="border:0;min-height:36px;padding:4px" value="${esc(S.cmdQ)}" placeholder="${L('ลองพิมพ์ “เสียง”, “บัญชี”, “ย้อน”','Try “voice”, “accounting”, “undo”')}" autocomplete="off"></div>
+ <div class="list">${items.map(x=>`<button class="todo" data-act="cmdRun" data-v="${x[3]}" style="display:flex;gap:12px;align-items:center;padding:10px 8px;width:100%;border:0;background:none;text-align:start;cursor:pointer">${I(x[0])}<span class="sp"><b style="display:block;font-weight:600;font-size:14.5px">${esc(x[1])}</b>${x[2]?`<span class="tiny">${esc(x[2])}</span>`:''}</span></button>`).join('')||`<div class="empty">${L('ไม่พบ','No match')}</div>`}</div><div class="tiny" style="padding:8px 4px 0">${L('ทุกฟีเจอร์ค้นได้จากที่นี่ แม้จะไม่อยู่ในเมนู','Every feature is searchable here, even if it is not in the menu')}</div></div></div>`}
+const planTabs=on=>`<div class="seg" role="tablist"><button class="${on==='planner'?'on':''}" data-go="planner">${L('แผนรายเทอม','Term plans')}</button><button class="${on==='degree'?'on':''}" data-go="degree">${L('ความคืบหน้าหลักสูตร','Degree progress')}</button></div>`;
+const SCREENS={overview,courses,course,upload,review,conflict,calendar,more,gpa,simulator:gpa,degree,planner,catalog,history,profile,appearance,coverage,admin,map,connect,settings,feedback,help};
+
+/* ---------- render ---------- */
+let toastT;
+function toast(msg,undo){clearTimeout(toastT);$('#layer').querySelector('.toast')?.remove();const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.innerHTML=`<span>${msg}</span>${undo?`<button data-act="${undo}">${L('ย้อนกลับ','Undo')}</button>`:''}`;$('#layer').append(d);toastT=setTimeout(()=>d.remove(),5000)}
+function sheet(html){$('#layer').innerHTML=`<div class="scrim" data-act="closeSheet"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`}
+function applyRoot(){const r=document.documentElement;r.dataset.inst=S.theme;r.dataset.mode=S.mode;r.dataset.font=S.font;r.lang=S.lang;
+ if(S.accentCustom){r.style.setProperty('--accent',S.accentCustom);r.style.setProperty('--accent-soft',S.accentCustom+'22')}else{r.style.removeProperty('--accent');r.style.removeProperty('--accent-soft')}
+ $('#pTheme').value=S.theme;$('#pMode').value=S.mode;$('#pLang').value=S.lang;$('#pFont').value=S.font}
+function render(){applyRoot();navHTML();$('#main').innerHTML=(SETSUB.includes(S.route)?`<button class="btn ghost sm" data-go="settings">← ${L('ตั้งค่า','Settings')}</button>`:'')+(SCREENS[S.route]||overview)();
+ $('#aiLayer').innerHTML=S.aiOpen?`<div class="aiscrim" data-act="aiClose"></div><aside class="aidrawer" role="dialog" aria-modal="true" aria-label="GradeSpace AI"><div class="aihead">${I('spark')}<b class="sp">GradeSpace AI</b>${S.aiStarted?`<button class="btn ghost sm" data-act="aiReset">${L('แชทใหม่','New chat')}</button>`:''}<button class="btn ghost icon" data-act="aiClose" aria-label="${L('ปิด','Close')}">${I('x')}</button></div><div class="aibody">${ai()}</div></aside>`:'';const cr=$('#cr');if(cr)cr.textContent=contrast()}
+
+/* ---------- voice simulation ---------- */
+let vTimer;
+function vTick(){clearInterval(vTimer);vTimer=setInterval(()=>{if(S.voice.st!=='rec')return;S.voice.t++;if(S.aiOpen)render()},1000)}
+function pushChat(m){S.chat.push(m);render();const c=$('.chat');if(c)c.lastElementChild?.scrollIntoView({block:'end',behavior:'smooth'})}
+function analyzeFlow(text){S.chat=S.chat.filter(m=>m.k!=='transcript');S.chat.push({k:'u',text,audio:16});const a={k:'analyzing',step:0};pushChat(a);
+ let i=0;const t=setInterval(()=>{a.step=++i;render();if(i>=3){clearInterval(t);S.chat=S.chat.filter(m=>m!==a);pushChat({k:'clarify'})}},700)}
+function finishVoice(){S.review={title:L('จากเสียง · 2 วิชา','From voice · 2 courses'),src:'voice',rows:mkReview('voice')};pushChat({k:'proposal',n:4,src:L('ข้อความเสียง 16 วินาที','a 16-second voice message'),sum:L('Experiential English I: Quiz 1 (แก้จาก 8 → 9), Quiz 2, Presentation (ซ้ำ) · Principles of Accounting: Midterm 68.5','Experiential English I: Quiz 1 (8 → 9), Quiz 2, Presentation (duplicate) · Principles of Accounting: Midterm 68.5')})}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+ const g=e.target.closest('[data-go]');if(g){e.preventDefault();$('#layer').innerHTML='';go(g.dataset.go);return}
+ const sh=e.target.closest('[data-sheet]');if(sh){sheet(sheetAdd());return}
+ const cc=e.target.closest('[data-course]');const dt=e.target.closest('[data-detail]');
+ if(dt){S.openCourse=dt.dataset.detail;go('course');return}
+ const el=e.target.closest('[data-act]');
+ if(!el){return}
+ const a=el.dataset.act,v=el.dataset.v,i=+el.dataset.i;
+ const R=S.review?.rows;const row=R?R.find(r=>r.id===i):null;
+ switch(a){
+ case 'cmdOpen':S.cmdQ='';$('#layer').innerHTML=cmdMenu();$('#cmdIn').focus();break;
+ case 'cmdRun':{$('#layer').innerHTML='';const [k,x]=v.split(':');if(k==='go')go(x);else if(k==='course'){S.openCourse=x;go('course')}else if(x==='vStart'){S.aiStarted=true;S.seen.ai=1;S.aiOpen=true;S.voice={st:'rec',t:0};render();vTick()}break}
+ case 'wnShow':S.whatsNew=true;go('overview');break;
+ case 'wnClose':S.whatsNew=false;render();break;
+ case 'aiClose':if(el.classList.contains('aiscrim')&&e.target!==el)break;S.aiOpen=false;render();break;
+ case 'lang':S.lang=v;render();break;
+ case 'modeToggle':{const dark=S.mode==='dark'||(S.mode==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);S.mode=dark?'light':'dark';render();break}
+ case 'closeSheet':if(e.target===el)$('#layer').innerHTML='';break;
+ case 'aiStart':S.aiStarted=true;render();break;
+ case 'aiReset':S.chat=[];S.voice={st:'idle',t:0};render();break;
+ case 'prompt':S.aiStarted=true;pushChat({k:'u',text:v});setTimeout(()=>pushChat({k:'a',html:v.includes('9')?L('เข้าใจว่า <b>Experiential English I · Quiz 1 = 9/10</b> — เตรียมรายการให้ตรวจแล้ว','Understood <b>Experiential English I · Quiz 1 = 9/10</b> — ready to review'):L('จาก Grade Engine: Economics I ต้องได้ Final อย่างน้อย <b class="n">22.78/35</b> เพื่อ A (เป้าหมายที่คุณตั้ง) · ข้อเท็จจริง: สะสม 52.45/60 · คาดการณ์: 85.22%','From the grade engine: Economics I needs <b class="n">22.78/35</b> on the final for your A target · Fact: 52.45/60 collected · Projection: 85.22%')}),600);break;
+ case 'send':{const t=$('#cin')?.value.trim();if(!t)return;S.aiStarted=true;pushChat({k:'u',text:t});setTimeout(()=>pushChat({k:'a',text:L('(ต้นแบบ) ข้อความนี้จะถูกส่งเข้า pipeline เดียวกับเสียงและภาพ แล้วสร้างรายการให้ตรวจ','(Prototype) This text goes through the same pipeline as voice and images, producing a list to review')}),500);break}
+ case 'vStart':case 'demoVoice':S.aiStarted=true;S.voice={st:'rec',t:0};if(S.route!=='ai')go('ai');else render();vTick();toast(L('จำลอง: ขอสิทธิ์ไมโครโฟนตอนกดครั้งแรกเท่านั้น','Simulated: mic permission is requested only on first tap'));break;
+ case 'vPause':S.voice.st='paused';render();break;
+ case 'vResume':S.voice.st='rec';render();break;
+ case 'vPlay':toast(L('▶ เล่นเสียงที่อัด (จำลอง)','▶ Playing recording (simulated)'));break;
+ case 'vCancel':clearInterval(vTimer);S.voice={st:'idle',t:0};S.chat=S.chat.filter(m=>m.k!=='transcribing'&&m.k!=='transcript');render();toast(L('ยกเลิกแล้ว · ไม่มีเสียงถูกส่งหรือเก็บ','Cancelled · nothing sent or kept'));break;
+ case 'vStop':{clearInterval(vTimer);S.voice={st:'idle',t:0};const tr={k:'transcribing'};pushChat(tr);setTimeout(()=>{S.chat=S.chat.filter(m=>m!==tr);pushChat({k:'transcript',text:SAMPLE_SPEECH})},1400);break}
+ case 'vAnalyze':analyzeFlow($('#tEdit')?.value||SAMPLE_SPEECH);break;
+ case 'clar':S.clar=v;S.chat=S.chat.filter(m=>m.k!=='clarify');pushChat({k:'u',text:v==='?'?L('ไม่แน่ใจ ข้ามไปก่อน','Not sure, skip'):L('เต็ม ','out of ')+v});setTimeout(finishVoice,500);break;
+ case 'demoImg':S.aiStarted=true;S.review={title:'Experiential English I · 10 '+L('ภาพ','images'),src:'img',rows:mkReview('img')};if(S.aiOpen){pushChat({k:'u',text:L('ทั้งหมดนี้เป็นคะแนนวิชา Experiential English I','These are all Experiential English I scores'),files:Array.from({length:10},(_,k)=>'IMG_'+(2040+k))});setTimeout(()=>pushChat({k:'proposal',n:30,src:L('10 ภาพ','10 images'),sum:L('ใหม่ 19 · แก้ไข 4 · ต้องตรวจ 2 · ซ้ำ 2 · เกินเต็ม 1','19 new · 4 updates · 2 to check · 2 duplicates · 1 over max')}),900)}else go('review');break;
+ case 'demoVoiceReview':S.clar='80';S.review={title:L('จากเสียง · 2 วิชา','From voice · 2 courses'),src:'voice',rows:mkReview('voice')};render();break;
+ case 'revF':S.reviewFilter=v;render();break;
+ case 'revSkip':row.skip=!row.skip;render();break;
+ case 'revSel':row.sel=el.checked;break;
+ case 'revAll':R.forEach(r=>r.sel=el.checked);render();break;
+ case 'revSkipSel':R.forEach(r=>{if(r.sel){r.skip=true;r.sel=false}});render();break;
+ case 'revAdd':R.push({id:R.length,c:'c2',n:L('งานใหม่','New item'),type:'other',s:null,m:'',w:'',st:'chk',old:'',ev:L('เพิ่มเอง','Added manually'),skip:false,sel:false});render();break;
+ case 'revEdit':{const r=row;sheet(`<div class="grab"></div><h2 style="font-size:18px;margin:0 0 10px">${esc(r.n)}</h2><div class="grid2"><label>${L('ได้','Score')}<input class="f n" data-ed="s" data-i="${r.id}" value="${r.s??''}" inputmode="decimal"></label><label>${L('เต็ม','Max')}<input class="f n" data-ed="m" data-i="${r.id}" value="${r.m}" inputmode="decimal"></label></div><p class="tiny">${esc(r.ev)}</p><button class="btn pri" data-act="closeSheetBtn">${L('เสร็จ','Done')}</button>`);break}
+ case 'closeSheetBtn':$('#layer').innerHTML='';render();break;
+ case 'revCancel':S.review=null;go('overview');toast(L('ยกเลิกการนำเข้า ไม่มีข้อมูลถูกเปลี่ยน','Import cancelled · nothing changed'));break;
+ case 'revSave':{const n=R.filter(r=>!r.skip&&r.st!=='chk'&&r.st!=='bad').length;const h={id:'h'+Date.now(),when:L('เมื่อสักครู่','just now'),src:S.review.src,n,course:S.review.title,undone:false};S.history.unshift(h);S.lastH=h.id;S.review=null;go('history');toast(L(`บันทึก ${n} รายการแล้ว`,`Saved ${n} items`),'undoLast');break}
+ case 'undoLast':case 'undoH':{const h=S.history.find(x=>x.id===(a==='undoLast'?S.lastH:el.dataset.i));if(h){h.undone=true;render();toast(L('ย้อนกลับทั้งชุดแล้ว คืนค่าเดิมทุกช่อง','Whole import undone; every field restored'))}break}
+ case 'cfOld':row.keepOld=true;row.s=+row.old;row.st='dup';row.skip=true;render();break;
+ case 'cfNew':row.keepOld=false;render();break;
+ case 'upSample':{const f=Array.from({length:12},(_,k)=>k<10?`IMG_${2040+k}.png`:k===10?'syllabus.pdf':'scores.csv');startUpload(f);break}
+ case 'upRetry':{const b=S.uploads.batches[i];b.st='read';b.p=40;render();setTimeout(()=>{b.st='done';b.p=100;b.rows=9;S.uploads.done++;render()},900);break}
+ case 'upCancel':S.uploads=null;render();break;
+ case 'upReview':S.review={title:'Experiential English I · 12 '+L('ไฟล์','files'),src:'img',rows:mkReview('img')};go('review');break;
+ case 'gpaSet':S.gpaSim[el.dataset.c]=v;render();break;
+ case 'gpaReset':S.gpaSim={c1:'A',c2:'A',c3:'B+',c4:'B',c5:'B',c6:'A'};render();break;
+ case 'planDel':S.plan[el.dataset.t]=S.plan[el.dataset.t].filter(c=>c!==el.dataset.c);render();break;
+ case 'planAdd':S.planTarget=el.dataset.t;go('catalog');toast(L('เลือก + จากรายการเพื่อเพิ่มเข้าแผน','Tap + to add to the plan'));break;
+ case 'catRange':S.catRange=!S.catRange;S.catPage=0;if(S.route!=='catalog')go('catalog');else render();break;
+ case 'catPg':S.catPage+=+v;render();break;
+ case 'catAdd':{const t=S.planTarget||'2/2569';if(!S.plan[t].includes(el.dataset.c))S.plan[t].push(el.dataset.c);toast(L(`เพิ่ม ${el.dataset.c} ในแผน ${t}`,`Added ${el.dataset.c} to ${t}`));break}
+ case 'profPick':S.profile[el.dataset.k]=v;render();break;
+ case 'profNext':S.profileStep++;render();break;
+ case 'profBack':S.profileStep--;render();break;
+ case 'profReset':S.profileStep=0;render();break;
+ case 'applySuggested':S.theme=S.profile.inst==='tu'?'tu':S.profile.fac==='cbs'?'cbs':S.profile.inst==='cu'?'cu':'gs';S.accentCustom='';render();toast(L('เปลี่ยนธีมแล้ว · ข้อมูลวิชาไม่เปลี่ยน','Theme changed · course data untouched'));break;
+ case 'theme':S.theme=v;S.accentCustom='';render();break;
+ case 'mode':S.mode=v;render();break;
+ case 'reset':S.theme='gs';S.mode='system';S.accentCustom='';render();break;
+ case 'admPub':S.admin[i][2]='เผยแพร่แล้ว';render();toast(L('เผยแพร่ batch แล้ว · ย้อนได้','Batch published · reversible'));break;
+ case 'admDiff':sheet(`<div class="grab"></div><h2 style="font-size:18px;margin:0 0 8px">Diff</h2><table class="t small"><tr><th>code</th><th>field</th><th>${L('เดิม','old')}</th><th>${L('ใหม่','new')}</th></tr><tr><td class="code">AC296</td><td>credits</td><td>—</td><td class="n">1.5</td></tr><tr><td class="code">FN281</td><td>title_en</td><td>—</td><td>Wealth Management</td></tr></table>`);break;
+ case 'conn':if(v==='json'){S.review={title:L('วาง JSON จาก AI อื่น','Pasted JSON from another AI'),src:'json',rows:mkReview('voice')};go('review');break}S.conns[v]=!S.conns[v];render();toast(S.conns[v]?L('จำลองการเชื่อมต่อ (OAuth จริงรอระบบยืนยันตัวตน)','Simulated connection (real OAuth waits for secure sign-in)'):L('ยกเลิกสิทธิ์แล้ว · AI นี้อ่านหรือเขียนข้อมูลไม่ได้อีก','Revoked · this AI can no longer read or write'));break;
+ case 'connConfirm':{const h={id:'h'+Date.now(),when:L('เมื่อสักครู่','just now'),src:'chatgpt',n:9,course:'Experiential English I · ChatGPT',undone:false};S.history.unshift(h);S.lastH=h.id;toast(L('บันทึก 9 รายการผ่าน ChatGPT','Saved 9 items via ChatGPT'),'undoLast');break}
+ case 'toast':toast(v==='fb'?L('ส่งแล้ว ขอบคุณครับ','Sent, thank you'):v==='goal'?L('แก้เป้าหมาย (ต้นแบบ)','Edit target (prototype)'):v==='ics'?L('สร้างไฟล์ .ics (ในแอปจริงจะดาวน์โหลด)','.ics created (downloads in the real app)'):L('ย้อน batch แล้ว','Batch rolled back'));break;
+ }
+});
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.dataset.ed&&S.review){const r=S.review.rows.find(x=>x.id===+t.dataset.i);const k=t.dataset.ed;let v=t.value.trim();if(k==='s'||k==='m'){v=v===''?(k==='s'?null:''):+v}r[k]=v;
+  if((k==='s'||k==='m')&&r.s!=null&&r.m!==''&&!isNaN(r.m)){r.st=r.s>r.m?'bad':(r.old?'upd':'new')}else if(k==='m'&&v==='')r.st='chk'}
+ if(t.id==='cmdIn'){S.cmdQ=t.value;const p=t.selectionStart;$('#layer').innerHTML=cmdMenu();const n=$('#cmdIn');n.focus();n.setSelectionRange(p,p)}
+ if(t.id==='catQ'){S.catQ=t.value;S.catPage=0;const p=t.selectionStart;render();const n=$('#catQ');n.focus();n.setSelectionRange(p,p)}
+ if(t.id==='accIn'){S.accentCustom=t.value;applyRoot();const cr=$('#cr');if(cr)cr.textContent=contrast()}});
+document.addEventListener('change',e=>{const t=e.target;
+ if(t.dataset.ed==='c'&&S.review){S.review.rows.find(x=>x.id===+t.dataset.i).c=t.value}
+ if(t.dataset.act==='catInst'){S.catInst=t.value;S.catPage=0;render()}
+ if(t.dataset.act==='catStatus'){S.catStatus=t.value;S.catPage=0;render()}
+ if(t.id==='pTheme'){S.theme=t.value;S.accentCustom='';render()}if(t.id==='pMode'){S.mode=t.value;render()}if(t.id==='pLang'){S.lang=t.value;render()}if(t.id==='pFont'){S.font=t.value;render()}
+ if(t.dataset.ed==='s'||t.dataset.ed==='m')render();
+ if(t.id==='fileIn'&&t.files.length){const names=[...t.files].map(f=>f.name);const audio=[...t.files].some(f=>f.type.startsWith('audio'));S.aiStarted=true;pushChat({k:'u',text:audio?L('ไฟล์เสียงแนบมา','Attached audio'):L('แนบไฟล์','Attached files'),files:names});if(audio){const tr={k:'transcribing'};pushChat(tr);setTimeout(()=>{S.chat=S.chat.filter(m=>m!==tr);pushChat({k:'transcript',text:SAMPLE_SPEECH})},1200)}else setTimeout(()=>pushChat({k:'a',text:L(`ได้รับ ${names.length} ไฟล์ · ในแอปจริงจะเข้าคิวอ่านและสร้างรายการให้ตรวจ`,`Got ${names.length} files · the real app queues them and builds a review list`)}),500)}
+ if(t.id==='upIn'&&t.files.length)startUpload([...t.files].map(f=>f.name))});
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();S.cmdQ='';$('#layer').innerHTML=cmdMenu();$('#cmdIn').focus();return}if(e.key==='Enter'&&e.target.id==='cmdIn'){const b=document.querySelector('[data-act=cmdRun]');if(b)b.click();return}if(e.key==='Enter'&&e.target.matches('.card[data-course]'))e.target.click();if(e.key==='Escape'){$('#layer').innerHTML='';if(S.aiOpen){S.aiOpen=false;render()}}if(e.key==='Enter'&&!e.shiftKey&&e.target.id==='cin'){e.preventDefault();document.querySelector('[data-act=send]').click()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.voice.st==='rec'){S.voice.st='paused';render()}});
+function startUpload(files){const B=[];for(let k=0;k<files.length;k+=5)B.push({files:files.slice(k,k+5),st:'up',p:0,rows:0});S.uploads={batches:B,done:0};render();
+ B.forEach((b,k)=>{let p=0;const t=setInterval(()=>{p+=20;b.p=Math.min(p,100);b.st=p<50?'up':'read';if(k===1&&p>=60){clearInterval(t);b.st='fail';render();return}if(p>=100){clearInterval(t);b.st='done';b.rows=b.files.length*3;S.uploads&&S.uploads.done++}if(S.route==='upload')render()},300+k*120)})}
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h==='ai'){S.aiOpen=true;render();return}if(ROUTES.includes(h)&&h!==S.route){S.route=h;render()}});
+{const h=location.hash.slice(1);if(h==='ai')S.aiOpen=true;else if(ROUTES.includes(h))S.route=h}
+$('#pfab').addEventListener('click',()=>{const p=$('#ppanel');p.hidden=!p.hidden;$('#pfab').setAttribute('aria-expanded',String(!p.hidden))});
+render();
+}
+</script>
+</body>
+</html>
