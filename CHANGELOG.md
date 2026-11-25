@@ -1,3 +1,8 @@
+## 2026-11-25 — ChatGPT: Mobile courses V3
+
+- `public/index.html`: mobile-only course page refresh based on approved V3 prototype. Larger course names and forecast scores, individual course color strips and progress bars, flat surfaces, side-by-side term/search, and one add button opening existing scan/plan/manual actions. Retain grade badge, warning, goal, exam, sorting and navigation logic; Thai/English. Desktop card tracks unchanged.
+- `tests/smoke.mjs`: verify mobile filter alignment, visible forecast and all three add options; capture course screenshots in existing CI artifact. Browser CI pending; local git/network unavailable. No database or deployment changes. Other pages and a five-item navigation redesign remain out of scope for this PR.
+
 ## 2026-11-24 — ChatGPT: Overview action hub redesign
 
 - `public/index.html`: unify planning modules into one actionable hub with an emphasized first recommendation, colored day counters and concise target/exam score explanations. Keep top three by default, explicit completed-course summary and smaller GPA/alerts tiles; remove duplicated export action (calendar retains export). Differentiate exam urgency by time and score pressure; hide finished/fully graded courses from study recommendations. Thai and English.
