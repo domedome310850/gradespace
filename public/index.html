@@ -832,6 +832,30 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .dashboard-summary .metric .m-value { font-size: 22px; }
   .dashboard-summary .metric .m-label { font-size: 11px; }
 }
+/* AI chat + centre AI button in the phone bottom bar (2026-11-26). */
+.bottomnav .nav-ai{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;font:inherit;font-size:11px;color:var(--accent-text);cursor:pointer;padding:0 2px;margin-top:-18px}
+.bottomnav .nav-ai:focus:not(:focus-visible){outline:none}.bottomnav .nav-ai:focus-visible .nav-ai-dot{outline:3px solid var(--accent-text);outline-offset:2px}
+.nav-ai-dot{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#8C71FE,#6654E8 55%,#3F51C9);box-shadow:0 6px 18px rgba(79,70,229,.4),0 0 0 4px var(--surface)}
+:root[data-uni="tu"] .nav-ai-dot{background:linear-gradient(135deg,#D9485C,#BC3346 55%,#8E1F2F);box-shadow:0 6px 18px rgba(188,51,70,.4),0 0 0 4px var(--surface)}
+@media(max-width:900px){.ai-fab-wrap .ai-fab,.ai-fab-wrap .ai-fab-x{display:none}.ai-fab-wrap{left:50%;right:auto;transform:translateX(-50%);align-items:center;bottom:calc(84px + env(safe-area-inset-bottom,0px))}.ai-fab-intro::after{right:calc(50% - 6px)}}
+.chat{display:flex;flex-direction:column;gap:10px;min-height:min(70vh,560px)}
+.chat-quick{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}.chat-q{display:flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}.chat-q:disabled{opacity:.5;cursor:default}.chat-q .ic{color:var(--accent-text)}
+.chat-log{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;max-height:min(55vh,480px);padding:4px 0}
+.chat-msg{display:flex}.chat-msg.me{justify-content:flex-end}
+.chat-bubble{max-width:86%;padding:9px 12px;border-radius:14px;background:var(--surface-2);font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-msg.me .chat-bubble{background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px}.chat-msg.ai .chat-bubble{border-bottom-left-radius:4px}
+.chat-bubble ul{margin:6px 0 0;padding-left:18px}.chat-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chat-chip{border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));background:var(--surface);color:var(--accent-text);border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
+.chat-input{display:flex;gap:8px}.chat-input .input{flex:1;min-width:0;font-size:16px}
+/* Connect ChatGPT / Claude card, shown first in the AI sheet (2026-11-26). */
+.connect-card{display:grid;gap:8px;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;background:var(--accent-soft)}
+.connect-soon{font-size:11.5px;font-weight:650;color:var(--accent-text);border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:999px;padding:1px 8px;white-space:nowrap}
+.connect-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}.connect-tile{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--muted)}
+.chat-own{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);margin-top:2px}
+/* One-time-code sign-in (2026-11-26). */
+.otp-input{font-size:22px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
+/* Help + feedback tabs (2026-11-26). */
+.help-tabs{margin:4px 0 6px}.help-tabs .seg{max-width:360px}
 /* Thammasat GenEd picker (2026-11-26). */
 .tuge-group h3{font-size:14px;margin:16px 0 4px;color:var(--accent-text)}.tuge-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
 :root[data-uni="tu"] .brand-mark rect{fill:var(--accent)}:root[data-uni="tu"] .brand-mark circle{fill:var(--uni-secondary)}:root[data-uni="tu"] .brand-mark{box-shadow:none}
@@ -1215,7 +1239,10 @@ window.GS_WEB = {
   // Public read-only API: only VERIFIED shared course metadata; never scores.
   sharedCatalogEndpoint: 'https://script.google.com/macros/s/AKfycbyFdgk7or8tAqbUvs4qhhegdM_LwKjdC5YNI1gSHC_1DE8vCI79CRebQ-j06QaVSdruBg/exec',
   feedbackEndpoint: 'https://script.google.com/macros/s/AKfycbyhKxfDif72tcMJxzdFo73Tvueb4UZJwAIOXvrbLTeBK0MxfUT66_8D9WANrBsaca7x/exec',
-  qaEndpoint: '' // Deploy GradeSpace-Help-QA-Backend.gs separately, then add /exec URL here
+  qaEndpoint: '', // Deploy GradeSpace-Help-QA-Backend.gs separately, then add /exec URL here
+  // Secure sign-in with a one-time email code (Supabase Auth). Keep false until
+  // supabase/migrations/20261126_verified_email_signin.sql is applied and the email template sends {{ .Token }}.
+  otp: false
 };
 </script>
 <script>
@@ -1240,7 +1267,7 @@ var Calc = (function () {
   function fmt(n, d) {
     if (!isNum(n)) return '–';
     if (d === undefined) d = 2;
-    var s = n.toFixed(d);
+    var f = Math.pow(10, d), s = (Math.round(n * f + (n >= 0 ? 1e-7 : -1e-7)) / f).toFixed(d);
     if (/^-0(\.0+)?$/.test(s)) s = s.slice(1);
     return s;
   }
@@ -1830,12 +1857,15 @@ var Store = (function () {
   }
 
   // Email-only adapter for the hosted website: data is stored under the email via gs_load / gs_save.
-  function makeEmailStore(client, email) {
+  function makeEmailStore(client, email, verified) {
     var busy = false, queued = null;
+    // verified: the email comes from the signed-in session on the server, not from this request.
+    var saveRpc = function (state) { return verified ? client.rpc('gs_me_save', { p_data: state, p_updated: state.updatedAt }) : client.rpc('gs_save', { p_email: email, p_data: state, p_updated: state.updatedAt }); };
+    var loadRpc = function () { return verified ? client.rpc('gs_me_load') : client.rpc('gs_load', { p_email: email }); };
     function write(state) {
       if (busy) { queued = state; return Promise.resolve('queued'); }
       busy = true;
-      return Promise.resolve(client.rpc('gs_save', { p_email: email, p_data: state, p_updated: state.updatedAt }))
+      return Promise.resolve(saveRpc(state))
         .then(function (r) { return r && r.error ? 'error' : 'ok'; }, function () { return 'unavailable'; })
         .then(function (r) {
           busy = false;
@@ -1844,7 +1874,7 @@ var Store = (function () {
         });
     }
     function load() {
-      return Promise.resolve(client.rpc('gs_load', { p_email: email })).then(function (r) {
+      return Promise.resolve(loadRpc()).then(function (r) {
         if (r.error) throw r.error;
         var row = Array.isArray(r.data) ? r.data[0] : r.data;
         if (!row || !row.data) return null;
@@ -2664,6 +2694,40 @@ en: {
   'cmd.btn': 'Search courses, pages, actions…', 'cmd.title': 'Search', 'cmd.ph': 'Try “GPA”, “scan” or a course code',
   'cmd.none': 'No results', 'cmd.hint': 'Press Ctrl+K (⌘K on Mac) on any page', 'cmd.gPages': 'Pages', 'cmd.gActions': 'Actions', 'cmd.gCourses': 'Courses',
   'cmd.theme': 'Toggle light/dark mode', 'cmd.lang': 'Switch language (TH/EN)',
+  'tur.title': 'Thammasat rules check', 'tur.noGrades': 'Record official grades to check your standing and honours.',
+  'tur.standing.ok': 'GPAX {g}: normal standing (2.00 or above). You also need at least 2.00 to graduate.',
+  'tur.standing.warn': 'GPAX {g} is below 2.00: this means a warning. Each further term below 2.00 moves you towards probation and dismissal.',
+  'tur.standing.bad': 'GPAX {g} is below 1.50. Students already on warning are dismissed below 1.50 — talk to your faculty’s academic adviser.',
+  'tur.hon.first': 'On track for first-class honours (GPAX {g} ≥ 3.50 and no grade below C).',
+  'tur.hon.second': 'Within second-class honours range (GPAX {g}).', 'tur.hon.none': 'Honours need GPAX ≥ 3.25 (second class) or ≥ 3.50 with no grade below C (first class).',
+  'tur.honBlock': 'But an F/U or a repeated course rules out honours.', 'tur.honMajor': 'Second class also has major-subject conditions (C or above, or major GPA ≥ 2.00) that GradeSpace can’t check.',
+  'tur.load': '{s}: {n} credits, above the limit of {m}. More needs the dean’s approval (final-year students only).',
+  'tur.source': 'Based on Thammasat’s undergraduate regulation 2568 (ข้อ 20, 37–49, 65–68). Only recorded grades count; confirm with the Registrar.',
+  'ai.intro@tu': 'Send score screenshots, paste a score table or type a score. You always review the list before anything is saved.',
+  'paste.btn@tu': 'Paste scores', 'paste.title@tu': 'Paste a score table',
+  'paste.intro@tu': 'Open {c} on your class website, select the score table (each row: item, score / full), copy, and paste it here.',
+  'scan.intro@tu': 'Pick screenshots from your class website: the syllabus grading page and the score page work best. AI reads them and shows you what it found before anything is added.',
+  'connect.title': 'Use GradeSpace from ChatGPT or Claude', 'connect.soon': 'Coming soon', 'connect.with': 'Connect {n}',
+  'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
+  'connect.own': 'Or ask GradeSpace AI now:',
+  'chat.title': 'GradeSpace AI', 'chat.ph': 'Ask or type a score, e.g. “quiz 2 econ 18/20”', 'chat.send': 'Send', 'chat.nav': 'AI',
+  'chat.hello': 'Hi! I can check your GPA, work out what you need for a grade, list upcoming exams and work, and record scores you type. Everything stays on this device.',
+  'chat.s.gpa': 'My GPA now', 'chat.s.need': 'What do I need for an A?', 'chat.s.exam': 'Upcoming exams', 'chat.s.due': 'Work due soon', 'chat.s.score': 'Record a score',
+  'chat.gpa': 'This term ({s}): {a}. Cumulative GPAX: {b}.', 'chat.gpaEst': ' (includes estimates)', 'chat.gpaNone': 'No grades yet, so there is no GPA to show. Record a score or an official grade first.',
+  'chat.whichCourse': 'Which course?', 'chat.whichItem': 'Which item in {c}?', 'chat.noCourse': 'I couldn’t find that course. Pick one:',
+  'chat.noItem': 'I couldn’t find an item called that in {c}. I never create items on my own — pick one, or add it on the course page.',
+  'chat.confirm': 'Save {s}/{m} for “{a}” in {c}?', 'chat.maxChange': 'Full marks will change from {o} to {m}.', 'chat.save': 'Save', 'chat.cancel': 'Cancel',
+  'chat.saved': 'Saved {s}/{m} for “{a}”. You can undo it from the message at the bottom.', 'chat.cancelled': 'OK, nothing was saved.', 'chat.badScore': 'The score is higher than full marks. Check the numbers and try again.',
+  'chat.needSecured': '{c}: {g} is already secured with what you have.', 'chat.needPct': '{c}: for {g} you need about {p}% on average in the remaining work ({w}% of the course left).',
+  'chat.needExam': '{c}: for {g} you need about {p}% on average in the remaining exams.', 'chat.needImpossible': '{c}: {g} is no longer reachable. The best you can still get is {b}.',
+  'chat.needRule': '{c} has no grade cut-offs yet, so I can’t work this out. Set the grading rule on the course page.', 'chat.needNoLeft': '{c}: there’s no ungraded work left. Current total {p}% ({g}).',
+  'chat.examList': 'Upcoming exams:', 'chat.examNone': 'No upcoming exam dates recorded.', 'chat.dueList': 'Due in the next 14 days:', 'chat.dueNone': 'Nothing due in the next 14 days.',
+  'chat.inDays': 'in {n} days', 'chat.today': 'today', 'chat.tomorrow': 'tomorrow',
+  'chat.help': 'I can do these now: GPA, what you need for a grade, exams, work due, and recording a typed score (I always ask before saving). Free-form AI answers are coming later.',
+  'chat.open': 'Open', 'chat.localNote': 'Answers come from your own data on this device; nothing is sent to an AI service.',
+  'otp.intro': 'Enter your email and we’ll send a one-time code. No password needed.', 'otp.send': 'Send code', 'otp.sent': 'We sent a code to {e}. Enter it below (check spam too).',
+  'otp.code': 'Code from your email', 'otp.verify': 'Sign in', 'otp.resend': 'Send a new code', 'otp.wait': 'New code in {n}s', 'otp.change': 'Use another email',
+  'otp.err.send': 'Couldn’t send the code. Check the email and try again in a minute.', 'otp.err.code': 'That code didn’t work. Check it or send a new one.',
   'uni.label': 'University', 'uni.cu': 'Chulalongkorn', 'uni.tu': 'Thammasat', 'uni.cuFull': 'Chulalongkorn University', 'uni.tuFull': 'Thammasat University',
   'uni.hint': 'Sets the course list, GenEd and exam features for your university.',
   'tuge.title': 'Thammasat GenEd courses', 'tuge.intro': 'General Education Program (2023 revision): 30 credits across 5 groups. Check your faculty’s structure for which groups you need.',
@@ -2672,7 +2736,7 @@ en: {
   'tu.examNote': 'Thammasat exam dates are not synced yet. Add the date to the Midterm/Final item in each course and it will show in your calendar.',
   'ai.pasteTGeneric': 'Paste a score table', 'ai.pastePGeneric': 'Copy scores from your class site, paste them and check each row',
   'fab.hide': 'Hide for now', 'fab.introT': 'Let AI fill in your scores', 'fab.introP': 'Scan a screenshot, paste from MyCourseVille or type. You check every row before it saves.',
-  'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
+  'fab.introPGeneric': 'Scan a screenshot, paste a score table or type. You check every row before it saves.', 'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -2913,7 +2977,7 @@ en: {
   'store.web': 'Your data saves automatically under your email. Type the same email on any device to see it. Anyone who knows your email can open it too.',
   'tagline': 'Know your grades. Plan your GPA.', 'taglineShort': 'Know your grades. Plan your GPA.',
   'loading': 'Loading your grades…', 'mainNav': 'Main navigation',
-  'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & Q&A',
+  'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & feedback', 'helpTab.help': 'Guide & Q&A', 'helpTab.feedback': 'Send feedback',
   'navShort.dashboard': 'Home', 'navShort.years': 'Years', 'navShort.courses': 'Courses', 'navShort.simulator': 'Simulator', 'navShort.gpa': 'GPA', 'navShort.feedback':'Ideas', 'navShort.help':'Help', 'navShort.me': 'You', 'nav.me': 'You',
   'navg.tools': 'Tools', 'navg.more': 'More', 'me.display': 'Display', 'me.more': 'More', 'me.local': 'Not signed in',
   'sync.device': 'Saved on this device', 'sync.account': 'Saved to your account', 'sync.saving': 'Saving…', 'sync.error': 'Saved on this device only',
@@ -3112,6 +3176,40 @@ th: {
   'cmd.btn': 'ค้นหาวิชา หน้า หรือคำสั่ง…', 'cmd.title': 'ค้นหา', 'cmd.ph': 'ลองพิมพ์ “GPA”, “สแกน” หรือรหัสวิชา',
   'cmd.none': 'ไม่พบ', 'cmd.hint': 'กด Ctrl+K (⌘K บน Mac) ได้ทุกหน้า', 'cmd.gPages': 'หน้า', 'cmd.gActions': 'คำสั่ง', 'cmd.gCourses': 'วิชา',
   'cmd.theme': 'สลับโหมดสว่าง/มืด', 'cmd.lang': 'สลับภาษา (TH/EN)',
+  'tur.title': 'ตรวจตามข้อบังคับ มธ.', 'tur.noGrades': 'บันทึกเกรดจริงก่อน แล้วจะตรวจสถานภาพและเกียรตินิยมให้',
+  'tur.standing.ok': 'GPAX {g} สถานภาพปกติ (ตั้งแต่ 2.00) และต้องไม่ต่ำกว่า 2.00 จึงจะจบได้',
+  'tur.standing.warn': 'GPAX {g} ต่ำกว่า 2.00 อยู่ในสถานะเตือน ถ้ายังต่ำกว่า 2.00 ต่อไปจะเป็นเตือนครั้งที่ 2 รอพินิจ และพ้นสภาพ',
+  'tur.standing.bad': 'GPAX {g} ต่ำกว่า 1.50 ถ้าเคยถูกเตือนแล้วจะถูกถอนชื่อ ควรปรึกษาอาจารย์ที่ปรึกษาของคณะ',
+  'tur.hon.first': 'อยู่ในเกณฑ์เกียรตินิยมอันดับหนึ่ง (GPAX {g} ตั้งแต่ 3.50 และไม่มีวิชาต่ำกว่า C)',
+  'tur.hon.second': 'อยู่ในช่วงเกียรตินิยมอันดับสอง (GPAX {g})', 'tur.hon.none': 'เกียรตินิยมต้องได้ GPAX ตั้งแต่ 3.25 (อันดับสอง) หรือ 3.50 และไม่มีวิชาต่ำกว่า C (อันดับหนึ่ง)',
+  'tur.honBlock': 'แต่ถ้ามี F/U หรือเคยเรียนซ้ำ จะไม่ได้เกียรตินิยม', 'tur.honMajor': 'อันดับสองมีเงื่อนไขวิชาเอกด้วย (ได้ C ขึ้นไป หรือเกรดเฉลี่ยวิชาเอกตั้งแต่ 2.00) ซึ่ง GradeSpace ตรวจให้ไม่ได้',
+  'tur.load': '{s}: {n} หน่วยกิต เกินเพดาน {m} หน่วยกิต ถ้าจะลงเกินต้องได้รับอนุมัติจากคณบดี (เฉพาะปีที่จะจบ)',
+  'tur.source': 'อ้างอิงข้อบังคับ มธ. ว่าด้วยการศึกษาระดับปริญญาตรี พ.ศ. 2568 (ข้อ 20, 37–49, 65–68) นับเฉพาะเกรดจริง ควรยืนยันกับสำนักทะเบียน',
+  'ai.intro@tu': 'ส่งภาพหน้าจอคะแนน วางตารางคะแนน หรือพิมพ์คะแนนได้เลย ระบบจะให้คุณตรวจรายการก่อนบันทึกเสมอ',
+  'paste.btn@tu': 'วางคะแนน', 'paste.title@tu': 'วางตารางคะแนน',
+  'paste.intro@tu': 'เปิดวิชา {c} ในเว็บรายวิชา ลากเลือกตารางคะแนน (แต่ละแถว: ชื่องาน คะแนน / เต็ม) คัดลอก แล้ววางที่นี่',
+  'scan.intro@tu': 'เลือกภาพหน้าจอจากเว็บรายวิชา หน้าเกณฑ์การให้คะแนนในประมวลรายวิชาและหน้าคะแนนจะได้ผลดีที่สุด AI จะอ่านแล้วสรุปให้ดูก่อนเพิ่มข้อมูล',
+  'connect.title': 'ใช้ GradeSpace ผ่าน ChatGPT หรือ Claude', 'connect.soon': 'เร็ว ๆ นี้', 'connect.with': 'เชื่อม {n}',
+  'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
+  'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
+  'chat.title': 'GradeSpace AI', 'chat.ph': 'ถามหรือพิมพ์คะแนน เช่น “quiz 2 econ 18/20”', 'chat.send': 'ส่ง', 'chat.nav': 'AI',
+  'chat.hello': 'สวัสดี! ถามเกรดเฉลี่ย ถามว่าต้องได้เท่าไหร่ถึงจะได้เกรดที่อยากได้ ดูสอบและงานที่ใกล้ถึง หรือพิมพ์คะแนนให้บันทึกได้เลย ข้อมูลอยู่ในเครื่องนี้ทั้งหมด',
+  'chat.s.gpa': 'GPA ตอนนี้เท่าไหร่', 'chat.s.need': 'ต้องได้เท่าไหร่ถึงได้ A', 'chat.s.exam': 'สอบอะไรเร็ว ๆ นี้', 'chat.s.due': 'งานที่ใกล้ส่ง', 'chat.s.score': 'บันทึกคะแนน',
+  'chat.gpa': 'เทอมนี้ ({s}): {a} GPAX สะสม: {b}', 'chat.gpaEst': ' (รวมเกรดคาดการณ์)', 'chat.gpaNone': 'ยังไม่มีเกรด เลยยังคำนวณ GPA ไม่ได้ ลองบันทึกคะแนนหรือเกรดจริงก่อน',
+  'chat.whichCourse': 'วิชาไหน?', 'chat.whichItem': 'งานไหนในวิชา {c}?', 'chat.noCourse': 'หาวิชานั้นไม่เจอ เลือกวิชา:',
+  'chat.noItem': 'ไม่เจองานชื่อนี้ในวิชา {c} ผู้ช่วยจะไม่สร้างงานเอง เลือกจากรายการ หรือเพิ่มงานในหน้าวิชาก่อน',
+  'chat.confirm': 'บันทึก {s}/{m} ให้ “{a}” วิชา {c} ไหม?', 'chat.maxChange': 'คะแนนเต็มจะเปลี่ยนจาก {o} เป็น {m}', 'chat.save': 'บันทึก', 'chat.cancel': 'ยกเลิก',
+  'chat.saved': 'บันทึก {s}/{m} ให้ “{a}” แล้ว กดเลิกทำได้จากข้อความด้านล่าง', 'chat.cancelled': 'โอเค ไม่ได้บันทึกอะไร', 'chat.badScore': 'คะแนนมากกว่าคะแนนเต็ม ลองตรวจตัวเลขอีกครั้ง',
+  'chat.needSecured': '{c}: ได้ {g} แน่นอนแล้วจากคะแนนที่มี', 'chat.needPct': '{c}: จะได้ {g} ต้องได้เฉลี่ยประมาณ {p}% ในงานที่เหลือ (เหลือ {w}% ของวิชา)',
+  'chat.needExam': '{c}: จะได้ {g} ต้องได้เฉลี่ยประมาณ {p}% ในสอบที่เหลือ', 'chat.needImpossible': '{c}: ไม่ทันได้ {g} แล้ว เกรดสูงสุดที่ยังเป็นไปได้คือ {b}',
+  'chat.needRule': 'วิชา {c} ยังไม่มีเกณฑ์ตัดเกรด เลยคำนวณให้ไม่ได้ ตั้งเกณฑ์ในหน้าวิชาก่อน', 'chat.needNoLeft': '{c}: ไม่มีงานที่รอคะแนนแล้ว คะแนนรวมตอนนี้ {p}% ({g})',
+  'chat.examList': 'สอบที่ใกล้ถึง:', 'chat.examNone': 'ยังไม่มีวันสอบที่บันทึกไว้', 'chat.dueList': 'ครบกำหนดใน 14 วัน:', 'chat.dueNone': 'ไม่มีงานครบกำหนดใน 14 วันนี้',
+  'chat.inDays': 'อีก {n} วัน', 'chat.today': 'วันนี้', 'chat.tomorrow': 'พรุ่งนี้',
+  'chat.help': 'ตอนนี้ช่วยได้: ดู GPA, คำนวณว่าต้องได้เท่าไหร่, ดูสอบ, ดูงานใกล้ส่ง และบันทึกคะแนนที่พิมพ์ (ถามก่อนบันทึกทุกครั้ง) ส่วนการตอบคำถามแบบอิสระด้วย AI จะตามมาทีหลัง',
+  'chat.open': 'เปิด', 'chat.localNote': 'คำตอบมาจากข้อมูลของคุณในเครื่องนี้ ไม่ได้ส่งไปให้บริการ AI ภายนอก',
+  'otp.intro': 'กรอกอีเมล แล้วเราจะส่งรหัสใช้ครั้งเดียวไปให้ ไม่ต้องตั้งรหัสผ่าน', 'otp.send': 'ส่งรหัส', 'otp.sent': 'ส่งรหัสไปที่ {e} แล้ว กรอกรหัสด้านล่าง (ดูในอีเมลขยะด้วย)',
+  'otp.code': 'รหัสจากอีเมล', 'otp.verify': 'เข้าสู่ระบบ', 'otp.resend': 'ส่งรหัสใหม่', 'otp.wait': 'ส่งใหม่ได้ใน {n} วินาที', 'otp.change': 'ใช้อีเมลอื่น',
+  'otp.err.send': 'ส่งรหัสไม่สำเร็จ ตรวจอีเมลแล้วลองใหม่ในอีกสักครู่', 'otp.err.code': 'รหัสไม่ถูกต้อง ตรวจอีกครั้งหรือขอรหัสใหม่',
   'uni.label': 'มหาวิทยาลัย', 'uni.cu': 'จุฬาฯ', 'uni.tu': 'ธรรมศาสตร์', 'uni.cuFull': 'จุฬาลงกรณ์มหาวิทยาลัย', 'uni.tuFull': 'มหาวิทยาลัยธรรมศาสตร์',
   'uni.hint': 'ใช้เลือกรายชื่อวิชา GenEd และฟีเจอร์วันสอบให้ตรงกับมหาวิทยาลัยของคุณ',
   'tuge.title': 'วิชาศึกษาทั่วไป ธรรมศาสตร์', 'tuge.intro': 'หลักสูตรวิชาศึกษาทั่วไป (ปรับปรุง พ.ศ. 2566) รวม 30 หน่วยกิตใน 5 หมวด ดูโครงสร้างหลักสูตรของคณะว่าต้องเรียนหมวดใดบ้าง',
@@ -3120,7 +3218,7 @@ th: {
   'tu.examNote': 'ยังไม่ได้ดึงวันสอบของธรรมศาสตร์อัตโนมัติ ใส่วันที่ในงาน “สอบกลางภาค/ปลายภาค” ของแต่ละวิชา แล้ววันสอบจะขึ้นในปฏิทิน',
   'ai.pasteTGeneric': 'วางตารางคะแนน', 'ai.pastePGeneric': 'คัดลอกคะแนนจากเว็บรายวิชามาวาง แล้วตรวจทีละแถว',
   'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'ให้ AI ช่วยกรอกคะแนนสิ', 'fab.introP': 'สแกนภาพหน้าจอ วางจาก MyCourseVille หรือพิมพ์เอง ตรวจได้ทุกแถวก่อนบันทึก',
-  'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
+  'fab.introPGeneric': 'สแกนภาพหน้าจอ วางตารางคะแนน หรือพิมพ์เอง ตรวจได้ทุกแถวก่อนบันทึก', 'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -3361,7 +3459,7 @@ th: {
   'store.web': 'คะแนนจะบันทึกอัตโนมัติตามอีเมลที่กรอก ใช้อีเมลเดิมเพื่อเปิดข้อมูลจากเครื่องอื่นได้',
   'tagline': 'รู้เกรดตัวเอง วางแผน GPA ได้', 'taglineShort': 'รู้เกรดตัวเอง วางแผน GPA ได้',
   'loading': 'กำลังโหลดข้อมูลเกรด…', 'mainNav': 'เมนูหลัก',
-  'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'คู่มือ / ถามตอบ',
+  'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'ช่วยเหลือและข้อเสนอแนะ', 'helpTab.help': 'คู่มือ / ถามตอบ', 'helpTab.feedback': 'ส่งข้อเสนอแนะ',
   'navShort.dashboard': 'ภาพรวม', 'navShort.years': 'ชั้นปี', 'navShort.courses': 'วิชา', 'navShort.simulator': 'จำลอง', 'navShort.gpa': 'GPA', 'navShort.feedback':'เสนอแนะ', 'navShort.help':'ช่วยเหลือ', 'navShort.me': 'ฉัน', 'nav.me': 'ฉัน',
   'navg.tools': 'เครื่องมือ', 'navg.more': 'อื่น ๆ', 'me.display': 'การแสดงผล', 'me.more': 'เพิ่มเติม', 'me.local': 'ยังไม่ได้เข้าสู่ระบบ',
   'sync.device': 'บันทึกไว้ในเครื่องนี้', 'sync.account': 'บันทึกลงบัญชีแล้ว', 'sync.saving': 'กำลังบันทึก…', 'sync.error': 'บันทึกไว้ในเครื่องนี้เท่านั้น',
@@ -3569,7 +3667,7 @@ var LANG = 'th';
 // settings.institution is a new optional field ('' = not chosen yet, treated as 'cu' so existing
 // students see no change). Chula-only features (Reg Chula sync, Chula GenEd, CBS study plans,
 // exam rooms) only run for 'cu'. Thammasat uses its own course list below.
-function uniOf(state) { var st = state || S.state; var u = (st && st.settings && st.settings.institution) || uniPending; return u === 'tu' ? 'tu' : 'cu'; }
+function uniOf(state) { var st = state || (S && S.state); var u = (st && st.settings && st.settings.institution) || uniPending; return u === 'tu' ? 'tu' : 'cu'; }
 function isCU(state) { return uniOf(state) === 'cu'; }
 var UNI_PENDING_KEY = 'gradespace.institution';
 // Choice made on the sign-in screen, used until it is copied into the profile.
@@ -3617,7 +3715,37 @@ function applyUniTheme(uni, dark) {
 function UniPicker(p) {
   return html`<${Seg} label=${t('uni.label')} value=${p.value} onChange=${p.onChange} options=${[{ v: 'cu', l: t('uni.cu') }, { v: 'tu', l: t('uni.tu') }]} />`;
 }
-function setUni(v) { update(function (d) { d.settings.institution = v; if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull'); }); }
+// Thammasat result letters without grade points (ข้อบังคับ มธ. ว่าด้วยการศึกษาระดับปริญญาตรี 2568 ข้อ 39, 42).
+var TU_OUTCOMES = [
+  { id: 'o-acc', label: 'ACC', name: 'Accreditation (credits, no GPA)', attempted: true, earned: true, gpa: false, points: 0 },
+  { id: 'o-exe', label: 'EXE', name: 'Exempted (no credits)', attempted: false, earned: false, gpa: false, points: 0 },
+  { id: 'o-aud', label: 'AUD', name: 'Audit (no credits)', attempted: false, earned: false, gpa: false, points: 0 }
+];
+function setUni(v) { update(function (d) { d.settings.institution = v;
+  if (v === 'tu') { d.outcomes = Array.isArray(d.outcomes) ? d.outcomes : []; TU_OUTCOMES.forEach(function (o) { if (!d.outcomes.some(function (x) { return x.label === o.label; })) d.outcomes.push(Object.assign({}, o)); }); } if (!d.settings.university || d.settings.university === t('uni.cuFull') || d.settings.university === t('uni.tuFull') || /จุฬา|Chula|ธรรมศาสตร์|Thammasat/i.test(d.settings.university)) d.settings.university = t(v === 'tu' ? 'uni.tuFull' : 'uni.cuFull'); }); }
+// Thammasat standing, honours and credit-load checks (regulation 2568 ข้อ 20, 49, 67–68). Recorded grades only.
+function TuRulesCard(p) {
+  var state = p.state, cum = C.cumulativeStats(state, 'confirmed'), gpa = cum.gpa;
+  var low = { 'D+': 1, 'D': 1, 'F': 1, 'U': 1 }, recorded = state.courses.filter(function (c) { return C.courseGrade(c, state).kind === 'confirmed'; });
+  var below = recorded.filter(function (c) { return low[C.courseGrade(c, state).label]; });
+  var failed = recorded.filter(function (c) { var l = C.courseGrade(c, state).label; return l === 'F' || l === 'U'; });
+  var codes = {}, repeated = false; state.courses.forEach(function (c) { var k = tuCode(c.code); if (!k) return; if (codes[k]) repeated = true; codes[k] = 1; });
+  var heavy = state.semesters.map(function (s) {
+    var cr = C.sum(state.courses.filter(function (c) { return c.semesterId === s.id; }).map(function (c) { return toNum(c.credits) || 0; }));
+    var max = s.kind === 'summer' ? 6 : 22; return cr > max ? { s: s, cr: cr, max: max } : null; }).filter(Boolean);
+  var standing = gpa == null ? null : gpa < 1.5 ? 'bad' : gpa < 2 ? 'warn' : 'ok';
+  var hon = gpa == null ? null : (gpa >= 3.5 - 1e-9 && !below.length ? 'first' : gpa >= 3.25 - 1e-9 ? 'second' : 'none');
+  var blockers = (failed.length ? 1 : 0) + (repeated ? 1 : 0);
+  return html`<section className="section card pad stack" data-testid="tu-rules">
+    <div className="section-head"><h2>${t('tur.title')}</h2></div>
+    ${gpa == null ? html`<p className="muted small">${t('tur.noGrades')}</p>` : html`<div className="stack" style=${{ gap: 8 }}>
+      <div className=${'banner ' + (standing === 'ok' ? 'ok' : standing === 'warn' ? 'info' : 'bad')}><${Icon} n=${standing === 'ok' ? 'check' : 'alert'} s=${16} /><div>${t('tur.standing.' + standing, { g: fmt(gpa) })}</div></div>
+      <div className="banner info"><${Icon} n="info" s=${16} /><div>${t('tur.hon.' + hon, { g: fmt(gpa), n: below.length })}${hon !== 'none' && blockers ? ' ' + t('tur.honBlock') : ''}${hon === 'second' ? ' ' + t('tur.honMajor') : ''}</div></div>
+    </div>`}
+    ${heavy.map(function (x) { return html`<div key=${x.s.id} className="banner bad"><${Icon} n="alert" s=${16} /><div>${t('tur.load', { s: semFull(state, x.s), n: fmtT(x.cr), m: x.max })}</div></div>`; })}
+    <p className="tiny muted" style=${{ margin: 0 }}>${t('tur.source')} <a href="https://db.legal.tu.ac.th/05010201-01/" target="_blank" rel="noopener noreferrer">↗</a></p>
+  </section>`;
+}
 function TuGenEdModal(p) {
   var state = useApp(), semId = p.props.semesterId || (latestSemester(state) || {}).id;
   var have = {}; state.courses.forEach(function (c) { have[tuCode(c.code)] = 1; });
@@ -3635,7 +3763,8 @@ function TuGenEdModal(p) {
     <p className="tiny muted">${t('tuge.source')} <a href=${TU_GENED_SOURCE} target="_blank" rel="noopener noreferrer">↗</a></p><//>`;
 }
 function t(k, v) {
-  var s = I18N[LANG] && I18N[LANG][k];
+  // Thammasat overrides: keys ending in "@tu" replace Chula/MyCourseVille wording.
+  var s = I18N[LANG] && (!isCU() && I18N[LANG][k + '@tu'] || I18N[LANG][k]);
   if (s == null) s = I18N.en[k];
   if (s == null) s = k;
   if (v) s = s.replace(/\{(\w+)\}/g, function (m, n) { return v[n] != null ? v[n] : m; });
@@ -3815,6 +3944,8 @@ var ICONS = {
   back: '<path d="m12 19-7-7 7-7M19 12H5"/>',
   target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  send: '<path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4z"/>',
   chevronRight: '<path d="m9 18 6-6-6-6"/>',
   globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>',
   user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
@@ -6656,6 +6787,7 @@ function GPAPage(p) {
       <${Metric} label=${t('targetCGPA')} value=${isNum(state.settings.targetCGPA) ? fmt(state.settings.targetCGPA) : '–'}
         sub=${isNum(state.settings.targetCGPA) && cum.gpa != null ? (cum.gpa >= state.settings.targetCGPA - 1e-9 ? t('aboveTarget') : t('belowTargetBy', { n: fmt(state.settings.targetCGPA - cum.gpa) })) : t('setBelow')} />
     </div>
+    ${!isCU(state) && html`<${TuRulesCard} state=${state} />`}
     <div className="section card pad">
       <div className="section-head"><h2>${t('gpaBySemester')}</h2></div>
       ${hasTrend ? html`<${TrendChart} data=${tr} mode=${mode} maxPts=${maxPts} state=${state} />` : html`<p className="muted small">${mode === 'confirmed' ? t('trendEmptyConfirmed') : t('trendEmpty')}</p>`}
@@ -7803,12 +7935,175 @@ function AssistantModal(p) {
     </div>
     <p className="tiny muted" style=${{ marginBottom: 0 }}>${t('ai.soon')}</p><//>`;
 }
+
+/* ================= GradeSpace AI chat (local) =================
+   Answers from the student's own data in this browser; nothing is sent to an AI service.
+   Never invents courses, assessments or scores: it only matches existing ones, and every
+   change is shown as a card the student must confirm (saved with undo). */
+var ChatBrain = (function () {
+  function openCourses(state) { var cur = curSemester(state); return state.courses.filter(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); }); }
+  function courseFields(c) { return [c.code || '', c.name || '', courseDisplayTitle(c), (CATALOG.get(c.code) || {}).th || '']; }
+  function bestCourse(q, state) {
+    // Match the whole phrase or any single word ("HW5 econ" → Economics), best score wins.
+    var toks = [q].concat(String(q).split(/\s+/).filter(function (w) { return w.length >= 3 && !/^\d+$/.test(w); }));
+    var list = openCourses(state).map(function (c) { var f = courseFields(c), best = -1; toks.forEach(function (w) { var v = Fuzzy.score(w, f); if (v >= 0 && (best < 0 || v < best)) best = v; }); return { c: c, s: best }; }).filter(function (x) { return x.s >= 0; })
+      .sort(function (a, b) { return a.s - b.s; });
+    if (!list.length) return null;
+    if (list.length > 1 && list[1].s - list[0].s < 0.5) return { many: list.slice(0, 4).map(function (x) { return x.c; }) };
+    return { c: list[0].c };
+  }
+  function letterIn(text) { var m = String(text).toUpperCase().match(/(?:^|[^A-Z])([A-D]\+?|F)(?![A-Z+])/); return m ? m[1] : null; }
+  function stripMeta(text) { return String(text).replace(/\d+(?:\.\d+)?\s*(?:\/|จาก|เต็ม|out of|of)\s*\d+(?:\.\d+)?/gi, ' ').replace(/ได้|คะแนน|บันทึก|score|got|ต้อง|เท่าไหร่|เท่าไร|ถึงจะ|ถึง|need|for|grade|เกรด|วิชา|ไหม|มั้ย|\?/gi, ' '); }
+  function gpaReply(state) {
+    var cur = curSemester(state), semC = cur ? C.semesterStats(state, cur.id, 'confirmed') : {}, semE = cur ? C.semesterStats(state, cur.id, 'estimated') : {};
+    var cumC = C.cumulativeStats(state, 'confirmed'), cumE = C.cumulativeStats(state, 'estimated');
+    var a = semC.gpa != null ? fmt(semC.gpa) : semE.gpa != null ? fmt(semE.gpa) + t('chat.gpaEst') : '–';
+    var b = cumC.gpa != null ? fmt(cumC.gpa) : cumE.gpa != null ? fmt(cumE.gpa) + t('chat.gpaEst') : '–';
+    if (a === '–' && b === '–') return { text: t('chat.gpaNone') };
+    return { text: t('chat.gpa', { s: cur ? semFull(state, cur) : '–', a: a, b: b }), actions: [{ label: t('nav.gpa'), hash: 'gpa' }] };
+  }
+  function needReply(c, letter, state) {
+    var name = courseDisplayTitle(c), grades = C.gradesFor(c, state), g = grades.find(function (x) { return x.label === letter; });
+    if (!g || !isNum(g.min) || gradingModeFor(c) !== 'criterion') return { text: t('chat.needRule', { c: name }), actions: [{ label: t('chat.open'), hash: 'course-' + c.id }] };
+    var sm = C.courseSummary(c, state);
+    if (sm.pendingWeight <= C.EPS) { var cg = C.letterFor(sm.earned, grades); return { text: t('chat.needNoLeft', { c: name, p: fmt(sm.earned, 1), g: cg ? cg.label : '–' }) }; }
+    if (sm.earned >= g.min - C.EPS) return { text: t('chat.needSecured', { c: name, g: letter }) };
+    var best = C.bestReachable(sm, grades);
+    if (sm.earned + sm.pendingWeight < g.min - C.EPS) return { text: t('chat.needImpossible', { c: name, g: letter, b: best ? best.label : '–' }) };
+    var ex = C.requiredExamAverage(g.min, sm);
+    if (ex && ex.pct > 0 && ex.pct <= 100) return { text: t('chat.needExam', { c: name, g: letter, p: fmt(ex.pct, 0) }), actions: [{ label: t('chat.open'), hash: 'course-' + c.id }] };
+    var av = C.requiredAverage(g.min, sm);
+    return { text: t('chat.needPct', { c: name, g: letter, p: fmt(Math.max(0, av.pct), 0), w: fmtT(sm.pendingWeight, 1) }), actions: [{ label: t('chat.open'), hash: 'course-' + c.id }] };
+  }
+  function dayWord(d) { return d === 0 ? t('chat.today') : d === 1 ? t('chat.tomorrow') : t('chat.inDays', { n: d }); }
+  function examReply(state) {
+    var rows = [];
+    openCourses(state).forEach(function (c) {
+      var ex = examsFor(c, state) || {};
+      [['mid', 'midterm'], ['fin', 'final']].forEach(function (k) {
+        var a = state.assessments.find(function (x) { return x.courseId === c.id && x.type === k[1] && x.due; });
+        var date = (ex[k[0]] && ex[k[0]].date) || (a && a.due), d = date ? daysUntil(date) : null;
+        if (d != null && d >= 0) rows.push({ d: d, line: courseDisplayTitle(c) + ' · ' + t('type.' + k[1]) + ' · ' + fmtDate(date) + ' (' + dayWord(d) + ')' + (ex[k[0]] && ex[k[0]].time ? ' ' + ex[k[0]].time : '') });
+      });
+    });
+    rows.sort(function (a, b) { return a.d - b.d; });
+    return rows.length ? { text: t('chat.examList'), list: rows.slice(0, 8).map(function (r) { return r.line; }) } : { text: t('chat.examNone') };
+  }
+  function dueReply(state) {
+    var ids = openCourses(state).map(function (c) { return c.id; });
+    var rows = state.assessments.filter(function (a) { return ids.indexOf(a.courseId) >= 0 && a.due && !C.isGraded(a) && a.type !== 'midterm' && a.type !== 'final'; })
+      .map(function (a) { return { a: a, d: daysUntil(a.due), c: state.courses.find(function (c) { return c.id === a.courseId; }) }; })
+      .filter(function (x) { return x.d != null && x.d >= 0 && x.d <= 14; }).sort(function (a, b) { return a.d - b.d; });
+    return rows.length ? { text: t('chat.dueList'), list: rows.slice(0, 8).map(function (x) { return courseDisplayTitle(x.c) + ' · ' + aName(x.a) + ' · ' + fmtDate(x.a.due) + ' (' + dayWord(x.d) + ')'; }) } : { text: t('chat.dueNone') };
+  }
+  function scoreReply(text, state, m, forced) {
+    var sc = Number(m[1]), mx = Number(m[2]), rest = stripMeta(text);
+    var bc = forced && forced.course ? { c: forced.course } : bestCourse(rest, state);
+    if (!bc) return { text: t('chat.noCourse'), pick: openCourses(state).map(function (c) { return { label: courseDisplayTitle(c), course: c.id }; }), pending: { kind: 'score', text: text } };
+    if (bc.many) return { text: t('chat.whichCourse'), pick: bc.many.map(function (c) { return { label: courseDisplayTitle(c), course: c.id }; }), pending: { kind: 'score', text: text } };
+    var c = bc.c, items = state.assessments.filter(function (a) { return a.courseId === c.id; });
+    var cfield = courseFields(c).join(' ').toLowerCase().split(/\s+/), words = rest.split(/\s+/).filter(function (w) { return w && cfield.indexOf(w.toLowerCase()) < 0; }).join(' ');
+    var a = forced && forced.item ? items.find(function (x) { return x.id === forced.item; }) : null;
+    if (!a) {
+      var wt = words ? [words].concat(words.split(/\s+/).filter(function (w) { return w.length >= 2; })) : [];
+      var ranked = items.map(function (x) { var f = [aName(x), t('type.' + x.type), x.type], best = -1; wt.forEach(function (w) { var v = Fuzzy.score(w, f); if (v >= 0 && (best < 0 || v < best)) best = v; }); return { x: x, s: best }; }).filter(function (r) { return r.s >= 0; }).sort(function (p, q) { return p.s - q.s; });
+      if (ranked.length && (ranked.length === 1 || ranked[1].s - ranked[0].s >= 0.5)) a = ranked[0].x;
+      else {
+        var opts = (ranked.length ? ranked.map(function (r) { return r.x; }) : items.filter(function (x) { return !C.isGraded(x); })).slice(0, 6);
+        return { text: t(ranked.length ? 'chat.whichItem' : 'chat.noItem', { c: courseDisplayTitle(c) }), pick: opts.map(function (x) { return { label: aName(x), course: c.id, item: x.id }; }), pending: { kind: 'score', text: text } };
+      }
+    }
+    if (!(mx > 0) || sc < 0 || (sc > mx + C.EPS && !a.extra)) return { text: t('chat.badScore') };
+    return { text: t('chat.confirm', { s: fmtT(sc), m: fmtT(mx), a: aName(a), c: courseDisplayTitle(c) }), note: isNum(a.max) && Math.abs(a.max - mx) > C.EPS ? t('chat.maxChange', { o: fmtT(a.max), m: fmtT(mx) }) : null,
+      confirm: { id: a.id, score: sc, max: mx, name: aName(a) } };
+  }
+  function reply(text, state, forced) {
+    var q = String(text || '').trim(), low = q.toLowerCase();
+    var m = q.match(/(\d+(?:\.\d+)?)\s*(?:\/|จาก|เต็ม|out of|of)\s*(\d+(?:\.\d+)?)/i);
+    if (m) return scoreReply(q, state, m, forced);
+    var letter = letterIn(q);
+    if (letter && /ต้อง|need|ถึง|ได้|get|reach|เกรด|grade/i.test(q)) {
+      var bc = forced && forced.course ? { c: state.courses.find(function (c) { return c.id === forced.course; }) } : bestCourse(stripMeta(q).replace(/(?:^|\s)([A-Da-d]\+?|[Ff])(?=\s|$)/g, ' '), state);
+      if (!bc || bc.many) return { text: t('chat.whichCourse'), pick: (bc && bc.many || openCourses(state)).map(function (c) { return { label: courseDisplayTitle(c), course: c.id }; }), pending: { kind: 'need', text: q } };
+      return needReply(bc.c, letter, state);
+    }
+    if (/gpa|gpax|เกรดเฉลี่ย|เกรดเทอม|เกรดรวม/i.test(low)) return gpaReply(state);
+    if (/สอบ|exam|midterm|final|ปลายภาค|กลางภาค/i.test(low)) return examReply(state);
+    if (/งาน|due|deadline|ส่ง|การบ้าน|homework|assignment/i.test(low)) return dueReply(state);
+    if (/สแกน|scan|screenshot|ภาพ|รูป/i.test(low)) return { text: t('ai.scanP'), actions: [{ label: t('ai.scanT'), modal: 'scan' }] };
+    if (/วาง|paste|mcv|mycourseville/i.test(low)) return { text: t('ai.pasteP'), actions: [{ label: t('ai.pasteT'), modal: 'paste' }] };
+    if (/บันทึกคะแนน|กรอกคะแนน|record a score|enter score/i.test(low)) return { text: t('chat.ph'), actions: [{ label: t('quickScore'), modal: 'quick' }] };
+    return { text: t('chat.help') };
+  }
+  return { reply: reply };
+})();
+function ChatModal(p) {
+  var state = useApp(), endRef = useRef(null), inputRef = useRef(null);
+  var ms = useState(function () { return [{ who: 'ai', text: t('chat.hello') }]; }), msgs = ms[0], setMsgs = ms[1];
+  var is = useState(''), text = is[0], setText = is[1];
+  useEffect(function () { if (endRef.current && endRef.current.scrollIntoView) endRef.current.scrollIntoView({ block: 'end' }); }, [msgs.length]);
+  var cur = curSemester(state), firstOpen = state.courses.find(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); });
+  function push(list) { setMsgs(function (old) { return old.concat(list); }); }
+  function ask(q, forced, shown) {
+    if (!String(q || '').trim()) return;
+    var r = ChatBrain.reply(q, S.state, forced);
+    push([{ who: 'me', text: shown || q }, Object.assign({ who: 'ai' }, r)]);
+    setText('');
+  }
+  function runAction(a) {
+    if (a.hash) { closeModal(); location.hash = a.hash; return; }
+    if (a.modal === 'scan') { closeModal(); openModal('scan', { semesterId: cur && cur.id }); return; }
+    if (a.modal === 'paste' && firstOpen) { closeModal(); openModal('paste', { courseId: firstOpen.id }); return; }
+    if (a.modal === 'quick') { closeModal(); openModal('quick', {}); }
+  }
+  function decide(i, ok) {
+    var m = msgs[i], cf = m.confirm;
+    setMsgs(function (old) { return old.map(function (x, j) { return j === i ? Object.assign({}, x, { done: ok ? 'saved' : 'cancelled' }) : x; }); });
+    if (!ok) { push([{ who: 'ai', text: t('chat.cancelled') }]); return; }
+    update(function (d) { var x = d.assessments.find(function (y) { return y.id === cf.id; }); if (!x) return; x.max = cf.max; x.score = cf.score; x.status = 'graded'; }, { undo: true });
+    toast(t('chat.saved', { s: fmtT(cf.score), m: fmtT(cf.max), a: cf.name }), { undo: true });
+    push([{ who: 'ai', text: t('chat.saved', { s: fmtT(cf.score), m: fmtT(cf.max), a: cf.name }) }]);
+  }
+  var quick = [
+    { label: t('ai.scanT'), icon: 'zap', run: function () { closeModal(); openModal('scan', { semesterId: cur && cur.id }); }, off: !canScan() },
+    { label: t(isCU() ? 'ai.pasteT' : 'ai.pasteTGeneric'), icon: 'clipboard', run: function () { closeModal(); openModal('paste', { courseId: firstOpen && firstOpen.id }); }, off: !firstOpen },
+    { label: t('ai.quickT'), icon: 'edit', run: function () { closeModal(); openModal('quick', {}); } }
+  ];
+  var sugg = ['chat.s.gpa', 'chat.s.need', 'chat.s.exam', 'chat.s.due'];
+  return html`<${Modal} title=${t('chat.title')} onClose=${closeModal} wide=${true}>
+    <div className="chat" data-testid="chat">
+      <section className="connect-card" data-testid="connect-card" aria-labelledby="connect-h">
+        <div className="row between" style=${{ gap: 8 }}><b id="connect-h">${t('connect.title')}</b><span className="connect-soon">${t('connect.soon')}</span></div>
+        <div className="connect-tiles">${['ChatGPT', 'Claude'].map(function (n) { return html`<div key=${n} className="connect-tile" aria-disabled="true"><${Icon} n="link" s=${16} /><span>${t('connect.with', { n: n })}</span></div>`; })}</div>
+        <p className="tiny muted" style=${{ margin: 0 }}>${t('connect.why')}</p>
+      </section>
+      <div className="chat-own"><${Icon} n="spark" s=${14} />${t('connect.own')}</div>
+      <div className="chat-quick">${quick.map(function (x, i) { return html`<button key=${i} className="chat-q" disabled=${x.off} onClick=${x.run}><${Icon} n=${x.icon} s=${16} />${x.label}</button>`; })}</div>
+      <div className="chat-log" role="log" aria-live="polite">
+        ${msgs.map(function (m, i) { return html`<div key=${i} className=${'chat-msg ' + m.who}>
+          <div className="chat-bubble">${m.text}
+            ${m.list && html`<ul>${m.list.map(function (l, j) { return html`<li key=${j}>${l}</li>`; })}</ul>`}
+            ${m.note && html`<div className="tiny muted">${m.note}</div>`}
+            ${m.pick && html`<div className="chat-chips">${m.pick.map(function (o, j) { return html`<button key=${j} className="chat-chip" onClick=${function () { ask(m.pending ? m.pending.text : o.label, { course: o.course, item: o.item }, o.label); }}>${o.label}</button>`; })}</div>`}
+            ${m.actions && html`<div className="chat-chips">${m.actions.map(function (a, j) { return html`<button key=${j} className="chat-chip" onClick=${function () { runAction(a); }}>${a.label} ›</button>`; })}</div>`}
+            ${m.confirm && !m.done && html`<div className="row" style=${{ gap: 6, marginTop: 8 }}><button className="btn primary sm" data-testid="chat-save" onClick=${function () { decide(i, true); }}>${t('chat.save')}</button><button className="btn sm" onClick=${function () { decide(i, false); }}>${t('chat.cancel')}</button></div>`}
+          </div></div>`; })}
+        <div ref=${endRef}></div>
+      </div>
+      ${msgs.length < 3 && html`<div className="chat-chips">${sugg.map(function (k) { return html`<button key=${k} className="chat-chip" onClick=${function () { ask(t(k)); }}>${t(k)}</button>`; })}</div>`}
+      <form className="chat-input" onSubmit=${function (e) { e.preventDefault(); ask(text); }}>
+        <input ref=${inputRef} className="input" value=${text} placeholder=${t('chat.ph')} aria-label=${t('chat.ph')} onChange=${function (e) { setText(e.target.value); }} />
+        <button className="btn primary" type="submit" aria-label=${t('chat.send')} disabled=${!text.trim()}><${Icon} n="send" s=${16} /></button>
+      </form>
+      <p className="tiny muted" style=${{ margin: 0 }}>${t('chat.localNote')}</p>
+    </div><//>`;
+}
 function commandItems(state) {
   var cur = curSemester(state), isDark = state.settings.theme === 'dark' || (state.settings.theme !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   var both = function (k) { return [I18N.en[k], I18N.th[k]].join(' '); };
   var items = NAV.map(function (n) { var k = 'nav.' + (n.key || n.id); return { g: 'cmd.gPages', icon: n.icon, label: t(k), meta2: both(k), run: function () { location.hash = n.id; } }; });
   items = items.concat([
-    { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), meta2: both('ai.btn'), run: function () { openModal('assistant', {}); } },
+    { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), meta2: both('ai.btn') + ' chat แชท', run: function () { openModal('chat', {}); } },
     { g: 'cmd.gActions', icon: 'plus', label: t('addCourse'), meta2: both('addCourse'), run: function () { openModal('course', { semesterId: cur && cur.id }); } },
     { g: 'cmd.gActions', icon: 'edit', label: t('quickScore'), meta2: both('quickScore'), run: function () { openModal('quick', {}); } },
     canScan() && { g: 'cmd.gActions', icon: 'zap', label: t('scan.btn'), meta2: both('scan.btn'), run: function () { openModal('scan', { semesterId: cur && cur.id }); } },
@@ -7844,10 +8139,10 @@ function AiFab() {
   var is = useState(function () { try { return !localStorage.getItem(AI_FAB_INTRO_KEY); } catch (e) { return false; } }), intro = is[0], setIntro = is[1];
   if (hidden || S.modal) return null;
   function seen() { try { localStorage.setItem(AI_FAB_INTRO_KEY, '1'); } catch (e) { /* ignore */ } setIntro(false); }
-  function open() { seen(); openModal('assistant', {}); }
+  function open() { seen(); openModal('chat', {}); }
   function hide() { seen(); try { sessionStorage.setItem('gradespace.aifab', 'hidden'); } catch (e) { /* ignore */ } setHidden(true); }
   return html`<div className="ai-fab-wrap">
-    ${intro && html`<div className="ai-fab-intro" role="dialog" aria-labelledby="ai-fab-t"><b id="ai-fab-t">${t('fab.introT')}</b><span>${t('fab.introP')}</span>
+    ${intro && html`<div className="ai-fab-intro" role="dialog" aria-labelledby="ai-fab-t"><b id="ai-fab-t">${t('fab.introT')}</b><span>${t(isCU() ? 'fab.introP' : 'fab.introPGeneric')}</span>
       <div className="row"><button className="btn primary sm" onClick=${open}>${t('fab.try')}</button><button className="btn ghost sm" onClick=${seen}>${t('fab.later')}</button></div></div>`}
     <button className="ai-fab" onClick=${open} aria-label=${t('ai.title')} title=${t('ai.title')}><${Icon} n="spark" s=${26} /></button>
     <button className="ai-fab-x" onClick=${hide} aria-label=${t('fab.hide')} title=${t('fab.hide')}><${Icon} n="x" s=${12} /></button>
@@ -7879,7 +8174,7 @@ function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal, tuGened: TuGenEdModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal, tuGened: TuGenEdModal, chat: ChatModal }[m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 
@@ -8121,18 +8416,26 @@ function SaveState() {
 var NAV = [
   { id: 'dashboard', icon: 'dashboard' }, { id: 'courses', icon: 'book' }, { id: 'gpa', icon: 'trend' },
   { id: 'simulator', icon: 'calc', group: 'navg.tools' }, { id: 'years', icon: 'calendar', group: 'navg.tools' },
-  { id: 'feedback', icon: 'message', group: 'navg.more' }, { id: 'help', icon: 'info', group: 'navg.more' }, { id: 'preferences', icon: 'sliders', key: 'settings', group: 'navg.more' }
+  { id: 'help', icon: 'info', group: 'navg.more' }, { id: 'preferences', icon: 'sliders', key: 'settings', group: 'navg.more' }
 ];
 // Phone bottom bar: five tabs at most; everything else lives under “You”.
 var BOTTOM_NAV = [
-  { id: 'dashboard', icon: 'dashboard' }, { id: 'courses', icon: 'book' }, { id: 'simulator', icon: 'calc' },
+  { id: 'dashboard', icon: 'dashboard' }, { id: 'courses', icon: 'book' }, { id: 'ai', icon: 'spark', center: true },
   { id: 'gpa', icon: 'trend' }, { id: 'me', icon: 'user' }
 ];
-var ME_PAGES = ['me', 'years', 'feedback', 'help', 'preferences'];
+var ME_PAGES = ['me', 'simulator', 'years', 'feedback', 'help', 'preferences'];
+// Help and feedback share one page with two tabs (#help and #feedback both land here).
+function HelpHub(p) {
+  return html`<div>
+    <div className="help-tabs"><${Seg} label=${t('nav.help')} value=${p.tab === 'feedback' ? 'feedback' : 'help'} onChange=${function (v) { go(v); }}
+      options=${[{ v: 'help', l: t('helpTab.help') }, { v: 'feedback', l: t('helpTab.feedback') }]} /></div>
+    ${p.tab === 'feedback' ? html`<${FeedbackPage} />` : html`<${HelpPage} />`}
+  </div>`;
+}
 function MePage(p) {
   var state = p.state, user = S.web && S.web.user;
   var theme = state.settings.theme === 'light' || state.settings.theme === 'dark' ? state.settings.theme : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  var links = NAV.filter(function (n) { return n.id === 'years' || n.group === 'navg.more'; });
+  var links = NAV.filter(function (n) { return n.group === 'navg.tools' || n.group === 'navg.more'; });
   return html`<div className="me-page">
     <div className="page-head"><div><h1>${t('nav.me')}</h1></div></div>
     <a className="card pad me-head" href="#preferences">
@@ -8175,7 +8478,7 @@ function App() {
     // (also after the saved copy loads from the account, which may replace the first state).
     if (!state.settings.institution && (uniPending === 'cu' || uniPending === 'tu')) setUni(uniPending);
   }, [state.settings.institution]);
-  var active = route.page === 'course' ? 'courses' : route.page;
+  var active = route.page === 'course' ? 'courses' : route.page === 'feedback' ? 'help' : route.page;
   var page;
   if (route.page === 'dashboard') page = html`<${Dashboard} state=${state} />`;
   else if (route.page === 'years') page = html`<${YearsPage} state=${state} />`;
@@ -8183,8 +8486,7 @@ function App() {
   else if (route.page === 'course') page = html`<${CourseDetail} state=${state} id=${route.id} />`;
   else if (route.page === 'simulator') page = html`<${SimulatorPage} state=${state} id=${route.id} />`;
   else if (route.page === 'gpa') page = html`<${GPAPage} state=${state} />`;
-  else if (route.page === 'feedback') page = html`<${FeedbackPage} />`;
-  else if (route.page === 'help') page = html`<${HelpPage} />`;
+  else if (route.page === 'feedback' || route.page === 'help') page = html`<${HelpHub} tab=${route.page} />`;
   else if (route.page === 'me') page = html`<${MePage} state=${state} />`;
   else page = html`<${Preferences} state=${state} />`;
   var navLabel = function (n) { return t('nav.' + (n.key || n.id)); };
@@ -8206,7 +8508,7 @@ function App() {
       <main className="page" id="main">${page}</main>
     </div>
     <nav className="bottomnav" aria-label=${t('mainNav')}>
-      ${BOTTOM_NAV.map(function (n) { var on = n.id === 'me' ? ME_PAGES.indexOf(active) >= 0 : active === n.id; return html`<a key=${n.id} href=${'#' + n.id} aria-current=${on ? 'page' : null}><${Icon} n=${n.icon} s=${22} /><span>${t('navShort.' + n.id)}</span></a>`; })}
+      ${BOTTOM_NAV.map(function (n) { if (n.center) return html`<button key=${n.id} type="button" className="nav-ai" data-testid="nav-ai" aria-label=${t('chat.title')} onClick=${function () { try { localStorage.setItem(AI_FAB_INTRO_KEY, '1'); } catch (e) { /* ignore */ } openModal('chat', {}); }}><span className="nav-ai-dot"><${Icon} n="spark" s=${24} /></span><span>${t('chat.nav')}</span></button>`; var on = n.id === 'me' ? ME_PAGES.indexOf(active) >= 0 : active === n.id; return html`<a key=${n.id} href=${'#' + n.id} aria-current=${on ? 'page' : null}><${Icon} n=${n.icon} s=${22} /><span>${t('navShort.' + n.id)}</span></a>`; })}
     </nav>
     <${AiFab} />
     <${ModalHost} />
@@ -8425,7 +8727,7 @@ function startUser(user) {
   S.localKey = Store.KEY + ':' + user.email;
   S.state = Store.Local.load(S.localKey) || freshState();
   S.sync = 'saving'; S.authScreen = false; S.ready = true; emit();
-  var cloud = Store.makeEmailStore(w.client, user.email);
+  var cloud = Store.makeEmailStore(w.client, user.email, !!user.verified);
   var attempt = function () {
     if (w.user !== user) return;
     cloud.load().then(function (remote) {
@@ -8483,6 +8785,7 @@ function signOut() {
         'Your latest changes are not confirmed online. Please try signing out again.');
       return;
     }
+    if (S.web.otp) { try { S.web.client.auth.signOut(); } catch (e) { /* ignore */ } }
     resetToAuth(); toast(t('account.signedOut'));
   }, function () {
     toast(LANG === 'th' ? 'เชื่อมต่อไม่สำเร็จ เก็บข้อมูลล่าสุดไว้ในเครื่องนี้แล้ว' :
@@ -8499,9 +8802,40 @@ function AuthScreen() {
   var pickUni=function(v){setUniLocal(v);setErr(null);uniPending=v;try{localStorage.setItem(UNI_PENDING_KEY,v);}catch(e){/* ignore */}};
   var savingS=useState(false), saving=savingS[0], setSaving=savingS[1];
   var pending=useRef(false);
+  var otp = !!(S.web && S.web.otp) && !(existing && existing.verified);
+  var stS=useState('email'), step=stS[0], setStep=stS[1];
+  var cdS=useState(''), code=cdS[0], setCode=cdS[1];
+  var wtS=useState(0), wait=wtS[0], setWait=wtS[1];
+  useEffect(function(){ if(!wait)return; var x=setTimeout(function(){setWait(wait-1);},1000); return function(){clearTimeout(x);}; },[wait]);
+  useEffect(function(){ if(!existing){ try{ var sv=localStorage.getItem(EMAIL_KEY); if(sv&&!email)setEmail(sv); }catch(e){/* ignore */} } },[]);
+  var sendCode = async function () {
+    var em = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { setErr(t('auth.err.email')); return; }
+    if(uni==='cu'&&sid.replace(/\s/g,'')&&!/^\d{10}$/.test(sid.replace(/\s/g,''))){setErr(t('examroom.badId'));return;}
+    setErr(null); setSaving(true);
+    try { var r = await S.web.client.auth.signInWithOtp({ email: em, options: { shouldCreateUser: true } }); if (r && r.error) throw r.error; setStep('code'); setCode(''); setWait(60); }
+    catch (e) { setErr(t('otp.err.send')); }
+    finally { setSaving(false); }
+  };
+  var verifyCode = async function () {
+    var em = email.trim().toLowerCase(), tok = code.replace(/\s/g,'');
+    if (!/^\d{6,10}$/.test(tok)) { setErr(t('otp.err.code')); return; }
+    setErr(null); setSaving(true);
+    try {
+      var r = await S.web.client.auth.verifyOtp({ email: em, token: tok, type: 'email' });
+      var u = r && r.data && (r.data.user || (r.data.session && r.data.session.user));
+      if (!r || r.error || !u) throw (r && r.error) || new Error('no session');
+      uniPending=uni; try{localStorage.setItem(UNI_PENDING_KEY,uni);}catch(e){/* ignore */}
+      var id = uni==='cu' ? sid.replace(/\s/g,'') : '';
+      if (id) { try { var rr = await S.web.client.rpc('gs_exam_device',{p_email:em,p_device:examDeviceKey(em),p_action:'save',p_student_id:id}); if(rr.error||!rr.data||rr.data.saved!==true)throw new Error('save failed'); } catch (e2) { toast(t('examroom.loginError')); } }
+      startUser({ id: u.id, email: String(u.email || em).toLowerCase(), verified: true });
+    } catch (e) { setErr(t('otp.err.code')); }
+    finally { setSaving(false); }
+  };
   useEffect(function () { document.documentElement.lang = LANG; document.title = 'GradeSpace – ' + t('taglineShort'); });
   useEffect(function () { applyUniTheme(uni, !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) && document.documentElement.getAttribute('data-theme') !== 'light'); }, [uni]);
   var enter = async function () {
+    if (otp) { if (step === 'email') sendCode(); else verifyCode(); return; }
     if(pending.current)return;
     var em = email.trim().toLowerCase(), id=uni==='cu'?sid.replace(/\s/g,''):'';
     uniPending=uni;try{localStorage.setItem(UNI_PENDING_KEY,uni);}catch(e){/* ignore */}
@@ -8529,12 +8863,15 @@ function AuthScreen() {
       </div>
       <h1 className="auth-title">${t('welcomeT')}</h1>
       <div className="stack" style=${{ marginTop: 8 }} onKeyDown=${function (e) { if (e.key === 'Enter' && e.target.tagName === 'INPUT') enter(); }}>
-        <p className="muted" style=${{ margin: 0 }}>${t('auth.intro')}</p>
-        <${Field} label=${t('auth.email')} id="au-e"><input id="au-e" className="input" type="email" autoComplete="email" inputMode="email" autoFocus=${true} value=${email} readOnly=${!!existing} disabled=${saving} onChange=${function (e) { setEmail(e.target.value); setErr(null); }} /><//>
+        <p className="muted" style=${{ margin: 0 }}>${otp ? (step === 'code' ? t('otp.sent', { e: email.trim().toLowerCase() }) : t('otp.intro')) : t('auth.intro')}</p>
+        ${otp && step === 'code' && html`<${Field} label=${t('otp.code')} id="au-code"><input id="au-code" className="input otp-input" type="text" inputMode="numeric" autoComplete="one-time-code" maxLength=${10} autoFocus=${true} value=${code} disabled=${saving} onChange=${function (e) { setCode(e.target.value.replace(/[^0-9]/g, '')); setErr(null); }} /><//>`}
+        ${!(otp && step === 'code') && html`<${React.Fragment}><${Field} label=${t('auth.email')} id="au-e"><input id="au-e" className="input" type="email" autoComplete="email" inputMode="email" autoFocus=${true} value=${email} readOnly=${!!existing} disabled=${saving} onChange=${function (e) { setEmail(e.target.value); setErr(null); }} /><//>
         <div className="field"><label>${t('uni.label')}</label><${UniPicker} value=${uni} onChange=${pickUni} /></div>
-        ${uni==='cu' && html`<${Field} label=${t('examroom.loginId')} id="au-student" hint=${t('examroom.loginHint')}><input id="au-student" className="input" type="text" inputMode="numeric" autoComplete="off" maxLength=${12} value=${sid} disabled=${saving} onChange=${e=>{setSid(e.target.value);setErr(null);}} /><//>`}
+        ${uni==='cu' && html`<${Field} label=${t('examroom.loginId')} id="au-student" hint=${t('examroom.loginHint')}><input id="au-student" className="input" type="text" inputMode="numeric" autoComplete="off" maxLength=${12} value=${sid} disabled=${saving} onChange=${e=>{setSid(e.target.value);setErr(null);}} /><//>`}<//>`}
         ${err && html`<${Banner} kind="bad">${err}<//>`}
-        <button className="btn primary" style=${{ padding: '11px 14px' }} disabled=${saving} onClick=${enter}>${t(saving?'examroom.saving':'auth.enter')}</button>
+        <button className="btn primary" style=${{ padding: '11px 14px' }} disabled=${saving} onClick=${enter}>${t(saving ? 'examroom.saving' : otp ? (step === 'code' ? 'otp.verify' : 'otp.send') : 'auth.enter')}</button>
+        ${otp && step === 'code' && html`<div className="row between wrap"><button className="btn ghost sm" type="button" onClick=${function () { setStep('email'); setErr(null); }}>${t('otp.change')}</button>
+          <button className="btn ghost sm" type="button" disabled=${wait > 0 || saving} onClick=${sendCode}>${wait > 0 ? t('otp.wait', { n: wait }) : t('otp.resend')}</button></div>`}
         <p className="auth-privacy" style=${{ margin: '0' }}>${LANG === 'th'
           ? 'เมื่อเข้าใช้ด้วยอีเมล ข้อมูลวิชาและคะแนนที่บันทึกจะถูกส่งให้ผู้ดูแล GradeSpace'
           : 'When using an email, your course and assessment scores are shared with the GradeSpace administrator.'}</p>
@@ -8557,7 +8894,8 @@ function AccountSection() {
 }
 function webBoot() {
   var cfg = window.GS_WEB;
-  S.web = { client: window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }), user: null };
+  var otp = cfg.otp === true;
+  S.web = { otp: otp, client: window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: otp, autoRefreshToken: otp, detectSessionInUrl: false } }), user: null };
   var saved = null, guestPref = false;
   try {
     if (localStorage.getItem('gradespace.th-default-v1') !== '1') { localStorage.setItem('gradespace.th-default-v1', '1'); localStorage.setItem('gradespace.lang', 'th'); }
@@ -8568,6 +8906,16 @@ function webBoot() {
   } catch (e) { /* ignore */ }
   S.state = freshState();
   ReactDOM.createRoot(document.getElementById('root')).render(h(Root));
+  if (otp) {
+    // Only a verified session opens an account; a remembered email just pre-fills the sign-in form.
+    Promise.resolve(S.web.client.auth.getSession()).then(function (r) {
+      var u = r && r.data && r.data.session && r.data.session.user;
+      if (u && u.email) startUser({ id: u.id, email: String(u.email).toLowerCase(), verified: true });
+      else if (guestPref && !saved) startGuest();
+      else { S.authScreen = true; S.ready = true; emit(); }
+    }, function () { S.authScreen = true; S.ready = true; emit(); });
+    return;
+  }
   if (saved) startUser({ id: saved, email: saved });
   else if (guestPref) startGuest();
   else { S.authScreen = true; S.ready = true; emit(); }

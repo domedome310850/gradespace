@@ -59,10 +59,15 @@ Find code with search (`grep -n "^function CourseCard"`), not by line number —
   New features should get an entry point in the `cmd` menu (`commandItems`). Navigation follows YouTube:
   top bar = logo + search (`.top-search`) + `AccountMenu` (desktop only); phones get a 5-tab `BOTTOM_NAV`, and
   less-used pages live under the “You” tab (`MePage`, `ME_PAGES`); the sidebar `NAV` uses `group` labels.
-  The AI assistant is the floating `AiFab`. Don't add a sixth bottom tab — put it under You instead.
+  The AI chat (`ChatModal`, local `ChatBrain`) opens from the centre button of the phone bottom bar
+  (`BOTTOM_NAV` item with `center: true`) and from the desktop floating `AiFab`. Chat rules: only match
+  existing courses/assessments, always confirm before saving, never send data off the device without the
+  owner's approval. Help and Feedback share `HelpHub`. Don't add a sixth bottom item — put it under You instead.
   **Universities:** `uniOf(state)` / `isCU(state)` read `settings.institution` (`''` → Chula). Anything that talks
   to Reg Chula, Chula GenEd, CBS study plans or exam rooms must stay behind `isCU`. Thammasat data lives in
   `TU_GENED` / `TU_TBS` / `TU_CATALOG`; `CATALOG.get/search` switch by university.
+  Thammasat-only wording: add `'key@tu'` next to `'key'` in both languages; `t()` picks it when not Chula.
+  TU grade rules (regulation 2568) are in `TU_OUTCOMES` and `TuRulesCard`.
   Other helpers: `RegData` (Reg Chula data per course), `GenEdData`, `examsFor(c, state)`,
   `gradingModeFor(c)`, `sectionOf(c)`, `niceName(name)`, `courseDisplayTitle(c)`.
 - **Pages**: `Dashboard`, `CoursesPage`, `CourseDetail`, `YearsPage`, `SimulatorPage`, `GPAPage`, settings.
@@ -114,6 +119,11 @@ data and fails on any error or sideways scrolling. Also click through what you c
 ## Open work
 
 - **Exam rooms (owner requested on 2026-11-22):** 310 private rules covering 110 courses in `gs_room_data.rules` for 2569/s1/fin. PR #7 now uses `gs_exam_device` and `gs_room_data.device_profiles` with a random browser-specific secret stored per email; no email verification or extra login. Different browsers must re-enter the ID. The original grade store is unchanged (email-only access is not verified identity). One malformed PDF p.3 interval omitted pending faculty confirmation. SQL device-isolation tests passed, browser smoke and deployment pending.
+- **Secure sign-in step 1 (2026-11-26, PR feat/verified-signin):** code-based sign-in built behind `GS_WEB.otp=false`;
+  migration `20261126_verified_email_signin.sql` written and tested locally, **not applied**. Owner checklist in
+  `docs/secure-signin.md` (custom SMTP, `{{ .Token }}` template, apply migration, flip `otp`). Steps 2–3 (OAuth for
+  outside AI, ChatGPT/Claude connector) not started.
+- **Owner decision 2026-11-26:** ChatGPT/Claude connector must wait for secure sign-in (OAuth); the owner un-paused login work, but its plan needs approval before any login/DB change. The AI sheet shows a non-working “coming soon” connect card first.
 - **GradeSpace Connect (2026-11-25, planned):** external AI (ChatGPT/Claude via one MCP server, MCP Apps review widget, Universal JSON import). See `docs/grade-space-connect-roadmap.md`. Do not expose real student data to external AI until OAuth 2.1 (Epic Auth) ships; sandbox data only.
 - **Thammasat (2026-11-26):** TU mode shipped without automatic schedules. TU’s class/exam search
   (`https://vnweb68.reg.tu.ac.th/registrar/classinfo`, linked from reg.tu.ac.th) is a JavaScript app; its data API

@@ -16,8 +16,12 @@ const LIBS = {
   'htm.umd': resolve(here, 'node_modules/htm/dist/htm.umd.js'),
 };
 // Stand-in for supabase-js: gs_load returns the fixture, every other call succeeds with nothing.
-const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{},functions:{},rpc:async(fn,args)=>{(window.__rpcs=window.__rpcs||[]).push(fn);
-  if(fn==='gs_load')return {data:[{data:window.__D,client_updated_at:Date.now()}],error:null};
+const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{
+  getSession:async()=>({data:{session:JSON.parse(sessionStorage.getItem('fakeSess')||'null')}}),
+  signInWithOtp:async({email})=>{window.__otpTo=email;return {error:null};},
+  verifyOtp:async({email,token})=>{if(token!=='123456')return {data:{},error:{message:'bad code'}};const sess={user:{id:'u-1',email}};sessionStorage.setItem('fakeSess',JSON.stringify(sess));return {data:{user:sess.user,session:sess},error:null};},
+  signOut:async()=>{sessionStorage.removeItem('fakeSess');return {error:null};}},functions:{},rpc:async(fn,args)=>{(window.__rpcs=window.__rpcs||[]).push(fn);
+  if(fn==='gs_load'||fn==='gs_me_load')return {data:[{data:window.__D,client_updated_at:Date.now()}],error:null};
   if(fn==='gs_exam_device'){
     if(args.p_email!=='test@example.com'||!(/^[0-9a-f]{64}$/).test(args.p_device))throw Error('invalid device scope');
     if(args.p_action==='get')return {data:{studentId:window.__studentId||null},error:null};
@@ -58,7 +62,8 @@ async function run(browser, lang, width) {
   if(await page.locator('.topbar .seg').count()) errors.push('language switch should be inside the account menu');
   if(width<=900){
     // Phones: YouTube-style bottom bar (5 tabs); language/theme live under the “You” tab.
-    if(await page.locator('.bottomnav a').count()!==5) errors.push('bottom bar should have 5 tabs');
+    if(await page.locator('.bottomnav > *').count()!==5) errors.push('bottom bar should have 5 items');
+    if(!(await page.getByTestId('nav-ai').isVisible())) errors.push('centre AI button missing from bottom bar');
     await page.locator('.bottomnav a[href="#me"]').click();
     await page.locator('.me-page').waitFor();
     if(lang==='en'){await page.locator('.me-page button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
@@ -76,11 +81,30 @@ async function run(browser, lang, width) {
   // Floating AI button with one-time intro bubble, and search beside the semester picker.
   if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('AI intro bubble not shown on first visit');
   await page.locator('.ai-fab-intro .btn.primary').click();
-  if(await page.locator('.ai-action').count()!==3) errors.push('assistant popup should offer 3 actions');
+  if(await page.locator('.chat-q').count()!==3) errors.push('AI chat should offer 3 quick actions');
   await page.keyboard.press('Escape');
-  if(await page.locator('.ai-action').count()) errors.push('assistant popup did not close on Escape');
+  if(await page.locator('.chat').count()) errors.push('AI chat did not close on Escape');
   if(await page.locator('.ai-fab-intro').count()) errors.push('AI intro bubble should not return after use');
-  if(!(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
+  if(width>900 && !(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
+  // AI chat: local answers + confirmed score entry, never invents items (2026-11-26).
+  if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
+  if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card should be first in the AI sheet');
+  await page.locator('.chat-input input').fill('GPA');
+  await page.locator('.chat-input input').press('Enter');
+  if(!/GPA/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat GPA answer missing');
+  await page.locator('.chat-input input').fill('HW5 econ 4/5');
+  await page.locator('.chat-input input').press('Enter');
+  await page.getByTestId('chat-save').waitFor();
+  await page.getByTestId('chat-save').click();
+  if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.max===5&&a.status==='graded';}))) errors.push('chat did not save HW5 4/5');
+  await page.locator('.chat-input input').fill('Quiz 99 econ 3/5');
+  await page.locator('.chat-input input').press('Enter');
+  if(await page.evaluate(()=>GradeSpace.S.state.assessments.some(x=>/quiz 99/i.test(x.name||'')))) errors.push('chat invented an assessment');
+  await page.locator('.chat-input input').fill(lang==='th'?'ต้องได้เท่าไหร่ถึงได้ A econ':'what do I need for A econ');
+  await page.locator('.chat-input input').press('Enter');
+  if(!/Economics/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat need-for-grade answer missing');
+  await page.keyboard.press('Escape');
+  await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');
@@ -308,6 +332,11 @@ async function runTU(browser, lang, width) {
     const extra = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     if (extra > 1) overflow.push(h + ' +' + extra + 'px');
   }
+  await page.evaluate(()=>{location.hash='gpa';}); await page.waitForTimeout(300);
+  if(!(await page.getByTestId('tu-rules').isVisible())) errors.push('TU rules card missing on GPA page');
+  const outs=await page.evaluate(()=>GradeSpace.S.state.outcomes.map(o=>o.label));
+  for (const l of ['ACC','EXE','AUD','W','I','S','U']) if(!outs.includes(l)) errors.push('TU outcome missing '+l);
+  if(await page.evaluate(()=>[GradeSpace.Calc.fmt(2.345),GradeSpace.Calc.fmt(3.4949),GradeSpace.Calc.fmt(1.005)].join())!=='2.35,3.49,1.01') errors.push('GPA rounding is not half-up (TU ข้อ 48)');
   const sugg=await page.evaluate(()=>GradeSpace.catalogSearch?GradeSpace.catalogSearch('AC201').length:-1);
   if(sugg===0) errors.push('TU catalog search found nothing for AC201');
   await ctx.close();
@@ -315,10 +344,54 @@ async function runTU(browser, lang, width) {
   return errors.length + overflow.length;
 }
 
+// One-time-code sign-in (switched on with GS_WEB.otp; off in production until the migration is applied).
+async function runOTP(browser, width) {
+  const errors = [];
+  const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await ctx.newPage();
+  await page.addInitScript(([d]) => { window.__D = d; let g; Object.defineProperty(window,'GS_WEB',{configurable:true,get(){return g;},set(v){g=Object.assign(v,{otp:true});}}); }, [state]);
+  await page.route('**/*', (route) => {
+    const u = route.request().url();
+    if (u.startsWith('file:') || u.startsWith('data:') || u.startsWith('blob:')) return route.continue();
+    for (const [k, f] of Object.entries(LIBS)) if (u.includes(k)) return route.fulfill({ path: f, contentType: 'application/javascript' });
+    if (u.includes('supabase.js')) return route.fulfill({ body: FAKE_SUPABASE, contentType: 'application/javascript' });
+    if (u.includes('gs-scan')) return route.fulfill({ body: '{"ready":true}', contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' } });
+    return route.abort();
+  });
+  page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
+  page.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('Failed to load resource')) errors.push('console: ' + m.text()); });
+  await page.clock.setFixedTime(new Date('2026-11-22T07:00:00Z'));
+  await page.goto(PAGE);
+  // A remembered email alone must not open the account.
+  await page.evaluate(()=>localStorage.setItem('gradespace.email','otp@example.com'));
+  await page.reload();
+  await page.locator('#au-e').waitFor();
+  if(await page.locator('.dashboard-exam-panel').count()) errors.push('remembered email opened the account without a code');
+  if(await page.locator('#au-e').inputValue()!=='otp@example.com') errors.push('remembered email not pre-filled');
+  await page.locator('#au-e').press('Enter');
+  await page.locator('#au-code').waitFor();
+  if(await page.evaluate(()=>window.__otpTo)!=='otp@example.com') errors.push('code not requested for the email');
+  await page.locator('#au-code').fill('000000'); await page.locator('#au-code').press('Enter');
+  await page.waitForTimeout(300);
+  if(!(await page.locator('.banner.bad').count())) errors.push('wrong code not rejected');
+  await page.locator('#au-code').fill('123456'); await page.locator('#au-code').press('Enter');
+  await page.locator('.dashboard-exam-panel').first().waitFor();
+  const rpcs=await page.evaluate(()=>window.__rpcs||[]);
+  if(!rpcs.includes('gs_me_load')) errors.push('verified load not used');
+  if(rpcs.includes('gs_load')||rpcs.includes('gs_save')) errors.push('email-only RPC used after code sign-in');
+  // Session survives a reload; no sign-in screen.
+  await page.reload();
+  await page.locator('.dashboard-exam-panel').first().waitFor({timeout:10000}).catch(()=>errors.push('session not restored after reload'));
+  await ctx.close();
+  console.log(`OTP ${width}px: errors ${errors.length ? errors.join(' | ') : 'none'}`);
+  return errors.length;
+}
+
 const browser = await chromium.launch();
 let bad = 0;
 for (const lang of ['th', 'en']) for (const w of [390, 1280, 1800]) bad += await run(browser, lang, w);
 for (const lang of ['th', 'en']) for (const w of [390, 1280]) bad += await runTU(browser, lang, w);
+for (const w of [390, 1280]) bad += await runOTP(browser, w);
 await browser.close();
 if (bad) { console.error('FAILED'); process.exit(1); }
 console.log('OK');
