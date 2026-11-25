@@ -204,6 +204,35 @@ async function run(browser, lang, width) {
   await reverse.getByText(/^GPA [0-9]/).first().waitFor();
   await reverse.locator('input').fill('4.1');
   if(await reverse.getByText(/^GPA [0-9]/).count())errors.push('invalid GPA target has scenarios');
+  // Device-local appearance preview must never mutate academic/account data.
+  await page.evaluate(()=>location.hash='preferences');
+  const ap=page.getByTestId('appearance-settings');await ap.waitFor();
+  const beforeAppearance=await page.evaluate(()=>JSON.stringify(GradeSpace.S.state));
+  await ap.locator('#appearance-institution').selectOption('cu');
+  await ap.locator('#appearance-faculty').selectOption('cbs');
+  await page.waitForFunction(()=>document.documentElement.dataset.appearance==='custom');
+  const cbsAccent=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--accent').trim());
+  await ap.locator('#appearance-institution').selectOption('tu');
+  if(await ap.locator('#appearance-faculty').inputValue()!=='general')errors.push('faculty selection not reset');
+  await page.waitForFunction(old=>getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()!==old,cbsAccent);
+  await ap.locator('[data-palette="custom"]').click();
+  await ap.locator('#appearance-custom').evaluate(el=>{el.value='#ffffff';el.dispatchEvent(new Event('input',{bubbles:true}));});
+  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('gradespace.appearance.preview.v1')).custom==='#FFFFFF');
+  const contrasts=await page.evaluate(()=>{
+    const p=getComputedStyle(document.documentElement);
+    const hex=k=>p.getPropertyValue(k).trim();
+    const l=h=>{const c=[1,3,5].map(i=>{const x=parseInt(h.slice(i,i+2),16)/255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4});return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
+    const ratio=(a,b)=>(Math.max(l(a),l(b))+.05)/(Math.min(l(a),l(b))+.05);
+    return [ratio(hex('--accent'),hex('--accent-ink')),ratio(hex('--accent-text'),hex('--accent-soft'))];
+  });
+  if(contrasts.some(x=>!Number.isFinite(x)||x<4.5))errors.push('appearance accent contrast below 4.5');
+  if(await page.evaluate(()=>JSON.stringify(GradeSpace.S.state))!==beforeAppearance)errors.push('appearance mutated grade state');
+  await page.evaluate(()=>location.hash='courses');
+  await page.waitForFunction(()=>document.documentElement.dataset.appearance==='custom');
+  await page.evaluate(()=>location.hash='preferences');
+  await ap.waitFor();
+  await ap.getByRole('button',{name:lang==='th'?'คืนค่าเริ่มต้น':'Reset appearance',exact:true}).click();
+  await page.waitForFunction(()=>!document.documentElement.hasAttribute('data-appearance'));
   const ids = await page.evaluate(() => GradeSpace.S.state.courses.map((c) => c.id));
   const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', ...ids.map((i) => 'course-' + i)];
   for (const h of hashes) {
