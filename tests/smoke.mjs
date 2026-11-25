@@ -55,6 +55,23 @@ async function run(browser, lang, width) {
   if(await page.locator('.side .nav-item[aria-current="page"]').getAttribute('href')!=='#dashboard') errors.push('overview is not default');
   if(await page.locator('#exam-student-id').count()) errors.push('student ID form leaked into dashboard');
   if(lang==='en'){await page.locator('button',{hasText:'EN'}).first().click();await page.waitForTimeout(300);}
+  // AI assistant entry, command menu and what's-new card (2026-11-25).
+  if(!(await page.locator('.whats-new').isVisible())) errors.push("what's-new card not shown on first visit");
+  await page.locator('.topbar .ai-btn').click();
+  if(await page.locator('.ai-action').count()!==3) errors.push('assistant popup should offer 3 actions');
+  await page.keyboard.press('Escape');
+  if(await page.locator('.ai-action').count()) errors.push('assistant popup did not close on Escape');
+  await page.keyboard.press('Control+k');
+  await page.locator('.cmd-input').waitFor();
+  await page.locator('.cmd-input').fill('2900111');
+  if(await page.locator('.cmd-item').count()<1) errors.push('command menu did not find course 2900111');
+  await page.locator('.cmd-input').press('Enter');
+  await page.waitForTimeout(200);
+  if(!(await page.evaluate(()=>location.hash)).startsWith('#course-')) errors.push('command menu Enter did not open the course');
+  await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(200);
+  await page.locator('.whats-new .btn.ghost').click();
+  if(await page.locator('.whats-new').count()) errors.push("what's-new card did not dismiss");
+  if(await page.evaluate(()=>localStorage.getItem('gradespace.whatsnew'))!=='2026-11-ai-cmdk') errors.push("what's-new dismissal not remembered");
   const lookup=await page.evaluate(()=>window.__examRequest);
   if(lookup.p_year!=='2569'||lookup.p_term!=='s1'||lookup.p_round!=='fin'||!lookup.p_courses.some(c=>c.code==='2900111'&&c.sec==='4')) errors.push('incorrect exam lookup payload');
   const upcoming=page.locator('.dashboard-upcoming-row').filter({hasText:'TEST-ROOM-A'});
