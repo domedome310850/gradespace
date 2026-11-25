@@ -1,3 +1,9 @@
+## 2026-11-26 — Claude (claude.ai): GradeSpace as the bridge to your own AI (no built-in chat)
+
+- `public/index.html`: owner decided GradeSpace should not have its own AI; it connects the student’s own ChatGPT/Claude to their grades. Removed the local chat (`ChatBrain`, `ChatModal`). The AI button (centre of the phone bar, floating button on desktop) now opens `AiHubModal` (“AI ของคุณ”): first the ChatGPT (`@GradeSpace`) / Claude connector card (coming soon, explains the bridge and that every change is approved in GradeSpace), then the in-site tools (screenshot scan, paste, quick score). First-visit bubble reworded. TH/EN.
+- `tests/smoke.mjs`: AI hub shows the connect card with ChatGPT and Claude, no chat box, and 3 tools.
+- Next (needs owner steps): secure sign-in live (PR #25 checklist) → Supabase OAuth 2.1 server + consent page → MCP server for ChatGPT/Claude. Using the student’s ChatGPT plan *inside* GradeSpace (“Sign in with ChatGPT” plan usage) needs OpenAI partner approval; fallback would be the student’s own API key.
+
 ## 2026-11-26 — Claude (claude.ai): one space per university
 
 - `public/index.html`: choosing a university now switches to that university’s own space. `switchSpace` / `applyUni` move the current `years`, `semesters`, `courses`, `categories`, `assessments` (and `currentSemesterId`, `studyPlan`, `genEdRequired`, `plannedCredits`, `targetCGPA`) into `settings.spaces[<old>]` and bring back `settings.spaces[<new>]` or an empty space. Kept inside `settings` because every copy of the site (`normalize`) and `gs_save` keep unknown settings keys; nothing is deleted. Switching with courses asks first (“your N courses are kept aside, not deleted”). A university picked on the sign-in screen applies quietly. TH/EN.

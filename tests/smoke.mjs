@@ -81,30 +81,19 @@ async function run(browser, lang, width) {
   // Floating AI button with one-time intro bubble, and search beside the semester picker.
   if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('AI intro bubble not shown on first visit');
   await page.locator('.ai-fab-intro .btn.primary').click();
-  if(await page.locator('.chat-q').count()!==3) errors.push('AI chat should offer 3 quick actions');
+  if(await page.locator('[data-testid="ai-hub"] .ai-action').count()!==3) errors.push('AI hub should offer 3 tools');
   await page.keyboard.press('Escape');
-  if(await page.locator('.chat').count()) errors.push('AI chat did not close on Escape');
+  if(await page.locator('[data-testid="ai-hub"]').count()) errors.push('AI hub did not close on Escape');
   if(await page.locator('.ai-fab-intro').count()) errors.push('AI intro bubble should not return after use');
   if(width>900 && !(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
-  // AI chat: local answers + confirmed score entry, never invents items (2026-11-26).
+  // AI hub: GradeSpace has no AI of its own; connect cards first, then in-site tools (2026-11-26).
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
-  if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card should be first in the AI sheet');
-  await page.locator('.chat-input input').fill('GPA');
-  await page.locator('.chat-input input').press('Enter');
-  if(!/GPA/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat GPA answer missing');
-  await page.locator('.chat-input input').fill('HW5 econ 4/5');
-  await page.locator('.chat-input input').press('Enter');
-  await page.getByTestId('chat-save').waitFor();
-  await page.getByTestId('chat-save').click();
-  if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.max===5&&a.status==='graded';}))) errors.push('chat did not save HW5 4/5');
-  await page.locator('.chat-input input').fill('Quiz 99 econ 3/5');
-  await page.locator('.chat-input input').press('Enter');
-  if(await page.evaluate(()=>GradeSpace.S.state.assessments.some(x=>/quiz 99/i.test(x.name||'')))) errors.push('chat invented an assessment');
-  await page.locator('.chat-input input').fill(lang==='th'?'ต้องได้เท่าไหร่ถึงได้ A econ':'what do I need for A econ');
-  await page.locator('.chat-input input').press('Enter');
-  if(!/Economics/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat need-for-grade answer missing');
+  await page.getByTestId('ai-hub').waitFor();
+  if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card missing');
+  if(await page.locator('.connect-tile').count()!==2) errors.push('connect card should list ChatGPT and Claude');
+  if(await page.locator('.chat-input').count()) errors.push('GradeSpace should not have its own chat');
+  if(await page.locator('[data-testid="ai-hub"] .ai-action').count()!==3) errors.push('AI hub should keep 3 tools');
   await page.keyboard.press('Escape');
-  await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');
