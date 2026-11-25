@@ -204,6 +204,35 @@ async function run(browser, lang, width) {
   await reverse.getByText(/^GPA [0-9]/).first().waitFor();
   await reverse.locator('input').fill('4.1');
   if(await reverse.getByText(/^GPA [0-9]/).count())errors.push('invalid GPA target has scenarios');
+  // Device-local appearance preview must never mutate academic/account data.
+  await page.evaluate(()=>location.hash='preferences');
+  const ap=page.getByTestId('appearance-settings');await ap.waitFor();
+  const beforeAppearance=await page.evaluate(()=>JSON.stringify(GradeSpace.S.state));
+  await ap.locator('#appearance-institution').selectOption('cu');
+  await ap.locator('#appearance-faculty').selectOption('cbs');
+  await page.waitForFunction(()=>document.documentElement.dataset.appearance==='custom');
+  const cbsAccent=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--accent').trim());
+  await ap.locator('#appearance-institution').selectOption('tu');
+  if(await ap.locator('#appearance-faculty').inputValue()!=='general')errors.push('faculty selection not reset');
+  await page.waitForFunction(old=>getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()!==old,cbsAccent);
+  await ap.locator('[data-palette="custom"]').click();
+  await ap.locator('#appearance-custom').evaluate(el=>{el.value='#ffffff';el.dispatchEvent(new Event('input',{bubbles:true}));});
+  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('gradespace.appearance.preview.v1')).custom==='#FFFFFF');
+  const contrasts=await page.evaluate(()=>{
+    const p=getComputedStyle(document.documentElement);
+    const hex=k=>p.getPropertyValue(k).trim();
+    const l=h=>{const c=[1,3,5].map(i=>{const x=parseInt(h.slice(i,i+2),16)/255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4});return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
+    const ratio=(a,b)=>(Math.max(l(a),l(b))+.05)/(Math.min(l(a),l(b))+.05);
+    return [ratio(hex('--accent'),hex('--accent-ink')),ratio(hex('--accent-text'),hex('--accent-soft'))];
+  });
+  if(contrasts.some(x=>!Number.isFinite(x)||x<4.5))errors.push('appearance accent contrast below 4.5');
+  if(await page.evaluate(()=>JSON.stringify(GradeSpace.S.state))!==beforeAppearance)errors.push('appearance mutated grade state');
+  await page.evaluate(()=>location.hash='courses');
+  await page.waitForFunction(()=>document.documentElement.dataset.appearance==='custom');
+  await page.evaluate(()=>location.hash='preferences');
+  await ap.waitFor();
+  await ap.getByRole('button',{name:lang==='th'?'คืนค่าเริ่มต้น':'Reset appearance',exact:true}).click();
+  await page.waitForFunction(()=>!document.documentElement.hasAttribute('data-appearance'));
   const ids = await page.evaluate(() => GradeSpace.S.state.courses.map((c) => c.id));
   const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', ...ids.map((i) => 'course-' + i)];
   for (const h of hashes) {
@@ -216,6 +245,19 @@ async function run(browser, lang, width) {
   console.log(`${lang} ${width}px: ${hashes.length} pages, overflow ${overflow.length ? overflow.join(', ') : 'none'}, errors ${errors.length ? errors.join(' | ') : 'none'}`);
   return errors.length + overflow.length;
 }
+
+// Test the exact embedded appearance functions in both modes, including extreme custom colors.
+const source=readFileSync(resolve(here,'../public/index.html'),'utf8');
+const apStart=source.indexOf('var APPEARANCE_KEY'),apEnd=source.indexOf('function AppearanceSettings',apStart);
+if(apStart<0||apEnd<0)throw Error('appearance logic missing');
+const apAPI=new Function(source.slice(apStart,apEnd)+'\nreturn {cleanAppearance,appearanceTokens,appearanceContrast};')();
+for(const dark of [true,false])for(const custom of ['#FFFFFF','#000000','#FFFF00','#FF0000','#00FF00','#0000FF','#808080'])for(const palette of ['cu','cbs','tu','custom']){
+  const tokens=apAPI.appearanceTokens(apAPI.cleanAppearance({palette,custom}),dark);
+  for(const [a,b] of [['--accent','--accent-ink'],['--accent-hover','--accent-ink'],['--accent-text','--accent-soft']]){
+    if(apAPI.appearanceContrast(tokens[a],tokens[b])<4.5)throw Error('appearance contrast '+palette+' '+custom+' '+dark);
+  }
+}
+if(apAPI.cleanAppearance({institution:'tu',faculty:'cbs',palette:'invalid',custom:'foo'}).faculty!=='general')throw Error('invalid faculty accepted');
 
 const browser = await chromium.launch();
 let bad = 0;

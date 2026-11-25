@@ -833,6 +833,21 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .dashboard-summary .metric .m-value { font-size: 22px; }
   .dashboard-summary .metric .m-label { font-size: 11px; }
 }
+/* Institution-inspired appearance: accent only, course/status colors unchanged. */
+.appearance-fields,.appearance-palettes {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.appearance-fields .select{width:100%;min-width:0;}
+.appearance-palette{display:flex;align-items:center;text-align:start;gap:8px;min-height:48px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);min-width:0;overflow-wrap:anywhere;font-size:13px;cursor:pointer;}
+.appearance-palette[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);}
+.appearance-swatches{display:flex;flex:none;align-items:center;}
+.appearance-swatches i{width:15px;height:15px;display:block;border-radius:50%;border:1px solid var(--line-strong);}
+.appearance-swatches i+i{margin-left:-4px;}
+.appearance-preview{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-inline-start:3px solid var(--appearance-secondary,var(--accent));border-radius:10px;padding:12px;}
+.appearance-settings input[type="color"]{min-width:48px;height:44px;padding:3px;border:1px solid var(--line);border-radius:8px;background:var(--surface);}
+@media(max-width:380px){.appearance-fields{grid-template-columns:1fr;}.appearance-palette{padding:8px;gap:5px;}}
+:root[data-appearance="custom"] .brand-mark{box-shadow:none;}
+:root[data-appearance="custom"] .brand-mark rect{fill:var(--accent);}
+:root[data-appearance="custom"] .brand-mark path{stroke:var(--accent-ink);}
+:root[data-appearance="custom"] .brand-mark circle{fill:var(--appearance-secondary);}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -2618,6 +2633,28 @@ var SharedCatalog = (function () {
 
 var I18N = {
 en: {
+  "appearance.title": "Institution & appearance",
+  "appearance.note": "Preview a university or faculty theme. Stored on this device only; does not change your courses, study plan or grade rules.",
+  "appearance.institution": "Institution preview",
+  "appearance.faculty": "Faculty preview",
+  "appearance.palette": "Accent palette",
+  "appearance.auto": "Match selection",
+  "appearance.default": "GradeSpace default",
+  "appearance.cu": "Chulalongkorn University",
+  "appearance.tu": "Thammasat University",
+  "appearance.other": "Other / not selected",
+  "appearance.general": "University-wide",
+  "appearance.cbs": "Commerce and Accountancy",
+  "appearance.comm": "Communication Arts",
+  "appearance.sci": "Science",
+  "appearance.arts": "Arts",
+  "appearance.edu": "Education",
+  "appearance.tbs": "Thammasat Business School",
+  "appearance.custom": "Custom accent",
+  "appearance.color": "Custom color",
+  "appearance.reset": "Reset appearance",
+  "appearance.example": "Example interface",
+  "appearance.brandNote": "Inspired palettes, not official university branding.",
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -3046,6 +3083,28 @@ en: {
   'onb4Note': 'Anything not graded yet is counted as still to come, never as zero.', 'goToCourse': 'Go to my course'
 },
 th: {
+  "appearance.title": "สังกัดและหน้าตาแอป",
+  "appearance.note": "ทดลองธีมตามมหาวิทยาลัยหรือคณะ บันทึกเฉพาะบนอุปกรณ์นี้ ไม่เปลี่ยนรายวิชา แผนการศึกษา หรือกฎการคำนวณเกรด",
+  "appearance.institution": "มหาวิทยาลัย (ทดลอง)",
+  "appearance.faculty": "คณะ (ทดลอง)",
+  "appearance.palette": "ชุดสี",
+  "appearance.auto": "ตามสังกัดที่เลือก",
+  "appearance.default": "GradeSpace ดั้งเดิม",
+  "appearance.cu": "จุฬาลงกรณ์มหาวิทยาลัย",
+  "appearance.tu": "มหาวิทยาลัยธรรมศาสตร์",
+  "appearance.other": "อื่น ๆ / ยังไม่เลือก",
+  "appearance.general": "ธีมมหาวิทยาลัย",
+  "appearance.cbs": "พาณิชยศาสตร์และการบัญชี",
+  "appearance.comm": "นิเทศศาสตร์",
+  "appearance.sci": "วิทยาศาสตร์",
+  "appearance.arts": "อักษรศาสตร์",
+  "appearance.edu": "ครุศาสตร์",
+  "appearance.tbs": "พาณิชยศาสตร์และการบัญชี ธรรมศาสตร์",
+  "appearance.custom": "กำหนดสีเอง",
+  "appearance.color": "เลือกสี",
+  "appearance.reset": "คืนค่าเริ่มต้น",
+  "appearance.example": "ตัวอย่างหน้าตา",
+  "appearance.brandNote": "ชุดสีที่ได้รับแรงบันดาลใจจากสังกัด ไม่ใช่อัตลักษณ์ทางการ",
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -6609,6 +6668,77 @@ function importData(text) {
       toast(t('imported'), { undo: true });
     } });
 }
+/* Device-local appearance preview. No grade/account persistence or rules depend on it. */
+var APPEARANCE_KEY = 'gradespace.appearance.preview.v1';
+var APPEARANCE_FACULTIES = { cu:['general','cbs','comm','sci','arts','edu'], tu:['general','tbs'], other:['general'] };
+var APPEARANCE_COLORS = { cu:['#C75B91','#F3B6D1'], cbs:['#2980B9','#F1A9C9'], tu:['#BC3346','#E3B849'], tbs:['#BC3346','#E3B849'] };
+function cleanAppearance(raw) {
+  raw=raw||{};
+  var institution=['cu','tu','other'].indexOf(raw.institution)>=0?raw.institution:'other';
+  var faculty=APPEARANCE_FACULTIES[institution].indexOf(raw.faculty)>=0?raw.faculty:'general';
+  return {institution:institution,faculty:faculty,palette:['auto','default','cu','cbs','tu','custom'].indexOf(raw.palette)>=0?raw.palette:'default',
+    custom:typeof raw.custom==='string'&&/^#[0-9a-f]{6}$/i.test(raw.custom)?raw.custom.toUpperCase():'#2980B9'};
+}
+function readAppearance(){try{return cleanAppearance(JSON.parse(localStorage.getItem(APPEARANCE_KEY)||'null'));}catch(e){return cleanAppearance(null);}}
+function appearanceColors(p){
+  if(p.palette==='default')return null;
+  if(p.palette==='custom')return [p.custom,p.custom];
+  var key=p.palette==='auto'?(p.faculty==='cbs'||p.faculty==='tbs'?p.faculty:p.institution):p.palette;
+  return APPEARANCE_COLORS[key]||null;
+}
+function appearanceMix(a,b,t){
+  var out='#'; for(var i=1;i<7;i+=2)out+=Math.round(parseInt(a.slice(i,i+2),16)*(1-t)+parseInt(b.slice(i,i+2),16)*t).toString(16).padStart(2,'0'); return out;
+}
+function appearanceLum(hex){
+  var c=[1,3,5].map(function(i){var n=parseInt(hex.slice(i,i+2),16)/255;return n<=.04045?n/12.92:Math.pow((n+.055)/1.055,2.4);});
+  return .2126*c[0]+.7152*c[1]+.0722*c[2];
+}
+function appearanceContrast(a,b){var x=appearanceLum(a),y=appearanceLum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
+function appearanceReadable(color,bg,dark){
+  var out=color; for(var i=0;i<30&&appearanceContrast(out,bg)<4.5;i++)out=appearanceMix(out,dark?'#FFFFFF':'#000000',.16);return out;
+}
+function appearanceTokens(p,dark){
+  var colors=appearanceColors(p);if(!colors)return null;
+  var bg=dark?'#171A20':'#FFFFFF', soft=appearanceMix(bg,colors[0],dark?.12:.09);
+  var a=appearanceReadable(colors[0],bg,dark);
+  var txt=appearanceReadable(a,soft,dark);
+  var ink=appearanceContrast(a,'#000000')>=appearanceContrast(a,'#FFFFFF')?'#000000':'#FFFFFF';
+  var hover=appearanceMix(a,dark?'#FFFFFF':'#000000',.10);
+  // Maintain contrast of the same button label in hover state.
+  if(appearanceContrast(hover,ink)<4.5)hover=a;
+  return {'--accent':a,'--accent-hover':hover,'--accent-ink':ink,'--accent-soft':soft,'--accent-text':txt,'--appearance-secondary':colors[1]};
+}
+function applyAppearance(p,dark){
+  var el=document.documentElement,tokens=appearanceTokens(p,dark);
+  ['--accent','--accent-hover','--accent-ink','--accent-soft','--accent-text','--appearance-secondary'].forEach(function(k){if(tokens)el.style.setProperty(k,tokens[k]);else el.style.removeProperty(k);});
+  if(tokens)el.setAttribute('data-appearance','custom');else el.removeAttribute('data-appearance');
+}
+
+function AppearanceSettings(p){
+  var v=p.value;
+  var change=function(key,value){
+    var next=Object.assign({},v);next[key]=value;
+    if(key==='institution'){next.faculty='general';next.palette='auto';}
+    if(key==='faculty')next.palette='auto';
+    p.onChange(cleanAppearance(next));
+  };
+  var choices=['auto','default','cu','cbs','tu','custom'];
+  return html`<section className="card pad stack appearance-settings" data-testid="appearance-settings">
+    <div><h2 style=${{fontSize:18}}>${t('appearance.title')}</h2><div className="small muted">${t('appearance.note')}</div></div>
+    <div className="appearance-fields">
+      <${Field} label=${t('appearance.institution')} id="appearance-institution"><select id="appearance-institution" className="select" value=${v.institution} onChange=${function(e){change('institution',e.target.value);}}>
+        ${['other','cu','tu'].map(function(k){return html`<option key=${k} value=${k}>${t('appearance.'+k)}</option>`;})}</select><//>
+      <${Field} label=${t('appearance.faculty')} id="appearance-faculty"><select id="appearance-faculty" className="select" value=${v.faculty} onChange=${function(e){change('faculty',e.target.value);}}>
+        ${APPEARANCE_FACULTIES[v.institution].map(function(k){return html`<option key=${k} value=${k}>${t('appearance.'+k)}</option>`;})}</select><//>
+    </div>
+    <div className="field"><label>${t('appearance.palette')}</label><div className="appearance-palettes" role="group" aria-label=${t('appearance.palette')}>
+      ${choices.map(function(k){var cols=appearanceColors(Object.assign({},v,{palette:k}))||['#6654E8','#A5A0F5'];return html`<button key=${k} type="button" className="appearance-palette" data-palette=${k} aria-pressed=${v.palette===k} onClick=${function(){change('palette',k);}}><span className="appearance-swatches" aria-hidden="true"><i style=${{background:cols[0]}}></i><i style=${{background:cols[1]}}></i></span><span>${t('appearance.'+k)}</span></button>`;})}
+    </div></div>
+    ${v.palette==='custom'&&html`<div className="row wrap"><label htmlFor="appearance-custom">${t('appearance.color')}</label><input id="appearance-custom" type="color" value=${v.custom} onInput=${function(e){change('custom',e.target.value);}}/><span className="num muted">${v.custom}</span></div>`}
+    <div className="appearance-preview"><div><strong>GradeSpace</strong><div className="tiny muted">${t('appearance.example')}</div></div><span className="btn primary sm" aria-hidden="true">${t('addCourse')}</span></div>
+    <div className="row wrap between"><span className="tiny muted">${t('appearance.brandNote')}</span><button type="button" className="btn sm" onClick=${function(){p.onChange(cleanAppearance(null));}}>${t('appearance.reset')}</button></div>
+  </section>`;
+}
 function Preferences(p) {
   var state = p.state, st = state.settings;
   return html`<div>
@@ -6622,6 +6752,7 @@ function Preferences(p) {
             options=${[{ v: 'light', l: t('theme.light') }, { v: 'dark', l: t('theme.dark') }, { v: 'system', l: t('theme.system') }]} /><//>
         </div>
       </section>
+      <${AppearanceSettings} value=${p.appearance} onChange=${p.onAppearance} />
       <section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('profile')}</h2>
         <div className="grid3">
           <${Field} label=${t('university')} id="pf-u" hint=${t('optional')}><input id="pf-u" className="input" value=${st.university || ''} placeholder=${t('universityPh')} onChange=${function (e) { var v = e.target.value; update(function (d) { d.settings.university = v; }); }} /><//>
@@ -7882,6 +8013,8 @@ var NAV = [
 ];
 function App() {
   var state = useApp();
+  var appearanceState=useState(readAppearance), appearance=appearanceState[0], setAppearance=appearanceState[1];
+  var changeAppearance=function(v){setAppearance(v);try{localStorage.setItem(APPEARANCE_KEY,JSON.stringify(v));}catch(e){/* device storage unavailable */}};
   var route = useRoute();
   var personal = usePersonalExams(state);
   LANG = state.settings.lang || LANG;
@@ -7893,6 +8026,12 @@ function App() {
     document.title = 'GradeSpace – ' + t('taglineShort');
   });
   var isDark = state.settings.theme === 'dark' || (state.settings.theme !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  useEffect(function(){
+    var media=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');
+    var refresh=function(){applyAppearance(appearance,state.settings.theme==='dark'||(state.settings.theme!=='light'&&!!(media&&media.matches)));};
+    refresh();if(media&&media.addEventListener)media.addEventListener('change',refresh);
+    return function(){if(media&&media.removeEventListener)media.removeEventListener('change',refresh);applyAppearance(cleanAppearance(null),false);};
+  },[appearance,state.settings.theme]);
   var active = route.page === 'course' ? 'courses' : route.page;
   var page;
   if (route.page === 'dashboard') page = html`<${Dashboard} state=${state} />`;
@@ -7903,7 +8042,7 @@ function App() {
   else if (route.page === 'gpa') page = html`<${GPAPage} state=${state} />`;
   else if (route.page === 'feedback') page = html`<${FeedbackPage} />`;
   else if (route.page === 'help') page = html`<${HelpPage} />`;
-  else page = html`<${Preferences} state=${state} />`;
+  else page = html`<${Preferences} state=${state} appearance=${appearance} onAppearance=${changeAppearance} />`;
   var navLabel = function (n) { return t('nav.' + (n.key || n.id)); };
   return html`<${PersonalExamContext.Provider} value=${personal}><div className="shell">
     <aside className="side" aria-label=${t('mainNav')}>
