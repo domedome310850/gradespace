@@ -1,3 +1,8 @@
+## 2026-11-26 — Claude (claude.ai): ask your own AI by copy-paste (free plans)
+
+- `public/index.html`: most students use free ChatGPT, which can’t add custom connectors, so until GradeSpace is in ChatGPT’s directory there is a copy-paste bridge (`AskAiModal`, modal `askAi`; card in the AI hub and a command-menu item). Step 1 copies this term’s courses/items/scores as JSON plus rules (score null ≠ 0, never invent; answer new scores in a ```gradespace-scores block) and opens ChatGPT or Claude; no email or student ID is included. Step 2 parses the pasted answer (`parseAskAi`), matches only existing courses/items, shows each row to approve (unknown course/item or impossible score is skipped), and saves with undo. TH/EN.
+- `tests/smoke.mjs`: copied text has course data and no email/student ID; a pasted answer with one real and one invented item saves only the real one and creates nothing.
+
 ## 2026-11-26 — Claude (claude.ai): GradeSpace as the bridge to your own AI (no built-in chat)
 
 - `public/index.html`: owner decided GradeSpace should not have its own AI; it connects the student’s own ChatGPT/Claude to their grades. Removed the local chat (`ChatBrain`, `ChatModal`). The AI button (centre of the phone bar, floating button on desktop) now opens `AiHubModal` (“AI ของคุณ”): first the ChatGPT (`@GradeSpace`) / Claude connector card (coming soon, explains the bridge and that every change is approved in GradeSpace), then the in-site tools (screenshot scan, paste, quick score). First-visit bubble reworded. TH/EN.

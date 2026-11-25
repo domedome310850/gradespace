@@ -94,6 +94,20 @@ async function run(browser, lang, width) {
   if(await page.locator('.chat-input').count()) errors.push('GradeSpace should not have its own chat');
   if(await page.locator('[data-testid="ai-hub"] .ai-action').count()!==3) errors.push('AI hub should keep 3 tools');
   await page.keyboard.press('Escape');
+  // Copy-paste bridge to the student's own AI (works on free plans).
+  if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
+  await page.getByTestId('askai-open').click();
+  const prompt=await page.getByTestId('askai-prompt').inputValue();
+  if(!prompt.includes('"gradespace":1')||!prompt.includes('2900111')) errors.push('ask-AI text lacks course data');
+  if(prompt.includes('test@example.com')||prompt.includes('6940102426')) errors.push('ask-AI text leaks email or student ID');
+  await page.getByTestId('ask-ai').locator('.seg button').nth(1).click();
+  await page.getByTestId('askai-paste').fill('Sure!\n```gradespace-scores\n{"updates":[{"code":"2900111","item":"HW5","score":4,"max":5},{"code":"2900111","item":"Quiz 99","score":3,"max":5}]}\n```');
+  await page.getByTestId('ask-ai').getByRole('button',{name:lang==='th'?'ตรวจ':'Check',exact:true}).click();
+  if(await page.locator('.askai-row').count()!==2||await page.locator('.askai-row.bad').count()!==1) errors.push('ask-AI review should list 1 valid and 1 skipped row');
+  await page.getByTestId('askai-save').click();
+  if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.status==='graded';}))) errors.push('ask-AI did not save HW5');
+  if(await page.evaluate(()=>GradeSpace.S.state.assessments.some(x=>/quiz 99/i.test(x.name||'')))) errors.push('ask-AI created an item');
+  await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');
