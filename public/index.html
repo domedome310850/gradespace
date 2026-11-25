@@ -128,7 +128,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .save-dot.busy { background: var(--warn); }
 .page { padding: 8px 28px 48px; max-width: 1160px; width: 100%; margin: 0 auto; }
 .bottomnav { display: none; }
-@media(max-width:900px){.bottomnav{grid-template-columns: repeat(7,minmax(48px,1fr)) !important;}}
+@media(max-width:900px){.bottomnav{grid-template-columns: repeat(5,minmax(48px,1fr)) !important;}}
 
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; }
@@ -833,11 +833,16 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .dashboard-summary .metric .m-label { font-size: 11px; }
 }
 /* AI assistant (floating button), command search and account menu (2026-11-25). */
-.dash-view{flex-wrap:nowrap;gap:8px;align-items:center}
-.dash-search{display:flex;align-items:center;gap:8px;height:34px;min-width:200px;padding:0 8px 0 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
-.dash-search:hover{border-color:var(--line-strong);color:var(--ink)}
-.dash-search kbd{margin-left:auto;font:600 11px var(--font);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px}
-@media(max-width:900px){.dash-view{display:flex;width:100%}.dash-search{flex:1;min-width:0}.dash-search kbd{display:none}}
+.top-search{display:flex;align-items:center;gap:10px;height:40px;width:min(520px,100%);padding:0 10px 0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
+.top-search:hover{border-color:var(--line-strong);color:var(--ink)}.top-search kbd{margin-left:auto;font:600 11px var(--font);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px}
+@media(max-width:900px){.topbar .top-search{width:40px;height:40px;flex:0 0 40px;padding:0;justify-content:center;border-color:transparent;background:none;color:var(--ink)}.top-search span,.top-search kbd{display:none}.topbar .acct{display:none}.topbar .top-search+.topbar-spacer{display:none}}
+.nav-group{margin:14px 12px 4px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;font-weight:650;color:var(--muted)}
+@media(max-width:900px){.bottomnav{grid-template-columns:repeat(5,1fr) !important}.bottomnav a{font-size:11px}}
+.me-head{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}.me-head b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis}.me-head .save-label{display:inline !important}.me-head .save-state{width:auto}
+.me-avatar{width:46px;height:46px;font-size:18px;flex:none;display:grid;place-items:center}
+.me-h{font-size:13px;font-weight:650;color:var(--muted);margin:20px 4px 8px}
+.me-list{display:grid;padding:4px 0}.me-row{display:flex;align-items:center;gap:12px;padding:12px 16px;color:var(--ink);text-decoration:none;font-size:15px}.me-row+.me-row{border-top:1px solid var(--line)}
+a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 .ai-fab-wrap{position:fixed;right:20px;bottom:24px;z-index:24;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
 @media(max-width:900px){.ai-fab-wrap{right:14px;bottom:calc(78px + env(safe-area-inset-bottom,0px))}.page{padding-bottom:calc(160px + env(safe-area-inset-bottom,0px))}}
 .ai-fab{width:56px;height:56px;border-radius:50%;border:0;display:grid;place-items:center;color:#fff;cursor:pointer;background:linear-gradient(135deg,#8C71FE,#6654E8 55%,#3F51C9);box-shadow:0 8px 22px rgba(79,70,229,.38),0 0 0 4px color-mix(in srgb,var(--bg) 70%,transparent);transition:transform .15s ease}
@@ -2898,7 +2903,8 @@ en: {
   'tagline': 'Know your grades. Plan your GPA.', 'taglineShort': 'Know your grades. Plan your GPA.',
   'loading': 'Loading your grades…', 'mainNav': 'Main navigation',
   'nav.dashboard': 'Dashboard', 'nav.years': 'Years & semesters', 'nav.courses': 'My courses', 'nav.simulator': 'Grade simulator', 'nav.gpa': 'GPA overview', 'nav.settings': 'Settings', 'nav.feedback':'Feedback', 'nav.help':'Help & Q&A',
-  'navShort.dashboard': 'Home', 'navShort.years': 'Years', 'navShort.courses': 'Courses', 'navShort.simulator': 'Simulator', 'navShort.gpa': 'GPA', 'navShort.feedback':'Ideas', 'navShort.help':'Help',
+  'navShort.dashboard': 'Home', 'navShort.years': 'Years', 'navShort.courses': 'Courses', 'navShort.simulator': 'Simulator', 'navShort.gpa': 'GPA', 'navShort.feedback':'Ideas', 'navShort.help':'Help', 'navShort.me': 'You', 'nav.me': 'You',
+  'navg.tools': 'Tools', 'navg.more': 'More', 'me.display': 'Display', 'me.more': 'More', 'me.local': 'Not signed in',
   'sync.device': 'Saved on this device', 'sync.account': 'Saved to your account', 'sync.saving': 'Saving…', 'sync.error': 'Saved on this device only',
   'store.device': 'Your data is saved in this browser on this device only. It doesn’t sync to other devices, so export a backup now and then.',
   'store.account': 'Your data saves automatically to your private space on this page, so it’s there when you open it signed in on another device. A copy is also kept in this browser. Only you can see it.',
@@ -3338,7 +3344,8 @@ th: {
   'tagline': 'รู้เกรดตัวเอง วางแผน GPA ได้', 'taglineShort': 'รู้เกรดตัวเอง วางแผน GPA ได้',
   'loading': 'กำลังโหลดข้อมูลเกรด…', 'mainNav': 'เมนูหลัก',
   'nav.dashboard': 'ภาพรวม', 'nav.years': 'ชั้นปีและเทอม', 'nav.courses': 'วิชาของฉัน', 'nav.simulator': 'จำลองคะแนน', 'nav.gpa': 'สรุป GPA', 'nav.settings': 'ตั้งค่า', 'nav.feedback':'ข้อเสนอแนะ', 'nav.help':'คู่มือ / ถามตอบ',
-  'navShort.dashboard': 'ภาพรวม', 'navShort.years': 'ชั้นปี', 'navShort.courses': 'วิชา', 'navShort.simulator': 'จำลอง', 'navShort.gpa': 'GPA', 'navShort.feedback':'เสนอแนะ', 'navShort.help':'ช่วยเหลือ',
+  'navShort.dashboard': 'ภาพรวม', 'navShort.years': 'ชั้นปี', 'navShort.courses': 'วิชา', 'navShort.simulator': 'จำลอง', 'navShort.gpa': 'GPA', 'navShort.feedback':'เสนอแนะ', 'navShort.help':'ช่วยเหลือ', 'navShort.me': 'ฉัน', 'nav.me': 'ฉัน',
+  'navg.tools': 'เครื่องมือ', 'navg.more': 'อื่น ๆ', 'me.display': 'การแสดงผล', 'me.more': 'เพิ่มเติม', 'me.local': 'ยังไม่ได้เข้าสู่ระบบ',
   'sync.device': 'บันทึกไว้ในเครื่องนี้', 'sync.account': 'บันทึกลงบัญชีแล้ว', 'sync.saving': 'กำลังบันทึก…', 'sync.error': 'บันทึกไว้ในเครื่องนี้เท่านั้น',
   'store.device': 'ข้อมูลถูกบันทึกไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ซิงก์ไปเครื่องอื่น ควรสำรองข้อมูลเก็บไว้เป็นระยะ',
   'store.account': 'ข้อมูลบันทึกอัตโนมัติไว้ในพื้นที่ส่วนตัวของคุณบนหน้านี้ เปิดจากเครื่องอื่นที่ล็อกอินบัญชีเดียวกันก็เห็นข้อมูลเดิม และมีสำเนาเก็บในเบราว์เซอร์นี้ด้วย คนอื่นมองไม่เห็นข้อมูลของคุณ',
@@ -3680,7 +3687,7 @@ function doUndo(id) {
 function confirmDialog(o) { openModal('confirm', o); }
 
 /* ================= routing ================= */
-var PAGES = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences'];
+var PAGES = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', 'me'];
 function parseHash() {
   var x = (location.hash || '').replace(/^#/, '');
   if (x.indexOf('course-') === 0) return { page: 'course', id: x.slice(7) };
@@ -3720,6 +3727,8 @@ var ICONS = {
   back: '<path d="m12 19-7-7 7-7M19 12H5"/>',
   target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  chevronRight: '<path d="m9 18 6-6-6-6"/>',
+  globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>',
   user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
   zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
@@ -5742,11 +5751,10 @@ function Dashboard(p) {
   return html`<div>
     <div className="page-head">
       <div><h1>${t('nav.dashboard')}</h1>
-        <div className="row dash-view" style=${{ marginTop: 6 }}>
+        <div className="row wrap" style=${{ marginTop: 6 }}>
           <label className="small muted" htmlFor="cur-sem">${t('viewingSemester')}</label>
           <${SemesterSelect} id="cur-sem" state=${state} value=${cur.id} label=${t('viewingSemester')} style=${{ width: 'auto', padding: '5px 10px', fontSize: 14 }}
             onChange=${function (v) { update(function (d) { d.settings.currentSemesterId = v; }); }} />
-          <button className="dash-search" onClick=${function () { openModal('cmd', {}); }} aria-label=${t('cmd.btn')} title=${t('cmd.hint')}><${Icon} n="search" s=${16} /><span>${t('search.short')}</span><kbd>${/Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘K' : 'Ctrl K'}</kbd></button>
         </div>
       </div>
       <div className="dash-actions">
@@ -8017,11 +8025,39 @@ function SaveState() {
   var txt = S.sync === 'saving' ? t('sync.saving') : S.sync === 'account' ? t('sync.account') : S.sync === 'error' ? t('sync.error') : t('sync.device');
   return html`<span className="save-state" title=${txt}><span className=${'save-dot' + (S.sync === 'saving' ? ' busy' : '')} style=${S.sync === 'error' ? { background: 'var(--bad)' } : null}></span><span className="save-label">${txt}</span></span>`;
 }
+// Sidebar order and groups (YouTube-style: main pages first, then labelled groups).
 var NAV = [
-  { id: 'dashboard', icon: 'dashboard' }, { id: 'courses', icon: 'book' }, { id: 'years', icon: 'calendar' },
-  { id: 'simulator', icon: 'calc' }, { id: 'gpa', icon: 'trend' },
-  { id: 'feedback', icon: 'message' }, { id: 'help', icon: 'info' }, { id: 'preferences', icon: 'sliders', key: 'settings' }
+  { id: 'dashboard', icon: 'dashboard' }, { id: 'courses', icon: 'book' }, { id: 'gpa', icon: 'trend' },
+  { id: 'simulator', icon: 'calc', group: 'navg.tools' }, { id: 'years', icon: 'calendar', group: 'navg.tools' },
+  { id: 'feedback', icon: 'message', group: 'navg.more' }, { id: 'help', icon: 'info', group: 'navg.more' }, { id: 'preferences', icon: 'sliders', key: 'settings', group: 'navg.more' }
 ];
+// Phone bottom bar: five tabs at most; everything else lives under “You”.
+var BOTTOM_NAV = [
+  { id: 'dashboard', icon: 'dashboard' }, { id: 'courses', icon: 'book' }, { id: 'simulator', icon: 'calc' },
+  { id: 'gpa', icon: 'trend' }, { id: 'me', icon: 'user' }
+];
+var ME_PAGES = ['me', 'years', 'feedback', 'help', 'preferences'];
+function MePage(p) {
+  var state = p.state, user = S.web && S.web.user;
+  var theme = state.settings.theme === 'light' || state.settings.theme === 'dark' ? state.settings.theme : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  var links = NAV.filter(function (n) { return n.id === 'years' || n.group === 'navg.more'; });
+  return html`<div className="me-page">
+    <div className="page-head"><div><h1>${t('nav.me')}</h1></div></div>
+    <a className="card pad me-head" href="#preferences">
+      <span className="avatar me-avatar">${user ? initialOf(user) : html`<${Icon} n="user" />`}</span>
+      <div className="grow"><b>${user ? user.email : t('me.local')}</b><${SaveState} /></div><${Icon} n="chevronRight" />
+    </a>
+    <h2 className="me-h">${t('me.display')}</h2>
+    <div className="card me-list">
+      <div className="me-row"><${Icon} n="globe" /><span className="grow">${t('language')}</span><${Seg} label=${t('language')} value=${LANG} onChange=${function (v) { update(function (d) { d.settings.lang = v; }); }} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} /></div>
+      <div className="me-row"><${Icon} n=${theme === 'dark' ? 'moon' : 'sun'} /><span className="grow">${t('theme')}</span><${Seg} label=${t('theme')} value=${theme} onChange=${function (v) { update(function (d) { d.settings.theme = v; }); }} options=${[{ v: 'light', l: t('theme.light') }, { v: 'dark', l: t('theme.dark') }]} /></div>
+    </div>
+    <h2 className="me-h">${t('me.more')}</h2>
+    <div className="card me-list">
+      ${links.map(function (n) { return html`<a key=${n.id} className="me-row" href=${'#' + n.id}><${Icon} n=${n.icon} /><span className="grow">${t('nav.' + (n.key || n.id))}</span><${Icon} n="chevronRight" /></a>`; })}
+    </div>
+  </div>`;
+}
 function App() {
   var state = useApp();
   var route = useRoute();
@@ -8050,24 +8086,28 @@ function App() {
   else if (route.page === 'gpa') page = html`<${GPAPage} state=${state} />`;
   else if (route.page === 'feedback') page = html`<${FeedbackPage} />`;
   else if (route.page === 'help') page = html`<${HelpPage} />`;
+  else if (route.page === 'me') page = html`<${MePage} state=${state} />`;
   else page = html`<${Preferences} state=${state} />`;
   var navLabel = function (n) { return t('nav.' + (n.key || n.id)); };
   return html`<${PersonalExamContext.Provider} value=${personal}><div className="shell">
     <aside className="side" aria-label=${t('mainNav')}>
       <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div><div className="brand-tag">${t('taglineShort')}</div></div></a>
-      ${NAV.map(function (n) { return html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`; })}
+      ${NAV.map(function (n, i) { var head = n.group && (!NAV[i - 1] || NAV[i - 1].group !== n.group) ? html`<div className="nav-group" key=${'g' + n.group}>${t(n.group)}</div>` : null;
+        return [head, html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`]; })}
       <div className="side-foot">${state.settings.university ? html`<div style=${{ fontWeight: 600, color: 'var(--ink-2)' }}>${state.settings.university}</div>` : null}${S.web && S.web.user ? S.web.user.email : (S.cloud ? t('store.accountShort') : t('store.deviceShort'))}</div>
     </aside>
     <div className="main">
       <header className="topbar">
         <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div></a>
         <div className="topbar-spacer"></div>
+        <button className="top-search" onClick=${function () { openModal('cmd', {}); }} aria-label=${t('cmd.btn')} title=${t('cmd.hint')}><${Icon} n="search" s=${18} /><span>${t('cmd.btn')}</span><kbd>${/Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘K' : 'Ctrl K'}</kbd></button>
+        <div className="topbar-spacer"></div>
         <${AccountMenu} state=${state} />
       </header>
       <main className="page" id="main">${page}</main>
     </div>
     <nav className="bottomnav" aria-label=${t('mainNav')}>
-      ${NAV.filter(function (n) { return n.id !== 'preferences'; }).map(function (n) { return html`<a key=${n.id} href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} s=${20} /><span>${t('navShort.' + n.id)}</span></a>`; })}
+      ${BOTTOM_NAV.map(function (n) { var on = n.id === 'me' ? ME_PAGES.indexOf(active) >= 0 : active === n.id; return html`<a key=${n.id} href=${'#' + n.id} aria-current=${on ? 'page' : null}><${Icon} n=${n.icon} s=${22} /><span>${t('navShort.' + n.id)}</span></a>`; })}
     </nav>
     <${AiFab} />
     <${ModalHost} />

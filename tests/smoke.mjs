@@ -56,11 +56,22 @@ async function run(browser, lang, width) {
   if(await page.locator('#exam-student-id').count()) errors.push('student ID form leaked into dashboard');
   // Top bar: only logo + account menu; language/theme live inside the menu (2026-11-25).
   if(await page.locator('.topbar .seg').count()) errors.push('language switch should be inside the account menu');
-  await page.locator('.topbar .acct-btn').click();
-  if(!(await page.locator('.acct-menu').isVisible())) errors.push('account menu did not open');
-  if(lang==='en'){await page.locator('.acct-menu button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
-  await page.keyboard.press('Escape');
-  if(await page.locator('.acct-menu').count()) errors.push('account menu did not close on Escape');
+  if(width<=900){
+    // Phones: YouTube-style bottom bar (5 tabs); language/theme live under the “You” tab.
+    if(await page.locator('.bottomnav a').count()!==5) errors.push('bottom bar should have 5 tabs');
+    await page.locator('.bottomnav a[href="#me"]').click();
+    await page.locator('.me-page').waitFor();
+    if(lang==='en'){await page.locator('.me-page button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
+    if(await page.locator('.me-page a.me-row').count()<4) errors.push('You page should link years, feedback, help, settings');
+    await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
+  } else {
+    await page.locator('.topbar .acct-btn').click();
+    if(!(await page.locator('.acct-menu').isVisible())) errors.push('account menu did not open');
+    if(lang==='en'){await page.locator('.acct-menu button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
+    await page.keyboard.press('Escape');
+    if(await page.locator('.acct-menu').count()) errors.push('account menu did not close on Escape');
+    if(await page.locator('.side .nav-group').count()!==2) errors.push('sidebar should have 2 labelled groups');
+  }
   if(await page.evaluate(()=>{const s=document.querySelectorAll('.brand-mark linearGradient');return new Set([...s].map(x=>x.id)).size!==s.length;})) errors.push('logo gradient ids are not unique');
   // Floating AI button with one-time intro bubble, and search beside the semester picker.
   if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('AI intro bubble not shown on first visit');
@@ -70,7 +81,7 @@ async function run(browser, lang, width) {
   if(await page.locator('.ai-action').count()) errors.push('assistant popup did not close on Escape');
   if(await page.locator('.ai-fab-intro').count()) errors.push('AI intro bubble should not return after use');
   if(!(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
-  await page.locator('.dash-search').click();
+  await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');
   await page.keyboard.press('Control+k');
@@ -234,7 +245,7 @@ async function run(browser, lang, width) {
   await reverse.locator('input').fill('4.1');
   if(await reverse.getByText(/^GPA [0-9]/).count())errors.push('invalid GPA target has scenarios');
   const ids = await page.evaluate(() => GradeSpace.S.state.courses.map((c) => c.id));
-  const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', ...ids.map((i) => 'course-' + i)];
+  const hashes = ['dashboard', 'years', 'courses', 'simulator', 'gpa', 'feedback', 'help', 'preferences', 'me', ...ids.map((i) => 'course-' + i)];
   for (const h of hashes) {
     await page.evaluate((x) => { location.hash = x; }, h);
     await page.waitForTimeout(250);
