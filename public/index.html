@@ -847,6 +847,11 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .chat-bubble ul{margin:6px 0 0;padding-left:18px}.chat-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chat-chip{border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));background:var(--surface);color:var(--accent-text);border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
 .chat-input{display:flex;gap:8px}.chat-input .input{flex:1;min-width:0;font-size:16px}
+/* Connect ChatGPT / Claude card, shown first in the AI sheet (2026-11-26). */
+.connect-card{display:grid;gap:8px;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;background:var(--accent-soft)}
+.connect-soon{font-size:11.5px;font-weight:650;color:var(--accent-text);border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:999px;padding:1px 8px;white-space:nowrap}
+.connect-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}.connect-tile{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--muted)}
+.chat-own{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);margin-top:2px}
 /* Help + feedback tabs (2026-11-26). */
 .help-tabs{margin:4px 0 6px}.help-tabs .seg{max-width:360px}
 /* Thammasat GenEd picker (2026-11-26). */
@@ -2694,6 +2699,9 @@ en: {
   'paste.btn@tu': 'Paste scores', 'paste.title@tu': 'Paste a score table',
   'paste.intro@tu': 'Open {c} on your class website, select the score table (each row: item, score / full), copy, and paste it here.',
   'scan.intro@tu': 'Pick screenshots from your class website: the syllabus grading page and the score page work best. AI reads them and shows you what it found before anything is added.',
+  'connect.title': 'Use GradeSpace from ChatGPT or Claude', 'connect.soon': 'Coming soon', 'connect.with': 'Connect {n}',
+  'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
+  'connect.own': 'Or ask GradeSpace AI now:',
   'chat.title': 'GradeSpace AI', 'chat.ph': 'Ask or type a score, e.g. “quiz 2 econ 18/20”', 'chat.send': 'Send', 'chat.nav': 'AI',
   'chat.hello': 'Hi! I can check your GPA, work out what you need for a grade, list upcoming exams and work, and record scores you type. Everything stays on this device.',
   'chat.s.gpa': 'My GPA now', 'chat.s.need': 'What do I need for an A?', 'chat.s.exam': 'Upcoming exams', 'chat.s.due': 'Work due soon', 'chat.s.score': 'Record a score',
@@ -3170,6 +3178,9 @@ th: {
   'paste.btn@tu': 'วางคะแนน', 'paste.title@tu': 'วางตารางคะแนน',
   'paste.intro@tu': 'เปิดวิชา {c} ในเว็บรายวิชา ลากเลือกตารางคะแนน (แต่ละแถว: ชื่องาน คะแนน / เต็ม) คัดลอก แล้ววางที่นี่',
   'scan.intro@tu': 'เลือกภาพหน้าจอจากเว็บรายวิชา หน้าเกณฑ์การให้คะแนนในประมวลรายวิชาและหน้าคะแนนจะได้ผลดีที่สุด AI จะอ่านแล้วสรุปให้ดูก่อนเพิ่มข้อมูล',
+  'connect.title': 'ใช้ GradeSpace ผ่าน ChatGPT หรือ Claude', 'connect.soon': 'เร็ว ๆ นี้', 'connect.with': 'เชื่อม {n}',
+  'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
+  'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
   'chat.title': 'GradeSpace AI', 'chat.ph': 'ถามหรือพิมพ์คะแนน เช่น “quiz 2 econ 18/20”', 'chat.send': 'ส่ง', 'chat.nav': 'AI',
   'chat.hello': 'สวัสดี! ถามเกรดเฉลี่ย ถามว่าต้องได้เท่าไหร่ถึงจะได้เกรดที่อยากได้ ดูสอบและงานที่ใกล้ถึง หรือพิมพ์คะแนนให้บันทึกได้เลย ข้อมูลอยู่ในเครื่องนี้ทั้งหมด',
   'chat.s.gpa': 'GPA ตอนนี้เท่าไหร่', 'chat.s.need': 'ต้องได้เท่าไหร่ถึงได้ A', 'chat.s.exam': 'สอบอะไรเร็ว ๆ นี้', 'chat.s.due': 'งานที่ใกล้ส่ง', 'chat.s.score': 'บันทึกคะแนน',
@@ -3919,6 +3930,7 @@ var ICONS = {
   back: '<path d="m12 19-7-7 7-7M19 12H5"/>',
   target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
   send: '<path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4z"/>',
   chevronRight: '<path d="m9 18 6-6-6-6"/>',
   globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>',
@@ -8046,6 +8058,12 @@ function ChatModal(p) {
   var sugg = ['chat.s.gpa', 'chat.s.need', 'chat.s.exam', 'chat.s.due'];
   return html`<${Modal} title=${t('chat.title')} onClose=${closeModal} wide=${true}>
     <div className="chat" data-testid="chat">
+      <section className="connect-card" data-testid="connect-card" aria-labelledby="connect-h">
+        <div className="row between" style=${{ gap: 8 }}><b id="connect-h">${t('connect.title')}</b><span className="connect-soon">${t('connect.soon')}</span></div>
+        <div className="connect-tiles">${['ChatGPT', 'Claude'].map(function (n) { return html`<div key=${n} className="connect-tile" aria-disabled="true"><${Icon} n="link" s=${16} /><span>${t('connect.with', { n: n })}</span></div>`; })}</div>
+        <p className="tiny muted" style=${{ margin: 0 }}>${t('connect.why')}</p>
+      </section>
+      <div className="chat-own"><${Icon} n="spark" s=${14} />${t('connect.own')}</div>
       <div className="chat-quick">${quick.map(function (x, i) { return html`<button key=${i} className="chat-q" disabled=${x.off} onClick=${x.run}><${Icon} n=${x.icon} s=${16} />${x.label}</button>`; })}</div>
       <div className="chat-log" role="log" aria-live="polite">
         ${msgs.map(function (m, i) { return html`<div key=${i} className=${'chat-msg ' + m.who}>

@@ -84,6 +84,7 @@ async function run(browser, lang, width) {
   if(width>900 && !(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
   // AI chat: local answers + confirmed score entry, never invents items (2026-11-26).
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
+  if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card should be first in the AI sheet');
   await page.locator('.chat-input input').fill('GPA');
   await page.locator('.chat-input input').press('Enter');
   if(!/GPA/.test(await page.locator('.chat-msg.ai').last().innerText())) errors.push('chat GPA answer missing');

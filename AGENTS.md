@@ -119,6 +119,7 @@ data and fails on any error or sideways scrolling. Also click through what you c
 ## Open work
 
 - **Exam rooms (owner requested on 2026-11-22):** 310 private rules covering 110 courses in `gs_room_data.rules` for 2569/s1/fin. PR #7 now uses `gs_exam_device` and `gs_room_data.device_profiles` with a random browser-specific secret stored per email; no email verification or extra login. Different browsers must re-enter the ID. The original grade store is unchanged (email-only access is not verified identity). One malformed PDF p.3 interval omitted pending faculty confirmation. SQL device-isolation tests passed, browser smoke and deployment pending.
+- **Owner decision 2026-11-26:** ChatGPT/Claude connector must wait for secure sign-in (OAuth); the owner un-paused login work, but its plan needs approval before any login/DB change. The AI sheet shows a non-working “coming soon” connect card first.
 - **GradeSpace Connect (2026-11-25, planned):** external AI (ChatGPT/Claude via one MCP server, MCP Apps review widget, Universal JSON import). See `docs/grade-space-connect-roadmap.md`. Do not expose real student data to external AI until OAuth 2.1 (Epic Auth) ships; sandbox data only.
 - **Thammasat (2026-11-26):** TU mode shipped without automatic schedules. TU’s class/exam search
   (`https://vnweb68.reg.tu.ac.th/registrar/classinfo`, linked from reg.tu.ac.th) is a JavaScript app; its data API
