@@ -113,3 +113,4 @@ data and fails on any error or sideways scrolling. Also click through what you c
   screenshot scanning exist. A bookmarklet that sends the Portfolio table was proposed, not built.
 - Study plans cover Accounting, BBA majors and Statistics from the faculty's 2569 timetable; some terms
   (e.g. MIS year 4) have no published plan.
+- Adaptive appearance: device-local university/faculty preview and accent palettes are independent of academic profile and grade rules. Actual institution/program selection and public catalog integration still pending. Authentication redesign remains deferred per owner; do not connect new private file/AI storage or writes until authorization is resolved.
