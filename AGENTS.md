@@ -157,3 +157,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Guided TU picker / source re-audit: see `docs/tu-guided-picker-audit.md`; track/term scoped explicit course selections and versioned MK412/FN494 amendment; no automatic registration. Remaining detailed PDF validation, live REG, minor/double-major and browser CI. Do not merge until owner approves.
 
 - Owner decision (2026-11-26): GradeSpace is a learning tracker/planner, not a registration website. Default TU picker is course-first search/browse, expanded subject labels, faculty before GenEd, optional sample-plan mode, concise controls and persistent selection. Keep academic/regulatory references on the academic overview rather than requiring them in course entry. Do not treat unknown prereqs or approval as a barrier to manual course logging. Browser CI pending.
+
+- Owner decision: direct TH/EN and light/dark controls beside profile on desktop and tablet (>=768px), not only within account menu. Phones keep the existing You settings and compact topbar. Browser CI pending.

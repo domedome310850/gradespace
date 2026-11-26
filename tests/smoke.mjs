@@ -58,8 +58,23 @@ async function run(browser, lang, width) {
   if(await page.locator('.side .nav-item').first().getAttribute('href')!=='#dashboard') errors.push('overview is not first menu');
   if(await page.locator('.side .nav-item[aria-current="page"]').getAttribute('href')!=='#dashboard') errors.push('overview is not default');
   if(await page.locator('#exam-student-id').count()) errors.push('student ID form leaked into dashboard');
-  // Top bar: only logo + account menu; language/theme live inside the menu (2026-11-25).
-  if(await page.locator('.topbar .seg').count()) errors.push('language switch should be inside the account menu');
+  // Desktop and tablet quick display controls; phones retain You-page settings.
+  const display=page.getByTestId('topbar-display');
+  if((await display.isVisible())!==(width>=768))errors.push('wrong topbar display control visibility');
+  if(width===390){
+    await page.setViewportSize({width:768,height:1024});
+    if(!(await display.isVisible())||!(await page.locator('.topbar .acct-btn').isVisible()))errors.push('portrait tablet quick controls/profile missing');
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1))errors.push('tablet topbar overflow');
+    await display.getByRole('button',{name:'EN',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.lang==='en');
+    await display.getByRole('button',{name:'Dark',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='dark');
+    await display.getByRole('button',{name:'Light',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='light');
+    await display.getByRole('button',{name:'TH',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.lang==='th');
+    await page.setViewportSize({width,height:900});
+  }
   if(width<=900){
     // Phones: YouTube-style bottom bar (5 tabs); language/theme live under the “You” tab.
     if(await page.locator('.bottomnav > *').count()!==5) errors.push('bottom bar should have 5 items');
@@ -72,8 +87,15 @@ async function run(browser, lang, width) {
   } else {
     await page.locator('.topbar .acct-btn').click();
     if(!(await page.locator('.acct-menu').isVisible())) errors.push('account menu did not open');
-    if(lang==='en'){await page.locator('.acct-menu button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
     await page.keyboard.press('Escape');
+    if(lang==='en')await display.getByRole('button',{name:'EN',exact:true}).click();
+    await page.waitForFunction(l=>document.documentElement.lang===l,lang);
+    const previousTheme=await page.evaluate(()=>GradeSpace.S.state.settings.theme);
+    await display.getByRole('button',{name:lang==='th'?'มืด':'Dark',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='dark');
+    await display.getByRole('button',{name:lang==='th'?'สว่าง':'Light',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='light');
+    await page.evaluate(v=>GradeSpace.update(d=>{d.settings.theme=v;}),previousTheme);
     if(await page.locator('.acct-menu').count()) errors.push('account menu did not close on Escape');
     if(await page.locator('.side .nav-group').count()!==2) errors.push('sidebar should have 2 labelled groups');
   }

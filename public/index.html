@@ -942,6 +942,12 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 .ai-fab-intro::after{content:"";position:absolute;right:22px;bottom:-7px;width:12px;height:12px;background:var(--surface);border-right:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));border-bottom:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));transform:rotate(45deg)}
 @keyframes fabIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.ai-fab-intro{animation:none}.ai-fab{transition:none}}
+.topbar-display{display:none;align-items:center;gap:8px;flex:none}
+.topbar .topbar-display .seg{flex:none;width:auto;min-width:0}
+.topbar .topbar-display .seg button{flex:none;min-width:40px;min-height:34px;padding:6px 10px;white-space:nowrap}
+.topbar .topbar-display .seg button[aria-pressed="true"]{font-weight:650}
+@media(min-width:768px){.topbar-display{display:flex}.topbar .acct{display:block;flex:none}.topbar .top-search{min-width:0;flex-shrink:1}.topbar .top-search span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.topbar .top-search kbd{flex:none}}
+@media(min-width:768px) and (max-width:900px){.topbar .top-search{flex:0 0 40px}.topbar .top-search+.topbar-spacer{display:block;flex:0 0 0}}
 .acct{position:relative}.acct-btn{position:relative}
 .acct-dot{position:absolute;right:3px;bottom:3px;width:9px;height:9px;border-radius:50%;background:var(--ok);border:2px solid var(--bg)}.acct-dot.busy{background:var(--warn)}.acct-dot.bad{background:var(--bad)}
 .acct-menu{position:absolute;right:0;top:calc(100% + 8px);width:260px;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 12px 32px rgba(0,0,0,.22);display:grid;gap:4px;z-index:40}
@@ -9347,6 +9353,14 @@ function AiFab() {
     <button className="ai-fab-x" onClick=${hide} aria-label=${t('fab.hide')} title=${t('fab.hide')}><${Icon} n="x" s=${12} /></button>
   </div>`;
 }
+function TopbarDisplay(p) {
+  var state=p.state;
+  var theme=state.settings.theme==='light'||state.settings.theme==='dark'?state.settings.theme:(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  return html`<div className="topbar-display" data-testid="topbar-display">
+    <${Seg} label=${t('language')} value=${LANG} onChange=${v=>update(d=>{d.settings.lang=v;})} options=${[{v:'th',l:'TH'},{v:'en',l:'EN'}]}/>
+    <${Seg} label=${t('theme')} value=${theme} onChange=${v=>update(d=>{d.settings.theme=v;})} options=${[{v:'light',l:t('theme.light')},{v:'dark',l:t('theme.dark')}]}/>
+  </div>`;
+}
 function AccountMenu(p) {
   var os = useState(false), open = os[0], setOpen = os[1], ref = useRef(null), state = p.state;
   useEffect(function () {
@@ -9710,6 +9724,7 @@ function App() {
         <div className="topbar-spacer"></div>
         <button className="top-search" onClick=${function () { openModal('cmd', {}); }} aria-label=${t('cmd.btn')} title=${t('cmd.hint')}><${Icon} n="search" s=${18} /><span>${t('cmd.btn')}</span><kbd>${/Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘K' : 'Ctrl K'}</kbd></button>
         <div className="topbar-spacer"></div>
+        <${TopbarDisplay} state=${state} />
         <${AccountMenu} state=${state} />
       </header>
       <main className="page" id="main">${page}</main>

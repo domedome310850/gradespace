@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: restore direct language and theme controls on wide screens
+
+- Place TH/EN and light/dark segments directly left of profile at viewport widths 768px and above (including portrait iPad). Phone layout and existing settings retained. Controls use the same saved settings for both universities; no data or authentication changes. Add desktop/tablet interaction and overflow checks; CI pending.
+
 ## 2026-11-26 — ChatGPT: simplify TU course-first picker
 
 - Redesign `TuPlanModal`: default searchable course catalog, full Thai/English subject names, faculty groups first and GenEd last, no horizontal scrolling, compact term/program controls, readable selectable rows, persistent cross-search selection and sticky add summary. Optional guided sample plan is separate; remove registration/long reference material from picker. Manual recording does not require verified prerequisites or permission; existing duplicate/retake protections retained. No data migrations or changes to CU picker. Browser tests extended, CI pending.
