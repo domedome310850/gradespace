@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: dimensional campus AI buttons
+
+- Add subtle radial highlights, gradients and inset/ambient shadows to both campus AI circle buttons and FABs. CU stays pink with deep-pink symbol; TU stays deep red with yellow symbol. Sidebar AI keeps white label/icon and campus highlight, with restrained depth. Hover and pressed states respect reduced motion. Updated smoke checks and cache v22; CI/device review pending.
+
 ## 2026-11-26 — ChatGPT: correct TU AI circle colors
 
 - Owner clarified: deep red circle (#8C1D2C), yellow symbol (#FFD13F), not the reverse. Updated mobile AI and desktop FAB, smoke assertion, cache v21. CU and sidebar AI unchanged; CI pending.
