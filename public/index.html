@@ -1038,6 +1038,8 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 :root[data-uni="tu"] .dash-whatif{color:var(--tu-gold-text)}
 :root[data-uni="tu"] .seg-pick button[aria-pressed="true"]{background:var(--action);color:var(--action-ink);box-shadow:inset 0 -2px var(--tu-gold)}
 :root[data-uni="tu"] [data-testid="tu-academic"] progress{accent-color:var(--tu-gold-text)}
+.askai-plan-ready{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:12px;background:var(--accent-soft);padding:12px;color:var(--ink);min-width:0}
+.askai-plan-ready>svg{color:var(--accent-text);flex:none;margin-top:2px}.askai-plan-ready p{margin:5px 0 0;font-size:13px;line-height:1.5}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -3032,7 +3034,8 @@ en: {
   'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
   'connect.own': 'Or ask GradeSpace AI now:',
   'askai.how1': 'Choose an AI below. Paste the copied instruction into a new chat.', 'askai.how2': 'In that chat, upload an image or tell the AI what to add.', 'askai.how3': 'Copy its full answer back to step 2. Review and save.',
-  'askai.exampleH': 'What can you send?', 'askai.exampleIntro': 'Send a photo or talk to your AI naturally. No special commands needed.',
+  'askai.planReady': 'Added {n} course(s) successfully', 'askai.planNext': 'Next: use AI to add grading weights, assignments and scores for these courses. You can do this later, too.', 'askai.planLater': 'Later',
+   'askai.exampleH': 'What can you send?', 'askai.exampleIntro': 'Send a photo or talk to your AI naturally. No special commands needed.',
   'askai.ex.course': 'New courses', 'askai.ex.courseImage': 'Screenshot: registered courses or class timetable', 'askai.ex.courseText': '“I’m taking econ this term, 3 credits.”',
   'askai.ex.weights': 'Assignments & grading', 'askai.ex.weightsImage': 'Screenshot: syllabus or assessment weights', 'askai.ex.weightsText': '“Econ is 30% midterm, 40% final and 30% homework.”',
   'askai.ex.score': 'Scores', 'askai.ex.scoreImage': 'Screenshot: gradebook or marked work', 'askai.ex.scoreText': '“Got 5 out of 20 on econ homework 1.”',
@@ -3700,7 +3703,8 @@ th: {
   'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
   'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
   'askai.how1': 'เลือก AI ด้านล่าง แล้ววางคำสั่งที่คัดลอกให้ในแชตใหม่', 'askai.how2': 'ในแชต AI ส่งภาพ หรือบอกข้อมูลที่ต้องการเพิ่ม', 'askai.how3': 'คัดลอกคำตอบทั้งหมดกลับมาวางในขั้นที่ 2 แล้วตรวจสอบก่อนบันทึก',
-  'askai.exampleH': 'ส่งข้อมูลอะไรได้บ้าง?', 'askai.exampleIntro': 'ส่งภาพ หรือพูดกับ AI แบบปกติได้เลย ไม่ต้องใช้คำสั่งพิเศษ',
+  'askai.planReady': 'เพิ่มรายวิชาแล้ว {n} วิชา', 'askai.planNext': 'ขั้นต่อไป ใช้ AI เพิ่มสัดส่วนคะแนน งาน และคะแนนที่ได้ของวิชาในเทอมนี้ หรือจะทำภายหลังก็ได้', 'askai.planLater': 'ไว้ทีหลัง',
+   'askai.exampleH': 'ส่งข้อมูลอะไรได้บ้าง?', 'askai.exampleIntro': 'ส่งภาพ หรือพูดกับ AI แบบปกติได้เลย ไม่ต้องใช้คำสั่งพิเศษ',
   'askai.ex.course': 'เพิ่มวิชา', 'askai.ex.courseImage': 'ภาพรายวิชาที่ลงทะเบียน หรือตารางเรียน', 'askai.ex.courseText': '“เทอมนี้เรียนอีคอนด้วย 3 หน่วยกิต”',
   'askai.ex.weights': 'เพิ่มงานและสัดส่วนเกรด', 'askai.ex.weightsImage': 'ภาพ Course Syllabus หรือตารางสัดส่วนคะแนน', 'askai.ex.weightsText': '“อีคอนมิดเทอม 30 ไฟนอล 40 งานอีก 30 เปอร์เซ็นต์”',
   'askai.ex.score': 'เพิ่มคะแนน', 'askai.ex.scoreImage': 'ภาพคะแนนจากระบบรายวิชา หรืองานที่ตรวจแล้ว', 'askai.ex.scoreText': '“อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง”',
@@ -9055,7 +9059,7 @@ function ScanModal(p) {
   };
   var check = res && res.check;
   var foot = step === 'review'
-    ? html`<button className="btn" onClick=${preset ? function () { closeModal(); openModal('askAi', { step: 'paste' }); } : function () { setStep('pick'); setRes(null); }}>${preset ? t('askai.back') : t('scan.again')}</button>
+    ? html`<button className="btn" onClick=${preset ? function () { closeModal(); openModal('askAi', { step: 'paste', semesterId: target }); } : function () { setStep('pick'); setRes(null); }}>${preset ? t('askai.back') : t('scan.again')}</button>
         <button className="btn primary" disabled=${!nChosen || badInput} onClick=${apply}>${t('scan.apply', { n: nChosen })}</button>`
     : html`<button className="btn" onClick=${closeModal}>${t('cancel')}</button>
         <button className="btn primary" disabled=${!files.length || preparing || step === 'scanning' || ready === false} onClick=${run}><${Icon} n="zap" s=${16} />${step === 'scanning' ? t('scan.running') : t('scan.run')}</button>`;
@@ -9220,12 +9224,14 @@ function PlanModal(p) {
     closeModal();
     toast(t('plan.added', { n: r.added }), { undo: true });
     go('courses');
+    // Only successful CU study-plan additions lead to AI setup, scoped to the actual destination term.
+    if (isCU() && r.added > 0 && r.semesterId) openModal('askAi', { semesterId: r.semesterId, planAdded: r.added });
   };
   var lastOpt = null;
   var yearOfPlan = plan && yearOfLevel(state, plan.year);
   return html`<${Modal} title=${t('plan.title')} wide=${true} onClose=${closeModal} foot=${html`
     <button className="btn" onClick=${closeModal}>${t('cancel')}</button>
-    <button className="btn primary" disabled=${!codes.length} onClick=${apply}>${t('plan.add', { n: codes.length })}</button>`}>
+    <button className="btn primary" data-testid="cu-plan-add" disabled=${!codes.length} onClick=${apply}>${t('plan.add', { n: codes.length })}</button>`}>
     <p className="small muted" style=${{ margin: 0 }}>${t('plan.intro')}</p>
     <div className="planner">
       <div className="planner-step">
@@ -9514,8 +9520,9 @@ function AskAiModal(p) {
     if (r.error) { setErr(r.error); return; }
     closeModal(); openModal('scan', { semesterId: cur && cur.id, preset: { courses: r.courses }, title: t('askai.reviewT') });
   }
-  return html`<${Modal} title=${t('askai.title')} onClose=${closeModal} wide=${true}>
-    <div className="stack" data-testid="ask-ai" style=${{ gap: 12 }}>
+  return html`<${Modal} title=${t('askai.title')} onClose=${closeModal} wide=${true} foot=${p.props && p.props.planAdded ? html`<button type="button" className="btn" data-testid="askai-plan-later" onClick=${closeModal}>${t('askai.planLater')}</button>` : null}>
+    <div className="stack" data-testid="ask-ai" data-semester-id=${cur && cur.id} style=${{ gap: 12 }}>
+      ${p.props && p.props.planAdded > 0 && html`<div className="askai-plan-ready" data-testid="askai-plan-ready"><${Icon} n="check" s=${20}/><div className="grow"><b>${t('askai.planReady',{n:p.props.planAdded})}</b><div className="small muted">${cur ? semFull(state,cur) : ''}</div><p>${t('askai.planNext')}</p></div></div>`}
       <${Seg} label=${t('askai.title')} value=${tab} onChange=${setTab} options=${[{ v: 'copy', l: t('askai.step1') }, { v: 'paste', l: t('askai.step2') }]} />
       ${tab === 'copy' ? html`<${React.Fragment}>
         <div className="askai-guide" data-testid="askai-guide">

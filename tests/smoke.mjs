@@ -99,6 +99,44 @@ async function checkCourseCardDelete(page,errors) {
     if(g!==after[scope].gpa)errors.push('GPA not recalculated');
   }
 }
+// CU plan -> AI setup must use the term that actually received the newly added course.
+async function checkCuPlanAi(page, errors) {
+  await page.evaluate(()=>{location.hash='courses';});
+  const open=page.locator('.courses-actions .btn').nth(1);
+  async function prepare() {
+    await open.click();
+    const dialog=page.getByRole('dialog');
+    await dialog.locator('.prog-tile').filter({hasText:/Accountancy|บัญชี/}).click();
+    await dialog.locator('.when-row .seg-pick').nth(0).getByRole('button').first().click();
+    await dialog.locator('.when-row .seg-pick').nth(1).getByRole('button').first().click();
+    const rows=dialog.locator('.scan-item').filter({has:page.locator('input[type="checkbox"]')});
+    await rows.first().waitFor();
+    const boxes=dialog.locator('input[id^="plan-course-"]');
+    const count=await boxes.count();
+    for(let i=0;i<count;i++){const box=boxes.nth(i);if(i===0)await box.check();else await box.uncheck();}
+    const row=rows.first(), code=(await boxes.first().getAttribute('id')).replace('plan-course-','');
+    const select=row.locator('.plan-course-sec select');
+    if(await select.count())await select.selectOption('__other');
+    await row.locator('.plan-course-sec input').fill('9876');
+    return code;
+  }
+  const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.id));
+  const code=await prepare();
+  await page.getByTestId('cu-plan-add').click();
+  await page.getByTestId('askai-plan-ready').waitFor();
+  const added=await page.evaluate(ids=>GradeSpace.S.state.courses.filter(c=>!ids.includes(c.id)).map(c=>({id:c.id,semesterId:c.semesterId,code:c.code})),before);
+  const ai=page.getByTestId('ask-ai');
+  if(added.length!==1||!(added[0].code||'').startsWith(code)||await ai.getAttribute('data-semester-id')!==added[0].semesterId)errors.push('CU plan onboarding not scoped to added term');
+  if(!(await page.getByTestId('askai-guide').isVisible())||!(await page.getByTestId('askai-prompt').inputValue()).includes(code))errors.push('CU plan AI guide missing added course');
+  if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1))errors.push('CU plan AI onboarding overflow');
+  await page.getByTestId('askai-plan-later').click();
+  await ai.waitFor({state:'detached'});
+  if(added.length&&!(await page.evaluate(id=>GradeSpace.S.state.courses.some(c=>c.id===id),added[0].id)))errors.push('skipping AI removed the added course');
+  await prepare();
+  await page.getByTestId('cu-plan-add').click();
+  await page.getByTestId('cu-plan-add').waitFor({state:'detached'});
+  if(await page.getByTestId('askai-plan-ready').count())errors.push('CU duplicate-only plan reopened AI guide');
+}
 async function run(browser, lang, width) {
   const errors = [], overflow = [];
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
@@ -472,6 +510,7 @@ async function run(browser, lang, width) {
     if (extra > 1) overflow.push(h + ' +' + extra + 'px');
   }
   await checkCourseCardDelete(page,errors);
+  await checkCuPlanAi(page,errors);
   await ctx.close();
   console.log(`${lang} ${width}px: ${hashes.length} pages, overflow ${overflow.length ? overflow.join(', ') : 'none'}, errors ${errors.length ? errors.join(' | ') : 'none'}`);
   return errors.length + overflow.length;
@@ -524,6 +563,7 @@ async function runTU(browser, lang, width) {
   await page.getByTestId('tu-plan').locator('.tup-row').filter({hasText:'MK201'}).locator('input').check();
   if(!(await page.getByTestId('tup-add').isEnabled()))errors.push('fresh TU workspace cannot add a course');
   await page.getByTestId('tup-add').click();
+  if(await page.getByTestId('askai-plan-ready').count())errors.push('CU plan onboarding leaked into TU');
   await page.waitForFunction(()=>GradeSpace.S.state.courses.some(c=>c.code==='MK201'));
   if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='MK201');const name=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return /[A-Za-z]/.test(name)&&!/[\u0E00-\u0E7F]/.test(name)&&name===GradeSpace.standardCourseName(c)&&GradeSpace.standardCourseName({name:'Unknown custom course',code:''})==='Unknown custom course';})))errors.push('TU English course title should use its own catalog and retain unknown custom course names');
   const fresh=await page.evaluate(()=>({years:GradeSpace.S.state.years,terms:GradeSpace.S.state.semesters,courses:GradeSpace.S.state.courses,current:GradeSpace.S.state.settings.currentSemesterId}));

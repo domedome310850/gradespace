@@ -191,3 +191,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Latest owner correction supersedes earlier TU AI circle request: deep red fill (#8C1D2C), yellow symbol (#FFD13F), CU/sidebar unchanged. Cache v21; CI pending.
 
 - Owner requested trash icon on each course card; reuse existing confirmation and undo. Deleted course and related assessments/categories no longer contribute to semester/cumulative GPA; test confirmed and estimated modes in CU/TU. Browser CI pending.
+
+- Owner requested CU onboarding: after successful major-plan addition, open AskAiModal directly for the actual destination semester, with a success count, instructions and Later. No popup when no courses added or in TU. No external AI opens automatically and review remains mandatory. CI pending.
