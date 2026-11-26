@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: delete courses directly from cards
+
+- Course cards in both campus spaces now have a trash button beside View Details. Existing confirmed deletion removes only the selected course and linked assessments/categories, with undo. Confirmation explains GPA/GPAX exclusion. Added bilingual UI smoke coverage for cancel, confirm, linked records and both GPA modes. Browser CI pending; no storage schema changes.
+
 ## 2026-11-26 — ChatGPT: correct TU AI circle colors
 
 - Owner clarified: deep red circle (#8C1D2C), yellow symbol (#FFD13F), not the reverse. Updated mobile AI and desktop FAB, smoke assertion, cache v21. CU and sidebar AI unchanged; CI pending.
