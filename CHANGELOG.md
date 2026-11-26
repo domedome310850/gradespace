@@ -1,3 +1,8 @@
+## 2026-11-26 — Claude (claude.ai): bring back a university space that was put aside by mistake
+
+- `public/index.html`: one account was found with the Chula label active, an empty current space, and all its Chula data (14 courses, 47 items, years, terms) stored under `settings.spaces.cu` (put aside when switching to Thammasat, then only the label went back). Nothing was lost. `Store.normalize` now runs `healSpace`: if the active university's stored space holds data and the current space is empty, it is brought back (nothing merged or deleted). `switchSpace` never puts an empty space over a stored one with data, and if both hold data the older one is kept as `spaces['<uni>-<savedAt>']`. `window.GradeSpace` exposes `Store` and `switchSpace` for tests.
+- `tests/smoke.mjs`: a stored Chula space comes back on load; switching from an empty space keeps the stored one.
+
 ## 2026-11-26 — Claude (claude.ai): what-if grades, phone one-row layouts, plain AI menu, Thammasat picker
 
 - `public/index.html`:
