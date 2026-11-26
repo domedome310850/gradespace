@@ -105,6 +105,8 @@ a { color: var(--accent-text); }
 .brand-name{display:flex;align-items:baseline;gap:5px}
 .brand-word{white-space:nowrap}
 .brand-campus{font:inherit;letter-spacing:inherit;color:var(--accent-text);flex:none}
+:root[data-uni="cu"][data-theme="dark"] .brand-name-accent{color:#FFFFFF}
+@media(prefers-color-scheme:dark){:root[data-uni="cu"]:not([data-theme="light"]) .brand-name-accent{color:#FFFFFF}}
 :root[data-uni="tu"] .brand-name-accent{color:#C3002F}
 :root[data-uni="tu"] .brand-campus{color:#946900}
 :root[data-uni="tu"][data-theme="dark"] .brand-name-accent{color:#EF536C}
