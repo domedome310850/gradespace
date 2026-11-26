@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: course-local grade recording reminder
+
+- `public/index.html`: remove the dashboard-wide completed-course banner. Show a bilingual completed-score reminder and direct official-grade action within each calculated course card, in both course grids. Existing official-grade dialog and calculation unchanged. Browser CI pending.
+
 ## 2026-11-26 — ChatGPT: icon-only topbar theme switch
 
 - `public/index.html`: replace desktop/tablet Light/Dark text with existing sun/moon SVG icons, preserving localized accessible names, tooltips and selected state. Language and settings switches unchanged. Browser CI pending.

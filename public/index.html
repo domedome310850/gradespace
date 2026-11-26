@@ -736,6 +736,8 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .ccard-line { display: flex; gap: 7px; align-items: flex-start; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
 .ccard-line svg { flex: none; margin-top: 2px; color: var(--muted); }
 .ccard-line.ok { color: var(--ok); } .ccard-line.ok svg { color: var(--ok); }
+.ccard-record > div { min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 9px; }
+.ccard-record .linkish { font-size: inherit; white-space: normal; text-align: start; }
 .ccard-line.bad { color: var(--bad); } .ccard-line.bad svg { color: var(--bad); }
 .basis-box.fold { padding: 8px 12px; }
 .basis-box.fold > summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; }
@@ -3383,6 +3385,7 @@ en: {
   'tip.earned': 'Credits from courses with an official passing grade.',
   'tip.gpaCredits': 'Credits from courses whose grade counts in GPA. Pass/fail and withdrawn courses can be excluded in Settings.',
   'recordPrompt': 'All scores are in for {n} course(s). Record the official grade when it’s released:',
+  'recordCard': 'All scores in · awaiting official grade',
   'coursesIn': 'Courses in {s}', 'allCourses': 'All courses', 'noCoursesSemT': 'No courses in this semester yet', 'noCoursesSemP': 'Add the courses you’re taking to start tracking.',
   'gpaTrend': 'GPA trend', 'trendNote': 'Includes estimates for courses still in progress.', 'trendEmpty': 'Your GPA trend appears once a course has a grade or a graded score.',
   'trendEmptyConfirmed': 'Record an official grade for a course to see your confirmed GPA trend, or switch to “With estimates”.',
@@ -4051,6 +4054,7 @@ th: {
   'tip.earned': 'หน่วยกิตจากวิชาที่ได้เกรดผ่านแล้ว',
   'tip.gpaCredits': 'หน่วยกิตจากวิชาที่เกรดนับใน GPA ตั้งค่าได้ว่าวิชา S/U หรือ W จะไม่นับ',
   'recordPrompt': 'คะแนนครบแล้ว {n} วิชา บันทึกเกรดจริงเมื่อประกาศผล:',
+  'recordCard': 'คะแนนครบแล้ว · รอเกรดจริง',
   'coursesIn': 'วิชาใน{s}', 'allCourses': 'วิชาทั้งหมด', 'noCoursesSemT': 'เทอมนี้ยังไม่มีวิชา', 'noCoursesSemP': 'เพิ่มวิชาที่ลงเรียนเพื่อเริ่มติดตามคะแนน',
   'gpaTrend': 'แนวโน้ม GPA', 'trendNote': 'รวมเกรดคาดการณ์ของวิชาที่ยังเรียนอยู่', 'trendEmpty': 'กราฟแนวโน้ม GPA จะแสดงเมื่อมีวิชาที่มีเกรดหรือมีคะแนนแล้ว',
   'trendEmptyConfirmed': 'บันทึกเกรดจริงของสักวิชาเพื่อดูแนวโน้ม GPA จริง หรือเปลี่ยนเป็น “รวมเกรดคาดการณ์”',
@@ -6620,7 +6624,7 @@ function CourseCard(p) {
   var manual = !sum.rows.length && c.finalGrade;
   var sec = sectionOf(c);
   var nx = c.finalGrade ? null : nextExamOf(displayExamsFor(c, state, personal), c, state);
-  var gl = c.finalGrade ? null : finalExamPassed(c, state, personal) ? { tone: 'ok', text: t('gm.afterFinalCard') } : goalLine(c, state, sum);
+  var gl = c.finalGrade || info.kind === 'calculated' ? null : finalExamPassed(c, state, personal) ? { tone: 'ok', text: t('gm.afterFinalCard') } : goalLine(c, state, sum);
   return html`<article className="card ccard" data-course-id=${c.id} style=${{ '--cc': courseColor(c.color) }}>
     <div className="ccard-top">
       <div className="grow">
@@ -6638,7 +6642,7 @@ function CourseCard(p) {
     <div className="ccard-slot ccard-progress-slot">${manual || c.finalGrade ? html`<p className="small muted" style=${{ margin: 0 }}>${c.finalGrade ? officialNote(c, state) : t('manualGradeNote')}</p>` : html`<div className="ccard-progress">${sum.rows.length ? t('cc.progress', { e: fmt(sum.earned), g: fmtT(sum.gradedWeight), r: fmtT(sum.remaining) }) : t('noAssessYet')}</div>`}</div>
     <div className="ccard-slot ccard-warning-slot">${!c.finalGrade && sum.issues.over && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.over",{n:fmtT(sum.totalWeight)})}</div>`}${!c.finalGrade && sum.issues.overMax>0 && html`<div className="small" style=${{color:"var(--bad)"}}>${t("warn.overMax")}</div>`}</div>
     <div className="ccard-slot ccard-forecast-slot">${!c.finalGrade && html`<${EstimateBasis} course=${c} sum=${sum} state=${state} collapsible=${true} />`}</div>
-    <div className="ccard-slot ccard-goal-slot">${normFloorText(c, sum) && html`<div className="ccard-line"><${Icon} n="target" s=${14} /><span>${normFloorText(c, sum)}</span></div>`}${gl && html`<div className=${'ccard-line ' + gl.tone}><${Icon} n="target" s=${14} /><span>${gl.text}</span></div>`}</div>
+    <div className="ccard-slot ccard-goal-slot">${normFloorText(c, sum) && html`<div className="ccard-line"><${Icon} n="target" s=${14} /><span>${normFloorText(c, sum)}</span></div>`}${gl && html`<div className=${'ccard-line ' + gl.tone}><${Icon} n="target" s=${14} /><span>${gl.text}</span></div>`}${info.kind === 'calculated' && html`<div className="ccard-line ok ccard-record" data-testid="course-record-ready"><${Icon} n="check" s=${16} /><div><span>${t('recordCard')}</span><button type="button" className="linkish" onClick=${function () { openModal('final', { courseId: c.id }); }}>${t('recordGrade')}</button></div></div>`}</div>
     <div className="ccard-slot ccard-exam-slot">${nx && html`<div className="ccard-line"><${Icon} n="calendar" s=${14} /><span>${nextExamText(nx)}</span></div>`}</div>
     <div className="ccard-foot">
       <span className="row" style=${{ gap: 6, minWidth: 0 }}>${p.handle}${c.finalGrade ? null : html`<${GoalPicker} course=${c} state=${state} />`}</span>
@@ -7249,7 +7253,6 @@ function Dashboard(p) {
   var next = upcoming.find(function (x) { return x.d >= 0; });
   var tr = C.trend(state), maxPts = C.maxPoints(C.gradesFor(null, state)) || 4;
   var hasTrend = tr.some(function (x) { return x.cumE != null; });
-  var needRecord = courses.filter(function (c) { return C.courseGrade(c, state).kind === 'calculated'; });
   var inProg = courses.filter(function (c) { return !c.finalGrade; }).length;
   return html`<div>
     <div className="page-head">
@@ -7280,8 +7283,6 @@ function Dashboard(p) {
       <span><span className="lbl-l">${t('dash.credits', { n: fmtT(cumC.earned) })}</span><span className="lbl-s">${t('dash.creditsS', { n: fmtT(cumC.earned) })}</span><${Tip} text=${t('tip.earned')} /></span>
       <a className="dash-whatif" href="#gpa" data-testid="dash-whatif">${t('wi.link')} ›</a>
     </div>
-    ${needRecord.length > 0 && html`<div style=${{ marginTop: 14 }}><${Banner} kind="ok">${t('recordPrompt', { n: needRecord.length })}${' '}
-      ${needRecord.map(function (c, i) { return html`<span key=${c.id}>${i ? ', ' : ''}<a href=${'#course-' + c.id}>${courseDisplayTitle(c)}</a></span>`; })}<//></div>`}
     <div className="card overview-hub">
       <div className="hub-kicker"><span><${Icon} n="target" s=${15}/>${t('hub.title')}</span><span className="tiny muted">${t('hub.subtitle')}</span></div>
       <div className="dashboard-planning-grid">
