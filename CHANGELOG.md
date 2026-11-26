@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: course-local grade recording reminder
+
+- `public/index.html`: remove the dashboard-wide completed-course banner. Show a bilingual completed-score reminder and direct official-grade action within each calculated course card, in both course grids. Existing official-grade dialog and calculation unchanged. Browser CI pending.
+
 ## 2026-11-26 — ChatGPT: concise course deletion confirmation
 
 - Course deletion confirmation button uses ยืนยัน / Confirm; cancellation, warning, deletion and GPA behavior unchanged. Smoke assertion added; CI pending.
