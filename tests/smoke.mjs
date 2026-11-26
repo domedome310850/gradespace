@@ -529,6 +529,10 @@ async function runTU(browser, lang, width) {
   if(!(await page.getByTestId('tup-add').isEnabled()))errors.push('fresh TU workspace cannot add a course');
   await page.getByTestId('tup-add').click();
   await page.waitForFunction(()=>GradeSpace.S.state.courses.some(c=>c.code==='MK201'));
+  await page.getByTestId('first-course-ai-tip').waitFor();
+  if(!(await page.getByTestId('askai-open').isVisible()))errors.push('first TU course should recommend AI import');
+  await page.keyboard.press('Escape');
+  await page.getByTestId('ai-hub').waitFor({state:'detached'});
   if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='MK201');const name=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return /[A-Za-z]/.test(name)&&!/[\u0E00-\u0E7F]/.test(name)&&name===GradeSpace.standardCourseName(c)&&GradeSpace.standardCourseName({name:'Unknown custom course',code:''})==='Unknown custom course';})))errors.push('TU English course title should use its own catalog and retain unknown custom course names');
   const fresh=await page.evaluate(()=>({years:GradeSpace.S.state.years,terms:GradeSpace.S.state.semesters,courses:GradeSpace.S.state.courses,current:GradeSpace.S.state.settings.currentSemesterId}));
   if(fresh.years.length!==1||fresh.terms.length!==1||fresh.courses.length!==1||fresh.terms[0].id!==fresh.current||fresh.courses[0].semesterId!==fresh.current)errors.push('first semester/course not saved correctly');
@@ -593,6 +597,7 @@ async function runTU(browser, lang, width) {
   if(selected!==2)errors.push('TU accounting semester 1 must select exactly AC201 and IS201, got '+selected);
   if(!(await guided.locator('.tup-row').filter({hasText:'AC201'}).locator('input').isChecked()))errors.push('AC201 not selected by guided bulk');
   await page.getByTestId('tup-add').click(); await page.waitForTimeout(300);
+  if(await page.getByTestId('ai-hub').count())errors.push('AI recommendation repeated after later TU course');
   if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')&&GradeSpace.S.state.courses.some(c=>c.code==='IS201')&&GradeSpace.S.state.settings.tuAcademicProfile.track==='AC'))) errors.push('TU guided picker did not add the named accounting courses and persist major');
   if(!(await page.evaluate(()=>GradeSpace.catalogSearch('AC396').some(x=>x.code==='AC396'&&x.cr===1.5))))errors.push('Thai scoped catalog credits incorrect');
   if(await page.evaluate(()=>GradeSpace.S.state.courses.filter(c=>c.code==='TU101').length)!==1)errors.push('TU101 duplicate');
@@ -716,12 +721,56 @@ async function runCampusAdmin(browser) {
   return errors.length;
 }
 
+
+// A fresh CU account: recommend only after a successful first add, not during the form,
+// and never again after deletion, undo or reload.
+async function runFirstCourseCU(browser) {
+  const errors=[];
+  const ctx=await browser.newContext({viewport:{width:390,height:900}});
+  const page=await ctx.newPage();
+  await page.addInitScript(()=>{window.__D=null;});
+  await page.route('**/*',route=>{
+    const u=route.request().url();
+    if(u.startsWith('file:')||u.startsWith('data:')||u.startsWith('blob:'))return route.continue();
+    for(const [k,f] of Object.entries(LIBS))if(u.includes(k))return route.fulfill({path:f,contentType:'application/javascript'});
+    if(u.includes('supabase.js'))return route.fulfill({body:FAKE_SUPABASE,contentType:'application/javascript'});
+    return route.abort();
+  });
+  page.on('pageerror',e=>errors.push('pageerror: '+e.message));
+  await page.goto(PAGE);
+  await page.locator('#au-e').fill('test@example.com');
+  await page.locator('#au-e').press('Enter');
+  await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.cloud&&GradeSpace.S.state.settings.institution==='cu');
+  if(await page.getByTestId('ai-hub').count())errors.push('AI opened before any CU course');
+  await page.evaluate(()=>location.hash='courses');
+  await page.locator('.course-start-action .btn').nth(1).click();
+  await page.locator('#c-name').fill('First course');
+  await page.locator('.modal-foot .btn.primary').click();
+  await page.getByTestId('first-course-ai-tip').waitFor();
+  if(!(await page.getByTestId('askai-open').isVisible()))errors.push('first CU course should recommend AI import');
+  await page.keyboard.press('Escape');
+  await page.getByTestId('ai-hub').waitFor({state:'detached'});
+  const saved=await page.evaluate(()=>GradeSpace.S.state.courses[0]);
+  await page.evaluate(()=>GradeSpace.update(d=>{d.courses=[];},{undo:true}));
+  await page.evaluate(c=>GradeSpace.update(d=>{d.courses.push(c);}),saved);
+  await page.waitForTimeout(300);
+  if(await page.getByTestId('ai-hub').count())errors.push('AI recommendation repeated after deleting and adding a course');
+  if(!(await page.evaluate(()=>GradeSpace.S.state.settings.firstCourseAiSeen===true)))errors.push('first-course marker not persisted in account data');
+  await page.reload();
+  await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.cloud&&GradeSpace.S.state.courses.length===1);
+  if(await page.getByTestId('ai-hub').count())errors.push('AI recommendation repeated after reload');
+  await ctx.close();
+  console.log('First CU course: errors '+(errors.join(' | ')||'none'));
+  return errors.length;
+}
+
 const browser = await chromium.launch();
 let bad = 0;
 for (const lang of ['th', 'en']) for (const w of [390, 1280, 1800]) bad += await run(browser, lang, w);
 for (const lang of ['th', 'en']) for (const w of [390, 1280]) bad += await runTU(browser, lang, w);
 for (const w of [390, 1280]) bad += await runOTP(browser, w);
 bad += await runCampusAdmin(browser);
+bad += await runFirstCourseCU(browser);
 await browser.close();
 if (bad) { console.error('FAILED'); process.exit(1); }
 console.log('OK');
