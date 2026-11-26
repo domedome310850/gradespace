@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: re-audit TBS and simplify course selection
+
+- Add major/semester guided picker, explicit named-course batch selection, separate alternatives/open slots, term-credit summary, scoped 2/2569 MK412/FN494 amendment and tests. No registration claims; full PDF field verification and live REG remain open. See `docs/tu-guided-picker-audit.md`.
+
 ## 2026-11-26 — ChatGPT: restore CU ID edit action and stable browser selector
 
 - Preserve the existing CU-specific edit label, use the TU-specific label in TU, add a stable test ID, and keep the end-to-end ID edit and exam-room assertions. Also assert the updated CU account ID appears in Settings. Earlier browser run stopped at the outdated label selector; full CI still required.
