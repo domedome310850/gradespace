@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: make external AI import instructions actionable
+
+- Show three concrete import examples (registered courses, assignments and weights, scores) with image sources and sample phrases for voice/text. Explain instructions must be pasted into the external AI chat, and its full answer pasted back for review. Compact provider buttons under explicit copy-and-open heading; retain privacy notice and add image redaction guidance. Responsive examples and smoke assertions; existing import protocol and copy-before-open preserved. CI pending.
+
 ## 2026-11-26 — ChatGPT: compact GPA and recommended AI UI
 
 - Give GPA metrics and what-if card 20px (16px on phones) separation. Highlight the permanent desktop AI menu using the institution accent. Promote the external AI import as recommended; use short heading, separate provider line and concise bilingual instructions. Shorten GPA, course and AI copy without clipping safety or review information. Extend smoke checks for spacing and AI entry at 320/768/1024px. CI pending.

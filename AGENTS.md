@@ -167,3 +167,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner decision: permanent AI item in desktop sidebar; floating AI may be hidden without losing access. Course scan shortcut becomes Add with AI, with clear bilingual explanation, direct scanning retained inside AI hub, and selected semester carried through import. Mobile center AI stays. CI pending.
 
 - Owner UI feedback: give GPA cards breathing room, highlight desktop AI menu, recommend external AI import prominently, prefer short Thai/English UI copy across mobile/tablet/desktop. Allow natural wrap for essential content, do not globally clip text. CI pending.
+
+- Owner feedback: AI import guide must explain what to upload or say, with concrete examples for courses, weights and scores. Short responsive labels but actionable instructions, copy-before-open and review unchanged. CI pending.

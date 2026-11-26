@@ -132,6 +132,19 @@ async function run(browser, lang, width) {
   // Bridge to the student's own AI: it reads screenshots/voice/text, answers with a gradespace block, the student pastes it back.
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
   await page.getByTestId('askai-open').click();
+  for(const k of ['course','weights','score']){
+    const example=page.getByTestId('askai-example-'+k);
+    if(!(await example.isVisible()))errors.push('missing AI import example: '+k);
+    if(!(await example.locator('.askai-sample').innerText()).includes('Economics I'))errors.push('missing concrete AI example: '+k);
+  }
+  if(width===390){
+    for(const w of [320,768,1024]){
+      await page.setViewportSize({width:w,height:1024});
+      if(await page.evaluate(()=>{const m=document.querySelector('.modal');return document.documentElement.scrollWidth>innerWidth+1||(m&&m.scrollWidth>m.clientWidth+1);}))errors.push('AI instructions overflow at '+w);
+      if(!(await page.getByTestId('askai-guide').isVisible()))errors.push('AI instructions missing at '+w);
+    }
+    await page.setViewportSize({width,height:900});
+  }
   for(const k of ['gpt','gemini','claude']) if(!(await page.getByTestId('askai-'+k).isVisible())) errors.push('ask-AI missing '+k+' button');
   const prompt=await page.getByTestId('askai-prompt').inputValue();
   // Tapping an AI copies the instruction first, then opens the AI (copy must not wait until the tab has opened).

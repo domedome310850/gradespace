@@ -925,6 +925,18 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .askai-app{font-weight:600}
 .askai-logo{width:20px;height:20px;border-radius:5px;background:#fff;flex:none}
 .askai-steps{margin:0;padding-left:20px;display:grid;gap:6px}.askai-text{margin-top:8px}
+.askai-guide{display:grid;gap:8px;min-width:0}
+.askai-guide h3{margin:0;font-size:14px;font-weight:700}
+.askai-examples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.askai-example{display:grid;align-content:start;gap:5px;min-width:0;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.askai-example b{font-size:14px;line-height:1.4}
+.askai-example .tiny{line-height:1.5;overflow-wrap:anywhere}
+.askai-example .askai-sample{margin:0;font-size:12px;line-height:1.5;color:var(--ink-2)}
+.askai-providers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.askai-providers .btn{justify-content:center;min-width:0;white-space:nowrap}
+.askai-privacy{margin:0;line-height:1.5}
+@media(max-width:560px){.askai-examples{grid-template-columns:1fr}.askai-example{padding:10px;gap:3px}.askai-providers{gap:6px}.askai-providers .btn{padding:8px 5px;gap:4px;font-size:12px}.askai-providers .askai-logo{width:16px;height:16px}}
+@media(max-width:360px){.askai-providers{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .askai-rows{display:grid;gap:6px}.askai-row{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}.askai-row input{margin-top:3px}
 .askai-row.bad{opacity:.65}.askai-row.bad .small{color:var(--bad)}
 /* Help + feedback tabs (2026-11-26). */
@@ -2966,12 +2978,17 @@ en: {
   'connect.title': 'Use GradeSpace from ChatGPT or Claude', 'connect.soon': 'Coming soon', 'connect.with': 'Connect {n}',
   'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
   'connect.own': 'Or ask GradeSpace AI now:',
-  'askai.how1': 'Choose an AI and paste the copied instruction.', 'askai.how2': 'Send a screenshot, voice or text.', 'askai.how3': 'Copy the whole answer to step 2. Review and save.', 'askai.copyFail': 'Couldn’t copy automatically. Select the text below, copy it, then open your AI.', 'askai.copyOpen': 'Copy & open {n}', 'askai.showText': 'Show the text that will be copied', 'askai.reviewT': 'Check what your AI found', 'askai.back': 'Paste again', 'askai.title': 'Add with AI', 'askai.step1': '1. Send to your AI', 'askai.step2': '2. Paste the answer',
+  'askai.how1': 'Choose an AI below. Paste the copied instruction into a new chat.', 'askai.how2': 'In that chat, upload an image or tell the AI what to add.', 'askai.how3': 'Copy its full answer back to step 2. Review and save.',
+  'askai.exampleH': 'What can you send?', 'askai.exampleIntro': 'Choose any of these. Send an image, speak or type in your AI chat.',
+  'askai.ex.course': 'New courses', 'askai.ex.courseImage': 'Screenshot: registered courses or class timetable', 'askai.ex.courseText': '“Add Economics I, 3 credits.”',
+  'askai.ex.weights': 'Assignments & grading', 'askai.ex.weightsImage': 'Screenshot: syllabus or assessment weights', 'askai.ex.weightsText': '“Economics I: midterm 30%, final 40%, assignments 30%.”',
+  'askai.ex.score': 'Scores', 'askai.ex.scoreImage': 'Screenshot: gradebook or marked work', 'askai.ex.scoreText': '“Economics I, Quiz 1: 8/10.”',
+  'askai.chooseH': 'Copy instructions & open AI', 'askai.copyOnly': 'Copy instructions only', 'askai.hidePrivate': 'Hide personal details in images before sending.', 'askai.copyFail': 'Couldn’t copy automatically. Select the text below, copy it, then open your AI.', 'askai.copyOpen': 'Copy & open {n}', 'askai.showText': 'Show the text that will be copied', 'askai.reviewT': 'Check what your AI found', 'askai.back': 'Paste again', 'askai.title': 'Add with AI', 'askai.step1': '1. Send to your AI', 'askai.step2': '2. Paste the answer',
   'askai.cardT': 'Use your AI now (works on free plans)', 'askai.cardP': 'Copy this term’s courses into ChatGPT or Claude, ask anything, then paste its answer back to save new scores.', 'askai.cardBtn': 'Ask your AI',
   'askai.copyIntro': 'Copy this text, paste it into ChatGPT or Claude, then type your question at the end.', 'askai.copy': 'Copy text', 'askai.copiedBtn': 'Copied ✓', 'askai.copied': 'Copied. Paste it into your AI.',
   'askai.openGpt': 'Open ChatGPT', 'askai.openClaude': 'Open Claude', 'askai.next': 'Got an answer? Paste it',
   'askai.privacy': 'Only your course codes, names, item names, weights and full marks are copied — no scores, email or student ID. Your AI provider’s own privacy terms apply to what you send there.',
-  'askai.pasteIntro': 'Paste the AI’s whole answer. GradeSpace reads the gradespace block and shows every course, item and score for you to check before adding.', 'askai.pastePh': 'Paste the answer here',
+  'askai.pasteIntro': 'Copy the full answer from your AI chat and paste it below, including the gradespace block. Check the imported data before saving.', 'askai.pastePh': 'Paste the answer here',
   'askai.check': 'Check', 'askai.noBlock': 'No GradeSpace data found. Ask your AI: “send it as the gradespace block”.', 'askai.badJson': 'The data block is broken. Ask your AI to send the gradespace block again.',
   'askai.noCourse': 'Course not found here — skipped', 'askai.noItem': 'Item not found in this course — skipped (GradeSpace never creates items)', 'askai.badScore': 'Score doesn’t fit full marks — skipped',
   'askai.was': 'was {o}', 'askai.save': 'Save {n} scores', 'askai.saved': 'Saved {n} scores',
@@ -3629,12 +3646,17 @@ th: {
   'connect.title': 'ใช้ GradeSpace ผ่าน ChatGPT หรือ Claude', 'connect.soon': 'เร็ว ๆ นี้', 'connect.with': 'เชื่อม {n}',
   'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
   'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
-  'askai.how1': 'เลือก AI แล้ววางคำสั่งที่คัดลอกให้', 'askai.how2': 'ส่งภาพหน้าจอ เสียง หรือพิมพ์บอก', 'askai.how3': 'นำคำตอบทั้งหมดมาวางในขั้นที่ 2 แล้วตรวจสอบ', 'askai.copyFail': 'คัดลอกอัตโนมัติไม่ได้ กดค้างที่ข้อความด้านล่างเพื่อคัดลอก แล้วค่อยเปิด AI', 'askai.copyOpen': 'คัดลอกแล้วเปิด {n}', 'askai.showText': 'ดูข้อความที่จะถูกคัดลอก', 'askai.reviewT': 'ตรวจสิ่งที่ AI อ่านได้', 'askai.back': 'วางใหม่', 'askai.title': 'เพิ่มข้อมูลด้วย AI', 'askai.step1': '1. ส่งไปที่ AI', 'askai.step2': '2. วางคำตอบ',
+  'askai.how1': 'เลือก AI ด้านล่าง แล้ววางคำสั่งที่คัดลอกให้ในแชตใหม่', 'askai.how2': 'ในแชต AI ส่งภาพ หรือบอกข้อมูลที่ต้องการเพิ่ม', 'askai.how3': 'คัดลอกคำตอบทั้งหมดกลับมาวางในขั้นที่ 2 แล้วตรวจสอบก่อนบันทึก',
+  'askai.exampleH': 'ส่งข้อมูลอะไรได้บ้าง?', 'askai.exampleIntro': 'เลือกส่งภาพ พูด หรือพิมพ์บอกในแชต AI ได้เลย',
+  'askai.ex.course': 'เพิ่มวิชา', 'askai.ex.courseImage': 'ภาพรายวิชาที่ลงทะเบียน หรือตารางเรียน', 'askai.ex.courseText': '“เพิ่มวิชา Economics I 3 หน่วยกิต”',
+  'askai.ex.weights': 'เพิ่มงานและสัดส่วนเกรด', 'askai.ex.weightsImage': 'ภาพ Course Syllabus หรือตารางสัดส่วนคะแนน', 'askai.ex.weightsText': '“Economics I กลางภาค 30% ปลายภาค 40% งาน 30%”',
+  'askai.ex.score': 'เพิ่มคะแนน', 'askai.ex.scoreImage': 'ภาพคะแนนจากระบบรายวิชา หรืองานที่ตรวจแล้ว', 'askai.ex.scoreText': '“Economics I Quiz 1 ได้ 8/10”',
+  'askai.chooseH': 'คัดลอกคำสั่งและเปิด AI', 'askai.copyOnly': 'คัดลอกคำสั่งอย่างเดียว', 'askai.hidePrivate': 'ปิดข้อมูลส่วนตัวในภาพก่อนส่งให้ AI', 'askai.copyFail': 'คัดลอกอัตโนมัติไม่ได้ กดค้างที่ข้อความด้านล่างเพื่อคัดลอก แล้วค่อยเปิด AI', 'askai.copyOpen': 'คัดลอกแล้วเปิด {n}', 'askai.showText': 'ดูข้อความที่จะถูกคัดลอก', 'askai.reviewT': 'ตรวจสิ่งที่ AI อ่านได้', 'askai.back': 'วางใหม่', 'askai.title': 'เพิ่มข้อมูลด้วย AI', 'askai.step1': '1. ส่งไปที่ AI', 'askai.step2': '2. วางคำตอบ',
   'askai.cardT': 'ใช้ AI ของคุณได้เลยตอนนี้ (แพ็กเกจฟรีก็ได้)', 'askai.cardP': 'คัดลอกวิชาเทอมนี้ไปถาม ChatGPT หรือ Claude ได้ทุกเรื่อง แล้ววางคำตอบกลับมาเพื่อบันทึกคะแนนใหม่', 'askai.cardBtn': 'ถาม AI ของคุณ',
   'askai.copyIntro': 'คัดลอกข้อความนี้ไปวางใน ChatGPT หรือ Claude แล้วพิมพ์คำถามต่อท้าย', 'askai.copy': 'คัดลอกข้อความ', 'askai.copiedBtn': 'คัดลอกแล้ว ✓', 'askai.copied': 'คัดลอกแล้ว ไปวางใน AI ได้เลย',
   'askai.openGpt': 'เปิด ChatGPT', 'askai.openClaude': 'เปิด Claude', 'askai.next': 'ได้คำตอบแล้ว? วางที่นี่',
   'askai.privacy': 'คัดลอกไปเฉพาะรหัสวิชา ชื่อวิชา ชื่องาน สัดส่วน และคะแนนเต็ม ไม่มีคะแนนที่ได้ อีเมล หรือรหัสนิสิต สิ่งที่ส่งให้ AI เป็นไปตามนโยบายความเป็นส่วนตัวของผู้ให้บริการนั้น',
-  'askai.pasteIntro': 'วางคำตอบของ AI ทั้งหมด GradeSpace จะอ่านบล็อก gradespace แล้วแสดงทุกวิชา งาน และคะแนนให้คุณตรวจก่อนเพิ่ม', 'askai.pastePh': 'วางคำตอบที่นี่',
+  'askai.pasteIntro': 'คัดลอกคำตอบทั้งหมดจากแชต AI รวมบล็อก gradespace มาวางด้านล่าง แล้วตรวจข้อมูลก่อนบันทึก', 'askai.pastePh': 'วางคำตอบที่นี่',
   'askai.check': 'ตรวจ', 'askai.noBlock': 'ไม่พบข้อมูล GradeSpace ลองบอก AI ว่า “ขอเป็นบล็อก gradespace”', 'askai.badJson': 'บล็อกข้อมูลเสียหาย ลองให้ AI ส่งบล็อก gradespace ใหม่',
   'askai.noCourse': 'ไม่พบวิชานี้ — ข้าม', 'askai.noItem': 'ไม่พบงานนี้ในวิชา — ข้าม (GradeSpace ไม่สร้างงานเอง)', 'askai.badScore': 'คะแนนไม่สอดคล้องกับคะแนนเต็ม — ข้าม',
   'askai.was': 'เดิม {o}', 'askai.save': 'บันทึก {n} คะแนน', 'askai.saved': 'บันทึก {n} คะแนนแล้ว',
@@ -9421,17 +9443,23 @@ function AskAiModal(p) {
     <div className="stack" data-testid="ask-ai" style=${{ gap: 12 }}>
       <${Seg} label=${t('askai.title')} value=${tab} onChange=${setTab} options=${[{ v: 'copy', l: t('askai.step1') }, { v: 'paste', l: t('askai.step2') }]} />
       ${tab === 'copy' ? html`<${React.Fragment}>
-        <ol className="small askai-steps">
-          <li>${t('askai.how1')}</li><li>${t('askai.how2')}</li><li>${t('askai.how3')}</li>
-        </ol>
-        <div className="row wrap" style=${{ gap: 8 }}>
-          ${ASKAI_APPS.map(function (a) { return html`<a key=${a.k} className="btn askai-app" data-testid=${'askai-' + a.k} href=${a.url} target="_blank" rel="noopener noreferrer" onClick=${function (e) { openApp(a, e); }}><img className="askai-logo" src=${askAiIcon(a)} alt="" width="20" height="20" loading="lazy" referrerPolicy="no-referrer" onError=${function (e) { e.target.style.display = 'none'; }} />${t('askai.copyOpen', { n: a.label })} ↗</a>`; })}
-          <button className="btn" onClick=${copy}><${Icon} n="clipboard" s=${16} />${copied ? t('askai.copiedBtn') : t('askai.copy')}</button>
+        <div className="askai-guide" data-testid="askai-guide">
+          <h3>${t('askai.exampleH')}</h3>
+          <p className="small muted" style=${{margin:0}}>${t('askai.exampleIntro')}</p>
+          <div className="askai-examples">${['course','weights','score'].map(function(k){return html`<div key=${k} className="askai-example" data-testid=${'askai-example-'+k}><b>${t('askai.ex.'+k)}</b><span className="tiny muted">${t('askai.ex.'+k+'Image')}</span><p className="askai-sample">${t('askai.ex.'+k+'Text')}</p></div>`;})}</div>
+          <ol className="small askai-steps">
+            <li>${t('askai.how1')}</li><li>${t('askai.how2')}</li><li>${t('askai.how3')}</li>
+          </ol>
+          <h3>${t('askai.chooseH')}</h3>
         </div>
+        <div className="askai-providers">
+          ${ASKAI_APPS.map(function (a) { return html`<a key=${a.k} className="btn askai-app" aria-label=${t('askai.copyOpen',{n:a.label})} title=${t('askai.copyOpen',{n:a.label})} data-testid=${'askai-' + a.k} href=${a.url} target="_blank" rel="noopener noreferrer" onClick=${function (e) { openApp(a, e); }}><img className="askai-logo" src=${askAiIcon(a)} alt="" width="20" height="20" loading="lazy" referrerPolicy="no-referrer" onError=${function (e) { e.target.style.display = 'none'; }} />${a.label} ↗</a>`; })}
+        </div>
+        <div className="row wrap"><button className="btn sm" onClick=${copy}><${Icon} n="clipboard" s=${16} />${copied ? t('askai.copiedBtn') : t('askai.copyOnly')}</button></div>
         <details className="small" open=${show} onToggle=${function (e) { setShow(e.target.open); }}><summary>${t('askai.showText')}</summary>
           <textarea className="input askai-text" readOnly=${true} value=${prompt} data-testid="askai-prompt" onFocus=${function (e) { e.target.select(); }} aria-label=${t('askai.step1')}></textarea>
         </details>
-        <p className="tiny muted" style=${{ margin: 0 }}>${t('askai.privacy')}</p>
+        <p className="tiny muted askai-privacy">${t('askai.privacy')} ${t('askai.hidePrivate')}</p>
         <button className="btn ghost sm" style=${{ justifySelf: 'start' }} onClick=${function () { setTab('paste'); }}>${t('askai.next')} ›</button>
       <//>` : html`<${React.Fragment}>
         <p className="small" style=${{ margin: 0 }}>${t('askai.pasteIntro')}</p>
