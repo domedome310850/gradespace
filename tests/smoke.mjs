@@ -81,7 +81,7 @@ async function run(browser, lang, width) {
   // Floating AI button with one-time intro bubble, and search beside the semester picker.
   if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('AI intro bubble not shown on first visit');
   await page.locator('.ai-fab-intro .btn.primary').click();
-  if(await page.locator('[data-testid="ai-hub"] .ai-action').count()!==3) errors.push('AI hub should offer 3 tools');
+  if(await page.locator('[data-testid="ai-hub"] .hub-tools .hub-row').count()!==3) errors.push('AI hub should offer 3 tools');
   await page.keyboard.press('Escape');
   if(await page.locator('[data-testid="ai-hub"]').count()) errors.push('AI hub did not close on Escape');
   if(await page.locator('.ai-fab-intro').count()) errors.push('AI intro bubble should not return after use');
@@ -90,9 +90,9 @@ async function run(browser, lang, width) {
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
   await page.getByTestId('ai-hub').waitFor();
   if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card missing');
-  if(await page.locator('.connect-tile').count()!==2) errors.push('connect card should list ChatGPT and Claude');
+  if(!(await page.getByTestId('connect-gpt').isVisible())||!(await page.getByTestId('connect-claude').isVisible())) errors.push('AI hub should list ChatGPT and Claude');
   if(await page.locator('.chat-input').count()) errors.push('GradeSpace should not have its own chat');
-  if(await page.locator('[data-testid="ai-hub"] .ai-action').count()!==3) errors.push('AI hub should keep 3 tools');
+  if(await page.locator('[data-testid="ai-hub"] .hub-tools .hub-row').count()!==3) errors.push('AI hub should keep 3 tools');
   await page.keyboard.press('Escape');
   // Copy-paste bridge to the student's own AI (works on free plans).
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
@@ -122,6 +122,23 @@ async function run(browser, lang, width) {
   await page.keyboard.press('Control+k'); await page.locator('.cmd-input').fill(lang==='th'?'GPA':'สรุป');
   if(await page.locator('.cmd-item').count()<1) errors.push('command search should match both languages');
   await page.keyboard.press('Escape');
+  // What-if grades on the GPA page (nothing saved).
+  await page.evaluate(()=>{location.hash='gpa';}); await page.waitForTimeout(300);
+  const wi=page.getByTestId('whatif'); await wi.waitFor();
+  const wiBefore=await page.evaluate(()=>JSON.stringify(GradeSpace.S.state.courses.map(c=>c.finalGrade||null)));
+  const sels=wi.locator('.whatif-row select'); const nSel=await sels.count();
+  if(nSel<3) errors.push('what-if should list this term\'s courses');
+  for(let i=0;i<nSel;i++) await sels.nth(i).selectOption({index:1});
+  const hi=parseFloat(await page.getByTestId('wi-term').innerText());
+  for(let i=0;i<nSel;i++){ const n=await sels.nth(i).locator('option').count(); await sels.nth(i).selectOption({index:n-1}); }
+  const lo=parseFloat(await page.getByTestId('wi-term').innerText());
+  if(!(hi>lo)) errors.push('what-if term GPA should drop from best to worst grades: '+hi+' vs '+lo);
+  await wi.locator('input[type=number]').fill('2.5');
+  await page.getByTestId('wi-solve').click();
+  if(await wi.locator('.whatif-set').count()<1&&!(await wi.locator('.banner').count())) errors.push('what-if found no grade sets for 2.50');
+  if(await wi.locator('.whatif-set').count()){ await page.getByTestId('wi-use').first().click(); const v=parseFloat(await page.getByTestId('wi-term').innerText()); if(!(v>=2.5-1e-9)) errors.push('suggested set gives '+v+' < 2.50'); }
+  if(await page.evaluate(()=>JSON.stringify(GradeSpace.S.state.courses.map(c=>c.finalGrade||null)))!==wiBefore) errors.push('what-if changed saved grades');
+  await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
   const lookup=await page.evaluate(()=>window.__examRequest);
   if(lookup.p_year!=='2569'||lookup.p_term!=='s1'||lookup.p_round!=='fin'||!lookup.p_courses.some(c=>c.code==='2900111'&&c.sec==='4')) errors.push('incorrect exam lookup payload');
   const upcoming=page.locator('.dashboard-upcoming-row').filter({hasText:'TEST-ROOM-A'});
@@ -333,6 +350,15 @@ async function runTU(browser, lang, width) {
   await page.waitForTimeout(300);
   const added=await page.evaluate(()=>GradeSpace.S.state.courses.find(c=>c.code==='TU101'));
   if(!added||added.credits!==3||added.kind!=='gened') errors.push('TU101 not added as 3-credit GenEd: '+JSON.stringify(added&&{c:added.credits,k:added.kind}));
+  // "Pick by major" opens the Thammasat picker, never the Chula plan window.
+  await page.evaluate(()=>{location.hash='courses';}); await page.waitForTimeout(300);
+  await page.locator('.courses-actions .btn').nth(1).click();
+  await page.getByTestId('tu-plan').waitFor({timeout:5000}).catch(()=>errors.push('TU plan picker did not open'));
+  if(await page.locator('.modal').filter({hasText:/บริหารธุรกิจ|ปี 1 เทอม 1 ของ/}).count()) errors.push('Chula plan window shown in TU space');
+  await page.locator('.tup-groups button').filter({hasText:/บัญชี|Accounting/}).click();
+  await page.locator('.tup-row').filter({hasText:'AC201'}).locator('input').check();
+  await page.getByTestId('tup-add').click(); await page.waitForTimeout(300);
+  if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')))) errors.push('TU picker did not add AC201');
   // Switch to Chula and back: each space comes back intact, nothing deleted.
   const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
   await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);

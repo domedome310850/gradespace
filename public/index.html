@@ -834,7 +834,7 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 }
 /* AI chat + centre AI button in the phone bottom bar (2026-11-26). */
 .bottomnav .nav-ai{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;font:inherit;font-size:11px;color:var(--accent-text);cursor:pointer;padding:0 2px;margin-top:-18px}
-.bottomnav .nav-ai:focus:not(:focus-visible){outline:none}.bottomnav .nav-ai:focus-visible .nav-ai-dot{outline:3px solid var(--accent-text);outline-offset:2px}
+.bottomnav .nav-ai,.bottomnav .nav-ai:focus,.bottomnav .nav-ai:focus-visible{outline:none;border:0;box-shadow:none;background:none}.bottomnav .nav-ai:focus:not(:focus-visible){outline:none}.bottomnav .nav-ai:focus-visible .nav-ai-dot{outline:3px solid var(--accent-text);outline-offset:2px}
 .nav-ai-dot{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#8C71FE,#6654E8 55%,#3F51C9);box-shadow:0 6px 18px rgba(79,70,229,.4),0 0 0 4px var(--surface)}
 :root[data-uni="tu"] .nav-ai-dot{background:linear-gradient(135deg,#D9485C,#BC3346 55%,#8E1F2F);box-shadow:0 6px 18px rgba(188,51,70,.4),0 0 0 4px var(--surface)}
 @media(max-width:900px){.ai-fab-wrap .ai-fab,.ai-fab-wrap .ai-fab-x{display:none}.ai-fab-wrap{left:50%;right:auto;transform:translateX(-50%);align-items:center;bottom:calc(84px + env(safe-area-inset-bottom,0px))}.ai-fab-intro::after{right:calc(50% - 6px)}}
@@ -854,6 +854,30 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .chat-own{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);margin-top:2px}
 /* One-time-code sign-in (2026-11-26). */
 .otp-input{font-size:22px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
+/* Thammasat course picker (2026-11-26). */
+.tup-groups{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}.tup-groups .chat-chip{flex:none}.chat-chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}.tup-row{cursor:pointer}.tup-row input{flex:none}
+/* AI hub as a plain settings-style list (2026-11-26). */
+.hub-row{width:100%;border:0;background:none;font:inherit;text-align:left;cursor:pointer}.hub-row .grow{display:grid;gap:1px;min-width:0}.hub-row b{font-weight:600;font-size:15px}
+.hub-row:disabled,.hub-row[aria-disabled=true]{cursor:default}.hub-row:disabled .grow,.hub-row[aria-disabled=true] .grow{opacity:.6}.hub-row:not(:disabled):not([aria-disabled=true]):hover{background:var(--surface-2)}
+.hub-row>.ic:first-child{color:var(--accent-text)}
+/* What-if grades + phone one-row layouts (2026-11-26). */
+.dash-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.dash-bar .dash-actions{margin-left:auto}
+.dash-whatif{font-weight:600;color:var(--accent-text);text-decoration:none}
+.whatif-result{display:grid;grid-template-columns:1fr 1fr;gap:8px}.whatif-result>div{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}.whatif-result b{font-size:28px;font-variant-numeric:tabular-nums;color:var(--accent-text)}
+.whatif-rows{display:grid}.whatif-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}.whatif-row .select{width:116px;min-width:0;flex:none;padding:6px 10px}
+.whatif-goal{display:grid;gap:8px;padding:12px;border-radius:12px;border:1px dashed color-mix(in srgb,var(--accent) 45%,var(--line))}
+.whatif-sets{display:grid;gap:8px}.whatif-set{display:grid;gap:8px;padding:10px;border-radius:10px;background:var(--surface-2)}.whatif-chips{display:flex;flex-wrap:wrap;gap:6px}.whatif-chip{font-size:12.5px;padding:3px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}.whatif-set .btn{justify-self:start}
+@media(max-width:560px){
+  .dash-bar{flex-wrap:nowrap;width:100%}.dash-bar-l{display:none}.dash-bar .select{flex:1 1 auto;min-width:0}
+  .dash-bar .dash-actions{display:flex !important;width:auto;flex:none;gap:6px}.dash-bar .dash-actions .btn{padding:8px 10px}
+  .dash-facts{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;gap:4px 12px;scrollbar-width:none}.dash-facts::-webkit-scrollbar{display:none}
+  .dash-facts .lbl-l{display:none}.dash-facts .lbl-s{display:inline}
+  .gpa-metrics{grid-template-columns:repeat(2,minmax(0,1fr)) !important}.gpa-metrics>:first-child{grid-column:1/-1}
+  .sp-mini-actions{display:flex;flex-wrap:nowrap !important;overflow-x:auto;gap:6px;scrollbar-width:none}.sp-mini-actions::-webkit-scrollbar{display:none}.sp-mini-actions .btn{flex:none;white-space:nowrap}
+  .courses-actions{flex-wrap:nowrap;width:100%;gap:6px}.courses-actions .btn{padding:8px 10px}.courses-actions .btn.primary{flex:1;justify-content:center}
+  .courses-actions .lbl-l{display:none}.courses-actions .lbl-s{display:inline}.courses-actions .scan-icon{width:40px;padding:8px 0;justify-content:center}
+  .courses-filters{flex-wrap:nowrap !important;gap:6px}.courses-filters .select{min-width:0 !important;width:38% !important;flex:none}.courses-filters>:last-child{flex:1;min-width:0}
+}
 /* Ask your AI by copy-paste (2026-11-26). */
 .askai-card{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 .askai-text{width:100%;min-height:150px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
@@ -2747,6 +2771,19 @@ en: {
   'space.q': 'Switch to {u}?', 'space.body': 'Each university has its own space. Your {n} courses at {a} are kept aside, not deleted.',
   'space.back': 'Your {n} courses there come back.', 'space.new': 'You start with an empty space there.', 'space.go': 'Switch',
   'space.switched': 'Now using {u}', 'space.note': 'Each university keeps its own courses and scores. Switching never deletes anything.',
+  'wi.title': 'Try grades: what would my GPA be?', 'wi.sub': 'Pick a grade for each course in {s}. Nothing is saved.', 'wi.none': '— not counted',
+  'wi.outOfReach': '(out of reach)', 'wi.reset': 'Back to my estimates', 'wi.goalT': 'I want a GPA of', 'wi.term': 'This term', 'wi.solve': 'Find grades',
+  'wi.impossible': '{t} isn’t reachable any more. The best you can still get is {b}.', 'wi.secured': 'You reach {t} even with the lowest grades ({w}).',
+  'wi.set.even': 'Same grade everywhere', 'wi.set.near': 'Fewest changes from now', 'wi.set.heavy': 'Focus on high-credit courses', 'wi.set.focus': 'All-in on a few courses', 'wi.use': 'Try this set',
+  'wi.note': 'Confirmed grades stay as they are. “Out of reach” means your scores so far can’t reach that grade under the course’s cut-offs.', 'wi.link': 'Try grades',
+  'plan.btnShort': 'By major', 'dash.coursesS': '{n} courses · {p} ongoing', 'dash.gradedS': 'graded {g}/{n}', 'dash.creditsS': '{n} cr earned',
+  'hub2.aiH': 'With your own AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Ask ChatGPT or Claude', 'hub2.askP': 'Copy & paste · works on free plans',
+  'hub2.gptT': '@GradeSpace in ChatGPT', 'hub2.gptP': 'Direct link, no copying', 'hub2.claudeT': 'GradeSpace in Claude', 'hub2.claudeP': 'Add as a connector',
+  'hub2.scanP': 'Read scores from screenshots', 'hub2.pasteP': 'Paste a score table', 'hub2.quickP': 'Type one score',
+  'hub2.note': 'GradeSpace has no AI of its own. Your AI suggests; you approve every change here.',
+  'tup.title': 'Pick Thammasat courses', 'tup.intro': 'Tick courses and add them to a term. GenEd groups follow the 2566 GenEd program; subject groups come from the TBS BBA course list.',
+  'tup.ac': 'Accounting', 'tup.fn': 'Finance', 'tup.is': 'Information systems', 'tup.mg': 'Management', 'tup.toTerm': 'Add to term', 'tup.noTerm': 'Add a year/term first',
+  'tup.add': 'Add {n} courses', 'tup.added': 'Added {n} courses', 'tup.note': 'Year-by-year study plans for Thammasat majors aren’t in GradeSpace yet; check your faculty’s plan.',
   'uni.label': 'University', 'uni.cu': 'Chulalongkorn', 'uni.tu': 'Thammasat', 'uni.cuFull': 'Chulalongkorn University', 'uni.tuFull': 'Thammasat University',
   'uni.hint': 'Sets the course list, GenEd and exam features for your university.',
   'tuge.title': 'Thammasat GenEd courses', 'tuge.intro': 'General Education Program (2023 revision): 30 credits across 5 groups. Check your faculty’s structure for which groups you need.',
@@ -3243,6 +3280,19 @@ th: {
   'space.q': 'สลับไป{u}?', 'space.body': 'แต่ละมหาวิทยาลัยมีพื้นที่ของตัวเอง วิชาของ{a} {n} วิชาจะถูกเก็บแยกไว้ ไม่ได้ลบ',
   'space.back': 'วิชาที่เคยบันทึกไว้ที่นั่น {n} วิชาจะกลับมา', 'space.new': 'ที่นั่นจะเริ่มจากพื้นที่ว่าง', 'space.go': 'สลับ',
   'space.switched': 'ตอนนี้ใช้พื้นที่ของ{u}', 'space.note': 'แต่ละมหาวิทยาลัยเก็บวิชาและคะแนนแยกกัน สลับไปมาได้ ไม่มีอะไรถูกลบ',
+  'wi.title': 'ลองสมมติเกรด: GPA จะเป็นเท่าไหร่?', 'wi.sub': 'เลือกเกรดที่คิดว่าจะได้ของแต่ละวิชาใน {s} ไม่บันทึกอะไรทั้งนั้น', 'wi.none': '— ไม่นับ',
+  'wi.outOfReach': '(ไม่ทันแล้ว)', 'wi.reset': 'กลับไปใช้ค่าคาดการณ์', 'wi.goalT': 'อยากได้ GPA', 'wi.term': 'เทอมนี้', 'wi.solve': 'หาชุดเกรด',
+  'wi.impossible': 'ไม่ทันได้ {t} แล้ว สูงสุดที่ยังเป็นไปได้คือ {b}', 'wi.secured': 'ได้ {t} แน่นอน ต่อให้ได้เกรดต่ำสุดทุกวิชา ({w})',
+  'wi.set.even': 'ได้เท่ากันทุกวิชา', 'wi.set.near': 'เปลี่ยนจากตอนนี้น้อยที่สุด', 'wi.set.heavy': 'เน้นวิชาหน่วยกิตเยอะ', 'wi.set.focus': 'ทุ่มบางวิชา ปล่อยบางวิชา', 'wi.use': 'ลองชุดนี้',
+  'wi.note': 'เกรดจริงที่บันทึกแล้วไม่เปลี่ยน “ไม่ทันแล้ว” หมายถึงคะแนนที่มีอยู่ไปไม่ถึงเกรดนั้นตามเกณฑ์ของวิชา', 'wi.link': 'ลองสมมติเกรด',
+  'plan.btnShort': 'ตามสาขา', 'dash.coursesS': '{n} วิชา · เรียน {p}', 'dash.gradedS': 'ตรวจ {g}/{n} งาน', 'dash.creditsS': 'ได้ {n} นก.',
+  'hub2.aiH': 'ใช้กับ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'ถาม ChatGPT หรือ Claude', 'hub2.askP': 'คัดลอก-วาง · แพ็กเกจฟรีก็ใช้ได้',
+  'hub2.gptT': '@GradeSpace ใน ChatGPT', 'hub2.gptP': 'เชื่อมตรง ไม่ต้องคัดลอก', 'hub2.claudeT': 'GradeSpace ใน Claude', 'hub2.claudeP': 'เพิ่มเป็นตัวเชื่อม',
+  'hub2.scanP': 'อ่านคะแนนจากภาพหน้าจอ', 'hub2.pasteP': 'วางตารางคะแนน', 'hub2.quickP': 'พิมพ์คะแนนทีละรายการ',
+  'hub2.note': 'GradeSpace ไม่มี AI ของตัวเอง AI ของคุณเป็นคนเสนอ คุณเป็นคนยืนยันทุกครั้ง',
+  'tup.title': 'เลือกวิชาธรรมศาสตร์', 'tup.intro': 'ติ๊กวิชาแล้วเพิ่มเข้าเทอมที่เลือก หมวด GenEd อ้างอิงหลักสูตรวิชาศึกษาทั่วไป 2566 ส่วนหมวดวิชาอ้างอิงรายวิชา TBS BBA',
+  'tup.ac': 'บัญชี', 'tup.fn': 'การเงิน', 'tup.is': 'ระบบสารสนเทศ', 'tup.mg': 'การจัดการ', 'tup.toTerm': 'เพิ่มเข้าเทอม', 'tup.noTerm': 'เพิ่มชั้นปี/เทอมก่อน',
+  'tup.add': 'เพิ่ม {n} วิชา', 'tup.added': 'เพิ่ม {n} วิชาแล้ว', 'tup.note': 'แผนการเรียนรายปีของแต่ละสาขาใน มธ. ยังไม่มีใน GradeSpace ดูแผนของคณะประกอบ',
   'uni.label': 'มหาวิทยาลัย', 'uni.cu': 'จุฬาฯ', 'uni.tu': 'ธรรมศาสตร์', 'uni.cuFull': 'จุฬาลงกรณ์มหาวิทยาลัย', 'uni.tuFull': 'มหาวิทยาลัยธรรมศาสตร์',
   'uni.hint': 'ใช้เลือกรายชื่อวิชา GenEd และฟีเจอร์วันสอบให้ตรงกับมหาวิทยาลัยของคุณ',
   'tuge.title': 'วิชาศึกษาทั่วไป ธรรมศาสตร์', 'tuge.intro': 'หลักสูตรวิชาศึกษาทั่วไป (ปรับปรุง พ.ศ. 2566) รวม 30 หน่วยกิตใน 5 หมวด ดูโครงสร้างหลักสูตรของคณะว่าต้องเรียนหมวดใดบ้าง',
@@ -3819,6 +3869,51 @@ function TuRulesCard(p) {
     ${heavy.map(function (x) { return html`<div key=${x.s.id} className="banner bad"><${Icon} n="alert" s=${16} /><div>${t('tur.load', { s: semFull(state, x.s), n: fmtT(x.cr), m: x.max })}</div></div>`; })}
     <p className="tiny muted" style=${{ margin: 0 }}>${t('tur.source')} <a href="https://db.legal.tu.ac.th/05010201-01/" target="_blank" rel="noopener noreferrer">↗</a></p>
   </section>`;
+}
+// Thammasat "pick courses" (replaces the Chula major/year plan windows in a TU space). Grouped by GenEd
+// group and by TBS subject prefix; adds the ticked courses to one term. Year-by-year TU plans aren't in yet.
+var TU_PREFIX = { AC: 'tup.ac', FN: 'tup.fn', IS: 'tup.is', HR: 'tup.mg' };
+function TuPlanModal(p) {
+  var state = useApp(), props = p.props || {};
+  var semsAll = C.orderedSemesters ? C.orderedSemesters(state) : state.semesters;
+  var ss = useState(props.semesterId || (curSemester(state) || latestSemester(state) || {}).id || ''), semId = ss[0], setSemId = ss[1];
+  var gs = useState('ge1'), grp = gs[0], setGrp = gs[1];
+  var ks = useState({}), pick = ks[0], setPick = ks[1];
+  var have = {}; state.courses.forEach(function (c) { have[tuCode(c.code)] = 1; });
+  var groups = [1, 2, 3, 4, 5].map(function (g) { return { k: 'ge' + g, l: 'GenEd ' + g, full: t('tuge.g' + g) }; })
+    .concat(Object.keys(TU_PREFIX).map(function (k) { return { k: k, l: t(TU_PREFIX[k]), full: t(TU_PREFIX[k]) + ' (TBS)' }; }));
+  var list = grp.indexOf('ge') === 0 ? TU_GENED.filter(function (r) { return 'ge' + r[0] === grp; }).map(function (r) { return { code: r[1], name: LANG === 'th' ? r[2] : r[3], sub: LANG === 'th' ? r[3] : r[2], cr: r[4], ge: true }; })
+    : TU_TBS.filter(function (r) { return r[0].indexOf(grp) === 0; }).map(function (r) { return { code: r[0], name: r[1], sub: 'TBS BBA', cr: r[2], ge: false }; });
+  var chosen = Object.keys(pick).filter(function (k) { return pick[k]; });
+  function add() {
+    if (!semId || !chosen.length) return;
+    var all = TU_GENED.map(function (r) { return { code: r[1], name: LANG === 'th' ? r[2] : r[3], cr: r[4], ge: true }; }).concat(TU_TBS.map(function (r) { return { code: r[0], name: r[1], cr: r[2], ge: false }; }));
+    update(function (d) {
+      chosen.forEach(function (code) {
+        var x = all.find(function (y) { return y.code === code; }); if (!x || d.courses.some(function (c) { return tuCode(c.code) === code; })) return;
+        var c = { id: Store.uid('c-'), semesterId: semId, name: x.name, code: x.code, credits: x.cr, section: '', instructor: '', target: null,
+          scaleId: 'scale-th', gradingMode: 'unknown', targetPct: null, kind: x.ge ? 'gened' : 'required', color: COLORS[d.courses.length % COLORS.length], finalGrade: null };
+        d.courses.push(c); Store.placeCourse(d, c.id);
+      });
+    }, { undo: true });
+    toast(t('tup.added', { n: chosen.length }), { undo: true }); closeModal();
+  }
+  return html`<${Modal} title=${t('tup.title')} onClose=${closeModal} wide=${true}>
+    <div className="stack" data-testid="tu-plan" style=${{ gap: 10 }}>
+      <p className="small muted" style=${{ margin: 0 }}>${t('tup.intro')}</p>
+      <div className="tup-groups" role="tablist">${groups.map(function (g) { return html`<button key=${g.k} type="button" role="tab" aria-selected=${grp === g.k ? 'true' : 'false'} className=${'chat-chip' + (grp === g.k ? ' on' : '')} title=${g.full} onClick=${function () { setGrp(g.k); }}>${g.l}</button>`; })}</div>
+      <div className="small"><b>${(groups.find(function (g) { return g.k === grp; }) || {}).full}</b></div>
+      <div className="me-list card">${list.map(function (x) { return html`<label key=${x.code} className="me-row tup-row">
+        <input type="checkbox" disabled=${!!have[x.code]} checked=${!!have[x.code] || !!pick[x.code]} onChange=${function (e) { var n = Object.assign({}, pick); n[x.code] = e.target.checked; setPick(n); }} />
+        <span className="grow"><b className="num">${x.code}</b> ${x.name}<span className="tiny muted" style=${{ display: 'block' }}>${x.sub} · ${t('nCredits', { n: x.cr })}${have[x.code] ? ' · ' + t('tuge.have') : ''}</span></span></label>`; })}</div>
+      <div className="row wrap" style=${{ gap: 8 }}>
+        <select className="select" style=${{ width: 'auto' }} value=${semId} aria-label=${t('tup.toTerm')} onChange=${function (e) { setSemId(e.target.value); }}>
+          ${!semsAll.length && html`<option value="">${t('tup.noTerm')}</option>`}
+          ${semsAll.map(function (x) { return html`<option key=${x.id} value=${x.id}>${semFull(state, x)}</option>`; })}</select>
+        <button className="btn primary" data-testid="tup-add" disabled=${!semId || !chosen.length} onClick=${add}>${t('tup.add', { n: chosen.length })}</button>
+      </div>
+      <p className="tiny muted" style=${{ margin: 0 }}>${t('tup.note')}</p>
+    </div><//>`;
 }
 function TuGenEdModal(p) {
   var state = useApp(), semId = p.props.semesterId || (latestSemester(state) || {}).id;
@@ -6045,16 +6140,15 @@ function Dashboard(p) {
   var inProg = courses.filter(function (c) { return !c.finalGrade; }).length;
   return html`<div>
     <div className="page-head">
-      <div><h1>${t('nav.dashboard')}</h1>
-        <div className="row wrap" style=${{ marginTop: 6 }}>
-          <label className="small muted" htmlFor="cur-sem">${t('viewingSemester')}</label>
-          <${SemesterSelect} id="cur-sem" state=${state} value=${cur.id} label=${t('viewingSemester')} style=${{ width: 'auto', padding: '5px 10px', fontSize: 14 }}
-            onChange=${function (v) { update(function (d) { d.settings.currentSemesterId = v; }); }} />
-        </div>
-      </div>
+      <div><h1>${t('nav.dashboard')}</h1></div>
+      <div className="dash-bar">
+        <label className="small muted dash-bar-l" htmlFor="cur-sem">${t('viewingSemester')}</label>
+        <${SemesterSelect} id="cur-sem" state=${state} value=${cur.id} label=${t('viewingSemester')} style=${{ width: 'auto', padding: '5px 10px', fontSize: 14 }}
+          onChange=${function (v) { update(function (d) { d.settings.currentSemesterId = v; }); }} />
       <div className="dash-actions">
         <button className="btn" onClick=${function () { openModal('course', { semesterId: cur.id }); }}><${Icon} n="plus" />${t('addCourse')}</button>
         <button className="btn primary" onClick=${function () { openModal('quick', {}); }}><${Icon} n="edit" /><span className="lbl-l">${t('quickScore')}</span><span className="lbl-s">${t('quickScoreShort')}</span></button>
+      </div>
       </div>
     </div>
     <div className=${"metrics dashboard-summary" + (showNextTerm(state,cur) ? " has-plan" : "")}>
@@ -6067,9 +6161,10 @@ function Dashboard(p) {
       ${showNextTerm(state, cur) && html`<${StudyPlanPanel} state=${state} compact=${true} />`}
     </div>
     <div className="dash-facts">
-      <span>${t('dash.courses', { n: courses.length, p: inProg })}</span>
-      <span>${t('dash.graded', { g: graded, n: items.length })}</span>
-      <span>${t('dash.credits', { n: fmtT(cumC.earned) })}<${Tip} text=${t('tip.earned')} /></span>
+      <span><span className="lbl-l">${t('dash.courses', { n: courses.length, p: inProg })}</span><span className="lbl-s">${t('dash.coursesS', { n: courses.length, p: inProg })}</span></span>
+      <span><span className="lbl-l">${t('dash.graded', { g: graded, n: items.length })}</span><span className="lbl-s">${t('dash.gradedS', { g: graded, n: items.length })}</span></span>
+      <span><span className="lbl-l">${t('dash.credits', { n: fmtT(cumC.earned) })}</span><span className="lbl-s">${t('dash.creditsS', { n: fmtT(cumC.earned) })}</span><${Tip} text=${t('tip.earned')} /></span>
+      <a className="dash-whatif" href="#gpa" data-testid="dash-whatif">${t('wi.link')} ›</a>
     </div>
     ${needRecord.length > 0 && html`<div style=${{ marginTop: 14 }}><${Banner} kind="ok">${t('recordPrompt', { n: needRecord.length })}${' '}
       ${needRecord.map(function (c, i) { return html`<span key=${c.id}>${i ? ', ' : ''}<a href=${'#course-' + c.id}>${courseDisplayTitle(c)}</a></span>`; })}<//></div>`}
@@ -6301,10 +6396,11 @@ function CoursesPage(p) {
   var any = false;
   return html`<div>
     <div className="page-head"><div><h1>${t('nav.courses')}</h1><p>${t('coursesSub')}</p></div>
-      ${state.courses.length > 0 && html`<div className="row wrap"><${ScanButton} semesterId=${filter || (curSemester(state) || {}).id} />
-      <button className="btn primary" onClick=${function () { openModal('plan', { semesterId: filter || null }); }}><${Icon} n="layers" />${t('plan.btn')}</button>
-      <button className="btn" onClick=${function () { openModal('course', { semesterId: filter || (curSemester(state) || {}).id }); }}><${Icon} n="plus" />${t('addCourse')}</button></div>`}</div>
-    ${state.courses.length ? html`<div className="filters" style=${{ marginBottom: 18 }}>
+      ${state.courses.length > 0 && html`<div className="row courses-actions">
+      <button className="btn primary" onClick=${function () { openModal('course', { semesterId: filter || (curSemester(state) || {}).id }); }}><${Icon} n="plus" />${t('addCourse')}</button>
+      <button className="btn" onClick=${function () { openModal('plan', { semesterId: filter || null }); }}><${Icon} n="layers" /><span className="lbl-l">${t('plan.btn')}</span><span className="lbl-s">${t('plan.btnShort')}</span></button>
+      ${canScan() && html`<button className="btn scan-icon" aria-label=${t('scan.btn')} title=${t('scan.btn')} onClick=${function () { openModal('scan', { semesterId: filter || (curSemester(state) || {}).id }); }}><${Icon} n="zap" /><span className="lbl-l">${t('scan.btn')}</span></button>`}</div>`}</div>
+    ${state.courses.length ? html`<div className="filters courses-filters" style=${{ marginBottom: 18 }}>
       <${SemesterSelect} state=${state} value=${filter} allowAll=${true} label=${t('filterSemester')} onChange=${setFilter} style=${{ width: 'auto', minWidth: 180 }} />
       <${CourseSearch} state=${state} q=${q} setQ=${setQ} courseFields=${courseFields} semesterId=${filter || (curSemester(state) || {}).id} />
     </div>` : html`<${EmptyStart} />`}
@@ -6735,6 +6831,102 @@ function SimulatorPage(p) {
   </div>`;
 }
 
+/* ================= What-if: "if I get A, B, C… what is my GPA?" and "what do I need for 2.50?" =================
+   Pure what-if: picks live only in this card and are never saved. Confirmed grades stay fixed. */
+function whatIfCourses(state) {
+  var cur = curSemester(state); if (!cur) return [];
+  return state.courses.filter(function (c) { return c.semesterId === cur.id && !c.finalGrade && (toNum(c.credits) || 0) > 0; }).map(function (c) {
+    var grades = C.sortedGrades(C.gradesFor(c, state)).filter(function (g) { return isNum(g.points) && g.gpa !== false; });
+    if (!grades.length) return null;
+    var asc = grades.slice().sort(function (a, b) { return a.points - b.points; });
+    var est = C.courseGrade(c, state), sm = C.courseSummary(c, state);
+    var best = gradingModeFor(c) === 'criterion' && sm.rows && sm.rows.length ? C.bestReachable(sm, grades) : null;
+    var maxIdx = best ? Math.max(0, asc.findIndex(function (g) { return g.label === best.label; })) : asc.length - 1;
+    var def = est && est.label && asc.some(function (g) { return g.label === est.label; }) ? est.label : null;
+    return { c: c, cr: toNum(c.credits), asc: asc, maxIdx: maxIdx, def: def };
+  }).filter(Boolean);
+}
+function whatIfStats(state, rows, picks) {
+  var cur = curSemester(state), semC = C.semesterStats(state, cur.id, 'confirmed'), cumC = C.cumulativeStats(state, 'confirmed');
+  var qp = 0, cr = 0;
+  rows.forEach(function (r) { var g = r.asc.find(function (x) { return x.label === picks[r.c.id]; }); if (g) { qp += g.points * r.cr; cr += r.cr; } });
+  var term = semC.gpaCredits + cr > 0 ? (semC.qp + qp) / (semC.gpaCredits + cr) : null;
+  var cum = cumC.gpaCredits + cr > 0 ? (cumC.qp + qp) / (cumC.gpaCredits + cr) : null;
+  return { term: term, cum: cum, semC: semC, cumC: cumC };
+}
+// Up to three grade sets that reach the target (term GPA or GPAX), never above what each course can still reach.
+function whatIfSolve(state, rows, target, scope, current) {
+  var w = whatIfStats(state, rows, {}), base = scope === 'cum' ? w.cumC : w.semC;
+  var tot = base.gpaCredits + rows.reduce(function (s, r) { return s + r.cr; }, 0);
+  if (!rows.length || !(tot > 0)) return { status: 'none' };
+  var need = target * tot - base.qp - 1e-9;
+  var sumOf = function (idx) { return rows.reduce(function (s, r, i) { return s + r.asc[idx[i]].points * r.cr; }, 0); };
+  var top = rows.map(function (r) { return r.maxIdx; }), bestGpa = (base.qp + sumOf(top)) / tot;
+  if (sumOf(top) < need) return { status: 'impossible', best: bestGpa };
+  if (sumOf(rows.map(function () { return 0; })) >= need) return { status: 'secured', worst: (base.qp + sumOf(rows.map(function () { return 0; }))) / tot };
+  var raise = function (start) { var idx = start.slice(), guard = 0;
+    while (sumOf(idx) < need && guard++ < 400) {
+      var pick = -1; rows.forEach(function (r, i) { if (idx[i] < r.maxIdx && (pick < 0 || r.cr > rows[pick].cr || (r.cr === rows[pick].cr && idx[i] < idx[pick]))) pick = i; });
+      if (pick < 0) break; idx[pick]++; }
+    return idx; };
+  var out = [], seen = {};
+  var add = function (key, idx) { var k = idx.join(','); if (seen[k] || sumOf(idx) < need) return; seen[k] = 1; out.push({ key: key, picks: rows.reduce(function (m, r, i) { m[r.c.id] = r.asc[idx[i]].label; return m; }, {}), gpa: (base.qp + sumOf(idx)) / tot }); };
+  // 1) the same letter everywhere (capped by what each course can still reach)
+  var labels = rows[0].asc.map(function (g) { return g.label; });
+  for (var L = 0; L < labels.length; L++) { var u = rows.map(function (r) { var j = r.asc.findIndex(function (g) { return g.label === labels[L]; }); return Math.min(j < 0 ? 0 : j, r.maxIdx); }); if (sumOf(u) >= need) { add('even', u); break; } }
+  // 2) fewest changes from what you have now
+  add('near', raise(rows.map(function (r) { var j = r.asc.findIndex(function (g) { return g.label === current[r.c.id]; }); return j < 0 ? 0 : Math.min(j, r.maxIdx); })));
+  // 3) push the heavy-credit courses, let light ones go
+  add('heavy', raise(rows.map(function () { return 0; })));
+  // 4) go all-in on some courses (highest credits first) and let the rest drop
+  var f = rows.map(function () { return 0; }), order = rows.map(function (r, i) { return i; }).sort(function (a, b) { return rows[b].cr - rows[a].cr; });
+  order.forEach(function (i) { while (sumOf(f) < need && f[i] < rows[i].maxIdx) f[i]++; });
+  add('focus', f);
+  return { status: 'ok', sets: out };
+}
+function WhatIfCard(p) {
+  var state = p.state, rows = whatIfCourses(state), cur = curSemester(state);
+  var defaults = rows.reduce(function (m, r) { m[r.c.id] = r.def || ''; return m; }, {});
+  var sig = rows.map(function (r) { return r.c.id + ':' + r.def; }).join('|');
+  var ps = useState(defaults), picks = ps[0], setPicks = ps[1];
+  useEffect(function () { setPicks(defaults); }, [sig]);
+  var tg = useState(state.settings.targetCGPA != null ? String(state.settings.targetCGPA) : ''), target = tg[0], setTarget = tg[1];
+  var sc = useState('term'), scope = sc[0], setScope = sc[1];
+  var rs = useState(null), res = rs[0], setRes = rs[1];
+  if (!cur || !rows.length) return null;
+  var w = whatIfStats(state, rows, picks);
+  var tNum = toNum(target), tOk = tNum != null && tNum > 0 && tNum <= 4.5;
+  var short = function (c) { var n = courseDisplayTitle(c); return n.length > 22 ? (String(c.code || '').split('.')[0] || n.slice(0, 20) + '…') : n; };
+  return html`<section className="card pad stack whatif" data-testid="whatif" aria-labelledby="wi-h">
+    <div><h2 id="wi-h" style=${{ fontSize: 18 }}>${t('wi.title')}</h2><div className="small muted">${t('wi.sub', { s: semFull(state, cur) })}</div></div>
+    <div className="whatif-result" aria-live="polite">
+      <div><span className="small muted">${t('curSemGPA')}</span><b data-testid="wi-term">${w.term == null ? '–' : fmt(w.term)}</b></div>
+      <div><span className="small muted">${t('cumGPA')}</span><b data-testid="wi-cum">${w.cum == null ? '–' : fmt(w.cum)}</b></div>
+    </div>
+    <div className="whatif-rows">${rows.map(function (r) {
+      return html`<label key=${r.c.id} className="whatif-row"><span className="grow">${courseDisplayTitle(r.c)}<span className="tiny muted"> · ${t('nCredits', { n: fmtT(r.cr) })}</span></span>
+        <select className="select" value=${picks[r.c.id] || ''} aria-label=${courseDisplayTitle(r.c)} onChange=${function (e) { var v = e.target.value, n = Object.assign({}, picks); n[r.c.id] = v; setPicks(n); }}>
+          <option value="">${t('wi.none')}</option>
+          ${r.asc.slice().reverse().map(function (g) { var i = r.asc.indexOf(g); return html`<option key=${g.label} value=${g.label}>${g.label}${i > r.maxIdx ? ' ' + t('wi.outOfReach') : ''}</option>`; })}
+        </select></label>`; })}</div>
+    <div className="row wrap" style=${{ gap: 6 }}><button className="btn sm ghost" onClick=${function () { setPicks(defaults); }}>${t('wi.reset')}</button></div>
+    <div className="whatif-goal">
+      <b>${t('wi.goalT')}</b>
+      <div className="row wrap" style=${{ gap: 8 }}>
+        <input className="input" type="number" inputMode="decimal" step="0.01" min="0" max="4" style=${{ width: 92 }} value=${target} placeholder="2.50" aria-label=${t('wi.goalT')} onChange=${function (e) { setTarget(e.target.value); setRes(null); }} />
+        <${Seg} label=${t('wi.goalT')} value=${scope} onChange=${function (v) { setScope(v); setRes(null); }} options=${[{ v: 'term', l: t('wi.term') }, { v: 'cum', l: 'GPAX' }]} />
+        <button className="btn primary sm" data-testid="wi-solve" disabled=${!tOk} onClick=${function () { setRes(whatIfSolve(state, rows, tNum, scope, picks)); }}>${t('wi.solve')}</button>
+      </div>
+      ${res && res.status === 'impossible' && html`<${Banner} kind="bad">${t('wi.impossible', { t: fmt(tNum), b: fmt(res.best) })}<//>`}
+      ${res && res.status === 'secured' && html`<${Banner} kind="ok">${t('wi.secured', { t: fmt(tNum), w: fmt(res.worst) })}<//>`}
+      ${res && res.status === 'ok' && html`<div className="whatif-sets">${res.sets.map(function (x) { return html`<div key=${x.key} className="whatif-set">
+          <div className="row between" style=${{ gap: 8 }}><b>${t('wi.set.' + x.key)}</b><span className="small">${scope === 'cum' ? 'GPAX' : t('wi.term')} ${fmt(x.gpa)}</span></div>
+          <div className="whatif-chips">${rows.map(function (r) { return html`<span key=${r.c.id} className="whatif-chip">${short(r.c)} <b>${x.picks[r.c.id]}</b></span>`; })}</div>
+          <button className="btn sm" data-testid="wi-use" onClick=${function () { setPicks(Object.assign({}, picks, x.picks)); }}>${t('wi.use')}</button></div>`; })}</div>`}
+    </div>
+    <p className="tiny muted" style=${{ margin: 0 }}>${t('wi.note')}</p>
+  </section>`;
+}
 /* ================= GPA overview & planner ================= */
 function GoalPlanner(p) {
   var state = p.state, st = state.settings, pl = st.planner;
@@ -6850,7 +7042,7 @@ function GPAPage(p) {
       <${Seg} label=${t('gpaMode')} value=${mode} onChange=${function (v) { update(function (d) { d.settings.gpaMode = v; }); }}
         options=${[{ v: 'confirmed', l: t('mode.confirmed') }, { v: 'estimated', l: t('mode.estimated') }]} /></div>
     <div className="banner info" style=${{ marginBottom: 14 }}><${Icon} n="info" s=${16} /><div>${mode === 'confirmed' ? t('modeNote.confirmed') : t('modeNote.estimated')}</div></div>
-    <div className="metrics" style=${{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
+    <div className="metrics gpa-metrics" style=${{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
       <${Metric} hero=${true} label=${mode === 'confirmed' ? t('cumGPA') : t('cumGPAEst')} tip=${t('tip.cumGPA')} value=${cum.gpa != null ? fmt(cum.gpa) : '–'}
         sub=${t('basedOnX', { n: state.courses.filter(function (c) { var g = C.courseGrade(c, state); return (g.kind === 'confirmed' || mode === 'estimated') && g.meta && g.meta.gpa; }).length })} />
       <${Metric} label=${t('gpaCredits')} tip=${t('tip.gpaCredits')} value=${fmtT(cum.gpaCredits)} />
@@ -6861,6 +7053,7 @@ function GPAPage(p) {
       <${Metric} label=${t('targetCGPA')} value=${isNum(state.settings.targetCGPA) ? fmt(state.settings.targetCGPA) : '–'}
         sub=${isNum(state.settings.targetCGPA) && cum.gpa != null ? (cum.gpa >= state.settings.targetCGPA - 1e-9 ? t('aboveTarget') : t('belowTargetBy', { n: fmt(state.settings.targetCGPA - cum.gpa) })) : t('setBelow')} />
     </div>
+    <${WhatIfCard} state=${state} />
     ${!isCU(state) && html`<${TuRulesCard} state=${state} />`}
     <div className="section card pad">
       <div className="section-head"><h2>${t('gpaBySemester')}</h2></div>
@@ -8018,29 +8211,30 @@ function AiHubModal(p) {
   var state = useApp(), cur = curSemester(state);
   var firstOpen = state.courses.find(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); });
   function go(type, props) { closeModal(); openModal(type, props); }
-  var apps = [{ n: 'ChatGPT', how: t('hub.chatgptHow') }, { n: 'Claude', how: t('hub.claudeHow') }];
+  var row = function (o) {
+    return html`<button key=${o.k} type="button" className="me-row hub-row" data-testid=${o.tid || null} disabled=${!!o.off} aria-disabled=${o.soon ? 'true' : null} onClick=${o.soon ? null : o.run}>
+      <${Icon} n=${o.icon} /><span className="grow"><b>${o.title}</b><span className="tiny muted">${o.sub}</span></span>
+      ${o.soon ? html`<span className="connect-soon">${t('connect.soon')}</span>` : html`<${Icon} n="chevronRight" />`}</button>`;
+  };
+  var ai = [
+    { k: 'ask', tid: 'askai-open', icon: 'clipboard', title: t('hub2.askT'), sub: t('hub2.askP'), run: function () { go('askAi', {}); } },
+    { k: 'gpt', tid: 'connect-gpt', icon: 'link', title: t('hub2.gptT'), sub: t('hub2.gptP'), soon: true },
+    { k: 'claude', tid: 'connect-claude', icon: 'link', title: t('hub2.claudeT'), sub: t('hub2.claudeP'), soon: true }
+  ];
+  var tools = [
+    { k: 'scan', icon: 'zap', title: t('ai.scanT'), sub: canScan() ? t('hub2.scanP') : t('ai.noScan'), off: !canScan(), run: function () { go('scan', { semesterId: cur && cur.id }); } },
+    { k: 'paste', icon: 'clipboard', title: t(isCU() ? 'ai.pasteT' : 'ai.pasteTGeneric'), sub: firstOpen ? t('hub2.pasteP') : t('ai.noCourse'), off: !firstOpen, run: function () { go('paste', { courseId: firstOpen && firstOpen.id }); } },
+    { k: 'quick', icon: 'edit', title: t('ai.quickT'), sub: t('hub2.quickP'), run: function () { go('quick', {}); } }
+  ];
   return html`<${Modal} title=${t('aihub.title')} onClose=${closeModal}>
-    <div className="stack" data-testid="ai-hub" style=${{ gap: 12 }}>
-      <section className="connect-card" data-testid="connect-card" aria-labelledby="connect-h">
-        <div className="row between" style=${{ gap: 8 }}><b id="connect-h">${t('connect.title')}</b><span className="connect-soon">${t('connect.soon')}</span></div>
-        <p className="small" style=${{ margin: 0 }}>${t('hub.bridge')}</p>
-        <div className="connect-tiles">${apps.map(function (a) { return html`<div key=${a.n} className="connect-tile" aria-disabled="true"><${Icon} n="link" s=${16} /><div><b>${a.n}</b><span className="tiny muted">${a.how}</span></div></div>`; })}</div>
-        <p className="tiny muted" style=${{ margin: 0 }}>${t('connect.why')}</p>
-      </section>
-      <section className="askai-card" data-testid="askai-card">
-        <div><b>${t('askai.cardT')}</b><div className="small muted">${t('askai.cardP')}</div></div>
-        <div className="row wrap" style=${{ gap: 8 }}><button className="btn primary sm" data-testid="askai-open" onClick=${function () { closeModal(); openModal('askAi', {}); }}><${Icon} n="clipboard" s=${15} />${t('askai.cardBtn')}</button>
-          <button className="btn sm" onClick=${function () { closeModal(); openModal('askAi', { step: 'paste' }); }}>${t('askai.step2')}</button></div>
-      </section>
-      <div className="chat-own"><${Icon} n="spark" s=${14} />${t('hub.tools')}</div>
-      <div className="ai-actions" style=${{ marginTop: 0 }}>
-        <button className="ai-action" disabled=${!canScan()} onClick=${function () { go('scan', { semesterId: cur && cur.id }); }}><${Icon} n="zap" /><div><b>${t('ai.scanT')}</b><span>${canScan() ? t('ai.scanP') : t('ai.noScan')}</span></div></button>
-        <button className="ai-action" disabled=${!firstOpen} onClick=${function () { go('paste', { courseId: firstOpen && firstOpen.id }); }}><${Icon} n="clipboard" /><div><b>${t(isCU() ? 'ai.pasteT' : 'ai.pasteTGeneric')}</b><span>${firstOpen ? t(isCU() ? 'ai.pasteP' : 'ai.pastePGeneric') : t('ai.noCourse')}</span></div></button>
-        <button className="ai-action" onClick=${function () { go('quick', {}); }}><${Icon} n="edit" /><div><b>${t('ai.quickT')}</b><span>${t('ai.quickP')}</span></div></button>
-      </div>
+    <div data-testid="ai-hub">
+      <h2 className="me-h" style=${{ marginTop: 0 }}>${t('hub2.aiH')}</h2>
+      <div className="card me-list" data-testid="connect-card">${ai.map(row)}</div>
+      <h2 className="me-h">${t('hub2.toolsH')}</h2>
+      <div className="card me-list hub-tools">${tools.map(row)}</div>
+      <p className="tiny muted" style=${{ margin: '12px 4px 0' }}>${t('hub2.note')}</p>
     </div><//>`;
 }
-
 /* ===== Ask your own AI by copy-paste (works on every ChatGPT/Claude plan, incl. Free) =====
    The student copies a summary of this term's courses into their AI; the AI answers with a small JSON
    block; the student pastes it back and approves each row. Only existing courses/items are matched;
@@ -8139,6 +8333,7 @@ function commandItems(state) {
   var items = NAV.map(function (n) { var k = 'nav.' + (n.key || n.id); return { g: 'cmd.gPages', icon: n.icon, label: t(k), meta2: both(k), run: function () { location.hash = n.id; } }; });
   items = items.concat([
     { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), meta2: both('ai.btn') + ' chatgpt claude', run: function () { openModal('chat', {}); } },
+    { g: 'cmd.gActions', icon: 'trend', label: t('wi.link'), meta2: both('wi.link') + ' what if gpa', run: function () { location.hash = 'gpa'; setTimeout(function () { var el = document.querySelector('[data-testid=whatif]'); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' }); }, 120); } },
     { g: 'cmd.gActions', icon: 'clipboard', label: t('askai.title'), meta2: both('askai.title') + ' chatgpt claude', run: function () { openModal('askAi', {}); } },
     { g: 'cmd.gActions', icon: 'plus', label: t('addCourse'), meta2: both('addCourse'), run: function () { openModal('course', { semesterId: cur && cur.id }); } },
     { g: 'cmd.gActions', icon: 'edit', label: t('quickScore'), meta2: both('quickScore'), run: function () { openModal('quick', {}); } },
@@ -8210,7 +8405,7 @@ function ModalHost(p) {
   var m = S.modal;
   if (!m) return null;
   var M = { confirm: ConfirmModal, textExport: TextExportModal, year: YearModal, semester: SemesterModal, course: CourseModal,
-    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal, tuGened: TuGenEdModal, chat: AiHubModal, askAi: AskAiModal }[m.type];
+    assess: AssessModal, category: CategoryModal, quick: QuickScoreModal, final: FinalGradeModal, scan: ScanModal, plan: PlanModal, paste: PasteScoresModal, studyplan: StudyPlanModal, gened: GenEdModal, grading: GradingModal, assistant: AssistantModal, cmd: CommandModal, tuGened: TuGenEdModal, chat: AiHubModal, askAi: AskAiModal, tuPlan: TuPlanModal }[(m.type === 'plan' || m.type === 'studyplan') && !isCU() ? 'tuPlan' : m.type];
   return M ? html`<${M} key=${m.type + JSON.stringify(m.props.id || m.props.courseId || '')} props=${m.props} />` : null;
 }
 
@@ -8510,10 +8705,14 @@ function App() {
   var isDark = state.settings.theme === 'dark' || (state.settings.theme !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   useEffect(function () { applyUniTheme(uniOf(state), isDark); }, [uniOf(state), isDark]);
   useEffect(function () {
-    // A university picked on the sign-in screen fills in a profile that has none yet
-    // (also after the saved copy loads from the account, which may replace the first state).
-    if (!state.settings.institution && (uniPending === 'cu' || uniPending === 'tu')) setUni(uniPending, true);
-  }, [state.settings.institution]);
+    // A university the student picked on the sign-in screen opens that university's space once the account
+    // has loaded (the saved copy may replace the first state). Same email, separate spaces; nothing deleted.
+    var loaded = !!S.cloud || !(S.web && S.web.user);
+    if (!loaded || (uniPending !== 'cu' && uniPending !== 'tu')) return;
+    var now = state.settings.institution === 'tu' ? 'tu' : 'cu', want = uniPending;
+    uniPending = ''; try { localStorage.removeItem(UNI_PENDING_KEY); } catch (e) { /* ignore */ }
+    if (want !== now || !state.settings.institution) setUni(want, true);
+  }, [!!S.cloud, state.settings.institution]);
   var active = route.page === 'course' ? 'courses' : route.page === 'feedback' ? 'help' : route.page;
   var page;
   if (route.page === 'dashboard') page = html`<${Dashboard} state=${state} />`;
@@ -8835,7 +9034,8 @@ function AuthScreen() {
   var ers = useState(null), err = ers[0], setErr = ers[1];
   var sidS=useState(''), sid=sidS[0], setSid=sidS[1];
   var uniS=useState(function(){try{return localStorage.getItem(UNI_PENDING_KEY)||'cu';}catch(e){return 'cu';}}), uni=uniS[0], setUniLocal=uniS[1];
-  var pickUni=function(v){setUniLocal(v);setErr(null);uniPending=v;try{localStorage.setItem(UNI_PENDING_KEY,v);}catch(e){/* ignore */}};
+  var pickedUni=useRef(false);
+  var pickUni=function(v){pickedUni.current=true;setUniLocal(v);setErr(null);uniPending=v;try{localStorage.setItem(UNI_PENDING_KEY,v);}catch(e){/* ignore */}};
   var savingS=useState(false), saving=savingS[0], setSaving=savingS[1];
   var pending=useRef(false);
   var otp = !!(S.web && S.web.otp) && !(existing && existing.verified);
@@ -8861,7 +9061,7 @@ function AuthScreen() {
       var r = await S.web.client.auth.verifyOtp({ email: em, token: tok, type: 'email' });
       var u = r && r.data && (r.data.user || (r.data.session && r.data.session.user));
       if (!r || r.error || !u) throw (r && r.error) || new Error('no session');
-      uniPending=uni; try{localStorage.setItem(UNI_PENDING_KEY,uni);}catch(e){/* ignore */}
+      if(pickedUni.current){uniPending=uni; try{localStorage.setItem(UNI_PENDING_KEY,uni);}catch(e){/* ignore */}}
       var id = uni==='cu' ? sid.replace(/\s/g,'') : '';
       if (id) { try { var rr = await S.web.client.rpc('gs_exam_device',{p_email:em,p_device:examDeviceKey(em),p_action:'save',p_student_id:id}); if(rr.error||!rr.data||rr.data.saved!==true)throw new Error('save failed'); } catch (e2) { toast(t('examroom.loginError')); } }
       startUser({ id: u.id, email: String(u.email || em).toLowerCase(), verified: true });
@@ -8874,7 +9074,7 @@ function AuthScreen() {
     if (otp) { if (step === 'email') sendCode(); else verifyCode(); return; }
     if(pending.current)return;
     var em = email.trim().toLowerCase(), id=uni==='cu'?sid.replace(/\s/g,''):'';
-    uniPending=uni;try{localStorage.setItem(UNI_PENDING_KEY,uni);}catch(e){/* ignore */}
+    if(pickedUni.current){uniPending=uni;try{localStorage.setItem(UNI_PENDING_KEY,uni);}catch(e){/* ignore */}}
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { setErr(t('auth.err.email')); return; }
     if(id && !/^\d{10}$/.test(id)){setErr(t('examroom.badId'));return;}
     setErr(null);
@@ -9002,7 +9202,7 @@ function boot() {
     emit();
   });
 }
-window.GradeSpace = { S: S, update: update, Calc: C, catalogSearch: function (q) { return CATALOG.search(q, 8); } };
+window.GradeSpace = { S: S, update: update, Calc: C, catalogSearch: function (q) { return CATALOG.search(q, 8); }, whatIf: function () { return whatIfCourses(S.state).map(function (r) { return { code: r.c.code, cr: r.cr, max: r.asc[r.maxIdx].label, asc: r.asc.map(function (g) { return g.label + ':' + g.points; }).join(' ') }; }); } };
 boot();
 })();
 

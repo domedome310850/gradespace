@@ -71,6 +71,8 @@ Find code with search (`grep -n "^function CourseCard"`), not by line number —
   `SPACE_SETTINGS`, `switchSpace`). Always switch with `setUni`; never copy courses between spaces.
   Thammasat-only wording: add `'key@tu'` next to `'key'` in both languages; `t()` picks it when not Chula.
   TU grade rules (regulation 2568) are in `TU_OUTCOMES` and `TuRulesCard`.
+  In a TU space `plan`/`studyplan` modals are swapped for `TuPlanModal` in `ModalHost`. What-if grades: `WhatIfCard`,
+  `whatIfCourses`, `whatIfSolve` (never saved).
   Other helpers: `RegData` (Reg Chula data per course), `GenEdData`, `examsFor(c, state)`,
   `gradingModeFor(c)`, `sectionOf(c)`, `niceName(name)`, `courseDisplayTitle(c)`.
 - **Pages**: `Dashboard`, `CoursesPage`, `CourseDetail`, `YearsPage`, `SimulatorPage`, `GPAPage`, settings.
@@ -132,7 +134,7 @@ data and fails on any error or sideways scrolling. Also click through what you c
   (`https://vnweb68.reg.tu.ac.th/registrar/classinfo`, linked from reg.tu.ac.th) is a JavaScript app; its data API
   was not inspected yet (needs a real browser’s network tab). Next: capture that API, add a `tu-sync` edge function +
   migration mirroring `reg-sync`, then feed exam dates into `examsFor`. Also missing: TU faculty study plans (TBS 2566
-  curriculum PDFs on tbs.tu.ac.th), more TU faculties’ course lists, TU-specific outcomes ACC/EXE.
+  curriculum PDFs on tbs.tu.ac.th) for `TuPlanModal`, more TU faculties’ course lists.
 - Installable app (PWA) and a privacy (PDPA) page.
 - Move the two Google Sheets into Supabase tables.
 - MyCourseVille: official API needs an app key from the MCV team; meanwhile "Paste from MCV" and
