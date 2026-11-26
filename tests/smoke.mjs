@@ -173,13 +173,18 @@ async function run(browser, lang, width) {
     if(await page.locator('.side .nav-group').count()!==2) errors.push('sidebar should have 2 labelled groups');
   }
   if(await page.evaluate(()=>{const s=document.querySelectorAll('.brand-mark linearGradient');return new Set([...s].map(x=>x.id)).size!==s.length;})) errors.push('logo gradient ids are not unique');
-  // Floating AI button with one-time intro bubble, and search beside the semester picker.
-  if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('AI intro bubble not shown on first visit');
-  await page.locator('.ai-fab-intro .btn.primary').click();
+  // Mobile must never show the unsolicited floating intro; desktop keeps the first-visit hint.
+  if(width<=900){
+    if(await page.locator('.ai-fab-wrap').isVisible())errors.push('floating AI popup must be hidden on mobile');
+    await page.getByTestId('nav-ai').click();
+  }else{
+    if(!(await page.locator('.ai-fab-intro').isVisible())) errors.push('desktop AI intro bubble not shown on first visit');
+    await page.locator('.ai-fab-intro .btn.primary').click();
+  }
   if(await page.locator('[data-testid="ai-hub"] .hub-tools .hub-row').count()!==3) errors.push('AI hub should offer 3 tools');
   await page.keyboard.press('Escape');
   if(await page.locator('[data-testid="ai-hub"]').count()) errors.push('AI hub did not close on Escape');
-  if(await page.locator('.ai-fab-intro').count()) errors.push('AI intro bubble should not return after use');
+  if(await page.locator('.ai-fab-intro').isVisible()) errors.push('AI intro bubble should not return after use');
   if(width>900 && !(await page.locator('.ai-fab').isVisible())) errors.push('AI button not visible');
   // AI hub: GradeSpace has no AI of its own; connect cards first, then in-site tools (2026-11-26).
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
@@ -533,6 +538,7 @@ async function runTU(browser, lang, width) {
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
   if(await page.getByTestId('campus-brand').filter({hasText:'TU'}).count()!==2)errors.push('TU workspace wordmarks missing');
   await checkAiColors(page,'tu',errors);
+  if(width<=900&&await page.locator('.ai-fab-wrap').isVisible())errors.push('TU mobile floating AI popup must be hidden');
   if(!(await page.getByTestId('campus-brand').first().evaluate(el=>{const w=el.querySelector('.brand-word'),c=el.querySelector('.brand-campus'),a=getComputedStyle(w),b=getComputedStyle(c);return a.fontSize===b.fontSize&&a.fontWeight===b.fontWeight&&b.backgroundColor==='rgba(0, 0, 0, 0)'&&b.paddingLeft==='0px'&&getComputedStyle(el.querySelector('.brand-name-accent')).color!==b.color;})))errors.push('TU suffix should match brand size without badge and use distinct color');
   if(!(await page.locator('.side .brand-mark').evaluate(el=>el.querySelector('path').getAttribute('stroke')==='#fff'&&el.querySelector('stop[offset="55%"]').getAttribute('stop-color')==='#8C1D2C'&&el.querySelector('circle').getAttribute('fill')==='#FFD13F')))errors.push('TU logo should have red background, white G and yellow dot');
   await checkCampusPalette(page,'tu',errors);
