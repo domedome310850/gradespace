@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: refine AI shortcut highlights
+
+- TU AI circle/mobile and desktop FAB: yellow fill (#FFD13F) and deep red glyph (#8C1D2C). Both CU/TU sidebar AI rows use white text and icon with a campus-tinted highlight background, no colored outline. Updated browser checks and cache v19. CI and device visual review pending; no data changes.
+
 ## 2026-11-26 — ChatGPT: distinct Thammasat deep red and academic gold
 
 - `public/index.html`: TU primary buttons and AI shortcut use deep red (#8C1D2C); gold accents in TU suffix, selected navigation, AI icon, GPA hero top accent and academic progress. TU mark keeps its original G and yellow dot but uses deeper red gradient. Dark mode uses readable gold text, with neutral shared surfaces; CU palette unchanged. Scope overrides to TU and clear them on switch. `tests/smoke.mjs`: updated TU palette and logo assertions. `public/sw.js`: v18. Static contrast checked; CI and device visual review pending. No auth or grade data changes.
