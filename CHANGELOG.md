@@ -1,3 +1,19 @@
+## 2026-11-26 — ChatGPT: correct TU AI circle colors
+
+- Owner clarified: deep red circle (#8C1D2C), yellow symbol (#FFD13F), not the reverse. Updated mobile AI and desktop FAB, smoke assertion, cache v21. CU and sidebar AI unchanged; CI pending.
+
+## 2026-11-26 — ChatGPT: fresh Chula two-tone identity
+
+- CU uses rich campus pink (#A71D5D) for primary actions, fresh petal pink (#F4A5C9) with deep pink glyph for circular AI, and pink details for active navigation and GPA. Sidebar AI retains white label/icon with a richer pink background. Neutral surfaces/status cards and original logos remain; TU yellow/red AI refinement unchanged. Smoke assertions and cache v20. Device review/CI pending.
+
+## 2026-11-26 — ChatGPT: refine AI shortcut highlights
+
+- TU AI circle/mobile and desktop FAB: yellow fill (#FFD13F) and deep red glyph (#8C1D2C). Both CU/TU sidebar AI rows use white text and icon with a campus-tinted highlight background, no colored outline. Updated browser checks and cache v19. CI and device visual review pending; no data changes.
+
+## 2026-11-26 — ChatGPT: distinct Thammasat deep red and academic gold
+
+- `public/index.html`: TU primary buttons and AI shortcut use deep red (#8C1D2C); gold accents in TU suffix, selected navigation, AI icon, GPA hero top accent and academic progress. TU mark keeps its original G and yellow dot but uses deeper red gradient. Dark mode uses readable gold text, with neutral shared surfaces; CU palette unchanged. Scope overrides to TU and clear them on switch. `tests/smoke.mjs`: updated TU palette and logo assertions. `public/sw.js`: v18. Static contrast checked; CI and device visual review pending. No auth or grade data changes.
+
 ## 2026-11-26 — ChatGPT: muted CU pink and standardized English course titles
 
 - `public/index.html`: replace bright CU pink with dusty rose, keep primary actions neutral and both logo SVGs unchanged; warm charcoal dark palette, neutral status banners and GPA cards, muted priority cues and AI shortcut. English course names now resolve by enrollment-scoped CU Reg or active university catalog, independent of interface language; unknown names fall back to saved text. No new data/auth migrations or stored-name rewrites. `public/manifest.webmanifest`: neutral system bar (installed Android may retain prior manifest until refreshed). `public/sw.js`: cache v17. `tests/smoke.mjs`: updated palette and course-name checks. Browser CI and actual device visual review pending.

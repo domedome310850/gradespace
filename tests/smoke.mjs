@@ -44,13 +44,26 @@ async function checkCampusPalette(page, uni, errors) {
       token('--surface')===(dark?'#1C1C20':'#FFFFFF') &&
       token('--earned')===(dark?'#9BB2CE':'#526B88') &&
       token('--sky')===(dark?'#8FC5EE':'#286795') &&
-      token('--accent')===(uni==='tu'?(dark?'#D6A09E':'#A3454C'):(dark?'#D6A2B9':'#9C436B')) &&
-      token('--action')===(dark?'#E7E3E7':'#303037') &&
+      token('--accent')===(uni==='tu'?(dark?'#D8B84C':'#8C1D2C'):(dark?'#F4A5C9':'#A71D5D')) &&
+      token('--action')===(uni==='tu'?'#8C1D2C':'#A71D5D') &&
+      (uni!=='tu'||(token('--tu-gold')==='#D8B84C'&&token('--tu-gold-text')===(dark?'#E4C35E':'#806016')&&getComputedStyle(campus).color===(dark?'rgb(228, 195, 94)':'rgb(128, 96, 22)'))) &&
       document.querySelector('meta[name="theme-color"]').content.toUpperCase()===token('--bg');
   },uni);
   if(!valid) errors.push(uni+' should use neutral shared palette and campus-only accents');
 }
 
+async function checkAiColors(page, uni, errors) {
+  const result=await page.evaluate(uni=>{
+    const el=document.querySelector('[data-testid="sidebar-ai"]'), dot=document.querySelector('.nav-ai-dot');
+    if(!el||!dot)return false;
+    const st=getComputedStyle(el), icon=el.querySelector('.ic'), root=getComputedStyle(document.documentElement);
+    const dark=root.colorScheme==='dark';
+    const expected=uni==='tu'?(dark?'rgb(81, 42, 44)':'rgb(140, 29, 44)'):(dark?'rgb(112, 38, 75)':'rgb(167, 29, 93)');
+    return st.color==='rgb(255, 255, 255)'&&icon&&getComputedStyle(icon).color==='rgb(255, 255, 255)'&&st.backgroundColor===expected&&
+      (uni==='tu'?(getComputedStyle(dot).backgroundColor==='rgb(140, 29, 44)'&&getComputedStyle(dot).color==='rgb(255, 209, 63)'):(getComputedStyle(dot).backgroundColor==='rgb(244, 165, 201)'&&getComputedStyle(dot).color==='rgb(137, 23, 73)'));
+  },uni);
+  if(!result)errors.push(uni+' AI shortcut colors incorrect');
+}
 async function run(browser, lang, width) {
   const errors = [], overflow = [];
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
@@ -76,6 +89,7 @@ async function run(browser, lang, width) {
   await page.locator('#au-student').fill('6940102426');
   await page.locator('#au-student').press('Enter');
   await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-A',{exact:false}).waitFor();
+  await checkAiColors(page,'cu',errors);
   if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='2900111'||String(c.code||'').startsWith('2900111.'));if(!c)return false;const catalog=GradeSpace.catalogSearch('2900111').find(x=>x.code==='2900111');const result=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return !!catalog&&/[A-Za-z]/.test(result)&&!/[\u0E00-\u0E7F]/.test(result)&&result===GradeSpace.standardCourseName(c); })))errors.push('CU English course title should not depend on stored Thai title');
   if(await page.evaluate(()=>window.__studentId!=='6940102426')) errors.push('login did not save student ID');
   if(await page.locator('.side .nav-item').first().getAttribute('href')!=='#dashboard') errors.push('overview is not first menu');
@@ -483,8 +497,9 @@ async function runTU(browser, lang, width) {
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
   if(await page.getByTestId('campus-brand').filter({hasText:'TU'}).count()!==2)errors.push('TU workspace wordmarks missing');
+  await checkAiColors(page,'tu',errors);
   if(!(await page.getByTestId('campus-brand').first().evaluate(el=>{const w=el.querySelector('.brand-word'),c=el.querySelector('.brand-campus'),a=getComputedStyle(w),b=getComputedStyle(c);return a.fontSize===b.fontSize&&a.fontWeight===b.fontWeight&&b.backgroundColor==='rgba(0, 0, 0, 0)'&&b.paddingLeft==='0px'&&getComputedStyle(el.querySelector('.brand-name-accent')).color!==b.color;})))errors.push('TU suffix should match brand size without badge and use distinct color');
-  if(!(await page.locator('.side .brand-mark').evaluate(el=>el.querySelector('path').getAttribute('stroke')==='#fff'&&el.querySelector('stop[offset="55%"]').getAttribute('stop-color')==='#C3002F'&&el.querySelector('circle').getAttribute('fill')==='#FFD13F')))errors.push('TU logo should have red background, white G and yellow dot');
+  if(!(await page.locator('.side .brand-mark').evaluate(el=>el.querySelector('path').getAttribute('stroke')==='#fff'&&el.querySelector('stop[offset="55%"]').getAttribute('stop-color')==='#8C1D2C'&&el.querySelector('circle').getAttribute('fill')==='#FFD13F')))errors.push('TU logo should have red background, white G and yellow dot');
   await checkCampusPalette(page,'tu',errors);
   const rpcs=await page.evaluate(()=>window.__rpcs||[]);
   for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
