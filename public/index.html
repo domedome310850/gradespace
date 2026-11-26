@@ -17,10 +17,11 @@
   --bg: #F7F8FA; --surface: #FFFFFF; --surface-2: #F1F3F5; --surface-3: #E8EBEF;
   --line: #E3E6EA; --line-strong: #CCD2D9;
   --ink: #20212B; --ink-2: #454B57; --muted: #646B78;
-  --accent: #4F46E5; --accent-hover: #4338CA; --accent-ink: #FFFFFF; --accent-soft: #ECEBFF; --accent-text: #4338CA;
+  --accent: #9C436B; --accent-hover: #87385B; --accent-ink: #FFFFFF; --accent-soft: #F6EEF2; --accent-text: #9C436B;
+  --action: #303037; --action-hover: #45454E; --action-ink: #FFFFFF;
   --lav: #A2B0C5; --sky: #286795; --sky-soft: #EAF2FA;
   --earned: #526B88; --lost: #DCE1E7; --pending-a: #DFE7F0; --pending-b: #F0F3F7;
-  --ok: #157A52; --ok-soft: #E2F4EB; --warn: #9A5B00; --warn-soft: #FFF2DA; --bad: #BF3434; --bad-soft: #FCE7E7;
+  --ok: #376A50; --ok-soft: #EDF3EF; --warn: #805D2D; --warn-soft: #F7F1E8; --bad: #A04449; --bad-soft: #F8EDEF;
   --shadow: 0 1px 2px rgba(29,27,54,.05), 0 6px 18px -8px rgba(29,27,54,.10);
   --shadow-lg: 0 20px 60px -20px rgba(29,27,54,.35);
   --r-xl: 20px; --r-lg: 16px; --r-md: 11px; --r-sm: 8px;
@@ -33,13 +34,14 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #0F1115; --surface: #171A20; --surface-2: #1E2229; --surface-3: #282D36;
-    --line: #2A2F38; --line-strong: #3A404B;
-    --ink: #E8EBF0; --ink-2: #C3C8D1; --muted: #8D95A3;
-    --accent: #78A9F5; --accent-hover: #93BBF8; --accent-ink: #0C1424; --accent-soft: #1A2638; --accent-text: #9CC2FA;
+    --bg: #151517; --surface: #1C1C20; --surface-2: #242429; --surface-3: #303037;
+    --line: #303037; --line-strong: #414149;
+    --ink: #F0EEF0; --ink-2: #CBC7CD; --muted: #A19CA6;
+    --accent: #D6A2B9; --accent-hover: #E3B6C9; --accent-ink: #17151A; --accent-soft: #302830; --accent-text: #D6A2B9;
+    --action: #E7E3E7; --action-hover: #F3EFF3; --action-ink: #242329;
     --lav: #8299B7; --sky: #8FC5EE; --sky-soft: #1D3041;
     --earned: #9BB2CE; --lost: #343A45; --pending-a: #303B49; --pending-b: #252E39;
-    --ok: #5CC795; --ok-soft: #142A20; --warn: #E5B055; --warn-soft: #2D2413; --bad: #EF8080; --bad-soft: #331B1D;
+    --ok: #A0C4AE; --ok-soft: #252D29; --warn: #D6BD94; --warn-soft: #302B25; --bad: #E0A3A3; --bad-soft: #32282B;
     --c-indigo: #7E8CF0; --c-blue: #5E9EF0; --c-teal: #3EBFB2; --c-green: #63B86F; --c-amber: #E0A43A; --c-rose: #E87595; --c-violet: #A983E8; --c-slate: #8B95AE;
     --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
     --shadow-lg: 0 24px 70px -20px rgba(0,0,0,.75);
@@ -47,13 +49,14 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0F1115; --surface: #171A20; --surface-2: #1E2229; --surface-3: #282D36;
-  --line: #2A2F38; --line-strong: #3A404B;
-  --ink: #E8EBF0; --ink-2: #C3C8D1; --muted: #8D95A3;
-  --accent: #78A9F5; --accent-hover: #93BBF8; --accent-ink: #0C1424; --accent-soft: #1A2638; --accent-text: #9CC2FA;
+  --bg: #151517; --surface: #1C1C20; --surface-2: #242429; --surface-3: #303037;
+  --line: #303037; --line-strong: #414149;
+  --ink: #F0EEF0; --ink-2: #CBC7CD; --muted: #A19CA6;
+  --accent: #D6A2B9; --accent-hover: #E3B6C9; --accent-ink: #17151A; --accent-soft: #302830; --accent-text: #D6A2B9;
+    --action: #E7E3E7; --action-hover: #F3EFF3; --action-ink: #242329;
   --lav: #8299B7; --sky: #8FC5EE; --sky-soft: #1D3041;
   --earned: #9BB2CE; --lost: #343A45; --pending-a: #303B49; --pending-b: #252E39;
-  --ok: #5CC795; --ok-soft: #142A20; --warn: #E5B055; --warn-soft: #2D2413; --bad: #EF8080; --bad-soft: #331B1D;
+  --ok: #A0C4AE; --ok-soft: #252D29; --warn: #D6BD94; --warn-soft: #302B25; --bad: #E0A3A3; --bad-soft: #32282B;
   --c-indigo: #7E8CF0; --c-blue: #5E9EF0; --c-teal: #3EBFB2; --c-green: #63B86F; --c-amber: #E0A43A; --c-rose: #E87595; --c-violet: #A983E8; --c-slate: #8B95AE;
   --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
   --shadow-lg: 0 24px 70px -20px rgba(0,0,0,.75);
@@ -168,8 +171,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 .btn:hover { background: var(--surface-2); }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn.primary { background: var(--action); border-color: var(--action); color: var(--action-ink); }
+.btn.primary:hover { background: var(--action-hover); border-color: var(--action-hover); }
 .btn.ghost { border-color: transparent; background: transparent; color: var(--ink-2); }
 .btn.ghost:hover { background: var(--surface-2); color: var(--ink); }
 .btn.danger { color: var(--bad); }
@@ -266,18 +269,19 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.3; letter-spacing: -0.01em; }
 .study-row.focus-row{--tone:var(--accent-text);--tone-bg:var(--accent-soft);display:grid;grid-template-columns:46px minmax(0,1fr) 13px;gap:9px;background:var(--surface-2);border:0;border-radius:8px;padding:7px 9px}
 .study-row.focus-row.urgent{--tone:var(--bad);--tone-bg:var(--bad-soft)}
 .study-row.focus-row.soon,.study-row.focus-row.review{--tone:var(--warn);--tone-bg:var(--warn-soft)}
-.study-row.focus-row.done{--tone:var(--ok);--tone-bg:var(--ok-soft)}
-.study-row.focus-row.featured{background:var(--tone-bg);box-shadow:inset 3px 0 var(--tone)}
+.study-row.focus-row.done{--tone:var(--ink-2);--tone-bg:var(--surface-3)}
+.study-row.focus-row.featured{background:var(--surface-2);box-shadow:inset 2px 0 var(--tone)}
 .focus-day{background:var(--tone-bg);color:var(--tone);border-radius:6px;min-height:41px;display:grid;place-content:center;text-align:center}
 .focus-day b{font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
 .focus-day small{font-size:10px;line-height:1.2;margin-top:3px}
-.focus-row.featured .focus-day{background:var(--tone);color:var(--surface)}
+.focus-row.featured .focus-day{background:var(--tone-bg);color:var(--tone)}
 .focus-row .study-copy{gap:1px}
 .focus-row .study-copy b{font-size:13px}
 .focus-row .study-copy .focus-action{color:var(--tone);font-weight:750;font-size:10px}
 .focus-arrow{color:var(--tone);font-size:21px;line-height:1}
 .focus-footer{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap;margin-top:5px}
-.focus-complete{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ok)}
+.focus-complete{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-2)}
+.focus-complete>svg{color:var(--ok)}
 .focus-history{display:grid;gap:3px;font-size:11px;margin-top:6px}
 .hub-mini{background:var(--surface-2);border-radius:8px;min-width:0;padding:9px;display:flex;flex-direction:column;gap:5px;align-self:start}
 .hub-mini-label{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:11px;font-weight:600;color:var(--ink-2);line-height:1.25}
@@ -360,7 +364,7 @@ button.dashboard-cal-cell { cursor:pointer; }
 .metric .m-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
 .metric.hero { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
 .metric.hero .m-label, .metric.hero .m-sub { color: var(--ink-2); }
-.metric.hero .m-value { color: var(--accent-text); }
+.metric.hero .m-value { color: var(--ink); }
 
 /* ---------- grade bar (signature element) ---------- */
 .gbar { position: relative; }
@@ -1003,7 +1007,13 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 .cmd-item{display:flex;gap:10px;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:9px;background:none;text-align:left;cursor:pointer;color:var(--ink)}
 .cmd-item[aria-selected="true"],.cmd-item:hover{background:var(--accent-soft);color:var(--accent-text)}.cmd-item small{margin-left:auto;color:var(--muted);font-size:12px}
 /* GradeSpace shared neutral UI; campus color is reserved for actions and selection. */
-:root[data-uni] .nav-ai-dot,:root[data-uni] .ai-fab{background:var(--accent);color:var(--accent-ink);box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 20%,transparent),0 0 0 3px var(--surface)}
+:root[data-uni] .nav-ai-dot,:root[data-uni] .ai-fab{background:var(--surface-3);color:var(--accent-text);box-shadow:0 0 0 1px var(--line-strong),0 0 0 4px var(--surface)}
+:root[data-uni] .banner.ok,:root[data-uni] .banner.warn,:root[data-uni] .banner.bad,:root[data-uni] .banner.info{background:var(--surface);color:var(--ink-2);border:1px solid var(--line)}
+:root[data-uni] .banner.ok>svg{color:var(--ok)}
+:root[data-uni] .banner.warn>svg{color:var(--warn)}
+:root[data-uni] .banner.bad>svg{color:var(--bad)}
+:root[data-uni] .banner.info>svg{color:var(--sky)}
+:root[data-uni] .banner a{color:var(--ink);text-underline-offset:2px}
 :root[data-uni] .nav-item[aria-current="page"]{background:var(--accent-soft);color:var(--accent-text)}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
@@ -1035,11 +1045,11 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .metric.hero { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
   :root:not([data-theme="light"]) .metric.hero .m-label, :root:not([data-theme="light"]) .metric.hero .m-sub { color: var(--ink-2); }
-  :root:not([data-theme="light"]) .metric.hero .m-value { color: var(--accent-text); }
+  :root:not([data-theme="light"]) .metric.hero .m-value { color: var(--ink); }
 }
 :root[data-theme="dark"] .metric.hero { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
 :root[data-theme="dark"] .metric.hero .m-label, :root[data-theme="dark"] .metric.hero .m-sub { color: var(--ink-2); }
-:root[data-theme="dark"] .metric.hero .m-value { color: var(--accent-text); }
+:root[data-theme="dark"] .metric.hero .m-value { color: var(--ink); }
 
 .grade-badge.confirmed.neutral { background: var(--surface-2); color: var(--muted); }
 .grade-badge.confirmed.neutral small { color: var(--muted); }
@@ -4661,10 +4671,10 @@ function uniLum(hex) { var c = [1, 3, 5].map(function (i) { var v = parseInt(hex
 function uniContrast(a, b) { var x = uniLum(a), y = uniLum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); }
 function uniReadable(col, bg, dark) { for (var i = 0; i < 30 && uniContrast(col, bg) < 4.5; i++) col = uniMix(col, dark ? '#FFFFFF' : '#000000', .16); return col; }
 function applyUniTheme(uni, dark) {
-  var el=document.documentElement, tu=uni==='tu', bg=dark?'#171A20':'#FFFFFF';
-  var base=tu?'#B92342':'#C02570';
-  var a=dark?(tu?'#FF8294':'#F08ABC'):base;
-  var soft=uniMix(bg,base,dark?.18:.07);
+  var el=document.documentElement, tu=uni==='tu', bg=dark?'#1C1C20':'#FFFFFF';
+  var base=tu?'#A3454C':'#9C436B';
+  var a=dark?(tu?'#D6A09E':'#D6A2B9'):base;
+  var soft=uniMix(bg,a,dark?.09:.06);
   var txt=uniReadable(dark?a:base,soft,dark);
   var ink=uniContrast(a,'#000000')>=uniContrast(a,'#FFFFFF')?'#000000':'#FFFFFF';
   var hover=uniMix(a,dark?'#FFFFFF':'#000000',.10);
@@ -4674,7 +4684,7 @@ function applyUniTheme(uni, dark) {
   var v={'--accent':a,'--accent-hover':hover,'--accent-ink':ink,'--accent-soft':soft,'--accent-text':txt,'--uni-secondary':tu?'#FFD13F':'#F5A4CC'};
   Object.keys(v).forEach(function(k){el.style.setProperty(k,v[k]);});
   el.setAttribute('data-uni',tu?'tu':'cu');
-  var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#0F1115':'#F7F8FA';
+  var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#151517':'#F7F8FA';
 }
 function UniPicker(p) {
   return html`<${Seg} label=${t('uni.label')} value=${p.value} onChange=${p.onChange} options=${[{ v: 'cu', l: t('uni.cu') }, { v: 'tu', l: t('uni.tu') }]} />`;
@@ -4969,21 +4979,21 @@ function titleWithSection(name, c) {
   var sec = sectionOf(c) || parts.sec;
   return (niceName(parts.name) || String(c && c.code || '') || t('course')) + (sec ? ' [Sec ' + sec + ']' : '');
 }
+// Use one English catalog title everywhere, independently of interface language.
+function standardCourseName(c) {
+  if (!c) return t('course');
+  var saved=splitCourseSection(c.name).name;
+  var catalog=c.code?CATALOG.get(c.code):null;
+  var reg=c.code&&isCU()&&typeof RegData!=='undefined'&&RegData&&S.state?RegData.get(c,S.state):null;
+  var english=function(name){var n=splitCourseSection(name).name;return /[A-Za-z]/.test(n)&&!/[\u0E00-\u0E7F]/.test(n)?n:'';};
+  // Reg is enrollment-scoped; the catalog is scoped to the active university.
+  return niceName(english(reg&&reg.name_en)||english(catalog&&catalog.aka)||english(catalog&&catalog.n)||saved)||String(c.code||'')||t('course');
+}
 function courseDisplayTitle(c) {
-  return titleWithSection(c && c.name, c);
+  return titleWithSection(standardCourseName(c), c);
 }
 function upcomingCourseTitle(c) {
-  if (!c) return t('course');
-  var savedName = splitCourseSection(c.name).name;
-  var catalog = c.code ? CATALOG.get(c.code) : null;
-  var officialName = catalog && splitCourseSection(catalog.aka).name || '';
-  var catalogShort = catalog && splitCourseSection(catalog.n).name || '';
-  var isThai = /[\u0E00-\u0E7F]/;
-  var preferred = savedName && !isThai.test(savedName)
-    ? (officialName && savedName.toLowerCase() === catalogShort.toLowerCase() ? officialName : savedName)
-    : (officialName || catalogShort || savedName);
-  // short lists (coming up, calendar, timetable) leave the Sec out; the course card and page show it
-  return niceName(preferred) || String(c.code || '') || t('course');
+  return standardCourseName(c);
 }
 function upcomingTypeShort(a) {
   var type = a && a.type || 'custom';
@@ -5239,7 +5249,7 @@ function GoalPicker(p) {
   }, [opened]);
   var choose = function (target) { saveCourseTarget(c.id, target); setOpened(false); };
   return html`<div className="goal-pick" ref=${root}>
-    <button type="button" className="goal-pick-button" aria-label=${criterion ? t('goal.chooseAria', { name: c.name }) : t('grading.numericGoal') + ': ' + c.name}
+    <button type="button" className="goal-pick-button" aria-label=${criterion ? t('goal.chooseAria', { name: courseDisplayTitle(c) }) : t('grading.numericGoal') + ': ' + courseDisplayTitle(c)}
       aria-haspopup="true" aria-expanded=${opened ? 'true' : 'false'}
       title=${criterion ? t('goal.chooseHere') : t('grading.numericGoalHint')} onClick=${function () { setOpened(!opened); }}>
       <${Icon} n="target" s=${15} /><span className="goal-pick-label">${criterion ? (c.target ? t('targetX', { g: c.target }) : t('noTarget')) : (numericGoalFor(c) != null ? t('targetX', { g: fmtT(numericGoalFor(c)) + '%' }) : t('noTarget'))}</span>
@@ -5311,14 +5321,14 @@ function GradeBadge(p) {
 
 /* ================= shared actions ================= */
 function deleteCourse(c) {
-  confirmDialog({ title: t('delCourseQ'), body: t('delCourseBody', { name: c.name }), danger: true, confirmLabel: t('delete'),
+  confirmDialog({ title: t('delCourseQ'), body: t('delCourseBody', { name: courseDisplayTitle(c) }), danger: true, confirmLabel: t('delete'),
     onConfirm: function () {
       update(function (d) {
         d.courses = d.courses.filter(function (x) { return x.id !== c.id; });
         d.assessments = d.assessments.filter(function (x) { return x.courseId !== c.id; });
         d.categories = d.categories.filter(function (x) { return x.courseId !== c.id; });
       }, { undo: true });
-      toast(t('deletedX', { name: c.name }), { undo: true });
+      toast(t('deletedX', { name: courseDisplayTitle(c) }), { undo: true });
       if (parseHash().page === 'course') go('courses');
     } });
 }
@@ -6578,7 +6588,7 @@ function CourseCard(p) {
   return html`<article className="card ccard" style=${{ '--cc': courseColor(c.color) }}>
     <div className="ccard-top">
       <div className="grow">
-        <a href=${href} className="ccard-name" style=${{ color: 'inherit', textDecoration: 'none' }}>${niceName(splitCourseSection(c.name).name) || c.code || t('course')}</a>
+        <a href=${href} className="ccard-name" style=${{ color: 'inherit', textDecoration: 'none' }}>${standardCourseName(c)}</a>
         <div className="ccard-meta">
           ${[c.code && String(c.code).split('.')[0], sec && 'Sec ' + sec, t('nCredits', { n: fmtT(c.credits) })].filter(Boolean).join(' · ')}
           ${p.showSem ? ' · ' + semFull(state, state.semesters.find(function (s) { return s.id === c.semesterId; }) || {}) : ''}
@@ -7364,10 +7374,10 @@ function YearsPage(p) {
                   <span className=${'chip ' + (info.kind === 'confirmed' ? 'ok' : info.kind === 'calculated' ? 'accent' : info.kind === 'estimated' ? 'outline' : '')}>
                     ${info.label ? info.label + ' ' : ''}${t('kind.' + info.kind)}</span>
                   <label className="row small muted" style=${{ gap: 6 }}><${Icon} n="folder" s=${14} /><span className="hide-sm">${t('moveTo')}</span>
-                    <${SemesterSelect} state=${state} value=${c.semesterId} label=${t('moveCourseX', { name: c.name })} onChange=${function (v) {
+                    <${SemesterSelect} state=${state} value=${c.semesterId} label=${t('moveCourseX', { name: courseDisplayTitle(c) })} onChange=${function (v) {
                       if (v === c.semesterId) return;
                       update(function (d) { d.courses.find(function (x) { return x.id === c.id; }).semesterId = v; }, { undo: true });
-                      toast(t('movedX', { name: c.name, s: semFull(state, allSems.find(function (x) { return x.id === v; })) }), { undo: true });
+                      toast(t('movedX', { name: courseDisplayTitle(c), s: semFull(state, allSems.find(function (x) { return x.id === v; })) }), { undo: true });
                     }} /></label>
                 </div>`;
               })}</div>` : html`<p className="muted small" style=${{ margin: '8px 0 0' }}>${t('noCoursesYet')}</p>`}
@@ -7476,7 +7486,7 @@ function CoursesPage(p) {
       return html`<section key=${s.id} className="section" style=${{ marginTop: 22 }}>
         <div className="section-head"><h2>${semFull(state, s)}</h2><div className="row wrap"><span className="tiny muted">${t(isManualCourseOrder(state,s.id)?"sort.manualOrder":"sort.autoOrder")}</span>${isManualCourseOrder(state,s.id)&&html`<button type="button" className="btn sm ghost" onClick=${function(){resetCourseOrder(s.id);}}>${t("sort.resetOrder")}</button>`}</div></div>
         <${SortableGrid} ids=${cs.map(function (c) { return c.id; })} disabled=${!!q.trim()}
-          label=${function (id) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? c.name : ''; }}
+          label=${function (id) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? courseDisplayTitle(c) : ''; }}
           onReorder=${function (ids) { reorderSemester(s.id, ids); }}
           render=${function (id, handle) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? html`<${CourseCard} course=${c} state=${state} handle=${handle} />` : null; }} />
       </section>`;
@@ -7843,7 +7853,7 @@ function CourseDetail(p) {
     <a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a>
     <div className="course-head">
       <div className="grow">
-        <div className="row" style=${{ gap: 10 }}><span className="dot" style=${{ width: 12, height: 12 }}></span><h1>${niceName(splitCourseSection(c.name).name) || c.code}</h1></div>
+        <div className="row" style=${{ gap: 10 }}><span className="dot" style=${{ width: 12, height: 12 }}></span><h1>${standardCourseName(c)}</h1></div>
         <div className="row wrap small muted" style=${{ gap: '4px 14px', marginTop: 4 }}>
           ${c.code && html`<span>${String(c.code).split('.')[0]}</span>`}${sectionOf(c) && html`<span>Sec ${sectionOf(c)}</span>`}<span>${t('nCredits', { n: fmtT(c.credits) })}</span><${KindChip} course=${c} />
           ${sem && html`<span>${semFull(state, sem)}</span>`}${c.instructor && html`<span>${t('instructor')}: ${c.instructor}</span>`}
@@ -7875,7 +7885,7 @@ function CourseDetail(p) {
         <div className="row wrap" style=${{ gap: 6 }}>
           <button className="btn sm" onClick=${function () { openModal('final', { courseId: c.id }); }}><${Icon} n="check" s=${15} />${c.finalGrade ? t('changeGrade') : t('recordGrade')}</button>
           <button className="btn sm" onClick=${function () { openModal('course', { id: c.id }); }}><${Icon} n="edit" s=${15} />${t('edit')}</button>
-          <button className="btn sm icon danger" aria-label=${t('deleteX', { name: c.name })} onClick=${function () { deleteCourse(c); }}><${Icon} n="trash" s=${16} /></button>
+          <button className="btn sm icon danger" aria-label=${t('deleteX', { name: courseDisplayTitle(c) })} onClick=${function () { deleteCourse(c); }}><${Icon} n="trash" s=${16} /></button>
         </div>
       </div>
     </div>
@@ -8857,7 +8867,7 @@ function FinalGradeModal(p) {
   return html`<${Modal} title=${t('recordGradeT')} onClose=${closeModal} onEnter=${save} foot=${html`
     ${c.finalGrade && html`<button className="btn danger" style=${{ marginRight: 'auto' }} onClick=${function () { update(function (d) { d.courses.find(function (x) { return x.id === c.id; }).finalGrade = null; }); toast(t('gradeCleared')); closeModal(); }}>${t('clearGrade')}</button>`}
     <button className="btn" onClick=${closeModal}>${t('cancel')}</button><button className="btn primary" disabled=${!g} onClick=${save}>${t('saveGrade')}</button>`}>
-    <p className="small muted" style=${{ margin: 0 }}>${t('recordGradeP', { name: c.name })}</p>
+    <p className="small muted" style=${{ margin: 0 }}>${t('recordGradeP', { name: courseDisplayTitle(c) })}</p>
     ${calc && calc.kind !== 'none' && html`<${Banner} kind="info">${calc.kind === 'calculated' ? t('suggestCalc', { g: calc.label, p: fmt(calc.pct) }) : t('suggestEst', { g: calc.label, p: fmt(calc.pct) })}<//>`}
     ${sum && sum.pendingRows.length > 0 && html`<p className="small muted" style=${{ margin: 0 }}>${t('gm.noFinalScore')}</p>`}
     <${Field} label=${t('officialGrade')} id="fg" hint=${g ? impliedText(impliedRange(c, state, g)) : ''}><select id="fg" className="select" value=${g} onChange=${function (e) { setG(e.target.value); }}>
@@ -10388,7 +10398,7 @@ function boot() {
     emit();
   });
 }
-window.GradeSpace = { S: S, update: update, Calc: C, Store: Store, switchSpace: switchSpace, catalogSearch: function (q) { return CATALOG.search(q, 8); }, whatIf: function () { return whatIfCourses(S.state).map(function (r) { return { code: r.c.code, cr: r.cr, max: r.asc[r.maxIdx].label, asc: r.asc.map(function (g) { return g.label + ':' + g.points; }).join(' ') }; }); } };
+window.GradeSpace = { S: S, update: update, Calc: C, Store: Store, switchSpace: switchSpace, courseDisplayTitle: courseDisplayTitle, standardCourseName: standardCourseName, catalogSearch: function (q) { return CATALOG.search(q, 8); }, whatIf: function () { return whatIfCourses(S.state).map(function (r) { return { code: r.c.code, cr: r.cr, max: r.asc[r.maxIdx].label, asc: r.asc.map(function (g) { return g.label + ':' + g.points; }).join(' ') }; }); } };
 boot();
 })();
 

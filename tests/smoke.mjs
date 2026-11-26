@@ -40,11 +40,12 @@ async function checkCampusPalette(page, uni, errors) {
     const base=word.querySelector('.brand-word'), space=word.querySelector('.brand-name-accent'), campus=word.querySelector('.brand-campus');
     return getComputedStyle(base).color===getComputedStyle(space).color &&
       getComputedStyle(base).color!==getComputedStyle(campus).color &&
-      token('--bg')===(dark?'#0F1115':'#F7F8FA') &&
-      token('--surface')===(dark?'#171A20':'#FFFFFF') &&
+      token('--bg')===(dark?'#151517':'#F7F8FA') &&
+      token('--surface')===(dark?'#1C1C20':'#FFFFFF') &&
       token('--earned')===(dark?'#9BB2CE':'#526B88') &&
       token('--sky')===(dark?'#8FC5EE':'#286795') &&
-      token('--accent')===(uni==='tu'?(dark?'#FF8294':'#B92342'):(dark?'#F08ABC':'#C02570')) &&
+      token('--accent')===(uni==='tu'?(dark?'#D6A09E':'#A3454C'):(dark?'#D6A2B9':'#9C436B')) &&
+      token('--action')===(dark?'#E7E3E7':'#303037') &&
       document.querySelector('meta[name="theme-color"]').content.toUpperCase()===token('--bg');
   },uni);
   if(!valid) errors.push(uni+' should use neutral shared palette and campus-only accents');
@@ -75,6 +76,7 @@ async function run(browser, lang, width) {
   await page.locator('#au-student').fill('6940102426');
   await page.locator('#au-student').press('Enter');
   await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-A',{exact:false}).waitFor();
+  if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='2900111'||String(c.code||'').startsWith('2900111.'));if(!c)return false;const catalog=GradeSpace.catalogSearch('2900111').find(x=>x.code==='2900111');const result=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return !!catalog&&/[A-Za-z]/.test(result)&&!/[\u0E00-\u0E7F]/.test(result)&&result===GradeSpace.standardCourseName(c); })))errors.push('CU English course title should not depend on stored Thai title');
   if(await page.evaluate(()=>window.__studentId!=='6940102426')) errors.push('login did not save student ID');
   if(await page.locator('.side .nav-item').first().getAttribute('href')!=='#dashboard') errors.push('overview is not first menu');
   if(await page.locator('.side .nav-item[aria-current="page"]').getAttribute('href')!=='#dashboard') errors.push('overview is not default');
@@ -473,6 +475,7 @@ async function runTU(browser, lang, width) {
   if(!(await page.getByTestId('tup-add').isEnabled()))errors.push('fresh TU workspace cannot add a course');
   await page.getByTestId('tup-add').click();
   await page.waitForFunction(()=>GradeSpace.S.state.courses.some(c=>c.code==='MK201'));
+  if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='MK201');const name=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return /[A-Za-z]/.test(name)&&!/[\u0E00-\u0E7F]/.test(name)&&name===GradeSpace.standardCourseName(c)&&GradeSpace.standardCourseName({name:'Unknown custom course',code:''})==='Unknown custom course';})))errors.push('TU English course title should use its own catalog and retain unknown custom course names');
   const fresh=await page.evaluate(()=>({years:GradeSpace.S.state.years,terms:GradeSpace.S.state.semesters,courses:GradeSpace.S.state.courses,current:GradeSpace.S.state.settings.currentSemesterId}));
   if(fresh.years.length!==1||fresh.terms.length!==1||fresh.courses.length!==1||fresh.terms[0].id!==fresh.current||fresh.courses[0].semesterId!==fresh.current)errors.push('first semester/course not saved correctly');
   await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
