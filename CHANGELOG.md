@@ -1,3 +1,9 @@
+## 2026-11-26 — Claude: “Add with your own AI” (ChatGPT, Gemini, Claude) reads screenshots/voice/text
+
+- The copy-paste bridge (`AskAiModal`) now brings data *in*: one tap copies an instruction and opens ChatGPT, Gemini or Claude (each with its site icon, loaded live). The student sends a screenshot, voice message or text (“got 24/30 in the midterm”, “new course 2603111”, “30% midterm, 40% final”); the AI answers with a ```gradespace block in the scanner's shape; pasting it opens the scan review (`ScanModal` `props.preset`) where every course, item and score is approved before `Scan.apply`. New courses and items can now be added this way. Old ```gradespace-scores answers still parse.
+- Only course codes, names, item names, weights and full marks are copied out (no scores, email or ID).
+- Files: `public/index.html`, `tests/smoke.mjs`, `AGENTS.md`.
+
 ## 2026-11-26 — ChatGPT: re-audit TBS and simplify course selection
 
 - Add major/semester guided picker, explicit named-course batch selection, separate alternatives/open slots, term-credit summary, scoped 2/2569 MK412/FN494 amendment and tests. No registration claims; full PDF field verification and live REG remain open. See `docs/tu-guided-picker-audit.md`.
