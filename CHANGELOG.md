@@ -1,3 +1,9 @@
+## 2026-11-26 — Claude (claude.ai): Thammasat study plans (TBS BBA International 2566)
+
+- `public/index.html`: `TU_PLANS` + `TU_PLAN_COURSES` from the TBS BBA (International) 2566 curriculum, section 4.3.2.3 (bba.tbs.tu.ac.th): **Finance** and **Marketing** (the document’s first Marketing sequence), year 1–4 × term 1–2, fixed courses plus open slots (GenEd, business core of your choice, major elective, minor/elective, free elective). “Either order” pairs (AC201/HR201, IS201/MK201) are marked “can swap”. `TuPlanModal` opens on a new “By study plan” tab: pick plan and year/term, plan courses come ticked, and they are added to that year/term (created if missing); the old “Browse groups” tab stays. Plan courses also join `TU_CATALOG` for search. English titles are TBS’s official ones (Finance programme sheet + curriculum-2023 course descriptions on bba.tbs.tu.ac.th), e.g. FN412 Finance for Sustainability, EL221 Communicative Business English 1; prefixes บช=AC, ทม=HR, พบ=BA, รส=IS, กต=MK, กง=FN, ศ=EC, บป=OM, สษ=EL. Thammasat pickers (study plan, browse groups, GenEd) show the official English name first with the Thai name underneath, and courses added from them are saved with the English name. TH/EN.
+- `tests/smoke.mjs`: Finance Y1T1 plan lists BA204, adds AC201 + BA204 into year 1 term 1; browse tab adds FN201.
+- Not in: Thai-language BBA plans and the Accounting (บัญชีบัณฑิต) programme — their PDFs on tbs.tu.ac.th couldn’t be fetched from here (see AGENTS Open work). The Finance Y1T2 row in the PDF text is inconsistent (rows sum to 21, total says 18); only named courses were used.
+
 ## 2026-11-26 — Claude (claude.ai): what-if grades, phone one-row layouts, plain AI menu, Thammasat picker
 
 - `public/index.html`:

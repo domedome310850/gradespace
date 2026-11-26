@@ -2781,6 +2781,10 @@ en: {
   'hub2.gptT': '@GradeSpace in ChatGPT', 'hub2.gptP': 'Direct link, no copying', 'hub2.claudeT': 'GradeSpace in Claude', 'hub2.claudeP': 'Add as a connector',
   'hub2.scanP': 'Read scores from screenshots', 'hub2.pasteP': 'Paste a score table', 'hub2.quickP': 'Type one score',
   'hub2.note': 'GradeSpace has no AI of its own. Your AI suggests; you approve every change here.',
+  'tup.into': 'Adds to year {y}, term {t} (created if missing)', 'tup.byPlan': 'By study plan', 'tup.byGroup': 'Browse groups', 'tup.plan': 'Study plan', 'tup.yearTerm': 'Year and term', 'tup.yt': 'Y{y} T{t}',
+  'tup.plus': 'Also this term, your choice:', 'tup.slot.ge': '{n} GenEd', 'tup.slot.core': '{n} business core', 'tup.slot.major': '{n} major elective', 'tup.slot.minor': '{n} minor/elective', 'tup.slot.free': '{n} free elective',
+  'tup.noFixed': 'No fixed courses this term — only your own choices above.', 'tup.orAlt': 'can swap with {c}',
+  'tup.planNote': 'From the TBS BBA (International) 2566 curriculum, with TBS’s official English course titles. Plans for the Thai BBA and the Accounting programme aren’t in yet.',
   'tup.title': 'Pick Thammasat courses', 'tup.intro': 'Tick courses and add them to a term. GenEd groups follow the 2566 GenEd program; subject groups come from the TBS BBA course list.',
   'tup.ac': 'Accounting', 'tup.fn': 'Finance', 'tup.is': 'Information systems', 'tup.mg': 'Management', 'tup.toTerm': 'Add to term', 'tup.noTerm': 'Add a year/term first',
   'tup.add': 'Add {n} courses', 'tup.added': 'Added {n} courses', 'tup.note': 'Year-by-year study plans for Thammasat majors aren’t in GradeSpace yet; check your faculty’s plan.',
@@ -3290,6 +3294,10 @@ th: {
   'hub2.gptT': '@GradeSpace ใน ChatGPT', 'hub2.gptP': 'เชื่อมตรง ไม่ต้องคัดลอก', 'hub2.claudeT': 'GradeSpace ใน Claude', 'hub2.claudeP': 'เพิ่มเป็นตัวเชื่อม',
   'hub2.scanP': 'อ่านคะแนนจากภาพหน้าจอ', 'hub2.pasteP': 'วางตารางคะแนน', 'hub2.quickP': 'พิมพ์คะแนนทีละรายการ',
   'hub2.note': 'GradeSpace ไม่มี AI ของตัวเอง AI ของคุณเป็นคนเสนอ คุณเป็นคนยืนยันทุกครั้ง',
+  'tup.into': 'จะเพิ่มเข้า ปี {y} เทอม {t} (ถ้ายังไม่มีจะสร้างให้)', 'tup.byPlan': 'ตามแผนการเรียน', 'tup.byGroup': 'เลือกตามหมวด', 'tup.plan': 'แผนการเรียน', 'tup.yearTerm': 'ปีและเทอม', 'tup.yt': 'ปี {y} เทอม {t}',
+  'tup.plus': 'เทอมนี้ต้องเลือกเองเพิ่ม:', 'tup.slot.ge': 'GenEd {n} วิชา', 'tup.slot.core': 'แกนร่วมบังคับ {n} วิชา', 'tup.slot.major': 'วิชาเอกเลือก {n} วิชา', 'tup.slot.minor': 'วิชาโทหรือวิชาเลือก {n} วิชา', 'tup.slot.free': 'วิชาเลือกเสรี {n} วิชา',
+  'tup.noFixed': 'เทอมนี้ไม่มีวิชาที่กำหนดตายตัว มีแต่วิชาที่ต้องเลือกเองด้านบน', 'tup.orAlt': 'สลับกับ {c} ได้',
+  'tup.planNote': 'อ้างอิงหลักสูตร BBA นานาชาติ 2566 ของ TBS ชื่อภาษาอังกฤษตามที่ TBS ใช้จริง ส่วนแผนของ BBA ภาคภาษาไทยและหลักสูตรบัญชีบัณฑิตยังไม่มี',
   'tup.title': 'เลือกวิชาธรรมศาสตร์', 'tup.intro': 'ติ๊กวิชาแล้วเพิ่มเข้าเทอมที่เลือก หมวด GenEd อ้างอิงหลักสูตรวิชาศึกษาทั่วไป 2566 ส่วนหมวดวิชาอ้างอิงรายวิชา TBS BBA',
   'tup.ac': 'บัญชี', 'tup.fn': 'การเงิน', 'tup.is': 'ระบบสารสนเทศ', 'tup.mg': 'การจัดการ', 'tup.toTerm': 'เพิ่มเข้าเทอม', 'tup.noTerm': 'เพิ่มชั้นปี/เทอมก่อน',
   'tup.add': 'เพิ่ม {n} วิชา', 'tup.added': 'เพิ่ม {n} วิชาแล้ว', 'tup.note': 'แผนการเรียนรายปีของแต่ละสาขาใน มธ. ยังไม่มีใน GradeSpace ดูแผนของคณะประกอบ',
@@ -3761,10 +3769,45 @@ var TU_GENED = [[1, "TU101", "โลก อาเซียน และไทย
 // Thammasat Business School BBA International 2023 (source-checked rows from PR #19).
 var TU_TBS_SOURCE = 'https://bba.tbs.tu.ac.th/coursedescription.php?CourseYear=2023';
 var TU_TBS = [["AC201","Fundamental Accounting",3],["AC202","Management Accounting",3],["AC221","Business Acumen & Financial Reporting",3],["AC295","Special Topics in Accounting 1",3],["AC296","Special Topics in Accounting 2",1.5],["AC311","Intermediate Accounting 1",3],["AC312","Intermediate Accounting 2",3],["AC313","Cost Accounting",3],["AC314","Cost Management",3],["AC315","Accounting Information Systems",3],["AC316","Auditing",3],["AC317","Enterprise Risk Management and Internal Control",3],["AC318","Tax Accounting",3],["FN201","Business Finance",3],["FN211","Financial Mathematics and Statistics",3],["FN311","Financial Management",3],["FN312","Investments",3],["IS201","Digital Technology for Business",3],["IS315","Systems Analysis and Modelling",3],["IS361","Artificial Intelligence",3],["HR201","Modern Management and Entrepreneurship",3]];
+// TBS BBA (International) 2566 study plans, section 4.3.2.3 of the curriculum (มคอ.2). Thai names from that document;
+// official English titles from TBS's Finance programme sheet (bbabackend/upload/curriculum/ec7bec69…pdf) and the
+// curriculum-2023 course descriptions (MK311, MK313, MK318, MK412). Prefixes: บช=AC ทม=HR พบ=BA รส=IS กต=MK กง=FN ศ=EC บป=OM สษ=EL.
+var TU_PLAN_SOURCE = 'https://bba.tbs.tu.ac.th/bbabackend/upload/curriculum/9cf7836c783734beda1a4a10e280fb30.pdf';
+var TU_PLAN_COURSES = {
+  AC201: ['การบัญชีชั้นต้น', 'Fundamental Accounting'], AC202: ['การบัญชีเพื่อการจัดการ', 'Management Accounting'],
+  HR201: ['การบริหารและการประกอบการสมัยใหม่', 'Modern Management and Entrepreneurship'], IS201: ['เทคโนโลยีดิจิทัลเพื่อธุรกิจ', 'Digital Technology for Business'],
+  FN201: ['การเงินธุรกิจ', 'Business Finance'], FN211: ['คณิตศาสตร์และสถิติการเงิน', 'Financial Mathematics and Statistics'],
+  FN311: ['การบริหารการเงิน', 'Financial Management'], FN312: ['การลงทุน', 'Investments'],
+  FN313: ['การเงินระหว่างประเทศ', 'International Finance'], FN314: ['การบริหารสถาบันการเงิน', 'Financial Institutions Management'],
+  FN411: ['การวิเคราะห์และการบริหารความเสี่ยงทางการเงิน', 'Financial Risk Analysis and Management'], FN412: ['การเงินเพื่อความยั่งยืน', 'Finance for Sustainability'],
+  BA201: ['หลักกฎหมายเกี่ยวกับการประกอบธุรกิจ', 'Business Law'], BA202: ['การภาษีอากร', 'Taxation'], BA204: ['สถิติธุรกิจ', 'Business Statistics'],
+  BA401: ['การบริหารเชิงกลยุทธ์', 'Strategic Management'], MK201: ['หลักการตลาด', 'Principles of Marketing'], MK211: ['พฤติกรรมผู้บริโภค', 'Consumer Behavior'],
+  MK311: ['การวิเคราะห์และจัดการลูกค้า', 'Customer Analytics and Management'], MK312: ['การจัดการตราสินค้าเชิงกลยุทธ์', 'Strategic Brand Management'],
+  MK313: ['การวิจัยทางการตลาดเพื่อการตัดสินใจ', 'Marketing Research for Decision Making'], MK318: ['จากข้อมูลสู่การตัดสินใจ', 'From Data to Decisions'],
+  MK412: ['การจัดการการตลาดขั้นสูง', 'Marketing Management Capstone'], OM201: ['การบริหารการปฏิบัติการ', 'Operations Management'],
+  EC213: ['เศรษฐศาสตร์จุลภาคเบื้องต้น', 'Introductory Microeconomics'], EC214: ['เศรษฐศาสตร์มหภาคเบื้องต้น', 'Introductory Macroeconomics'],
+  EL221: ['ภาษาอังกฤษเชิงธุรกิจ 1', 'Communicative Business English 1'], EL321: ['ภาษาอังกฤษเชิงธุรกิจ 2', 'Communicative Business English 2']
+};
+// terms: 'year-term' → [course codes, open slots]; slot keys: ge (GenEd), core (business core of your choice), major (major
+// elective), minor (minor or elective), free (free elective). "x|y" = the document allows either order.
+var TU_PLANS = [
+  { id: 'tbs-bbai-66-fn', th: 'BBA นานาชาติ 2566 · วิชาเอกการเงิน', en: 'BBA International 2566 · Finance', terms: {
+    '1-1': [['AC201|HR201', 'BA204'], { ge: 4 }], '1-2': [['HR201|AC201', 'IS201|MK201'], { ge: 3 }],
+    '2-1': [['FN201', 'MK201|IS201', 'BA202', 'EC213', 'FN211'], { ge: 1 }], '2-2': [['AC202', 'OM201', 'BA201', 'EC214', 'FN311'], { ge: 1 }],
+    '3-1': [['EL221', 'FN312', 'FN314'], { major: 2, minor: 1 }], '3-2': [['EL321', 'FN313', 'FN411'], { major: 1, minor: 2 }],
+    '4-1': [['BA401', 'FN412'], { major: 2, minor: 2 }], '4-2': [[], { major: 1, free: 2 }] } },
+  { id: 'tbs-bbai-66-mk', th: 'BBA นานาชาติ 2566 · วิชาเอกการตลาด', en: 'BBA International 2566 · Marketing', terms: {
+    '1-1': [['AC201'], { ge: 4, core: 1 }], '1-2': [['BA204', 'AC202', 'MK201'], { ge: 3 }],
+    '2-1': [['MK211'], { ge: 3, core: 2 }], '2-2': [['MK311', 'MK312'], { core: 3, major: 1 }],
+    '3-1': [['MK313'], { core: 2, major: 1, minor: 2 }], '3-2': [['MK318'], { core: 1, major: 2, minor: 2 }],
+    '4-1': [['MK412'], { core: 1, major: 1, minor: 2 }], '4-2': [[], { core: 1, major: 1, minor: 2 }] } }
+];
 var TU_CATALOG = (function () {
   var out = {};
   TU_GENED.forEach(function (r) { out[r[1]] = { code: r[1], n: r[3], aka: r[3], th: r[2], cr: r[4], ge: true, group: r[0], sourceUrl: TU_GENED_SOURCE }; });
   TU_TBS.forEach(function (r) { if (!out[r[0]]) out[r[0]] = { code: r[0], n: r[1], aka: r[1], th: '', cr: r[2], sourceUrl: TU_TBS_SOURCE }; });
+  Object.keys(TU_PLAN_COURSES).forEach(function (k) { var v = TU_PLAN_COURSES[k], en = v[1].replace(/\*$/, '');
+    if (out[k]) { out[k].th = out[k].th || v[0]; } else out[k] = { code: k, n: en, aka: en, th: v[0], cr: 3, sourceUrl: TU_PLAN_SOURCE }; });
   return out;
 })();
 function tuCode(code) { return String(code || '').toUpperCase().replace(/\s+/g, '').split('.')[0]; }
@@ -3878,41 +3921,71 @@ function TuPlanModal(p) {
   var semsAll = C.orderedSemesters ? C.orderedSemesters(state) : state.semesters;
   var ss = useState(props.semesterId || (curSemester(state) || latestSemester(state) || {}).id || ''), semId = ss[0], setSemId = ss[1];
   var gs = useState('ge1'), grp = gs[0], setGrp = gs[1];
+  var ms = useState(props.mode || 'plan'), mode = ms[0], setMode = ms[1];
+  var pls = useState(state.settings.tuPlanId || TU_PLANS[0].id), planId = pls[0], setPlanId = pls[1];
+  var semObj = state.semesters.find(function (x) { return x.id === semId; }), yObj = semObj && state.years.find(function (y) { return y.id === semObj.yearId; });
+  var tks = useState((yObj && yObj.level ? yObj.level : 1) + '-' + (semObj && semObj.kind === 's2' ? 2 : 1)), termKey = tks[0], setTermKey = tks[1];
+  var plan = TU_PLANS.find(function (x) { return x.id === planId; }) || TU_PLANS[0];
+  var cell = plan.terms[termKey] || [[], {}];
+  var planRows = cell[0].map(function (c) { var alt = c.split('|'), code = alt[0], v = TU_PLAN_COURSES[code] || [code, code];
+    return { code: code, alt: alt[1] || null, name: v[1].replace(/\*$/, ''), sub: v[0], cr: 3 }; });
   var ks = useState({}), pick = ks[0], setPick = ks[1];
   var have = {}; state.courses.forEach(function (c) { have[tuCode(c.code)] = 1; });
   var groups = [1, 2, 3, 4, 5].map(function (g) { return { k: 'ge' + g, l: 'GenEd ' + g, full: t('tuge.g' + g) }; })
     .concat(Object.keys(TU_PREFIX).map(function (k) { return { k: k, l: t(TU_PREFIX[k]), full: t(TU_PREFIX[k]) + ' (TBS)' }; }));
-  var list = grp.indexOf('ge') === 0 ? TU_GENED.filter(function (r) { return 'ge' + r[0] === grp; }).map(function (r) { return { code: r[1], name: LANG === 'th' ? r[2] : r[3], sub: LANG === 'th' ? r[3] : r[2], cr: r[4], ge: true }; })
+  var list = mode === 'plan' ? planRows : grp.indexOf('ge') === 0 ? TU_GENED.filter(function (r) { return 'ge' + r[0] === grp; }).map(function (r) { return { code: r[1], name: r[3], sub: r[2], cr: r[4], ge: true }; })
     : TU_TBS.filter(function (r) { return r[0].indexOf(grp) === 0; }).map(function (r) { return { code: r[0], name: r[1], sub: 'TBS BBA', cr: r[2], ge: false }; });
   var chosen = Object.keys(pick).filter(function (k) { return pick[k]; });
+  // Plan mode: every plan course not yet added is ticked unless the student unticks it.
+  if (mode === 'plan') chosen = planRows.filter(function (x) { return !have[x.code] && pick[x.code] !== false; }).map(function (x) { return x.code; });
   function add() {
-    if (!semId || !chosen.length) return;
-    var all = TU_GENED.map(function (r) { return { code: r[1], name: LANG === 'th' ? r[2] : r[3], cr: r[4], ge: true }; }).concat(TU_TBS.map(function (r) { return { code: r[0], name: r[1], cr: r[2], ge: false }; }));
+    if ((mode !== 'plan' && !semId) || !chosen.length) return;
+    var all = TU_GENED.map(function (r) { return { code: r[1], name: r[3], cr: r[4], ge: true }; }).concat(TU_TBS.map(function (r) { return { code: r[0], name: r[1], cr: r[2], ge: false }; }))
+      .concat(Object.keys(TU_PLAN_COURSES).map(function (k) { var v = TU_PLAN_COURSES[k]; return { code: k, name: v[1].replace(/\*$/, ''), cr: 3, ge: false }; }));
     update(function (d) {
+      var target = semId;
+      if (mode === 'plan') {
+        // Plan mode adds to the plan's own year/term, creating that year/term if it doesn't exist yet.
+        var yt = termKey.split('-'), lv = +yt[0], kind = 's' + yt[1];
+        var y = d.years.find(function (x) { return +x.level === lv; });
+        if (!y) { y = { id: Store.uid('y-'), level: lv, name: '', academic: '' }; d.years.push(y); }
+        var sm = d.semesters.find(function (x) { return x.yearId === y.id && x.kind === kind; });
+        if (!sm) { sm = { id: Store.uid('s-'), yearId: y.id, kind: kind, name: '' }; d.semesters.push(sm); }
+        target = sm.id;
+      }
       chosen.forEach(function (code) {
         var x = all.find(function (y) { return y.code === code; }); if (!x || d.courses.some(function (c) { return tuCode(c.code) === code; })) return;
-        var c = { id: Store.uid('c-'), semesterId: semId, name: x.name, code: x.code, credits: x.cr, section: '', instructor: '', target: null,
+        var c = { id: Store.uid('c-'), semesterId: target, name: x.name, code: x.code, credits: x.cr, section: '', instructor: '', target: null,
           scaleId: 'scale-th', gradingMode: 'unknown', targetPct: null, kind: x.ge ? 'gened' : 'required', color: COLORS[d.courses.length % COLORS.length], finalGrade: null };
         d.courses.push(c); Store.placeCourse(d, c.id);
       });
+      if (mode === 'plan') d.settings.tuPlanId = plan.id;
     }, { undo: true });
     toast(t('tup.added', { n: chosen.length }), { undo: true }); closeModal();
   }
   return html`<${Modal} title=${t('tup.title')} onClose=${closeModal} wide=${true}>
     <div className="stack" data-testid="tu-plan" style=${{ gap: 10 }}>
-      <p className="small muted" style=${{ margin: 0 }}>${t('tup.intro')}</p>
-      <div className="tup-groups" role="tablist">${groups.map(function (g) { return html`<button key=${g.k} type="button" role="tab" aria-selected=${grp === g.k ? 'true' : 'false'} className=${'chat-chip' + (grp === g.k ? ' on' : '')} title=${g.full} onClick=${function () { setGrp(g.k); }}>${g.l}</button>`; })}</div>
-      <div className="small"><b>${(groups.find(function (g) { return g.k === grp; }) || {}).full}</b></div>
+      <${Seg} label=${t('tup.title')} value=${mode} onChange=${function (v) { setMode(v); setPick({}); }} options=${[{ v: 'plan', l: t('tup.byPlan') }, { v: 'browse', l: t('tup.byGroup') }]} />
+      ${mode === 'plan' ? html`<${React.Fragment}>
+        <select className="select" value=${planId} aria-label=${t('tup.plan')} onChange=${function (e) { setPlanId(e.target.value); setPick({}); }}>
+          ${TU_PLANS.map(function (x) { return html`<option key=${x.id} value=${x.id}>${LANG === 'th' ? x.th : x.en}</option>`; })}</select>
+        <div className="tup-groups" role="tablist" aria-label=${t('tup.yearTerm')}>${Object.keys(plan.terms).map(function (k) { var yt = k.split('-');
+          return html`<button key=${k} type="button" role="tab" aria-selected=${termKey === k ? 'true' : 'false'} className=${'chat-chip' + (termKey === k ? ' on' : '')} onClick=${function () { setTermKey(k); setPick({}); }}>${t('tup.yt', { y: yt[0], t: yt[1] })}</button>`; })}</div>
+        ${Object.keys(cell[1]).length > 0 && html`<div className="small muted">${t('tup.plus')} ${Object.keys(cell[1]).map(function (k) { return t('tup.slot.' + k, { n: cell[1][k] }); }).join(' · ')}</div>`}
+        ${!planRows.length && html`<p className="small muted" style=${{ margin: 0 }}>${t('tup.noFixed')}</p>`}
+      <//>` : html`<p className="small muted" style=${{ margin: 0 }}>${t('tup.intro')}</p>`}
+      ${mode === 'browse' && html`<div className="tup-groups" role="tablist">${groups.map(function (g) { return html`<button key=${g.k} type="button" role="tab" aria-selected=${grp === g.k ? 'true' : 'false'} className=${'chat-chip' + (grp === g.k ? ' on' : '')} title=${g.full} onClick=${function () { setGrp(g.k); }}>${g.l}</button>`; })}</div>`}
+      ${mode === 'browse' && html`<div className="small"><b>${(groups.find(function (g) { return g.k === grp; }) || {}).full}</b></div>`}
       <div className="me-list card">${list.map(function (x) { return html`<label key=${x.code} className="me-row tup-row">
-        <input type="checkbox" disabled=${!!have[x.code]} checked=${!!have[x.code] || !!pick[x.code]} onChange=${function (e) { var n = Object.assign({}, pick); n[x.code] = e.target.checked; setPick(n); }} />
-        <span className="grow"><b className="num">${x.code}</b> ${x.name}<span className="tiny muted" style=${{ display: 'block' }}>${x.sub} · ${t('nCredits', { n: x.cr })}${have[x.code] ? ' · ' + t('tuge.have') : ''}</span></span></label>`; })}</div>
+        <input type="checkbox" disabled=${!!have[x.code]} checked=${!!have[x.code] || (mode === 'plan' ? pick[x.code] !== false : !!pick[x.code])} onChange=${function (e) { var n = Object.assign({}, pick); n[x.code] = e.target.checked; setPick(n); }} />
+        <span className="grow"><b className="num">${x.code}</b> ${x.name}<span className="tiny muted" style=${{ display: 'block' }}>${x.sub} · ${t('nCredits', { n: x.cr })}${x.alt ? ' · ' + t('tup.orAlt', { c: x.alt }) : ''}${have[x.code] ? ' · ' + t('tuge.have') : ''}</span></span></label>`; })}</div>
       <div className="row wrap" style=${{ gap: 8 }}>
-        <select className="select" style=${{ width: 'auto' }} value=${semId} aria-label=${t('tup.toTerm')} onChange=${function (e) { setSemId(e.target.value); }}>
+        ${mode === 'plan' ? html`<span className="small muted">${t('tup.into', { y: termKey.split('-')[0], t: termKey.split('-')[1] })}</span>` : html`<select className="select" style=${{ width: 'auto' }} value=${semId} aria-label=${t('tup.toTerm')} onChange=${function (e) { setSemId(e.target.value); }}>
           ${!semsAll.length && html`<option value="">${t('tup.noTerm')}</option>`}
-          ${semsAll.map(function (x) { return html`<option key=${x.id} value=${x.id}>${semFull(state, x)}</option>`; })}</select>
-        <button className="btn primary" data-testid="tup-add" disabled=${!semId || !chosen.length} onClick=${add}>${t('tup.add', { n: chosen.length })}</button>
+          ${semsAll.map(function (x) { return html`<option key=${x.id} value=${x.id}>${semFull(state, x)}</option>`; })}</select>`}
+        <button className="btn primary" data-testid="tup-add" disabled=${(mode !== 'plan' && !semId) || !chosen.length} onClick=${add}>${t('tup.add', { n: chosen.length })}</button>
       </div>
-      <p className="tiny muted" style=${{ margin: 0 }}>${t('tup.note')}</p>
+      <p className="tiny muted" style=${{ margin: 0 }}>${mode === 'plan' ? html`${t('tup.planNote')} <a href=${TU_PLAN_SOURCE} target="_blank" rel="noopener noreferrer">↗</a>` : t('tup.note')}</p>
     </div><//>`;
 }
 function TuGenEdModal(p) {
@@ -3926,7 +3999,7 @@ function TuGenEdModal(p) {
     ${[1, 2, 3, 4, 5].map(function (g) {
       var list = rows.filter(function (r) { return r[0] === g; }); if (!list.length) return null;
       return html`<div key=${g} className="tuge-group"><h3>${g}. ${t('tuge.g' + g)}</h3>
-        ${list.map(function (r) { return html`<div key=${r[1]} className="tuge-row"><div className="grow"><b className="num">${r[1]}</b> ${LANG === 'th' ? r[2] : r[3]}<div className="tiny muted">${LANG === 'th' ? r[3] : r[2]} · ${t('nCredits', { n: r[4] })}</div></div>
+        ${list.map(function (r) { return html`<div key=${r[1]} className="tuge-row"><div className="grow"><b className="num">${r[1]}</b> ${r[3]}<div className="tiny muted">${r[2]} · ${t('nCredits', { n: r[4] })}</div></div>
           ${have[r[1]] ? html`<span className="small muted">${t('tuge.have')}</span>` : html`<button className="btn sm" disabled=${!semId} onClick=${function () { closeModal(); openModal('course', { semesterId: semId, catalogCode: r[1] }); }}><${Icon} n="plus" s=${14} />${t('tuge.add')}</button>`}</div>`; })}</div>`;
     })}
     <p className="tiny muted">${t('tuge.source')} <a href=${TU_GENED_SOURCE} target="_blank" rel="noopener noreferrer">↗</a></p><//>`;

@@ -355,10 +355,18 @@ async function runTU(browser, lang, width) {
   await page.locator('.courses-actions .btn').nth(1).click();
   await page.getByTestId('tu-plan').waitFor({timeout:5000}).catch(()=>errors.push('TU plan picker did not open'));
   if(await page.locator('.modal').filter({hasText:/บริหารธุรกิจ|ปี 1 เทอม 1 ของ/}).count()) errors.push('Chula plan window shown in TU space');
-  await page.locator('.tup-groups button').filter({hasText:/บัญชี|Accounting/}).click();
-  await page.locator('.tup-row').filter({hasText:'AC201'}).locator('input').check();
+  // By study plan (TBS BBA International 2566, Finance, year 1 term 1): plan courses come ticked.
+  if(await page.locator('.tup-row').filter({hasText:'BA204'}).count()!==1) errors.push('Finance Y1T1 plan should list BA204');
   await page.getByTestId('tup-add').click(); await page.waitForTimeout(300);
-  if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')))) errors.push('TU picker did not add AC201');
+  if(!(await page.evaluate(()=>['AC201','BA204'].every(k=>GradeSpace.S.state.courses.some(c=>c.code===k))))) errors.push('plan did not add AC201 + BA204');
+  if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(x=>x.code==='BA204');const sm=GradeSpace.S.state.semesters.find(x=>x.id===c.semesterId);const y=GradeSpace.S.state.years.find(x=>x.id===sm.yearId);return sm.kind==='s1'&&+y.level===1;}))) errors.push('plan course not placed in year 1 term 1');
+  // Browse by group.
+  await page.locator('.courses-actions .btn').nth(1).click(); await page.getByTestId('tu-plan').waitFor();
+  await page.getByTestId('tu-plan').locator('.seg button').nth(1).click();
+  await page.locator('.tup-groups button').filter({hasText:/การเงิน|Finance/}).click();
+  await page.locator('.tup-row').filter({hasText:'FN201'}).locator('input').check();
+  await page.getByTestId('tup-add').click(); await page.waitForTimeout(300);
+  if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='FN201')))) errors.push('TU picker did not add FN201');
   // Switch to Chula and back: each space comes back intact, nothing deleted.
   const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
   await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
