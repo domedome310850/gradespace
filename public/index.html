@@ -1022,6 +1022,13 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 :root[data-uni="tu"] .nav-item[aria-current="page"]{box-shadow:inset 3px 0 var(--tu-gold);color:var(--accent-text)}
 :root[data-uni="tu"] .bottomnav a[aria-current="page"]{color:var(--tu-gold-text);box-shadow:inset 0 -2px var(--tu-gold)}
 :root[data-uni="tu"] .nav-ai-dot,:root[data-uni="tu"] .ai-fab{background:#FFD13F;color:#8C1D2C;box-shadow:0 0 0 4px var(--surface)}
+/* CU: rich campus pink plus fresh petal pink, mirroring the TU two-tone system. */
+:root[data-uni="cu"] .nav-ai-dot,:root[data-uni="cu"] .ai-fab{background:#F4A5C9;color:#891749;box-shadow:0 0 0 4px var(--surface)}
+:root[data-uni="cu"] .nav-item[aria-current="page"]{box-shadow:inset 3px 0 #E86BA5}
+:root[data-uni="cu"] .bottomnav a[aria-current="page"]{box-shadow:inset 0 -2px #E86BA5}
+:root[data-uni="cu"] .metric.hero{box-shadow:inset 0 3px #E86BA5,var(--shadow)}
+:root[data-uni="cu"] .btn.primary{border-color:#A71D5D}
+:root[data-uni="cu"] .btn.primary:hover{border-color:#891749}
 /* AI sidebar is a single highlighted row: white label and glyph, campus-tinted background only. */
 :root[data-uni] .side .nav-ai-main{background:var(--ai-highlight);color:#FFFFFF;border-color:transparent}
 :root[data-uni] .side .nav-ai-main:hover{background:var(--ai-highlight-hover);color:#FFFFFF;border-color:transparent}
@@ -4688,9 +4695,9 @@ function uniContrast(a, b) { var x = uniLum(a), y = uniLum(b); return (Math.max(
 function uniReadable(col, bg, dark) { for (var i = 0; i < 30 && uniContrast(col, bg) < 4.5; i++) col = uniMix(col, dark ? '#FFFFFF' : '#000000', .16); return col; }
 function applyUniTheme(uni, dark) {
   var el=document.documentElement, tu=uni==='tu', bg=dark?'#1C1C20':'#FFFFFF';
-  var base=tu?'#8C1D2C':'#9C436B';
-  var a=dark?(tu?'#D8B84C':'#D6A2B9'):base;
-  var soft=tu?(dark?'#382124':'#F6ECEE'):uniMix(bg,a,dark?.09:.06);
+  var base=tu?'#8C1D2C':'#A71D5D';
+  var a=dark?(tu?'#D8B84C':'#F4A5C9'):base;
+  var soft=tu?(dark?'#382124':'#F6ECEE'):(dark?'#38232F':'#FCEBF3');
   var txt=uniReadable(dark?a:base,soft,dark);
   var ink=uniContrast(a,'#000000')>=uniContrast(a,'#FFFFFF')?'#000000':'#FFFFFF';
   var hover=uniMix(a,dark?'#FFFFFF':'#000000',.10);
@@ -4702,8 +4709,9 @@ function applyUniTheme(uni, dark) {
   var campusKeys=['--action','--action-hover','--action-ink','--tu-gold','--tu-gold-text','--tu-gold-soft','--tu-red-border','--ai-highlight','--ai-highlight-hover'];
   campusKeys.forEach(function(k){el.style.removeProperty(k);});
   if(tu)Object.assign(v,{'--action':'#8C1D2C','--action-hover':'#741726','--action-ink':'#FFFFFF','--tu-gold':'#D8B84C','--tu-gold-text':dark?'#E4C35E':'#806016','--tu-gold-soft':dark?'#322B1D':'#F8F3E3','--tu-red-border':dark?'#C65B50':'#8C1D2C'});
-  v['--ai-highlight']=tu?(dark?'#512A2C':'#8C1D2C'):(dark?'#533543':'#84506A');
-  v['--ai-highlight-hover']=tu?(dark?'#653337':'#741726'):(dark?'#694355':'#713E59');
+  if(!tu)Object.assign(v,{'--action':'#A71D5D','--action-hover':'#891749','--action-ink':'#FFFFFF'});
+  v['--ai-highlight']=tu?(dark?'#512A2C':'#8C1D2C'):(dark?'#70264B':'#A71D5D');
+  v['--ai-highlight-hover']=tu?(dark?'#653337':'#741726'):(dark?'#843057':'#891749');
   Object.keys(v).forEach(function(k){el.style.setProperty(k,v[k]);});
   el.setAttribute('data-uni',tu?'tu':'cu');
   var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#151517':'#F7F8FA';
