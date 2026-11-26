@@ -1,3 +1,8 @@
+## 2026-11-26 — ChatGPT: prioritize TBS Thai curriculum and assessment sources
+
+- `public/index.html`: Thai 2566 degree-audit reference for all eight majors, including track choices, GenEd alternatives and official source links; RB211 historical grading weights only (no fabricated cutoffs). No graduation claims or student state changes.
+- `tests/tu-catalog.mjs`: verify credit sums, track counts and absent cutoffs; `docs/tu-public-data.md`: source scope. Browser tests and full visual verification pending.
+
 ## 2026-11-26 — ChatGPT: expand TU public academic catalog and syllabus references
 
 - `public/index.html`: 229 GenEd 2566 rows and 208 BBA 2023 rows from official TU sources; 429 unique catalog codes including three social-administration syllabi. Expand picker prefixes, deduplicate GenEd overlap, expose prerequisites and section/term-scoped syllabus score weights and grade floors as reference only. No automatic grading or student data changes. Note 2570 curriculum is different.

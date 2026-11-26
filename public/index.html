@@ -4358,6 +4358,48 @@ var TU_SYLLABI = [
       ]
     ],
     "attendance": 80
+  },
+  {
+    "code": "RB211",
+    "th": "ความรู้เบื้องต้นเกี่ยวกับธุรกิจอสังหาริมทรัพย์",
+    "en": "Introduction to Real Estate Business",
+    "credits": 3,
+    "year": 2564,
+    "term": 1,
+    "sections": [
+      "8700/01"
+    ],
+    "campus": null,
+    "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2019/01/RB211-Course-Syllabus-1-64-870001-%E0%B8%AD.%E0%B8%94%E0%B8%A3.%E0%B8%9E%E0%B8%A3%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C.pdf",
+    "pages": "2",
+    "cutoffs": null,
+    "weights": [
+      [
+        "อภิปราย/มีส่วนร่วมและศึกษาดูงาน",
+        "Participation and site visit",
+        10
+      ],
+      [
+        "สอบย่อย",
+        "Quiz",
+        10
+      ],
+      [
+        "งานชิ้นที่ 1",
+        "Assignment 1",
+        20
+      ],
+      [
+        "งานชิ้นที่ 2 และนำเสนอ",
+        "Assignment 2 and presentation",
+        20
+      ],
+      [
+        "สอบปลายภาค",
+        "Final",
+        40
+      ]
+    ]
   }
 ];
 var TU_CATALOG = (function () {
@@ -4478,7 +4520,369 @@ function TuRulesCard(p) {
 }
 // Thammasat "pick courses" (replaces the Chula major/year plan windows in a TU space). Grouped by GenEd
 // group and by TBS subject prefix; adds the ticked courses to one term. Year-by-year TU plans aren't in yet.
+var TU_TBS_THAI_2566 = {
+  "curriculumYear": 2566,
+  "program": "TBS Thai undergraduate",
+  "minGenEd": 30,
+  "minSpecialized": 99,
+  "minFreeElective": 6,
+  "minTotal": 135,
+  "genEdSlots": [
+    [
+      "TU100"
+    ],
+    [
+      "TU101",
+      "TU109"
+    ],
+    [
+      "TU102"
+    ],
+    [
+      "TU103",
+      "TU107"
+    ],
+    [
+      "LAS101"
+    ],
+    [
+      "EL105"
+    ],
+    [
+      "TU106"
+    ],
+    [
+      "EL125"
+    ],
+    [
+      "EL295"
+    ]
+  ],
+  "genEdOtherCredits": 3,
+  "core": [
+    "BA201",
+    "BA202",
+    "BA204",
+    "BA401",
+    "AC201",
+    "AC202",
+    "FN201",
+    "MK201",
+    "IS201",
+    "HR201",
+    "OM201",
+    "EC213",
+    "EC214",
+    "EL221",
+    "EL321"
+  ],
+  "accountingCore": [
+    "BA201",
+    "BA202",
+    "BA204",
+    "BA401",
+    "AC201",
+    "FN201",
+    "MK201",
+    "IS201",
+    "HR201",
+    "OM201",
+    "EC213",
+    "EC214",
+    "EL221",
+    "EL321"
+  ],
+  "majorMinGrade": "C",
+  "majorMinGpa": 2,
+  "majors": [
+    {
+      "id": "AC",
+      "th": "การบัญชี",
+      "en": "Accounting",
+      "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2023/10/AC-66.pdf",
+      "coreCredits": 42,
+      "required": [
+        {
+          "labelTh": "เอกบัญชี",
+          "labelEn": "Accounting",
+          "codes": [
+            "AC311",
+            "AC312",
+            "AC313",
+            "AC314",
+            "AC315",
+            "AC316",
+            "AC317",
+            "AC318",
+            "AC411",
+            "AC412",
+            "AC413"
+          ],
+          "credits": 33
+        }
+      ],
+      "majorElective": 3,
+      "other": 21
+    },
+    {
+      "id": "FN",
+      "th": "การเงิน",
+      "en": "Finance",
+      "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2023/10/FN-66.pdf",
+      "coreCredits": 45,
+      "required": [
+        {
+          "labelTh": "เอกการเงิน",
+          "labelEn": "Finance",
+          "codes": [
+            "FN211",
+            "FN311",
+            "FN312",
+            "FN313",
+            "FN314",
+            "FN411",
+            "FN412"
+          ],
+          "credits": 21
+        }
+      ],
+      "majorElective": 18,
+      "other": 15
+    },
+    {
+      "id": "MK",
+      "th": "การตลาด",
+      "en": "Marketing",
+      "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2023/10/MK-66.pdf",
+      "coreCredits": 45,
+      "required": [
+        {
+          "labelTh": "เอกการตลาด",
+          "labelEn": "Marketing",
+          "codes": [
+            "MK211",
+            "MK311",
+            "MK312",
+            "MK313",
+            "MK314",
+            "MK315",
+            "MK316",
+            "MK317",
+            "MK318",
+            "MK319",
+            "MK411",
+            "MK412"
+          ],
+          "credits": 36
+        }
+      ],
+      "majorElective": 0,
+      "other": 18
+    },
+    {
+      "id": "IS",
+      "th": "ระบบสารสนเทศเพื่อการจัดการ",
+      "en": "Management Information Systems",
+      "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2023/10/IS-66.pdf",
+      "coreCredits": 45,
+      "required": [
+        {
+          "labelTh": "เอกระบบสารสนเทศ",
+          "labelEn": "MIS",
+          "codes": [
+            "IS311",
+            "IS312",
+            "IS313",
+            "IS314",
+            "IS315",
+            "IS317",
+            "IS318",
+            "IS319",
+            "IS411",
+            "IS415",
+            "IS416"
+          ],
+          "credits": 33
+        }
+      ],
+      "majorElective": 9,
+      "other": 12
+    },
+    {
+      "id": "MOEH",
+      "th": "การบริหารองค์การ การประกอบการ และทรัพยากรมนุษย์",
+      "en": "Management, Entrepreneurship and HR",
+      "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2023/10/MOEH-66.pdf",
+      "coreCredits": 45,
+      "required": [
+        {
+          "labelTh": "ทรัพยากรมนุษย์",
+          "labelEn": "Human Resources",
+          "codes": [
+            "HR211",
+            "ER211",
+            "HR212",
+            "HR311",
+            "HR312",
+            "HR313",
+            "HR314",
+            "HR315",
+            "HR316",
+            "HR317",
+            "HR411"
+          ],
+          "credits": 33
+        },
+        {
+          "labelTh": "ผู้ประกอบการและการบริหาร",
+          "labelEn": "Entrepreneurship and Management",
+          "codes": [
+            "ER211",
+            "HR212",
+            "HR311",
+            "ER311",
+            "ER312",
+            "ER313",
+            "ER314",
+            "ER315",
+            "ER411",
+            "ER412"
+          ],
+          "credits": 30
+        }
+      ],
+      "majorElective": null,
+      "other": null
+    },
+    {
+      "id": "OM",
+      "th": "บริหารการปฏิบัติการ",
+      "en": "Operations Management",
+      "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2023/10/OM-66.pdf",
+      "coreCredits": 45,
+      "required": [
+        {
+          "labelTh": "เอกบริหารการปฏิบัติการ",
+          "labelEn": "Operations Management",
+          "codes": [
+            "OM311",
+            "OM312",
+            "OM313",
+            "OM314",
+            "OM315",
+            "OM316",
+            "OM412",
+            "OM413",
+            "OM414",
+            "OM319"
+          ],
+          "credits": 30
+        }
+      ],
+      "majorElective": 6,
+      "other": 18
+    },
+    {
+      "id": "IBLT",
+      "th": "ธุรกิจระหว่างประเทศ โลจิสติกส์และการขนส่ง",
+      "en": "International Business, Logistics and Transport",
+      "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2023/10/IBLT-66.pdf",
+      "coreCredits": 45,
+      "required": [
+        {
+          "labelTh": "ธุรกิจระหว่างประเทศ",
+          "labelEn": "International Business",
+          "codes": [
+            "IB211",
+            "IB312",
+            "IB324",
+            "IB332",
+            "IB421",
+            "IB423"
+          ],
+          "credits": 18
+        },
+        {
+          "labelTh": "โลจิสติกส์",
+          "labelEn": "Logistics",
+          "codes": [
+            "IT211",
+            "IB211",
+            "IB312",
+            "LO212",
+            "LO341",
+            "LO342",
+            "LO441",
+            "LO442",
+            "LO443",
+            "LO498"
+          ],
+          "credits": 30
+        },
+        {
+          "labelTh": "การขนส่งระหว่างประเทศ",
+          "labelEn": "International Transport",
+          "codes": [
+            "IT211",
+            "IB312",
+            "IT371",
+            "IT372",
+            "IT461",
+            "IT462"
+          ],
+          "credits": 18
+        }
+      ],
+      "majorElective": null,
+      "other": null
+    },
+    {
+      "id": "RE",
+      "th": "ธุรกิจอสังหาริมทรัพย์",
+      "en": "Real Estate",
+      "source": "https://www.tbs.tu.ac.th/wp-content/uploads/2023/10/RE-66.pdf",
+      "coreCredits": 45,
+      "required": [
+        {
+          "labelTh": "เอกอสังหาริมทรัพย์",
+          "labelEn": "Real Estate",
+          "codes": [
+            "RB211",
+            "RB212",
+            "RB311",
+            "RB312",
+            "RB313",
+            "RB315",
+            "RB316",
+            "RB411",
+            "RB412",
+            "RB413",
+            "RB414",
+            "RB415"
+          ],
+          "credits": 36
+        }
+      ],
+      "majorElective": 0,
+      "other": 18
+    }
+  ]
+};
 var TU_PREFIX = { AC: 'tup.ac', FN: 'tup.fn', IS: 'tup.is', HR: 'tup.mg' };
+function TuTbsCurriculumReference() {
+  var th=LANG==='th', data=TU_TBS_THAI_2566, sel=useState('AC'), id=sel[0], setId=sel[1];
+  var major=data.majors.find(function(x){return x.id===id;})||data.majors[0];
+  return html`<details className="card pad stack" data-testid="tu-tbs-curriculum"><summary style=${{cursor:'pointer',fontWeight:600}}>${th?'พาณิชย์ มธ. — โครงสร้างหลักสูตรไทย 2566':'TBS Thai programs — 2023 curriculum reference'}</summary>
+    <p className="small muted">${th?'อ้างอิงใบกระจายโครงสร้าง ไม่ใช่ผลตรวจจบหรือแผนรายเทอม ใช้เฉพาะหลักสูตรไทย 2566':'Reference from degree audit forms, not a graduation decision or term plan. Thai programs, 2023 revision only.'}</p>
+    <select className="select" aria-label=${th?'สาขาวิชา':'Major'} value=${id} onChange=${function(e){setId(e.target.value);}}>${data.majors.map(function(x){return html`<option key=${x.id} value=${x.id}>${th?x.th:x.en}</option>`;})}</select>
+    <div className="small">${th?'ขั้นต่ำ 135 หน่วยกิต: ศึกษาทั่วไป 30 · วิชาเฉพาะ 99 · เลือกเสรี 6':'Minimum 135 credits: GenEd 30 · specialized 99 · free electives 6'}</div>
+    <div className="small"><b>${th?'GenEd ของคณะ':'TBS GenEd requirements'}</b><p>${data.genEdSlots.map(function(x){return x.join(' / ');}).join(' · ')} · ${th?'เลือกอีก 1 วิชา 3 หน่วยกิต':'one additional 3-credit GenEd'}</p></div>
+    <div className="small"><b>${th?'วิชาแกนร่วม':'Core'} · ${major.coreCredits} ${th?'หน่วยกิต':'credits'}</b><p>${(id==='AC'?data.accountingCore:data.core).join(' · ')}</p></div>
+    ${major.required.map(function(x){return html`<div key=${x.labelEn} className="small"><b>${th?x.labelTh:x.labelEn} · ${x.credits} ${th?'หน่วยกิต':'credits'}</b><p>${x.codes.join(' · ')}</p></div>`;})}
+    <div className="small">${th?'วิชาเอกบังคับอย่างน้อย C; GPA วิชาเอกตามเงื่อนไขหลักสูตร ≥ 2.00':'Required major subjects need at least C; major GPA under curriculum rules ≥ 2.00.'}</div>
+    ${major.majorElective!==null&&html`<div className="small">${th?'เอกเลือก':'Major electives'}: ${major.majorElective} · ${th?'วิชาเลือกหรือโท':'Other electives/minor'}: ${major.other}</div>`}
+    <a className="small" href=${major.source} target="_blank" rel="noopener noreferrer">${th?'ใบกระจายโครงสร้างทางการ — เงื่อนไขฉบับเต็ม':'Official degree audit form — full requirements'}</a></details>`;
+}
 function TuPlanModal(p) {
   var state = useApp(), props = p.props || {};
   var semsAll = C.orderedSemesters ? C.orderedSemesters(state) : state.semesters;
@@ -4507,6 +4911,7 @@ function TuPlanModal(p) {
   return html`<${Modal} title=${t('tup.title')} onClose=${closeModal} wide=${true}>
     <div className="stack" data-testid="tu-plan" style=${{ gap: 10 }}>
       <p className="small muted" style=${{ margin: 0 }}>${t('tup.intro')}</p>
+      <${TuTbsCurriculumReference} />
       <div className="tup-groups" role="tablist">${groups.map(function (g) { return html`<button key=${g.k} type="button" role="tab" aria-selected=${grp === g.k ? 'true' : 'false'} className=${'chat-chip' + (grp === g.k ? ' on' : '')} title=${g.full} onClick=${function () { setGrp(g.k); }}>${g.l}</button>`; })}</div>
       <div className="small"><b>${(groups.find(function (g) { return g.k === grp; }) || {}).full}</b></div>
       <div className="me-list card">${list.map(function (x) { return html`<label key=${x.code} className="me-row tup-row">
@@ -7358,8 +7763,8 @@ function TuSourceCard(p) {
   return html`<section className="card pad stack" data-testid="tu-source-card"><h2>${th?'ข้อมูลอ้างอิงจากมหาวิทยาลัย':'University source information'}</h2>
     ${pre!==undefined&&html`<div><b>${th?'วิชาบังคับก่อน (BBA 2023)':'Prerequisite (BBA 2023)'}</b><p className="small">${pre} · <a href=${TU_TBS_SOURCE} target="_blank" rel="noopener noreferrer">${th?'ต้นฉบับ':'Source'}</a></p></div>`}
     ${rows.map(function(r){return html`<div key=${r.code+'-'+r.year+'-'+r.term} className="stack"><div className="banner info">${th?'ข้อมูลตามเอกสารของปี/กลุ่มที่ระบุเท่านั้น ไม่ใช้ตัดเกรดอัตโนมัติ โปรดตรวจสอบกับอาจารย์':'Reference for this published term/section only. Not applied to your grades automatically; confirm with your instructor.'}</div>
-      <b>${r.term}/${r.year} · ${r.sections.length?r.sections.join(', '):(th?'ไม่ระบุกลุ่ม':'Section unspecified')} · ${th?'รังสิต':'Rangsit'}</b>
-      <div className="row wrap">${Object.keys(r.cutoffs).map(function(g,i,keys){return html`<span key=${g} className="small num">${g}: ${r.cutoffs[g]}–${i===0?100:r.cutoffs[keys[i-1]]-1}%</span>`;})}</div>
+      <b>${r.term}/${r.year} · ${r.sections.length?r.sections.join(', '):(th?'ไม่ระบุกลุ่ม':'Section unspecified')}${r.campus==='Rangsit'?(th?' · รังสิต':' · Rangsit'):''}</b>
+      ${r.cutoffs?html`<div className="row wrap">${Object.keys(r.cutoffs).map(function(g,i,keys){return html`<span key=${g} className="small num">${g}: ${r.cutoffs[g]}–${i===0?100:r.cutoffs[keys[i-1]]-1}%</span>`;})}</div>`:html`<p className="small muted">${th?'เอกสารไม่ระบุคะแนนขั้นต่ำของแต่ละเกรด':'Letter grade cutoffs not stated in this document.'}</p>`}
       ${r.weights.map(function(w){return html`<div key=${w[1]} className="row between small"><span>${th?w[0]:w[1]}</span><b>${w[2]}%</b></div>`;})}
       ${r.attendance&&html`<p className="small muted">${th?'เงื่อนไขเวลาเรียน':'Attendance requirement'}: ${r.attendance}%</p>`}
       <a href=${r.source} target="_blank" rel="noopener noreferrer" className="small">${th?'เค้าโครงรายวิชา':'Course syllabus'} · ${th?'หน้า':'pp.'} ${r.pages}</a></div>`;})}</section>`;
