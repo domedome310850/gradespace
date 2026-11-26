@@ -30,8 +30,11 @@ Three required internship rows OM319, LO498, RB316 recovered from the full curri
 - FN201 1/2568 section 3200/01: third-party Scribd upload, 5/15/40/40 assessment split, explicitly norm-referenced. Labeled third-party-unverified; no numerical cutoffs or automatic policy application. Verify with lecturer or TBS before approval.
 
 ## User-supplied PDF audit (2026-11-26)
-- Received 37 PDF entries, 34 unique files (SHA-256 dedup), 408 unique pages. All pages rendered locally; detailed visual review is ongoing, not complete. Seven degree audit forms named 56-57 are curriculum 2556, NOT 2566; do not mix into the current program.
+- Received 37 PDF entries, 34 unique files (SHA-256 dedup), 408 unique pages. All pages rendered locally; detailed visual review is ongoing, not complete. Eight degree audit forms named 56-57 are curriculum 2556, NOT 2566; do not mix into the current program.
 - BA 2566 pp.83–84: IB printed year 4 term 2 total 9, four 3-credit rows sum to 12. Printed whole-plan 132, row sum 135. Preserve both. IT pp.87–88: 138; RB pp.89–90: 132; the actual source displays those totals, do not invent correction. Need faculty confirmation.
 - RB211 1/2564 sec 2300/01, pp.1–3: visually confirmed 20/40/40, no midterm, absence -2. RB313 pp.1,7–8: 10/15/30/45, curricula 2556/2561; prior page reference 6–7 was incorrect. No letter cutoff in either verified syllabus. Do not copy personal contact details.
 - Registrar regular undergraduate calendars for 2569 and 2570, both pages each visually reviewed. Added `TU_REG_CALENDAR_REFERENCES` with separate study/exam windows, online W and add/drop, not individual course exams. Source files named in data, source landing pages linked. No automatic calendar entries or user-state mutation.
 - Remaining detailed checks: all other curriculum pages and extracted catalog/prerequisites, all schedule rows (especially multi-slot pages), and additional uploaded exam grids; no claim of full visual review. IBMP BI syllabi, FN201 third-party source and GenEd PDF were not included in this ZIP.
+
+### Previously omitted final-exam pages
+Visual review of November four-year final notice pp.9,10,17,20,23: added 40 source-scoped section references (including 3 marked weekday/date conflict on p.23; printed Thursday 11 Dec 2569 vs actual Friday). Do not auto-use conflicted date. Omitted IS281 9000/01 on p.17 because code cells are blank; confirm from source. Schedule total 435 references; other 18 November pages and all other rows still need detailed visual review. No rooms, personal data or headcounts copied.

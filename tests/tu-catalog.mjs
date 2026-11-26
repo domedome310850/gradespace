@@ -40,7 +40,7 @@ assert.equal(termPlans.length,12);assert.equal(new Set(termPlans.map(x=>x.id)).s
 assert.ok(termPlans.every(x=>x.terms.length>=8&&x.terms.every(t=>t.credits>0&&t.rows.length>0)));
 assert.equal(termPlans.find(x=>x.id==='AC').total,135);
 assert.ok(termPlans.some(x=>x.id==='OM'&&x.terms.some(t=>t.term===3)));
-assert.equal(sched.length,395);assert.ok(sched.every(x=>x.codes.length===2&&x.source<src.length&&x.final&&/^\d{4}-\d{2}-\d{2}$/.test(x.final.date)));
+assert.equal(sched.length,435);assert.ok(sched.every(x=>x.codes.length===2&&x.source<src.length&&x.final&&/^\d{4}-\d{2}-\d{2}$/.test(x.final.date)));
 assert.ok(syllabi.filter(x=>x.code==='RB211').length===2);
 assert.equal(syllabi.find(x=>x.code==='RB313').weights.reduce((n,x)=>n+x[2],0),100);
 
@@ -56,3 +56,6 @@ assert.equal(calendars[1].terms[0].start,'2027-08-02');
 assert.equal(termPlans.find(x=>x.id==='IB').rowTotal,135);assert.equal(termPlans.find(x=>x.id==='IB').terms.find(t=>t.year===4&&t.term===2).rowCredits,12);
 assert.equal(syllabi.find(x=>x.code==='RB313').pages,'1, 7–8');
 assert.deepEqual(syllabi.find(x=>x.code==='RB313').curriculumYears,[2556,2561]);
+
+assert.equal(sched.filter(x=>x.reviewStatus==='weekday-conflict').length,3);
+assert.equal(sched.find(x=>x.source===9&&x.page===20&&x.codes[1]==='RB211').final.start,'09:00');

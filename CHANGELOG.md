@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: recover multi-slot TBS final-exam references from uploaded PDFs
+
+- Add 40 section references from five visually checked pages, preserving curriculum code pairs and flagging three weekday/date conflicts. No automatic calendar use.
+
 ## 2026-11-26 — ChatGPT: verify uploaded TBS PDF discrepancies and registrar calendars
 
 - Preserve printed and row-sum credits for IB, document source-confirmed IT/RB discrepancies; correct RB313 page and curriculum scope, verify RB211 weights. Add regular TU calendar reference for 2569–2570 from four visual pages. No automatic grading or calendar mutation.

@@ -143,3 +143,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
   (e.g. MIS year 4) have no published plan.
 
 - **TU public data audit, PR #33 (2026-11-26):** 12 TBS Thai sample plan variants, public schedule references, 2569/2570 registrar calendar references, historical syllabus data. User ZIP: 34 distinct PDFs/408 pages rendered; detailed visual check incomplete. IB/IT/RB discrepancies documented; never coerce source totals or auto-apply historical grades/exams. Curriculum 2556 forms are not 2566. See `docs/tu-public-data.md`; remaining tasks: visual row validation, live TU sync and safe program/section scoping, browser tests. Do not deploy draft without approval.
+
+- November final notice pp.9,10,17,20,23 visually reconciled; p.23 weekday/date conflict flagged, IS281 9000/01 blank code omitted. No automatic calendar insertion.
