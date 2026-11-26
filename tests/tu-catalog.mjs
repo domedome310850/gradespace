@@ -34,3 +34,12 @@ assert.equal(thaiCourses.find(x=>x[0]==='AC201')[4],'บช.201');
 const thaiPre=read('TU_TBS_THAI_PREREQ');
 assert.match(thaiPre.OM319[0][1],/87/);
 for(const m of thai.majors)for(const t of m.required)for(const code of t.codes)assert.ok(thaiCourses.some(x=>x[0]===code),code);
+
+const termPlans=read('TU_TBS_TERM_PLANS'), sched=read('TU_TBS_SCHEDULE_REFERENCES'), src=read('TU_TBS_SCHEDULE_SOURCES');
+assert.equal(termPlans.length,12);assert.equal(new Set(termPlans.map(x=>x.id)).size,12);
+assert.ok(termPlans.every(x=>x.terms.length>=8&&x.terms.every(t=>t.credits>0&&t.rows.length>0)));
+assert.equal(termPlans.find(x=>x.id==='AC').total,135);
+assert.ok(termPlans.some(x=>x.id==='OM'&&x.terms.some(t=>t.term===3)));
+assert.equal(sched.length,395);assert.ok(sched.every(x=>x.codes.length===2&&x.source<src.length&&x.final&&/^\d{4}-\d{2}-\d{2}$/.test(x.final.date)));
+assert.ok(syllabi.filter(x=>x.code==='RB211').length===2);
+assert.equal(syllabi.find(x=>x.code==='RB313').weights.reduce((n,x)=>n+x[2],0),100);

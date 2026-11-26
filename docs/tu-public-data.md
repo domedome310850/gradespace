@@ -18,3 +18,9 @@ This is a static, partial, source-backed snapshot used by the existing TU catalo
 
 ### TBS follow-up
 Three required internship rows OM319, LO498, RB316 recovered from the full curriculum (PDF text pages 40, 52, 65). Total Thai course rows 297, 528 distinct TU codes overall, all currently captured required/core codes now have title/credit data. 210 codes have explicitly labeled Thai-program prerequisite entries, scoped to source document and kept separate from BBA. EC311/EC312 credit discrepancy is flagged in the course reference; no global credit overwrite. For unknown grading policies, leave cutoffs unknown.
+
+## 2026-11-26 deeper TBS source discovery
+- Full Thai curriculum PDFs, §4.3.2.3: 12 sample plans; 99 term blocks including summer. Source Thai rows and printed totals retained; choices not flattened. Text extraction anomalies (including detached or mismatched credit cells and totals different from 135) require visual verification. Reference only, not automatic insertion.
+- Nine July 2569 departmental PDFs: 221 conservatively matched section rows with explicit two curriculum codes and two dated exams. November four-year final notice: 162 explicit section rows from single-time pages; skipped ambiguous pages 9, 10, 17, 20, 23. No room assignment or student counts copied. BBA 2/2569 tentative: 12 explicit first-section rows from October notice, not all offerings. Source URLs and status distinct, not applied to calendar. Missing rows are unknown, not no exam.
+- Additional syllabus: RB211 1/2564 section 2300/01 (20/40/40), RB313 1/2565 section 7800/01 (10/15/30/45), neither states letter-grade cutoffs. RB211 differs from section 8700/01 already captured.
+- Visual audit: web screenshot of Thai BA curriculum printed p.69 succeeded; most requested screenshots returned cache misses or access errors and direct download failed DNS. No claim of full visual validation. Review full images and confirm all rows before automated use.

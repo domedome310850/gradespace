@@ -1,3 +1,8 @@
+## 2026-11-26 — ChatGPT: TBS semester plans and schedule/assessment references
+
+- `public/index.html`: 12 source-scoped semester plans, 395 conservative schedule references, two additional historical TBS syllabi; no automatic application to grades, calendars or saved data. Distinguish curriculum code pairs, section/group, tentative and final notice.
+- `tests/tu-catalog.mjs` and `docs/tu-public-data.md`: source scope and integrity checks. Visual review incomplete, CI pending.
+
 ## 2026-11-26 — ChatGPT: TBS Thai prerequisite references and required internships
 
 - `public/index.html`: recover 3 internship course rows, 210 source-scoped Thai-program prerequisites, flag mismatched credits. All captured required/core codes have metadata. No automatic rules or student data changes.
