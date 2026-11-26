@@ -139,6 +139,28 @@ async function run(browser, lang, width) {
   await page.evaluate(()=>GradeSpace.update(d=>{const c=d.courses.find(x=>x.code==='2603111');if(c){d.courses=d.courses.filter(x=>x!==c);d.assessments=d.assessments.filter(a=>a.courseId!==c.id);d.categories=d.categories.filter(k=>k.courseId!==c.id);}}));
   if(await page.locator('.modal').count()) await page.keyboard.press('Escape');
   await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
+  // Hiding the floating AI button must not remove the permanent desktop entry.
+  if(width>900){
+    await page.locator('.ai-fab-x').click();
+    if(await page.locator('.ai-fab').count()) errors.push('floating AI button not hidden');
+    await page.getByTestId('sidebar-ai').click();
+    await page.getByTestId('ai-hub').waitFor();
+    await page.keyboard.press('Escape');
+    if(!(await page.getByTestId('sidebar-ai').isVisible())) errors.push('desktop AI entry disappeared');
+  }
+  // Course action replaces the scan shortcut, but direct scan remains available inside AI.
+  await page.evaluate(()=>location.hash='courses');
+  const courseAi=page.getByTestId('course-ai');
+  await courseAi.waitFor();
+  if(!(await courseAi.innerText()).includes('AI')) errors.push('course AI label missing');
+  if(await page.locator('.courses-actions .scan-icon').count()) errors.push('duplicate standalone scan shortcut');
+  await courseAi.click();
+  await page.getByTestId('ai-hub').waitFor();
+  if(!(await page.getByTestId('askai-open').isVisible())) errors.push('course AI cannot open external AI');
+  if(await page.locator('[data-testid="ai-hub"] .hub-tools .hub-row').count()!==3) errors.push('course AI lost in-app tools');
+  await page.keyboard.press('Escape');
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.locator('.side .nav-item[aria-current="page"][href="#dashboard"]').waitFor({state:'attached'});
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');

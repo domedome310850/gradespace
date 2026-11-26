@@ -163,3 +163,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner decision: direct TH/EN and light/dark controls beside profile on desktop and tablet (>=768px), not only within account menu. Phones keep the existing You settings and compact topbar. Browser CI pending.
 
 - Fresh TU space: course picker can create first term and add courses atomically, with explicit study year/B.E. year/term; no separate setup page. New tests exercise actual UI rather than injecting a semester. CI pending.
+
+- Owner decision: permanent AI item in desktop sidebar; floating AI may be hidden without losing access. Course scan shortcut becomes Add with AI, with clear bilingual explanation, direct scanning retained inside AI hub, and selected semester carried through import. Mobile center AI stays. CI pending.

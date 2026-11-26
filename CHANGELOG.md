@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: unify AI entry points
+
+- Add permanent AI menu after GPA in the desktop sidebar; hiding the floating shortcut never removes sidebar access. Replace the standalone course screenshot shortcut with Add with AI, including the empty course state. Explain screenshot, voice and text import and distinguish external AI from direct in-app scanning. Preserve selected semester through the AI hub and external AI review. Existing mobile AI navigation and scanning remain. Browser smoke coverage added; CI pending.
+
 ## 2026-11-26 — Claude: fix “Copy & open” not copying
 
 - Tapping ChatGPT/Gemini/Claude opened the AI before the async clipboard write finished, so the browser refused it (page no longer focused). Now `AskAiModal` copies synchronously first (`execCommand` on a hidden textarea), falls back to `navigator.clipboard`, and only then opens the AI; if both fail it shows the text to copy by hand. Smoke test taps Gemini and checks the copy happened before opening. Files: `public/index.html`, `tests/smoke.mjs`.

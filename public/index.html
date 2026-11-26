@@ -606,6 +606,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 }
 .course-start-action .btn { padding: 9px 14px; }
 .course-start-action .btn.primary { font-weight: 700; }
+.course-start-action .ai-entry .lbl-s{display:none}
 @media (max-width: 720px) {
   .course-start {
     grid-template-columns: 1fr; gap: 10px; padding: 18px;
@@ -901,7 +902,7 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
   .gpa-metrics{grid-template-columns:repeat(2,minmax(0,1fr)) !important}.gpa-metrics>:first-child{grid-column:1/-1}
   .sp-mini-actions{display:flex;flex-wrap:nowrap !important;overflow-x:auto;gap:6px;scrollbar-width:none}.sp-mini-actions::-webkit-scrollbar{display:none}.sp-mini-actions .btn{flex:none;white-space:nowrap}
   .courses-actions{flex-wrap:nowrap;width:100%;gap:6px}.courses-actions .btn{padding:8px 10px}.courses-actions .btn.primary{flex:1;justify-content:center}
-  .courses-actions .lbl-l{display:none}.courses-actions .lbl-s{display:inline}.courses-actions .scan-icon{width:40px;padding:8px 0;justify-content:center}
+  .courses-actions .lbl-l{display:none}.courses-actions .lbl-s{display:inline}.courses-actions .ai-entry{flex:none;justify-content:center}
   .courses-filters{flex-wrap:nowrap !important;gap:6px}.courses-filters .select{min-width:0 !important;width:38% !important;flex:none}.courses-filters>:last-child{flex:1;min-width:0}
 }
 /* Ask your AI by copy-paste (2026-11-26). */
@@ -2925,7 +2926,7 @@ en: {
 "academic.admission": "Admission year (B.E., optional)",
 "academic.allocation": "Tentative allocation (verify with faculty)",
 "academic.unassigned": "Unassigned",
-  'ai.btn': 'AI assistant', 'ai.title': 'GradeSpace AI',
+  'ai.btn': 'AI assistant', 'ai.title': 'GradeSpace AI', 'ai.entry': 'Add with AI', 'ai.entryShort': 'AI', 'ai.entryHint': 'Add courses, grading criteria or scores from screenshots, voice or text. Review before saving.', 'ai.nav': 'AI',
   'ai.intro': 'Send score screenshots, paste from MyCourseVille or type a score. You always review the list before anything is saved.',
   'ai.scanT': 'Scan screenshots', 'ai.scanP': 'Read courses and scores from several images at once',
   'ai.pasteT': 'Paste from MyCourseVille', 'ai.pasteP': 'Copy the score table, paste it and check each row',
@@ -2989,10 +2990,10 @@ en: {
   'wi.set.even': 'Same grade everywhere', 'wi.set.near': 'Fewest changes from now', 'wi.set.heavy': 'Focus on high-credit courses', 'wi.set.focus': 'All-in on a few courses', 'wi.use': 'Try this set',
   'wi.note': 'Confirmed grades stay as they are. “Out of reach” means your scores so far can’t reach that grade under the course’s cut-offs.', 'wi.link': 'Try grades',
   'plan.btnShort': 'By major', 'dash.coursesS': '{n} courses · {p} ongoing', 'dash.gradedS': 'graded {g}/{n}', 'dash.creditsS': '{n} cr earned',
-  'hub2.aiH': 'With your own AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Add with ChatGPT, Gemini or Claude', 'hub2.askP': 'Screenshot, voice or text → paste back · free plans work',
+  'hub2.aiH': 'With your own AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Add with ChatGPT, Gemini or Claude', 'hub2.askP': 'Use screenshots, voice or text to add courses, grading criteria and scores. Paste the AI answer back here.',
   'hub2.gptT': '@GradeSpace in ChatGPT', 'hub2.gptP': 'Direct link, no copying', 'hub2.claudeT': 'GradeSpace in Claude', 'hub2.claudeP': 'Add as a connector',
-  'hub2.scanP': 'Read scores from screenshots', 'hub2.pasteP': 'Paste a score table', 'hub2.quickP': 'Type one score',
-  'hub2.note': 'GradeSpace has no AI of its own. Your AI suggests; you approve every change here.',
+  'hub2.scanP': 'Upload images directly here without switching apps; review the results.', 'hub2.pasteP': 'Paste a score table', 'hub2.quickP': 'Type one score',
+  'hub2.note': 'For external AI, copy the instruction and paste the answer back. Direct scanning is a separate in-app tool. You approve every change before saving.',
   'tup.title': 'Pick Thammasat courses', 'tup.intro': 'Tick courses and add them to a term. GenEd groups follow the 2566 GenEd program; subject groups come from the TBS BBA course list.',
   'tup.ac': 'Accounting', 'tup.fn': 'Finance', 'tup.is': 'Information systems', 'tup.mg': 'Management', 'tup.toTerm': 'Add to term', 'tup.noTerm': 'Add a year/term first',
   'tup.add': 'Add {n} courses', 'tup.added': 'Added {n} courses', 'tup.note': 'Catalog only, not an official study plan. Confirm your course type, prerequisites and actual offerings with your faculty.',
@@ -3003,8 +3004,8 @@ en: {
   'tuge.add': 'Add', 'tuge.have': 'Added', 'tuge.source': 'List from TU’s General Education Program document (2566). Confirm what is open on reg.tu.ac.th before registering.',
   'tu.examNote': 'Thammasat exam dates are not synced yet. Add the date to the Midterm/Final item in each course and it will show in your calendar.',
   'ai.pasteTGeneric': 'Paste a score table', 'ai.pastePGeneric': 'Copy scores from your class site, paste them and check each row',
-  'fab.hide': 'Hide for now', 'fab.introT': 'Your AI + GradeSpace', 'fab.introP': 'Scan, paste or type scores here. Soon: use ChatGPT or Claude with your grades.',
-  'fab.introPGeneric': 'Scan, paste or type scores here. Soon: use ChatGPT or Claude with your grades.', 'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
+  'fab.hide': 'Hide floating button (AI is still in the sidebar)', 'fab.introT': 'Your AI + GradeSpace', 'fab.introP': 'Use ChatGPT, Gemini or Claude to add courses and scores; you can also scan images directly.',
+  'fab.introPGeneric': 'Use ChatGPT, Gemini or Claude to add courses and scores; you can also scan images directly.', 'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -3588,7 +3589,7 @@ th: {
 "academic.admission": "ปีเข้า (พ.ศ. ไม่บังคับ)",
 "academic.allocation": "จัดหมวดเบื้องต้น (ต้องยืนยันกับคณะ)",
 "academic.unassigned": "ยังไม่จัดหมวด",
-  'ai.btn': 'ผู้ช่วย AI', 'ai.title': 'GradeSpace AI',
+  'ai.btn': 'ผู้ช่วย AI', 'ai.title': 'GradeSpace AI', 'ai.entry': 'เพิ่มข้อมูลด้วย AI', 'ai.entryShort': 'AI', 'ai.entryHint': 'เพิ่มวิชา เกณฑ์การให้คะแนน หรือคะแนนจากภาพหน้าจอ เสียง หรือข้อความ ตรวจสอบก่อนบันทึก', 'ai.nav': 'AI',
   'ai.intro': 'ส่งภาพหน้าจอคะแนน วางคะแนนจาก MyCourseVille หรือพิมพ์คะแนนได้เลย ระบบจะให้คุณตรวจรายการก่อนบันทึกเสมอ',
   'ai.scanT': 'สแกนภาพหน้าจอ', 'ai.scanP': 'อ่านวิชาและคะแนนจากหลายภาพพร้อมกัน',
   'ai.pasteT': 'วางคะแนนจาก MyCourseVille', 'ai.pasteP': 'คัดลอกตารางคะแนนมาวาง แล้วตรวจทีละแถว',
@@ -3652,10 +3653,10 @@ th: {
   'wi.set.even': 'ได้เท่ากันทุกวิชา', 'wi.set.near': 'เปลี่ยนจากตอนนี้น้อยที่สุด', 'wi.set.heavy': 'เน้นวิชาหน่วยกิตเยอะ', 'wi.set.focus': 'ทุ่มบางวิชา ปล่อยบางวิชา', 'wi.use': 'ลองชุดนี้',
   'wi.note': 'เกรดจริงที่บันทึกแล้วไม่เปลี่ยน “ไม่ทันแล้ว” หมายถึงคะแนนที่มีอยู่ไปไม่ถึงเกรดนั้นตามเกณฑ์ของวิชา', 'wi.link': 'ลองสมมติเกรด',
   'plan.btnShort': 'ตามสาขา', 'dash.coursesS': '{n} วิชา · เรียน {p}', 'dash.gradedS': 'ตรวจ {g}/{n} งาน', 'dash.creditsS': 'ได้ {n} นก.',
-  'hub2.aiH': 'ใช้กับ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'เพิ่มข้อมูลผ่าน ChatGPT, Gemini หรือ Claude', 'hub2.askP': 'ภาพหน้าจอ เสียง หรือพิมพ์ → วางกลับ · แพ็กเกจฟรีก็ได้',
+  'hub2.aiH': 'ใช้กับ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'เพิ่มข้อมูลผ่าน ChatGPT, Gemini หรือ Claude', 'hub2.askP': 'ใช้ภาพหน้าจอ เสียง หรือข้อความเพื่อเพิ่มวิชา เกณฑ์การให้คะแนน และคะแนน แล้วนำคำตอบกลับมาวางที่นี่',
   'hub2.gptT': '@GradeSpace ใน ChatGPT', 'hub2.gptP': 'เชื่อมตรง ไม่ต้องคัดลอก', 'hub2.claudeT': 'GradeSpace ใน Claude', 'hub2.claudeP': 'เพิ่มเป็นตัวเชื่อม',
-  'hub2.scanP': 'อ่านคะแนนจากภาพหน้าจอ', 'hub2.pasteP': 'วางตารางคะแนน', 'hub2.quickP': 'พิมพ์คะแนนทีละรายการ',
-  'hub2.note': 'GradeSpace ไม่มี AI ของตัวเอง AI ของคุณเป็นคนเสนอ คุณเป็นคนยืนยันทุกครั้ง',
+  'hub2.scanP': 'อัปโหลดภาพโดยตรงที่นี่ ไม่ต้องสลับแอป แล้วตรวจสอบผลก่อนบันทึก', 'hub2.pasteP': 'วางตารางคะแนน', 'hub2.quickP': 'พิมพ์คะแนนทีละรายการ',
+  'hub2.note': 'หากใช้ AI ภายนอก ให้คัดลอกคำสั่งและนำคำตอบกลับมาวาง ส่วนสแกนภาพทำได้โดยตรงในเว็บ คุณต้องยืนยันทุกครั้งก่อนบันทึก',
   'tup.title': 'เลือกวิชาธรรมศาสตร์', 'tup.intro': 'ติ๊กวิชาแล้วเพิ่มเข้าเทอมที่เลือก หมวด GenEd อ้างอิงหลักสูตรวิชาศึกษาทั่วไป 2566 ส่วนหมวดวิชาอ้างอิงรายวิชา TBS BBA',
   'tup.ac': 'บัญชี', 'tup.fn': 'การเงิน', 'tup.is': 'ระบบสารสนเทศ', 'tup.mg': 'การจัดการ', 'tup.toTerm': 'เพิ่มเข้าเทอม', 'tup.noTerm': 'เพิ่มชั้นปี/เทอมก่อน',
   'tup.add': 'เพิ่ม {n} วิชา', 'tup.added': 'เพิ่ม {n} วิชาแล้ว', 'tup.note': 'เป็นรายชื่อวิชา ไม่ใช่แผนการเรียนทางการ โปรดตรวจประเภทวิชา วิชาบังคับก่อน และการเปิดสอนกับคณะ',
@@ -3666,8 +3667,8 @@ th: {
   'tuge.add': 'เพิ่ม', 'tuge.have': 'เพิ่มแล้ว', 'tuge.source': 'รายชื่อจากเอกสารหลักสูตรวิชาศึกษาทั่วไป มธ. (พ.ศ. 2566) ตรวจวิชาที่เปิดสอนใน reg.tu.ac.th ก่อนลงทะเบียน',
   'tu.examNote': 'ยังไม่ได้ดึงวันสอบของธรรมศาสตร์อัตโนมัติ ใส่วันที่ในงาน “สอบกลางภาค/ปลายภาค” ของแต่ละวิชา แล้ววันสอบจะขึ้นในปฏิทิน',
   'ai.pasteTGeneric': 'วางตารางคะแนน', 'ai.pastePGeneric': 'คัดลอกคะแนนจากเว็บรายวิชามาวาง แล้วตรวจทีละแถว',
-  'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'AI ของคุณ + GradeSpace', 'fab.introP': 'สแกน วาง หรือพิมพ์คะแนนได้ที่นี่ เร็ว ๆ นี้ใช้ ChatGPT หรือ Claude กับคะแนนของคุณได้',
-  'fab.introPGeneric': 'สแกน วาง หรือพิมพ์คะแนนได้ที่นี่ เร็ว ๆ นี้ใช้ ChatGPT หรือ Claude กับคะแนนของคุณได้', 'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
+  'fab.hide': 'ซ่อนปุ่มลอย (ยังเปิด AI จากเมนูด้านซ้ายได้)', 'fab.introT': 'AI ของคุณ + GradeSpace', 'fab.introP': 'ใช้ ChatGPT, Gemini หรือ Claude เพิ่มวิชาและคะแนน หรือสแกนภาพโดยตรงได้',
+  'fab.introPGeneric': 'ใช้ ChatGPT, Gemini หรือ Claude เพิ่มวิชาและคะแนน หรือสแกนภาพโดยตรงได้', 'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -6838,6 +6839,7 @@ function EmptyStart() {
     <div className="course-start-action">
       <button className="btn primary" onClick=${function () { openModal('plan', {}); }}><${Icon} n="layers" />${t('plan.btn')}</button>
       <button className="btn" onClick=${function () { openModal('course', {}); }}><${Icon} n="plus" />${t('start.manual')}</button>
+      <${AiEntryButton} />
     </div>
   </section>`;
 }
@@ -7399,7 +7401,7 @@ function CoursesPage(p) {
       ${state.courses.length > 0 && html`<div className="row courses-actions">
       <button className="btn primary" onClick=${function () { openModal('course', { semesterId: filter || (curSemester(state) || {}).id }); }}><${Icon} n="plus" />${t('addCourse')}</button>
       <button className="btn" onClick=${function () { openModal('plan', { semesterId: filter || null }); }}><${Icon} n="layers" /><span className="lbl-l">${t('plan.btn')}</span><span className="lbl-s">${t('plan.btnShort')}</span></button>
-      ${canScan() && html`<button className="btn scan-icon" aria-label=${t('scan.btn')} title=${t('scan.btn')} onClick=${function () { openModal('scan', { semesterId: filter || (curSemester(state) || {}).id }); }}><${Icon} n="zap" /><span className="lbl-l">${t('scan.btn')}</span></button>`}</div>`}</div>
+      <${AiEntryButton} semesterId=${filter || (curSemester(state) || {}).id} /></div>`}</div>
     ${state.courses.length ? html`<div className="filters courses-filters" style=${{ marginBottom: 18 }}>
       <${SemesterSelect} state=${state} value=${filter} allowAll=${true} label=${t('filterSemester')} onChange=${setFilter} style=${{ width: 'auto', minWidth: 180 }} />
       <${CourseSearch} state=${state} q=${q} setQ=${setQ} courseFields=${courseFields} semesterId=${filter || (curSemester(state) || {}).id} />
@@ -8803,6 +8805,9 @@ function FinalGradeModal(p) {
   <//>`;
 }
 function canScan() { return !!(S.web && window.GS_WEB && window.GS_WEB.url); }
+function AiEntryButton(p) {
+  return html`<button type="button" className="btn ai-entry" data-testid="course-ai" aria-label=${t('ai.entry')} title=${t('ai.entryHint')} onClick=${function () { openModal('chat', { semesterId: p.semesterId }); }}><${Icon} n="spark" /><span className="lbl-l">${t('ai.entry')}</span><span className="lbl-s">${t('ai.entryShort')}</span></button>`;
+}
 function ScanButton(p) {
   if (!canScan()) return null;
   return html`<button className=${'btn' + (p.primary ? ' primary' : '')} onClick=${function () { openModal('scan', { semesterId: p.semesterId }); }}><${Icon} n="zap" />${p.short ? html`<span className="lbl-l">${t('scan.btn')}</span><span className="lbl-s">${t('scan.btnShort')}</span>` : t('scan.btn')}</button>`;
@@ -9236,7 +9241,7 @@ function AssistantModal(p) {
    own AI (ChatGPT, Claude) and their grades. Until secure sign-in + OAuth ship, the connect options are
    shown as coming soon; the in-site tools (screenshot scan, paste, quick score) stay here. */
 function AiHubModal(p) {
-  var state = useApp(), cur = curSemester(state);
+  var state = useApp(), cur = state.semesters.find(function (s) { return s.id === (p.props && p.props.semesterId); }) || curSemester(state);
   var firstOpen = state.courses.find(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); });
   function go(type, props) { closeModal(); openModal(type, props); }
   var row = function (o) {
@@ -9245,7 +9250,7 @@ function AiHubModal(p) {
       ${o.soon ? html`<span className="connect-soon">${t('connect.soon')}</span>` : html`<${Icon} n="chevronRight" />`}</button>`;
   };
   var ai = [
-    { k: 'ask', tid: 'askai-open', icon: 'clipboard', title: t('hub2.askT'), sub: t('hub2.askP'), run: function () { go('askAi', {}); } },
+    { k: 'ask', tid: 'askai-open', icon: 'clipboard', title: t('hub2.askT'), sub: t('hub2.askP'), run: function () { go('askAi', { semesterId: cur && cur.id }); } },
     { k: 'gpt', tid: 'connect-gpt', icon: 'link', title: t('hub2.gptT'), sub: t('hub2.gptP'), soon: true },
     { k: 'claude', tid: 'connect-claude', icon: 'link', title: t('hub2.claudeT'), sub: t('hub2.claudeP'), soon: true }
   ];
@@ -9256,6 +9261,7 @@ function AiHubModal(p) {
   ];
   return html`<${Modal} title=${t('aihub.title')} onClose=${closeModal}>
     <div data-testid="ai-hub">
+      <p className="small muted" style=${{ margin: '0 0 12px' }}>${t('ai.entryHint')}</p>
       <h2 className="me-h" style=${{ marginTop: 0 }}>${t('hub2.aiH')}</h2>
       <div className="card me-list" data-testid="connect-card">${ai.map(row)}</div>
       <h2 className="me-h">${t('hub2.toolsH')}</h2>
@@ -9280,8 +9286,8 @@ var ASKAI_APPS = [
 // Each AI's own site icon, loaded live from the site (not redrawn here); hidden if it can't load.
 function askAiIcon(a) { return 'https://www.google.com/s2/favicons?sz=64&domain=' + a.host; }
 var ASKAI_TYPES = ['midterm', 'final', 'assignment', 'homework', 'quiz', 'project', 'presentation', 'lab', 'participation', 'attendance', 'custom'];
-function askAiPrompt(state) {
-  var cur = curSemester(state), th = LANG === 'th';
+function askAiPrompt(state, semesterId) {
+  var cur = state.semesters.find(function (s) { return s.id === semesterId; }) || curSemester(state), th = LANG === 'th';
   var known = cur ? Scan.hints(state, cur.id) : [];
   var example = { gradespace: 2, courses: [{ code: '2603111', name: 'Principles of Economics', credits: 3, section: '1',
     assessments: [{ name: 'Midterm', type: 'midterm', weight: 30, score: 24, max: 30, due: null }] }] };
@@ -9352,9 +9358,9 @@ function parseAskAi(text) {
   return { courses: courses };
 }
 function AskAiModal(p) {
-  var state = useApp(), cur = curSemester(state);
+  var state = useApp(), cur = state.semesters.find(function (s) { return s.id === (p.props && p.props.semesterId); }) || curSemester(state);
   var ts = useState(p.props && p.props.step === 'paste' ? 'paste' : 'copy'), tab = ts[0], setTab = ts[1];
-  var prompt = askAiPrompt(state);
+  var prompt = askAiPrompt(state, cur && cur.id);
   var ps = useState(''), pasted = ps[0], setPasted = ps[1];
   var es = useState(null), err = es[0], setErr = es[1];
   var cs = useState(false), copied = cs[0], setCopied = cs[1];
@@ -9835,7 +9841,7 @@ function App() {
     <aside className="side" aria-label=${t('mainNav')}>
       <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div><div className="brand-tag">${t('taglineShort')}</div></div></a>
       ${NAV.map(function (n, i) { var head = n.group && (!NAV[i - 1] || NAV[i - 1].group !== n.group) ? html`<div className="nav-group" key=${'g' + n.group}>${t(n.group)}</div>` : null;
-        return [head, html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`]; })}
+        return [head, html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`, n.id === 'gpa' ? html`<button key="ai" type="button" className="nav-item" data-testid="sidebar-ai" title=${t('ai.entryHint')} onClick=${function () { try { localStorage.setItem(AI_FAB_INTRO_KEY, '1'); } catch (e) { /* ignore */ } openModal('chat', {}); }}><${Icon} n="spark" />${t('ai.nav')}</button>` : null]; })}
       <div className="side-foot">${state.settings.university ? html`<div style=${{ fontWeight: 600, color: 'var(--ink-2)' }}>${state.settings.university}</div>` : null}${S.web && S.web.user ? S.web.user.email : (S.cloud ? t('store.accountShort') : t('store.deviceShort'))}</div>
     </aside>
     <div className="main">
