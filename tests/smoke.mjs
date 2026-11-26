@@ -335,6 +335,7 @@ async function runTU(browser, lang, width) {
   if(lang==='en'){await page.locator('.auth-card button',{hasText:'EN'}).first().click();}
   await page.locator('.auth-card button',{hasText:lang==='th'?'ธรรมศาสตร์':'Thammasat'}).click();
   if(await page.locator('#au-student').count()) errors.push('TU sign-in should not ask for a Chula student ID');
+  await page.locator('#au-tu-student').fill('0000000001');
   await page.locator('#au-e').fill('tu@example.com');
   await page.locator('#au-e').press('Enter');
   await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.state&&GradeSpace.S.state.settings.institution==='tu'&&GradeSpace.S.state.settings.spaces);
@@ -355,6 +356,8 @@ async function runTU(browser, lang, width) {
   if(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--uni-secondary').trim())!=='#FFD13F') errors.push('TU gold palette missing');
   if(!(await page.getByTestId('tu-academic').isVisible())) errors.push('TU academic profile missing');
   await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
+  if(!(await page.getByTestId('student-identity').innerText()).includes('0000000001')) errors.push('TU own session ID missing');
+  if(!(await page.getByTestId('workspace-shortcut').isVisible())) errors.push('workspace shortcut missing');
   await page.getByTestId('profile-signout').click();
   if(!(await page.locator('.modal').isVisible())) errors.push('profile sign-out confirmation missing');
   await page.keyboard.press('Escape'); await page.waitForTimeout(150);

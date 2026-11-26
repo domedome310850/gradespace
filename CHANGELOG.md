@@ -1,3 +1,9 @@
+## 2026-11-26 — ChatGPT: account student IDs and safe university shortcut
+
+- Show current-university student ID in profile/account menu/settings. CU uses the existing device-scoped exam profile; TU optional 10-digit self-reported ID is stored in sessionStorage only and cleared on logout. Never mix IDs, grade JSON, score mirrors, or CU exam RPC.
+- Alt+Shift+T and profile button switch only the signed-in user's own university space with existing confirmation; no admin bypass or hardcoded secrets. Verified admin role remains blocked by legacy email-only authentication.
+- Added TU synthetic-ID smoke checks; CI pending.
+
 ## 2026-11-26 — ChatGPT: TBS academic advisory, TU palette, profile sign-out
 
 - Add source-scoped advisory audit and simple prerequisite checks in `public/academic-core.js`; dashboard with per-university saved academic profile, provisional credit allocation, prioritized missing-course suggestions, graduation checklist and warnings. Unknown rules require manual review; no enrollment or degree certification.
