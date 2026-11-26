@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: discover IBMP grade ranges and FN201 syllabus lead
+
+- `public/index.html`: four historical official IBMP syllabus grade-range references, three with complete weights; FN201 third-party source explicitly labeled unverified and norm-referenced. No automatic grade policies. `tests/tu-catalog.mjs`, `docs/tu-public-data.md`: provenance and checks. PDF images and CI still pending.
+
 ## 2026-11-26 — ChatGPT: TBS semester plans and schedule/assessment references
 
 - `public/index.html`: 12 source-scoped semester plans, 395 conservative schedule references, two additional historical TBS syllabi; no automatic application to grades, calendars or saved data. Distinguish curriculum code pairs, section/group, tentative and final notice.

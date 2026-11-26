@@ -11,7 +11,7 @@ assert.ok(ge.some(x=>x[1]==='IEA101'&&x[4]===3));
 assert.ok(ge.some(x=>x[1]==='FIN201'&&x[0]===5));
 assert.ok(bba.some(x=>x[0]==='AC352'&&x[2]===3));
 assert.match(pre.AC352,/AC201.*IS201/);
-for(const r of syllabi){assert.equal(r.weights.reduce((s,x)=>s+x[2],0),100);if(r.cutoffs){assert.equal(Object.keys(r.cutoffs).length,8);assert.equal(r.cutoffs.F,0);}assert.match(r.source,/^https:\/\/(socadmin|www.tbs)\.tu\.ac\.th\//);}
+for(const r of syllabi){if(r.weights.length)assert.equal(r.weights.reduce((s,x)=>s+x[2],0),100);if(r.cutoffs){assert.equal(Object.keys(r.cutoffs).length,8);assert.equal(r.cutoffs.F,0);}if(r.sourceStatus==='third-party-unverified')assert.match(r.source,/^https:\/\/www\.scribd\.com\//);else assert.match(r.source,/^https:\/\/(socadmin|www.tbs|www.ibmp.tbs)\.tu\.ac\.th\//);}
 assert.equal(syllabi.find(x=>x.code==='SW366').cutoffs.C,60);
 assert.equal(syllabi.find(x=>x.code==='JA315').cutoffs.C,55);
 assert.equal(syllabi.find(x=>x.code==='SW366').sections.length,0);
@@ -43,3 +43,9 @@ assert.ok(termPlans.some(x=>x.id==='OM'&&x.terms.some(t=>t.term===3)));
 assert.equal(sched.length,395);assert.ok(sched.every(x=>x.codes.length===2&&x.source<src.length&&x.final&&/^\d{4}-\d{2}-\d{2}$/.test(x.final.date)));
 assert.ok(syllabi.filter(x=>x.code==='RB211').length===2);
 assert.equal(syllabi.find(x=>x.code==='RB313').weights.reduce((n,x)=>n+x[2],0),100);
+
+assert.equal(syllabi.find(x=>x.code==='BI261').cutoffs.A,81);
+assert.equal(syllabi.find(x=>x.code==='BI251').cutoffs.A,90);
+assert.equal(syllabi.find(x=>x.code==='BI271').weights.length,0);
+assert.equal(syllabi.find(x=>x.code==='FN201').sourceStatus,'third-party-unverified');
+assert.equal(syllabi.find(x=>x.code==='FN201').cutoffs,null);
