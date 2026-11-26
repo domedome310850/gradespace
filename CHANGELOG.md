@@ -8,6 +8,18 @@
 - Only course codes, names, item names, weights and full marks are copied out (no scores, email or ID).
 - Files: `public/index.html`, `tests/smoke.mjs`, `AGENTS.md`.
 
+## 2026-11-26 — ChatGPT: fix course selection in a fresh TU workspace
+
+- The previous TU picker required an existing semester and silently disabled course selection for a new university space. Allow selecting courses and creating the first year/semester directly in the picker, with explicit year and term, saving both atomically on Add. Keep selections across term choice, existing records intact, and make the empty-state CTA match course-first search. Extended browser tests now create the initial term via real UI; fix false-positive Chula-modal matcher and exercise actual language controls after account load. No deploy until CI passes.
+
+## 2026-11-26 — ChatGPT: restore direct language and theme controls on wide screens
+
+- Place TH/EN and light/dark segments directly left of profile at viewport widths 768px and above (including portrait iPad). Phone layout and existing settings retained. Controls use the same saved settings for both universities; no data or authentication changes. Add desktop/tablet interaction and overflow checks; CI pending.
+
+## 2026-11-26 — ChatGPT: simplify TU course-first picker
+
+- Redesign `TuPlanModal`: default searchable course catalog, full Thai/English subject names, faculty groups first and GenEd last, no horizontal scrolling, compact term/program controls, readable selectable rows, persistent cross-search selection and sticky add summary. Optional guided sample plan is separate; remove registration/long reference material from picker. Manual recording does not require verified prerequisites or permission; existing duplicate/retake protections retained. No data migrations or changes to CU picker. Browser tests extended, CI pending.
+
 ## 2026-11-26 — ChatGPT: re-audit TBS and simplify course selection
 
 - Add major/semester guided picker, explicit named-course batch selection, separate alternatives/open slots, term-credit summary, scoped 2/2569 MK412/FN494 amendment and tests. No registration claims; full PDF field verification and live REG remain open. See `docs/tu-guided-picker-audit.md`.
