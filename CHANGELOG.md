@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: restore CU ID edit action and stable browser selector
+
+- Preserve the existing CU-specific edit label, use the TU-specific label in TU, add a stable test ID, and keep the end-to-end ID edit and exam-room assertions. Also assert the updated CU account ID appears in Settings. Earlier browser run stopped at the outdated label selector; full CI still required.
+
 ## 2026-11-26 — ChatGPT: fix legacy shared catalog scope regression
 
 - Previous draft browser CI timed out at the first CU exam room display. SharedCatalog is outside the app IIFE: its newly added calls to private isCU were out of scope. Use explicit state at all shared-section/policy calls; remain fail-closed for TU. Add source checks and a TU ID non-persistence assertion. Browser CI must be green before deploy.

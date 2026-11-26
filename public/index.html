@@ -9881,7 +9881,7 @@ function AccountSection() {
   return html`<section className="card pad stack"><h2 style=${{ fontSize: 18 }}>${t('account')}</h2>
     ${u ? html`<div className="row wrap between">
         <div className="row"><span className="avatar lg">${initialOf(u)}</span><div><div className="small muted">${t('account.signedInAs', { e: u.email })}</div><${StudentIdentity} state=${S.state}/></div></div>
-        <button className="btn ghost" onClick=${goAuth}>${t('student.edit')}</button>
+        <button type="button" className="btn ghost" data-testid="student-id-edit" onClick=${goAuth}>${t(isCU()?'examroom.changeId':'student.edit')}</button>
         ${!isCU()&&tuSessionId(u.email)&&html`<button className="btn ghost" onClick=${()=>{saveTuSessionId(u.email,'');emit();}}>${t('student.remove')}</button>`}
          <button className="btn" onClick=${function () { confirmDialog({ title: t('account.signOutQ'), body: t('account.signOutBody'), confirmLabel: t('account.signOut'), onConfirm: signOut }); }}>${t('account.signOut')}</button>
       </div>`

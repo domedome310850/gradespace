@@ -160,10 +160,16 @@ async function run(browser, lang, width) {
   await page.locator('.dashboard-cal-event').getByText('TEST-ROOM-A',{exact:false}).waitFor();
   // Update the saved ID via the email-entry screen only, and verify both calendar and upcoming change.
   await page.evaluate(()=>location.hash='preferences');
-  await page.getByRole('button',{name:lang==='th'?'แก้ไขเลขนิสิต':'Edit student ID',exact:true}).click();
+  const editId=page.getByTestId('student-id-edit');
+  if((await editId.innerText())!==(lang==='th'?'แก้ไขเลขนิสิต':'Edit student ID')) errors.push('CU student ID action label changed');
+  await editId.click();
   await page.locator('#au-student').fill('6940102526');
   await page.locator('#au-student').press('Enter');
   await page.locator('#au-student').waitFor({state:'detached'});
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-B',{exact:false}).waitFor();
+  await page.evaluate(()=>location.hash='preferences');
+  await page.getByTestId('student-identity').filter({hasText:'6940102526'}).waitFor();
   await page.evaluate(()=>location.hash='dashboard');
   await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-B',{exact:false}).waitFor();
   const changed=page.locator('.dashboard-upcoming-row').filter({hasText:'TEST-ROOM-B'});
