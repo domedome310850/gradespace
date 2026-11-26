@@ -1,3 +1,8 @@
+## 2026-11-26 — ChatGPT: align TU planner with TBS registration and curriculum rules
+
+- `public/index.html`: source-backed registration guide, 11 track-specific required-course checklists, major elective baskets, provisional course types, retake planning for recorded F/U/W or low grades in selected required-major courses, and fail-closed legacy shared Chula schedule/policy isolation. No auto-registration, grade or graduation decisions.
+- `docs/tu-registration-workflow.md`, `tests/tu-catalog.mjs`, `AGENTS.md`: scope, workflow, remaining audit and regression checks.
+
 ## 2026-11-26 — ChatGPT: full 408-page visual overview and deeper curriculum validation
 
 - 15 missing Thai course records (including seven 1.5-credit entries), nine additional prerequisite keys, source-backed track elective quotas and major-grade rules. Flag two additional printed plan anomalies after 99 table sum checks. No automatic enrollment or grade application.

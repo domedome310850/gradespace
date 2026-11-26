@@ -147,3 +147,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - November final notice pp.9,10,17,20,23 visually reconciled; p.23 weekday/date conflict flagged, IS281 9000/01 blank code omitted. No automatic calendar insertion.
 
 - TU ZIP all 408 pages rendered and contact-sheet visually surveyed; 99 term credit sums checked (additional FN/IS anomalies). 15 missing course records recovered; 312 Thai records. Individual data-field audit still incomplete; do not mark all fields verified or deploy draft.
+
+- TBS workflow audit: `docs/tu-registration-workflow.md`; 11 track checklists and major-elective baskets, registration guide, repeat-planning and legacy shared Chula isolation. Remaining: persisted curriculum/major, precise other/minor allocation, live quota/offerings, cohort-specific rules, test CI, remaining detailed 408-page field audit. No auto-registration, no merge/deploy.

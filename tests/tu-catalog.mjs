@@ -67,3 +67,13 @@ assert.equal(thai.majors.find(x=>x.id==='MOEH').required[0].majorElective,3);
 assert.equal(thai.majors.find(x=>x.id==='IBLT').required[1].majorElective,6);
 assert.equal(termPlans.find(x=>x.id==='FN').terms.find(x=>x.year===1&&x.term===2).numericCellTotal,21);
 assert.equal(termPlans.find(x=>x.id==='IS').terms.find(x=>x.year===2&&x.term===1).numericCellTotal,21);
+
+const req=read('TU_TBS_REQUIREMENTS_2566');
+assert.equal(req.tracks.length,11);
+assert.deepEqual(req.electiveBaskets.AC[0].codes,['AC421','AC431','AC441','AC442','AC451','AC461']);
+assert.deepEqual(req.electiveBaskets.FN.map(x=>x.credits),[15,3]);
+assert.deepEqual(req.electiveBaskets.IB.map(x=>x.credits),[9,9]);
+assert.equal(req.specialCourses.BA346.kind,'accreditation');
+assert.ok(req.tracks.every(x=>x.core.length*3+x.required.length*3+x.majorElective+x.other===99));
+assert.match(html,/!isCU\(state\) \|\| !Array.isArray\(state.semesters\)/);
+assert.match(html,/function tuPickBlocked\(/);

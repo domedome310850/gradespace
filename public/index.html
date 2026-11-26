@@ -2505,7 +2505,8 @@ var SharedCatalog = (function () {
     return sec(explicit || (named && named[1]) || (suffix && suffix[1]) || '');
   }
   function context(c, state) {
-    if (!c || !state || !Array.isArray(state.semesters)) return null;
+    // This legacy shared sheet is Chula-scoped; it has no university key.
+    if (!c || !state || !isCU(state) || !Array.isArray(state.semesters)) return null;
     var semester = state.semesters.find(function (x) { return x.id === c.semesterId; });
     if (!semester) return null;
     var yr = (state.years || []).find(function (x) { return x.id === semester.yearId; });
@@ -2521,6 +2522,7 @@ var SharedCatalog = (function () {
     return map[k] && map[k].length === 1 ? map[k][0] : null;
   }
   function sectionsFor(code, academic, term) {
+    if (!isCU()) return [];
     var prefix = [str(academic), str(term), base(code)].join('|') + '|';
     var found = {};
     [offerings, policies].forEach(function(map) {
@@ -2534,7 +2536,7 @@ var SharedCatalog = (function () {
   }
   function byOffering(c,state) { var ctx=context(c,state);return ctx && ctx.section ? pick(offerings,key(c,state)) : null; }
   function byPolicy(c,state) { var ctx=context(c,state);return ctx && ctx.section ? pick(policies,key(c,state)) : null; }
-  function knownPolicy(code,academic,term,section) {var n=sec(section);return n ? pick(policies,strictKey(code,academic,term,n)) : null;}
+  function knownPolicy(code,academic,term,section) {if(!isCU())return null;var n=sec(section);return n ? pick(policies,strictKey(code,academic,term,n)) : null;}
   function exam(row, type) {
     var prefix = type === 'mid' ? 'Midterm' : 'Final';
     var day = str(row[prefix + ' date (ISO)']);
@@ -4365,28 +4367,71 @@ function TuTbsCurriculumReference() {
     <p className="small">${th?'เอกคู่ตามโครงสร้าง 150–159 หน่วยกิต (MOEH 156–159)':'Double-major structure: 150–159 credits (MOEH 156–159).'}</p>${major.majorElective!==null&&html`<div className="small">${th?'เอกเลือก':'Major electives'}: ${major.majorElective} · ${th?'วิชาเลือกหรือโท':'Other electives/minor'}: ${major.other}</div>`}
     <a className="small" href=${major.source} target="_blank" rel="noopener noreferrer">${th?'ใบกระจายโครงสร้างทางการ — เงื่อนไขฉบับเต็ม':'Official degree audit form — full requirements'}</a></details>`;
 }
+var TU_TBS_REQUIREMENTS_2566 = {"curriculumYear":2566,"scope":"TBS four-year Thai","tracks":[{"id":"AC","th":"เอกบัญชี","en":"Accounting","core":["BA201","BA202","BA204","BA401","AC201","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["AC311","AC312","AC313","AC314","AC315","AC316","AC317","AC318","AC411","AC412","AC413"],"majorElective":3,"other":21},{"id":"FN","th":"เอกการเงิน","en":"Finance","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["FN211","FN311","FN312","FN313","FN314","FN411","FN412"],"majorElective":18,"other":15},{"id":"MK","th":"เอกการตลาด","en":"Marketing","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["MK211","MK311","MK312","MK313","MK314","MK315","MK316","MK317","MK318","MK319","MK411","MK412"],"majorElective":0,"other":18},{"id":"IS","th":"เอกระบบสารสนเทศ","en":"MIS","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["IS311","IS312","IS313","IS314","IS315","IS317","IS318","IS319","IS411","IS415","IS416"],"majorElective":9,"other":12},{"id":"HR","th":"ทรัพยากรมนุษย์","en":"Human Resources","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["HR211","ER211","HR212","HR311","HR312","HR313","HR314","HR315","HR316","HR317","HR411"],"majorElective":3,"other":18},{"id":"ER","th":"ผู้ประกอบการและการบริหาร","en":"Entrepreneurship and Management","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["ER211","HR212","HR311","ER311","ER312","ER313","ER314","ER315","ER411","ER412"],"majorElective":6,"other":18},{"id":"OM","th":"เอกบริหารการปฏิบัติการ","en":"Operations Management","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["OM311","OM312","OM313","OM314","OM315","OM316","OM412","OM413","OM414","OM319"],"majorElective":6,"other":18},{"id":"IB","th":"ธุรกิจระหว่างประเทศ","en":"International Business","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["IB211","IB312","IB324","IB332","IB421","IB423"],"majorElective":18,"other":18},{"id":"LO","th":"โลจิสติกส์","en":"Logistics","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["IT211","IB211","IB312","LO212","LO341","LO342","LO441","LO442","LO443","LO498"],"majorElective":6,"other":18},{"id":"IT","th":"การขนส่งระหว่างประเทศ","en":"International Transport","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["IT211","IB312","IT371","IT372","IT461","IT462"],"majorElective":18,"other":18},{"id":"RB","th":"เอกอสังหาริมทรัพย์","en":"Real Estate","core":["BA201","BA202","BA204","BA401","AC201","AC202","FN201","MK201","IS201","HR201","OM201","EC213","EC214","EL221","EL321"],"required":["RB211","RB212","RB311","RB312","RB313","RB315","RB316","RB411","RB412","RB413","RB414","RB415"],"majorElective":0,"other":18}],"electiveBaskets":{"AC":[{"th":"สัมมนาบัญชี เลือก 1 วิชา","en":"Accounting seminar: select one","credits":3,"codes":["AC421","AC431","AC441","AC442","AC451","AC461"],"pages":"AC pp.13–14","exactCourses":1}],"FN":[{"th":"เอกเลือกในสาขาการเงิน","en":"Finance electives within major","credits":15,"codes":["FN281","FN399","FN421","FN422","FN423","FN424","FN456","FN461","FN471","FN472","FN491","FN499","FN351","FN451","FN452","FN454","FN455","FN492","FN453","FN493"],"pages":"BA pp.17–20"},{"th":"เอกเลือกนอกสาขาการเงิน","en":"Finance electives outside major","credits":3,"codes":["IT211","IT361","IB211","IB321","RB211","RB312","RB313","RB414","RB415","AC311","AC312","AC317","AC411","AC412","OM311","OM313","OM315","OM414","OM422","HR315","IS319","EC311","EC312","EC320","EC325","EC415","ST246","ST247","ST346","ST347","ST349","ST447"],"pages":"BA pp.18,20–21","noOverlap":true}],"MK":[],"IS":[{"th":"เอกเลือกระบบสารสนเทศ","en":"MIS major electives","credits":9,"codes":["IS281","IS282","IS361","IS381","IS395","IS461","IS462","IS467","IS482","IS491","IS493","BA322"],"pages":"BA pp.30–31"}],"HR":[{"th":"เอกเลือก HR/ER","en":"HR/ER major electives","credits":3,"codes":["HR321","HR322","HR395","HR421","HR422","HR423","HR424","HR425","HR495"],"pages":"BA p.34","additionalPrefixes":["HR","ER"]}],"ER":[{"th":"เอกเลือก ER/HR","en":"ER/HR major electives","credits":6,"codes":["ER321","ER322","ER395","ER421","ER422","ER423","ER495"],"pages":"BA p.36","additionalPrefixes":["HR","ER"]}],"OM":[{"th":"เอกเลือกบริหารการปฏิบัติการ","en":"Operations major electives","credits":6,"codes":["OM321","OM323","OM324","OM325","OM326","OM327","OM328","OM395","OM421","IS461","OM422","IS312","OM423","OM424","AC317","OM425","OM495","OM496","OM499","IS315","LO444"],"pages":"BA pp.40–42","alternativePairs":[["OM421","IS461"],["OM422","IS312"],["OM424","AC317"]]}],"IB":[{"th":"กลุ่ม ก ธุรกิจระหว่างประเทศ","en":"Group A: international business","credits":9,"codes":["IT211","IB321","IB323","IB391","IB392","IB422","IB424","IB433","IB498"],"pages":"BA p.47","exactCourses":3,"noOverlap":true},{"th":"กลุ่ม ข กลุ่มวิชาสนับสนุน","en":"Group B: supporting subjects","credits":9,"codes":["AC422","FN313","FN461","MK326","RB423","HR212","HR423","ER314","ER321","MK322","MK325","IS319","MK319","MK327","OM316","OM324","OM326","OM327","OM328","FN472","IT361","IT373","IT374","IT375","IT376","IT463","IT471","IT472","LA388","LA387","LO341","LO343","LO442","OM413","OM314","OM311","OM321","OM421","IS312","IS361","FN211","IT464","IB499"],"pages":"BA pp.47–51","exactCourses":3,"noOverlap":true}],"LO":[{"th":"เอกเลือกโลจิสติกส์ เลือก 2 วิชา","en":"Logistics: select two","credits":6,"codes":["IB321","IB332","IT375","LO343","LO444","OM423","IS311","IS312"],"pages":"BA p.52","exactCourses":2}],"IT":[{"th":"กลุ่ม ก การขนส่ง","en":"Group A: transport","credits":9,"codes":["LO212","IB211","IT361","IT463","IT498"],"pages":"BA p.55","exactCourses":3,"noOverlap":true},{"th":"กลุ่ม ข กลุ่มวิชาสนับสนุน","en":"Group B: supporting subjects","credits":9,"codes":["IB332","AC422","FN313","FN461","MK326","RB423","HR212","HR423","IT361","IT373","IT374","IT375","IT376","IT463","IT471","IT472","LO341","LO343","LO442","OM413","OM314","OM311","OM321","OM421","IS312","IS361","FN211","IT464","IS319","MK319","IT391","IT392","IT499"],"pages":"BA pp.55–58","exactCourses":3,"noOverlap":true}],"RB":[]},"specialCourses":{"BA335":{"kind":"exchange-only","th":"เฉพาะนักศึกษาแลกเปลี่ยนจากต่างประเทศ","en":"Incoming exchange students only"},"BA343":{"kind":"accreditation","th":"เทียบโอนความรู้ ACC โดยได้รับอนุมัติ ไม่ใช่วิชาเลือกปกติ","en":"Approval-based ACC credit, not an ordinary elective"},"BA344":{"kind":"accreditation"},"BA345":{"kind":"accreditation"},"BA346":{"kind":"accreditation"},"BA347":{"kind":"accreditation"},"BA348":{"kind":"accreditation"}},"minor":{"minCredits":15,"minRequiredGrade":"C","minGpa":2,"partialConversionMinCourses":3,"partialConversionMinCredits":9,"accountingNonOverlapMinCredits":15},"freeElective":{"credits":6,"genEdLevel100Excluded":true},"doubleMajor":{"minCredits":150,"duplicateCreditsCountOnce":true,"requiresSubstitute":true},"sourcePages":{"accounting":"7–14, 22, 82–83","business":"8–16, 17–68, 204–205"}};
+function tuPickBlocked(state, code, semId, majorRequired) {
+  // Use recorded outcomes only; calculated/estimated grades are not registration evidence.
+  var order = (C.orderedSemesters ? C.orderedSemesters(state) : state.semesters).map(function(s){return s.id;});
+  var target=order.indexOf(semId);
+  return state.courses.some(function(c){
+    if(tuCode(c.code)!==code)return false;
+    var prior=order.indexOf(c.semesterId);
+    if(target<0||prior<0||prior>=target)return true;
+    var g=c.finalGrade;
+    return !(['F','U','W'].includes(g)||(majorRequired&&['D','D+'].includes(g)));
+  });
+}
+function TuRegistrationGuide(){
+  var th=LANG==='th';
+  var steps=th?['เลือกปีหลักสูตร สาขา และกลุ่มวิชา','ตรวจวิชาที่เรียนผ่าน วิชาบังคับก่อน/ร่วม และ Sec/Group','ขอโควตาตามประกาศคณะเจ้าของวิชา ถ้ารายวิชานั้นกำหนด','ตรวจผลโควตา แล้วลงทะเบียนใน REG TU','ยืนยันผลและชำระเงินผ่าน TU Greats App; ตรวจผลลงทะเบียนอีกครั้ง','เพิ่ม–ถอน หรือถอน W ตามปฏิทิน; แจ้งจบในเทอมสุดท้าย']:['Select your curriculum, major and concentration','Check completed courses, prerequisites/corequisites and section/group','Request quota from the offering faculty when required','Check quota allocation, then register in REG TU','Confirm and pay in TU Greats App; recheck registration result','Add/drop or withdraw within calendar windows; apply to graduate in final term'];
+  return html`<details className="card pad stack" data-testid="tu-registration-guide"><summary style=${{cursor:'pointer',fontWeight:600}}>${th?'ขั้นตอนลงทะเบียน มธ.':'TU registration workflow'}</summary><ol className="small">${steps.map(function(s,i){return html`<li key=${i}>${s}</li>`;})}</ol><p className="small muted">${th?'GradeSpace เป็นเครื่องมือวางแผน ไม่ใช่ระบบจองที่นั่งหรือยืนยันโควตา; แผนที่เพิ่มยังไม่ใช่รายวิชาที่ลงทะเบียนจริง':'GradeSpace is a planner, not a registration or quota system. Added plans do not prove actual enrollment.'}</p><p className="small"><a href="https://vnweb68.reg.tu.ac.th/registrar/login" target="_blank" rel="noopener noreferrer">REG TU</a> · <a href="https://tbs.tu.ac.th/regular-registration3/" target="_blank" rel="noopener noreferrer">TBS</a> · <a href="https://www.reg.tu.ac.th/th/Picture/AttFile/63d1bb31-0b2b-42cb-aa4d-9a5f2ccd319e" target="_blank" rel="noopener noreferrer">${th?'คู่มือสำนักงานทะเบียน':'Registrar guide'}</a></p></details>`;
+}
+function TuTbsRequirementChecklist(p) {
+  var th=LANG==='th', track=p.track, state=p.state;
+  if(!track)return null;
+  function status(codes,major){
+    var attempts=state.courses.filter(function(c){return codes.indexOf(tuCode(c.code))>=0;});
+    var pass=attempts.some(function(c){return (major?['A','B+','B','C+','C']:['A','B+','B','C+','C','D+','D','S']).includes(c.finalGrade);});
+    if(pass)return th?'ผ่านตามเกรดที่บันทึก':'Recorded pass';
+    if(attempts.some(function(c){return ['ACC','EXE','AUD','I'].includes(c.finalGrade);}))return th?'ต้องตรวจสิทธิ์/ผลกับคณะ':'Faculty review needed';
+    if(attempts.some(function(c){return ['F','U','W','D','D+'].includes(c.finalGrade);}))return th?'ยังไม่ผ่านเงื่อนไข':'Not yet satisfied';
+    return attempts.length?(th?'มีในแผน / ยังไม่มีเกรดจริง':'Planned / no recorded grade'):(th?'ยังไม่มีในแผน':'Not in plan');
+  }
+  function group(label, rows, major){return html`<div className="stack"><b>${label}</b>${rows.map(function(codes){return html`<div key=${codes.join('/')} className="small row between wrap"><span>${codes.join(' / ')}</span><span className="muted">${status(codes,major)}</span></div>`;})}</div>`;}
+  return html`<details className="card pad stack" data-testid="tu-requirement-checklist"><summary style=${{cursor:'pointer',fontWeight:600}}>${th?'เช็กลิสต์วิชาบังคับของเอกที่เลือก':'Required-course checklist for selected major'}</summary><p className="small muted">${th?'เทียบเฉพาะเกรดที่ผู้ใช้บันทึก ไม่ใช่ผลตรวจจบ; วิชาทดแทน เทียบโอน และการนับหมวดต้องยืนยันกับคณะ':'Recorded outcomes only, not a degree audit. Faculty confirmation required for substitutions, accreditation and credit allocation.'}</p>
+    ${group(th?'GenEd บังคับ/บังคับเลือก':'Required GenEd slots',TU_TBS_THAI_2566.genEdSlots,false)}
+    <p className="small">${th?'GenEd เพิ่มอีก 3 หน่วยกิต; วิชาเลือกเสรี 6 หน่วยกิต':'Additional GenEd 3 credits; free electives 6 credits'}</p>
+    ${group(th?'วิชาแกนร่วมบังคับ':'Required core',track.core.map(function(c){return [c];}),false)}
+    ${group(th?'วิชาเอกบังคับ (อย่างน้อย C)':'Required major (C or above)',track.required.map(function(c){return [c];}),true)}
+    ${(TU_TBS_REQUIREMENTS_2566.electiveBaskets[track.id]||[]).map(function(b){return html`<div key=${b.en} className="small"><b>${th?b.th:b.en} · ${b.credits} ${th?'หน่วยกิต':'credits'}</b><p>${b.codes.join(' · ')}${b.additionalPrefixes?' · '+(th?'หรือวิชารหัส':'or eligible courses with prefixes')+' '+b.additionalPrefixes.join('/'):''}</p><span className="muted">${b.pages}${b.noOverlap?' · '+(th?'ห้ามนับซ้ำ':'No double-counting'):''}${b.alternativePairs?' · '+(th?'กลุ่มทางเลือก':'Alternative pairs')+' '+b.alternativePairs.map(function(x){return x.join('/');}).join(', '):''}</span></div>`;})}
+    <div className="small">${th?'เอกเลือก':'Major elective'}: ${track.majorElective} · ${th?'วิชาโทหรือวิชาเลือก':'Minor/other elective'}: ${track.other}</div><p className="small muted">${th?'วิชาโทและเอกคู่มีเงื่อนไขเฉพาะ ห้ามนับหน่วยกิตซ้ำ; GenEd รหัสระดับ 100 ไม่นับเป็นวิชาเลือกเสรี':'Minors and double majors have separate rules; do not double-count credits. Level-100 GenEd cannot count as free electives.'}</p><a href=${TU_TBS_THAI_SOURCES[track.id==='AC'?0:1]} target="_blank" rel="noopener noreferrer">${th?'หลักสูตรฉบับเต็ม หมวด 4 และ 7':'Full curriculum, sections 4 and 7'}</a></details>`;
+}
 function TuPlanModal(p) {
   var state = useApp(), props = p.props || {};
   var semsAll = C.orderedSemesters ? C.orderedSemesters(state) : state.semesters;
   var ss = useState(props.semesterId || (curSemester(state) || latestSemester(state) || {}).id || ''), semId = ss[0], setSemId = ss[1];
   var gs = useState('ge1'), grp = gs[0], setGrp = gs[1];
   var ps=useState('thai'), program=ps[0], setProgram=ps[1];
+  var ts=useState(''), trackId=ts[0], setTrackId=ts[1];
+  var track=program==='thai'?TU_TBS_REQUIREMENTS_2566.tracks.find(function(x){return x.id===trackId;}):null;
+  function majorRequired(code){return !!track&&track.required.includes(code);}
+  function kindFor(x){return x.ge?'gened':track&&(track.core.includes(x.code)||track.required.includes(x.code))?'required':'elective';}
+  function blocked(code){return tuPickBlocked(state,code,semId,majorRequired(code));}
   var programRows=program==='thai'?TU_TBS_THAI_COURSES.filter(function(r){return !TU_CATALOG[r[0]].ge;}).map(function(r){return [r[0],LANG==='th'?r[1]:r[2],r[3]];}):TU_TBS.filter(function(r){return !TU_CATALOG[r[0]].ge;});
   var ks = useState({}), pick = ks[0], setPick = ks[1];
-  var have = {}; state.courses.forEach(function (c) { have[tuCode(c.code)] = 1; });
+  var have = {}; state.courses.forEach(function (c) { var code=tuCode(c.code);if(blocked(code))have[code]=1; });
   var groups = [1, 2, 3, 4, 5].map(function (g) { return { k: 'ge' + g, l: 'GenEd ' + g, full: t('tuge.g' + g) }; })
     .concat(Array.from(new Set(programRows.map(function(r){return r[0].match(/^[A-Z]+/)[0];}))).sort().map(function(k){var label=TU_PREFIX[k]?t(TU_PREFIX[k]):k;return {k:k,l:label,full:label+(program==='thai'?' (TBS Thai 2566)':' (TBS BBA 2023)')};}));
   var list = grp.indexOf('ge') === 0 ? TU_GENED.filter(function (r) { return 'ge' + r[0] === grp; }).map(function (r) { return { code: r[1], name: LANG === 'th' ? r[2] : r[3], sub: LANG === 'th' ? r[3] : r[2], cr: r[4], ge: true }; })
     : programRows.filter(function(r){return r[0].match(/^[A-Z]+/)[0]===grp;}).map(function(r){return {code:r[0],name:r[1],sub:program==='thai'?'TBS Thai 2566':'TBS BBA 2023',cr:r[2],ge:false};});
-  var chosen = Object.keys(pick).filter(function (k) { return pick[k]; });
+  var chosen = Object.keys(pick).filter(function (k) { return pick[k] && !blocked(k); });
   function add() {
     if (!semId || !chosen.length) return;
     var all = TU_GENED.map(function (r) { return { code: r[1], name: LANG === 'th' ? r[2] : r[3], cr: r[4], ge: true }; }).concat(programRows.map(function (r) { return { code: r[0], name: r[1], cr: r[2], ge: false }; }));
     update(function (d) {
       chosen.forEach(function (code) {
-        var x = all.find(function (y) { return y.code === code; }); if (!x || d.courses.some(function (c) { return tuCode(c.code) === code; })) return;
+        var x = all.find(function (y) { return y.code === code; }); if (!x || tuPickBlocked(d,code,semId,majorRequired(code))) return;
         var c = { id: Store.uid('c-'), semesterId: semId, name: x.name, code: x.code, credits: x.cr, section: '', instructor: '', target: null,
-          scaleId: 'scale-th', gradingMode: 'unknown', targetPct: null, kind: x.ge ? 'gened' : 'required', color: COLORS[d.courses.length % COLORS.length], finalGrade: null };
+          scaleId: 'scale-th', gradingMode: 'unknown', targetPct: null, kind: kindFor(x), color: COLORS[d.courses.length % COLORS.length], finalGrade: null };
         d.courses.push(c); Store.placeCourse(d, c.id);
       });
     }, { undo: true });
@@ -4398,12 +4443,16 @@ function TuPlanModal(p) {
       <${TuTbsCurriculumReference} />
       <${TuTbsTermPlanReference} />
       <${TuRegCalendarReference} />
-      <select className="select" aria-label=${LANG==='th'?'หลักสูตร TBS':'TBS program'} value=${program} onChange=${function(e){setProgram(e.target.value);setGrp('ge1');setPick({});}}><option value="thai">${LANG==='th'?'หลักสูตรภาษาไทย 2566':'Thai programs 2023'}</option><option value="bba">BBA International 2023</option></select>
+      <${TuRegistrationGuide} />
+      <select className="select" aria-label=${LANG==='th'?'หลักสูตร TBS':'TBS program'} value=${program} onChange=${function(e){setProgram(e.target.value);setTrackId('');setGrp('ge1');setPick({});}}><option value="thai">${LANG==='th'?'หลักสูตรภาษาไทย 2566':'Thai programs 2023'}</option><option value="bba">BBA International 2023</option></select>
+      ${program==='thai'&&html`<select className="select" aria-label=${LANG==='th'?'เลือกเอกหรือกลุ่มวิชา':'Select major or concentration'} value=${trackId} onChange=${function(e){setTrackId(e.target.value);setPick({});}}><option value="">${LANG==='th'?'เลือกเอกหรือกลุ่มวิชา (ถ้าทราบ)':'Select your major (if known)'}</option>${TU_TBS_REQUIREMENTS_2566.tracks.map(function(x){return html`<option key=${x.id} value=${x.id}>${LANG==='th'?x.th:x.en}</option>`;})}</select>`}
+      <${TuTbsRequirementChecklist} track=${track} state=${state} />
+      <p className="tiny muted">${LANG==='th'?'วิชาที่ไม่ทราบหมวดจะบันทึกเป็นวิชาเลือกชั่วคราว แก้หมวดภายหลังได้; การเพิ่มวิชาเรียนซ้ำเป็นเพียงแผน ต้องตรวจสิทธิ์ลงทะเบียนกับคณะ':'Unclassified courses use an editable provisional elective label. A repeat plan does not guarantee registration eligibility.'}</p>
       <div className="tup-groups" role="tablist">${groups.map(function (g) { return html`<button key=${g.k} type="button" role="tab" aria-selected=${grp === g.k ? 'true' : 'false'} className=${'chat-chip' + (grp === g.k ? ' on' : '')} title=${g.full} onClick=${function () { setGrp(g.k); }}>${g.l}</button>`; })}</div>
       <div className="small"><b>${(groups.find(function (g) { return g.k === grp; }) || {}).full}</b></div>
       <div className="me-list card">${list.map(function (x) { return html`<label key=${x.code} className="me-row tup-row">
         <input type="checkbox" disabled=${!!have[x.code]} checked=${!!have[x.code] || !!pick[x.code]} onChange=${function (e) { var n = Object.assign({}, pick); n[x.code] = e.target.checked; setPick(n); }} />
-        <span className="grow"><b className="num">${x.code}</b> ${x.name}<span className="tiny muted" style=${{ display: 'block' }}>${x.sub} · ${t('nCredits', { n: x.cr })}${have[x.code] ? ' · ' + t('tuge.have') : ''}</span></span></label>`; })}</div>
+        <span className="grow"><b className="num">${x.code}</b> ${x.name}<span className="tiny muted" style=${{ display: 'block' }}>${x.sub} · ${t('nCredits', { n: x.cr })}${have[x.code] ? ' · ' + t('tuge.have') : ''}${!x.ge&&track?' · '+(track.core.includes(x.code)?(LANG==='th'?'แกนร่วม':'Core'):track.required.includes(x.code)?(LANG==='th'?'เอกบังคับ':'Major required'):(LANG==='th'?'ตรวจหมวดวิชาเลือก':'Check elective category')):''}${program==='thai'&&TU_TBS_REQUIREMENTS_2566.specialCourses[x.code]?' · '+(TU_TBS_REQUIREMENTS_2566.specialCourses[x.code].kind==='exchange-only'?(LANG==='th'?'เฉพาะแลกเปลี่ยน':'Exchange only'):(LANG==='th'?'ACC ต้องอนุมัติ':'Approval-based ACC')):''}</span></span></label>`; })}</div>
       <div className="row wrap" style=${{ gap: 8 }}>
         <select className="select" style=${{ width: 'auto' }} value=${semId} aria-label=${t('tup.toTerm')} onChange=${function (e) { setSemId(e.target.value); }}>
           ${!semsAll.length && html`<option value="">${t('tup.noTerm')}</option>`}
@@ -4415,7 +4464,7 @@ function TuPlanModal(p) {
 }
 function TuGenEdModal(p) {
   var state = useApp(), semId = p.props.semesterId || (latestSemester(state) || {}).id;
-  var have = {}; state.courses.forEach(function (c) { have[tuCode(c.code)] = 1; });
+  var have = {}; state.courses.forEach(function (c) {var code=tuCode(c.code);if(tuPickBlocked(state,code,semId,false))have[code]=1;});
   var qs = useState(''), q = qs[0], setQ = qs[1], n = function (x) { return String(x || '').toLowerCase().replace(/\s+/g, ''); };
   var rows = TU_GENED.filter(function (r) { return !q || [r[1], r[2], r[3]].some(function (v) { return n(v).indexOf(n(q)) >= 0; }); });
   return html`<${Modal} title=${t('tuge.title')} onClose=${closeModal} wide=${true}>
@@ -5137,6 +5186,7 @@ function examsFor(c, state) {
   if(entered && (entered.source==='manual' || [entered.mid,entered.fin].some(function(x){return x && (x.source==='manual' || x.source==='user');})))return entered;
   // Then a Sec-exact record from the course database (it can include the exam room), then Reg Chula's
   // official schedule, then dates that every Sec shares.
+  if(!isCU(state))return null; // TU historical reference rows must not auto-populate a calendar.
   var shared=SharedCatalog.examsFor(c,state);
   if(shared && !shared.allSecs)return shared;
   var reg=RegData.exams(c,state);
@@ -5155,7 +5205,7 @@ function gradingModeFor(c) {
   if (c && c.gradingUser && ['criterion','norm','unknown','component'].includes(c.gradingMode)) return c.gradingMode;
   // A public syllabus can establish relative grading without knowing the group's final cutoffs.
   // Only use a section-exact policy, not the generic course-code template.
-  if (c && typeof SharedCatalog !== 'undefined' && S && S.state) {
+  if (c && typeof SharedCatalog !== 'undefined' && S && S.state && isCU(S.state)) {
     var pol=SharedCatalog.byPolicy(c,S.state);
     if (pol) {
       var mode=String(pol['Grading mode']||'').toLowerCase();
