@@ -1,3 +1,7 @@
+## 2026-11-26 — Refine CU wordmark pink tones
+
+- Space uses the previous CU accent pink in light/dark mode; CU uses a deeper, university-inspired pink with a contrast-conscious dark variant. Restore TU red-gradient icon, white G and yellow dot; keep TU wordmark colors unchanged. CI pending.
+
 ## 2026-11-26 — TU logo color refinement
 
 - Swap TU wordmark colors: yellow/gold Space and red TU. Yellow icon with red G and dot. Preserve contrast-aware light/dark variants and CU branding. Browser assertions added; CI pending.
