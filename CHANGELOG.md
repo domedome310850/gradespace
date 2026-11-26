@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: fix legacy shared catalog scope regression
+
+- Previous draft browser CI timed out at the first CU exam room display. SharedCatalog is outside the app IIFE: its newly added calls to private isCU were out of scope. Use explicit state at all shared-section/policy calls; remain fail-closed for TU. Add source checks and a TU ID non-persistence assertion. Browser CI must be green before deploy.
+
 ## 2026-11-26 — ChatGPT: account student IDs and safe university shortcut
 
 - Show current-university student ID in profile/account menu/settings. CU uses the existing device-scoped exam profile; TU optional 10-digit self-reported ID is stored in sessionStorage only and cleared on logout. Never mix IDs, grade JSON, score mirrors, or CU exam RPC.

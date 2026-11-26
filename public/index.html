@@ -2511,9 +2511,11 @@ var SharedCatalog = (function () {
     var named = str(c && c.name).match(/\[Sec\s+(\d+)\]\s*$/i);
     return sec(explicit || (named && named[1]) || (suffix && suffix[1]) || '');
   }
+  // SharedCatalog lives outside the app IIFE; use explicit state, never its private isCU helper.
+  function sharedCuState(state) { return !!state && (!state.settings || state.settings.institution !== 'tu'); }
   function context(c, state) {
     // This legacy shared sheet is Chula-scoped; it has no university key.
-    if (!c || !state || !isCU(state) || !Array.isArray(state.semesters)) return null;
+    if (!c || !state || !sharedCuState(state) || !Array.isArray(state.semesters)) return null;
     var semester = state.semesters.find(function (x) { return x.id === c.semesterId; });
     if (!semester) return null;
     var yr = (state.years || []).find(function (x) { return x.id === semester.yearId; });
@@ -2528,8 +2530,8 @@ var SharedCatalog = (function () {
     // duplicates have null values so stale/conflicting records never get selected
     return map[k] && map[k].length === 1 ? map[k][0] : null;
   }
-  function sectionsFor(code, academic, term) {
-    if (!isCU()) return [];
+  function sectionsFor(code, academic, term, state) {
+    if (!sharedCuState(state)) return [];
     var prefix = [str(academic), str(term), base(code)].join('|') + '|';
     var found = {};
     [offerings, policies].forEach(function(map) {
@@ -2543,7 +2545,7 @@ var SharedCatalog = (function () {
   }
   function byOffering(c,state) { var ctx=context(c,state);return ctx && ctx.section ? pick(offerings,key(c,state)) : null; }
   function byPolicy(c,state) { var ctx=context(c,state);return ctx && ctx.section ? pick(policies,key(c,state)) : null; }
-  function knownPolicy(code,academic,term,section) {if(!isCU())return null;var n=sec(section);return n ? pick(policies,strictKey(code,academic,term,n)) : null;}
+  function knownPolicy(code,academic,term,section,state) {if(!sharedCuState(state))return null;var n=sec(section);return n ? pick(policies,strictKey(code,academic,term,n)) : null;}
   function exam(row, type) {
     var prefix = type === 'mid' ? 'Midterm' : 'Final';
     var day = str(row[prefix + ' date (ISO)']);
@@ -8062,7 +8064,7 @@ function CourseModal(p) {
   var chosenSemester = state.semesters.find(function(x) { return x.id === semVal; });
   var courseAcademic = yearId === '__new' ? ny.academic : (chosenYear && chosenYear.academic || '');
   var courseTerm = semVal === '__new' ? (nsKind === 's1' ? 1 : nsKind === 's2' ? 2 : '') : (chosenSemester && /^s[12]$/.test(chosenSemester.kind) ? chosenSemester.kind.slice(1) : '');
-  var availableSecs = SharedCatalog.sectionsFor(f.code, courseAcademic, courseTerm);
+  var availableSecs = SharedCatalog.sectionsFor(f.code, courseAcademic, courseTerm, state);
   var scale = state.scales.find(function (s) { return s.id === scaleId; }) || state.scales[0];
   var grades = cg || scale.grades;
   var set = function (k, v) { var n = Object.assign({}, f); n[k] = v; setF(n); var e = Object.assign({}, errs); delete e[k]; setErrs(e); };
@@ -8892,9 +8894,9 @@ function PlanModal(p) {
     ${plan && html`<div className="stack" style=${{ gap: 6 }}>
       ${plan.items.map(function (it) {
         var x = CATALOG.get(it.c), h = have(it.c);
-        var verifiedSecs = SharedCatalog.sectionsFor(it.c,plan.ay,plan.term);
+        var verifiedSecs = SharedCatalog.sectionsFor(it.c,plan.ay,plan.term,state);
         var selSec = normalizedPlanSec(it.c);
-        var verifiedForPlan = SharedCatalog.knownPolicy(it.c,plan.ay,plan.term,selSec);
+        var verifiedForPlan = SharedCatalog.knownPolicy(it.c,plan.ay,plan.term,selSec,state);
         var su = false; // No section should inherit the embedded generic grading template.
         var head = null;
         if (it.opt && it.opt !== lastOpt) head = html`<div className="label" style=${{ marginTop: 6 }}>${it.opt === 'e' ? t('plan.electives') : t('plan.chooseOne')}</div>`;

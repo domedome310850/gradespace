@@ -358,6 +358,7 @@ async function runTU(browser, lang, width) {
   await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
   if(!(await page.getByTestId('student-identity').innerText()).includes('0000000001')) errors.push('TU own session ID missing');
   if(!(await page.getByTestId('workspace-shortcut').isVisible())) errors.push('workspace shortcut missing');
+  if(await page.evaluate(()=>JSON.stringify(GradeSpace.S.state).includes('0000000001'))) errors.push('TU student ID leaked into grade JSON');
   await page.getByTestId('profile-signout').click();
   if(!(await page.locator('.modal').isVisible())) errors.push('profile sign-out confirmation missing');
   await page.keyboard.press('Escape'); await page.waitForTimeout(150);

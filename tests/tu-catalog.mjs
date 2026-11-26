@@ -75,5 +75,8 @@ assert.deepEqual(req.electiveBaskets.FN.map(x=>x.credits),[15,3]);
 assert.deepEqual(req.electiveBaskets.IB.map(x=>x.credits),[9,9]);
 assert.equal(req.specialCourses.BA346.kind,'accreditation');
 assert.ok(req.tracks.every(x=>x.core.length*3+x.required.length*3+x.majorElective+x.other===99));
-assert.match(html,/!isCU\(state\) \|\| !Array.isArray\(state.semesters\)/);
+assert.match(html,/!sharedCuState\(state\) \|\| !Array.isArray\(state.semesters\)/);
 assert.match(html,/function tuPickBlocked\(/);
+
+assert.match(html,/function sharedCuState\(state\)/);
+assert.match(html,/SharedCatalog\.sectionsFor\(f\.code, courseAcademic, courseTerm, state\)/);
