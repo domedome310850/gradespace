@@ -2187,6 +2187,8 @@ var Scan = (function () {
   // with the same code is the one, even when the screenshot shows no Sec or a different numbering.
   function findCourse(state, semesterId, sc, loose) {
     var inSem = state.courses.filter(function (c) { return c.semesterId === semesterId; });
+    if(sc._new===true)return null;
+    if(sc._targetId)return inSem.find(function(c){return c.id===sc._targetId;})||null;
     var bc = baseCode(sc.code);
     var fromCode = String(sc.code || '').match(/\.(\d+)$/);
     var section = String(sc.section || (loose && fromCode ? fromCode[1] : '') || '').replace(/^0+(?=\d)/,'');
@@ -2245,7 +2247,9 @@ var Scan = (function () {
       var items = Array.isArray(sc.assessments) ? sc.assessments : [];
       var groups = Array.isArray(sc.groups) ? sc.groups : [];
       var course = findCourse(state, semesterId, sc, loose);
-      var gr = gradingFor(state, sc.grading);
+      if(opts&&opts.external&&sc._targetId&&(!course||course.finalGrade))return;
+      var partialCriterion=!!(opts&&opts.external&&sc.grading&&sc.grading.referencing==='criterion'&&sc.grading.method!=='su'&&!sc.grading.cutoffs);
+      var gr = gradingFor(state, partialCriterion?null:sc.grading);
       var incomingSection=String(sc.section||String(sc.code||'').match(/\.(\d+)$/)?.[1]||'').replace(/^0+(?=\d)/,'');
       var currentSection=course?String(sectionOf(course)||'').replace(/^0+(?=\d)/,''):'';
       var sectionCompatible=!incomingSection||!currentSection||incomingSection===currentSection;
@@ -2253,16 +2257,17 @@ var Scan = (function () {
         course = { id: Store.uid('c-'), semesterId: semesterId, name: niceName(sc.name || sc.code || 'Course'), code: sc.code || '',
           credits: num(sc.credits) !== null ? num(sc.credits) : 3, section: sc.section || '', instructor: '', target: null,
           scaleId: gr.scaleId, customGrades: gr.customGrades,
-          gradingMode: sc.grading && sc.grading.referencing === 'norm' ? 'norm' : (sc.grading && (sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'), targetPct: sc.grading && sc.grading.referencing === 'norm' ? 60 : null,
+          gradingMode: partialCriterion ? 'unknown' : sc.grading && sc.grading.referencing === 'norm' ? 'norm' : (sc.grading && (sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'), targetPct: sc.grading && sc.grading.referencing === 'norm' ? 60 : null,
           color: COLORS[(state.courses.length) % COLORS.length], finalGrade: null };
         state.courses.push(course); added++;
         Store.placeCourse(state, course.id);
         touched.push(course);
       } else {
-        if (sectionCompatible && !course.gradingUser && sc.grading && (sc.grading.method || sc.grading.referencing || sc.grading.cutoffs)) { course.scaleId = gr.scaleId; course.customGrades = gr.customGrades; course.gradingMode = sc.grading.referencing === 'norm' ? 'norm' : ((sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'); if(course.gradingMode === 'norm' && course.targetPct == null) course.targetPct = 60; }
-        if (num(sc.credits) !== null) course.credits = num(sc.credits);
+        if (sectionCompatible && !partialCriterion && !course.gradingUser && (!(opts&&opts.external)||(!course.customGrades&&course.gradingMode!=='criterion'&&course.gradingMode!=='norm')||(course.gradingMode==='unknown'&&sc.grading&&sc.grading.cutoffs)) && sc.grading && (sc.grading.method || sc.grading.referencing || sc.grading.cutoffs)) { course.scaleId = gr.scaleId; course.customGrades = gr.customGrades; course.gradingMode = sc.grading.referencing === 'norm' ? 'norm' : ((sc.grading.method === 'su' || sc.grading.referencing === 'criterion') ? 'criterion' : 'unknown'); if(course.gradingMode === 'norm' && course.targetPct == null) course.targetPct = 60; }
+        if (!(opts&&opts.external) && num(sc.credits) !== null) course.credits = num(sc.credits);
         updated++; touched.push(course);
       }
+      if(partialCriterion&&(!course.gradingNotes||!course.gradingNotes.includes('Criterion / อิงเกณฑ์'))){course.gradingNotes=[course.gradingNotes,'Criterion / อิงเกณฑ์: cutoffs unknown / ยังไม่ทราบเกณฑ์ตัดเกรด'].filter(Boolean).join('\n');if(!course.customGrades&&!course.gradingUser&&course.gradingMode!=='norm'){course.gradingMode='unknown';}}
       // Scan suggestions require explicit review before becoming guarantees.
       if (sectionCompatible && !course.gradingUser && sc.grading && sc.grading._confirmFloors === true) {
         var accepted=confirmedFloors(sc.grading);
@@ -2277,20 +2282,20 @@ var Scan = (function () {
         if (catByName[key]) return catByName[key];
         var g = groups.find(function (x) { return norm(x.name) === key; });
         var w = g ? num(g.weight) : null;
-        var dist = g && (g.dist === 'points' || g.dist === 'equal') ? g.dist : 'equal';
+        var dist = g && (g.dist === 'points' || g.dist === 'equal') ? g.dist : (opts&&opts.external?'manual':'equal');
         var k = { id: Store.uid('k-'), courseId: course.id, name: String(name), type: 'homework', weight: w, dist: w !== null ? dist : 'manual' };
         state.categories.push(k); catByName[key] = k;
         return k;
       };
-      groups.forEach(function (g) { var k = catFor(g.name); if (k && num(g.weight) !== null && k.dist !== 'manual') k.weight = num(g.weight); });
+      groups.forEach(function (g) { var k = catFor(g.name); if (k && num(g.weight) !== null && (opts&&opts.external?k.weight==null:k.dist!=='manual')) k.weight = num(g.weight); });
       var existing = state.assessments.filter(function (a) { return a.courseId === course.id; });
       items.forEach(function (a) {
         var score = num(a.score), max = num(a.max), weight = num(a.weight);
         var cat = a.group ? catFor(a.group) : null;
-        var hit = matchAssessment(existing, a);
+        var hit = opts&&opts.external ? existing.find(function(x){return norm(hintName(x))===norm(a.name)&&(!cat||x.categoryId===cat.id);}) : matchAssessment(existing, a);
         if (hit) {
-          if (score !== null && score >= 0) { hit.score = score; hit.status = 'graded'; }
-          if (max !== null && max > 0) hit.max = max;
+          if (score !== null && score >= 0 && (!(opts&&opts.external)||hit.score==null) && (!(opts&&opts.external)||score<=(hit.max||max||0))) { hit.score = score; hit.status = 'graded'; }
+          if (max !== null && max > 0 && (!(opts&&opts.external)||hit.max==null)) hit.max = max;
           if (opts && opts.external && /^\d{4}-\d{2}-\d{2}$/.test(a.due || '') && !hit.due) hit.due = a.due;
           if (!hit.categoryId && hit.weight == null && weight !== null) hit.weight = weight;
           return;
@@ -2298,7 +2303,7 @@ var Scan = (function () {
         var row = Store.newAssessment(course.id, {
           name: String(a.name || ''), type: typeOf(a.type), categoryId: cat ? cat.id : null,
           weight: cat && cat.dist !== 'manual' ? null : weight,
-          max: max !== null && max > 0 ? max : (weight !== null && weight > 0 ? weight : null),
+          max: max !== null && max > 0 ? max : (!(opts&&opts.external)&&weight !== null && weight > 0 ? weight : null),
           score: score !== null && score >= 0 ? score : null,
           status: score !== null && score >= 0 ? 'graded' : 'pending',
           due: /^\d{4}-\d{2}-\d{2}$/.test(a.due || '') ? a.due : ''
@@ -3033,7 +3038,7 @@ en: {
   'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
   'connect.own': 'Or ask GradeSpace AI now:',
   'askai.how1': 'Choose an AI below. Paste the copied instruction into a new chat.', 'askai.how2': 'In that chat, upload an image or tell the AI what to add.', 'askai.how3': 'Copy its full answer back to step 2. Review and save.',
-  'askai.onboardTitle': 'Courses added — set them up with AI', 'askai.onboardIntro': 'Use your own AI to import syllabus details, assessment weights, grading rules and scores. Review everything before saving.', 'askai.later': 'Skip for now', 'askai.invalid': 'Some data is invalid or ambiguous. Ask your AI to correct it before importing.', 'askai.exampleH': 'What can you send?', 'askai.exampleIntro': 'Send a photo or talk to your AI naturally. No special commands needed.',
+  'askai.targetTitle': 'Choose a course for the imported data', 'askai.targetPick': 'Select an existing course', 'askai.targetNew': 'Add a course manually', 'askai.targetName': 'Course name', 'askai.targetCredits': 'Credits (required for a new course)', 'askai.targetMissing': 'Course name not provided', 'askai.partialCriterion': 'Criterion grading stated; cutoffs not yet known. No letter-grade estimate until configured.', 'askai.unknownDist': 'Weight distribution not specified', 'askai.groupDeclared': 'Declared group weight: {w}% — distribution not set', 'askai.keepExisting': 'Existing non-empty scores, weights and grading settings are kept. Fill missing full marks in review before saving a score.', 'askai.onboardTitle': 'Courses added — set them up with AI', 'askai.onboardIntro': 'Use your own AI to import syllabus details, assessment weights, grading rules and scores. Review everything before saving.', 'askai.later': 'Skip for now', 'askai.invalid': 'Some data is invalid or ambiguous. Ask your AI to correct it before importing.', 'askai.exampleH': 'What can you send?', 'askai.exampleIntro': 'Send a photo or talk to your AI naturally. No special commands needed.',
   'askai.ex.course': 'New courses', 'askai.ex.courseImage': 'Screenshot: registered courses or class timetable', 'askai.ex.courseText': '“I’m taking econ this term, 3 credits.”',
   'askai.ex.weights': 'Assignments & grading', 'askai.ex.weightsImage': 'Screenshot: syllabus or assessment weights', 'askai.ex.weightsText': '“Econ is 30% midterm, 40% final and 30% homework.”',
   'askai.ex.score': 'Scores', 'askai.ex.scoreImage': 'Screenshot: gradebook or marked work', 'askai.ex.scoreText': '“Got 5 out of 20 on econ homework 1.”',
@@ -3701,7 +3706,7 @@ th: {
   'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
   'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
   'askai.how1': 'เลือก AI ด้านล่าง แล้ววางคำสั่งที่คัดลอกให้ในแชตใหม่', 'askai.how2': 'ในแชต AI ส่งภาพ หรือบอกข้อมูลที่ต้องการเพิ่ม', 'askai.how3': 'คัดลอกคำตอบทั้งหมดกลับมาวางในขั้นที่ 2 แล้วตรวจสอบก่อนบันทึก',
-  'askai.onboardTitle': 'เพิ่มวิชาแล้ว — ตั้งค่าด้วย AI ต่อเลย', 'askai.onboardIntro': 'ใช้ AI ที่คุณมีเพื่อเพิ่มข้อมูลจาก Syllabus สัดส่วนคะแนน เกณฑ์ตัดเกรด และคะแนน ตรวจสอบก่อนบันทึกได้ทุกครั้ง', 'askai.later': 'ไว้ทีหลัง', 'askai.invalid': 'ข้อมูลบางส่วนไม่ถูกต้องหรือไม่ชัดเจน ให้ AI แก้ไขก่อนนำเข้า', 'askai.exampleH': 'ส่งข้อมูลอะไรได้บ้าง?', 'askai.exampleIntro': 'ส่งภาพ หรือพูดกับ AI แบบปกติได้เลย ไม่ต้องใช้คำสั่งพิเศษ',
+  'askai.targetTitle': 'เลือกวิชาปลายทางของข้อมูล', 'askai.targetPick': 'เลือกวิชาที่มีอยู่', 'askai.targetNew': 'เพิ่มวิชาเอง', 'askai.targetName': 'ชื่อวิชา', 'askai.targetCredits': 'หน่วยกิต (สำหรับวิชาใหม่)', 'askai.targetMissing': 'ไม่ระบุชื่อวิชา', 'askai.partialCriterion': 'ระบุว่าอิงเกณฑ์ แต่ยังไม่ทราบเกณฑ์ตัดเกรด ต้องตั้งค่าก่อนคาดการณ์เกรด', 'askai.unknownDist': 'ยังไม่ระบุวิธีแบ่งน้ำหนัก', 'askai.groupDeclared': 'น้ำหนักกลุ่มที่ระบุ {w}% — ยังไม่ได้ตั้งวิธีแบ่ง', 'askai.keepExisting': 'เก็บคะแนน น้ำหนัก และเกณฑ์เดิมที่มีอยู่ไว้ หากไม่ทราบคะแนนเต็ม ให้กรอกในหน้าตรวจสอบก่อนบันทึกคะแนน', 'askai.onboardTitle': 'เพิ่มวิชาแล้ว — ตั้งค่าด้วย AI ต่อเลย', 'askai.onboardIntro': 'ใช้ AI ที่คุณมีเพื่อเพิ่มข้อมูลจาก Syllabus สัดส่วนคะแนน เกณฑ์ตัดเกรด และคะแนน ตรวจสอบก่อนบันทึกได้ทุกครั้ง', 'askai.later': 'ไว้ทีหลัง', 'askai.invalid': 'ข้อมูลบางส่วนไม่ถูกต้องหรือไม่ชัดเจน ให้ AI แก้ไขก่อนนำเข้า', 'askai.exampleH': 'ส่งข้อมูลอะไรได้บ้าง?', 'askai.exampleIntro': 'ส่งภาพ หรือพูดกับ AI แบบปกติได้เลย ไม่ต้องใช้คำสั่งพิเศษ',
   'askai.ex.course': 'เพิ่มวิชา', 'askai.ex.courseImage': 'ภาพรายวิชาที่ลงทะเบียน หรือตารางเรียน', 'askai.ex.courseText': '“เทอมนี้เรียนอีคอนด้วย 3 หน่วยกิต”',
   'askai.ex.weights': 'เพิ่มงานและสัดส่วนเกรด', 'askai.ex.weightsImage': 'ภาพ Course Syllabus หรือตารางสัดส่วนคะแนน', 'askai.ex.weightsText': '“อีคอนมิดเทอม 30 ไฟนอล 40 งานอีก 30 เปอร์เซ็นต์”',
   'askai.ex.score': 'เพิ่มคะแนน', 'askai.ex.scoreImage': 'ภาพคะแนนจากระบบรายวิชา หรืองานที่ตรวจแล้ว', 'askai.ex.scoreText': '“อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง”',
@@ -7717,7 +7722,7 @@ function AssessmentList(p) {
         return html`<div key=${cat.id}>
           <div className="arow cat">
             <div className="a-main"><div className="grow"><div className="a-name row" style=${{ gap: 6 }}><${Icon} n="layers" s=${15} />${catName(cat)}</div>
-              <div className="a-meta"><span>${t('dist.' + cat.dist)}</span><span>${t('catGraded', { g: fmtT(gw), w: fmtT(cw) })}</span></div></div></div>
+              <div className="a-meta"><span>${cat.dist==='manual'&&cat.weight!=null?t('askai.groupDeclared',{w:fmtT(cat.weight)}):t('dist.' + cat.dist)}</span><span>${t('catGraded', { g: fmtT(gw), w: fmtT(cw) })}</span></div></div></div>
             <div><span className="cell-label">${t('weight')}</span><b className="num">${fmtT(cw)}%</b></div>
             <div className="hide-sm"></div><div className="hide-sm"></div>
             <div className="contrib"><span className="cell-label">${t('weightedScore')}</span>${gw > 0 ? html`<b>${fmt(ce)}</b><small> / ${fmtT(gw)}</small>` : html`<span className="muted small">${t('notCounted')}</span>`}</div>
@@ -9087,6 +9092,7 @@ function ScanModal(p) {
       ${step === 'scanning' && html`<${Banner} kind="info">${t('scan.wait')}<//>`}
       ${err && html`<${Banner} kind="bad">${err}<//>`}
     ` : html`
+      ${preset && html`<${Banner} kind="info">${t('askai.keepExisting')}<//>`}
       ${!prev.length ? html`<${Banner} kind="warn">${t('scan.none')}<//>` : html`<p className="small muted" style=${{ margin: 0 }}>${t('scan.found2', { n: prev.length })}</p>`}
       ${check && prev.length > 0 && (flagged
         ? html`<${Banner} kind="warn">${t('scan.chk.flagged', { n: flagged })}<//>`
@@ -9106,7 +9112,8 @@ function ScanModal(p) {
             </label>
             ${chosen[i] && Object.keys(c.grading.floors||{}).length>0 && html`<label className="check small"><input type="checkbox" checked=${sc.grading._confirmFloors===true} onChange=${function(e){var next=res.courses.slice();next[i]=Object.assign({},sc,{grading:Object.assign({},sc.grading,{_confirmFloors:e.target.checked})});setRes(Object.assign({},res,{courses:next}));}} /><span>${t('plan.scanConfirm')}</span></label>`}
             ${chosen[i] && c.rules && html`<div className="banner info"><div><b>${t('plan.scanRules')}</b><p className="small">${c.rules.evidence}</p><div className="small">${c.rules.rounding?t('policy.rounding')+': '+t('policy.'+c.rules.rounding):''}${c.rules.minimums.map(function(r){return ' · '+t('type.'+r.type)+' ≥ '+r.min+'% / '+t('policy.cap')+' '+r.cap;}).join('')}${c.rules.drops.map(function(r){return ' · '+r.group+' — '+t('policy.dropCount')+' '+r.count;}).join('')}</div><label className="check small"><input type="checkbox" checked=${sc.grading._confirmRules===true} onChange=${function(e){var next=res.courses.slice();next[i]=Object.assign({},sc,{grading:Object.assign({},sc.grading,{_confirmRules:e.target.checked})});setRes(Object.assign({},res,{courses:next}));}} /><span>${t('plan.scanRulesConfirm')}</span></label></div></div>`}
-            ${preset && (sc.groups || []).map(function(g){return html`<div className="small muted" key=${g.name}>${g.name}: ${g.weight}% · ${g.dist}</div>`;})}
+            ${preset && (sc.groups || []).map(function(g){return html`<div className="small muted" key=${g.name}>${g.name}: ${g.weight==null?'–':g.weight+'%'} · ${g.dist==='manual'?t('askai.unknownDist'):t('dist.'+g.dist)}</div>`;})}
+            ${preset && sc.grading && sc.grading.referencing==='criterion' && sc.grading.method!=='su' && !sc.grading.cutoffs && html`<div className="small muted">${t('askai.partialCriterion')}</div>`}
             ${preset && sc.grading && sc.grading.cutoffs && html`<div className="small muted">${Object.keys(sc.grading.cutoffs).map(function(k){return k+' ≥ '+sc.grading.cutoffs[k]+'%';}).join(' · ')}</div>`}
             ${sc.weightFlag != null && html`<div className="small scan-warn">${t('scan.weights', { w: fmtT(sc.weightFlag) })}</div>`}
             ${chosen[i] && c.rows.length > 0 && html`<div className="scan-rows">
@@ -9434,8 +9441,9 @@ function askAiPrompt(state, semesterId) {
   ];
   return lines.slice(0, 3).join('\n') + '\n\n```' + ASKAI_TAG + '\n' + JSON.stringify(example) + '\n```\n\n' +
     lines.slice(3, 9).join('\n') + '\n\n' + lines[9] + '\n' + (known.length ? JSON.stringify(known) : (th ? '(ยังไม่มี)' : '(none yet)')) + '\n\n' + (th ? 'รองรับ Syllabus (PDF หาก AI ที่ใช้เปิดได้), รูปภาพและข้อความ: ' : 'Supports syllabus PDFs (if your AI can read them), images and text: ') + '\n' + [
-      'Use groups for parent assessment weights; do not duplicate the parent as an assessment. dist is equal or points only when known; ask if unclear. Child weight is null when distributed by the group.',
-      'grading.method: letter or su; referencing: criterion or norm. Only include criterion cutoffs when all seven A through D thresholds are explicit; never fill missing thresholds from a default scale. mpl is the explicit S/U passing percentage. minimumGrades is a sparse map of explicit inclusive total-course grade guarantees for norm grading only.',
+      'Course code and name are optional. If a document has no identifiable course, output code:null and name:null with its grading/groups/assessments intact; the student selects or manually names the course in GradeSpace. Never invent a course or assume CU/TU catalog membership. Separate distinct courses; do not guess ambiguous aliases. Partial updates (only grading method, only assignment names, only weights, only scores) are valid. A score without known max can be returned with max:null for the student to complete. Use exact existing item names and groups when known.',
+      'Use groups for parent assessment weights; do not duplicate the parent as an assessment. dist is equal or points only when explicitly known, otherwise null. Do not allocate group percentages to children without evidence. Child weight is null when distributed by the group.',
+      'grading.method: letter or su; referencing: criterion or norm. Criterion referencing alone is valid; return cutoffs:null unless all seven A through D thresholds are explicit. Put any partial thresholds verbatim in notes; never fill missing thresholds from a default scale. mpl is the explicit S/U passing percentage. minimumGrades is a sparse map of explicit inclusive total-course grade guarantees for norm grading only.',
       'advancedRules: only explicit rounding (nearest/floor/ceil), minimums [{type,min,cap}], drops [{group,count}] for equal-weight groups, and exact short syllabus evidence. Never guess rules. Unsupported facts (exam dates, schedules, instructor, deletion, bonus rules) belong in notes, not fake assessment rows.',
       'Use Gregorian YYYY-MM-DD for assignment due dates; convert Buddhist years by subtracting 543. Keep decimals and distinguish missing from zero. Do not infer max from weight. Ask for clarification about ambiguous course sections, grading schemes or missing required information. Return only the changes requested; omit unknown grading. Notes may explain uncertainty in the student language.'
     ].join('\n') + '\n\n' + lines[10];
@@ -9462,18 +9470,18 @@ function parseAskAi(text) {
     list = Object.keys(by).map(function (k) { return by[k]; });
   }
   var invalid = false;
-  var courses = list.slice(0, 30).filter(function (c) { return c && (str(c.code, 20) || str(c.name, 200)); }).map(function (c) {
+  var courses = list.slice(0, 30).filter(function (c) { return c && typeof c==='object' && (str(c.code,20)||str(c.name,200)||c.grading||(Array.isArray(c.assessments)&&c.assessments.length)||(Array.isArray(c.groups)&&c.groups.length)); }).map(function (c) {
     var out = { code: str(c.code, 20), name: str(c.name, 200), credits: nul(c.credits), section: str(c.section, 10),
       assessments: (Array.isArray(c.assessments) ? c.assessments : []).slice(0, 80).filter(function (a) { return a && (str(a.name, 120) || a.type); }).map(function (a) {
         var s = nul(a.score), mx = nul(a.max), w = nul(a.weight);
-        if (!str(a.name,120) || (s !== null && (s < 0 || mx === null || s > mx)) || (mx !== null && mx <= 0) || (w !== null && (w < 0 || w > 100))) invalid = true;
+        if (!str(a.name,120) || (s !== null && (s < 0 || (mx !== null && s > mx))) || (mx !== null && mx <= 0) || (w !== null && (w < 0 || w > 100))) invalid = true;
         return { name: str(a.name, 120), type: ASKAI_TYPES.indexOf(a.type) >= 0 ? a.type : 'custom', weight: w, score: s, max: mx,
           group: str(a.group, 80) || undefined, due: /^\d{4}-\d{2}-\d{2}$/.test(a.due || '') ? a.due : '',
           _s: s === null ? '' : String(s), _m: mx === null ? '' : String(mx) };
       }) };
     out.groups = (Array.isArray(c.groups) ? c.groups : []).slice(0,80).filter(function(g){return g && str(g.name,80);}).map(function(g){
-      var w=nul(g.weight); if(w===null || w<0 || w>100 || !['equal','points'].includes(g.dist)) invalid=true;
-      return {name:str(g.name,80),weight:w,dist:g.dist};
+      var w=nul(g.weight); if((w!==null&&(w<0||w>100)) || (g.dist!=null&&!['equal','points','manual'].includes(g.dist))) invalid=true;
+      return {name:str(g.name,80),weight:w,dist:g.dist||'manual'};
     });
     var keys = out.groups.map(function(g){return g.name.toLowerCase();});
     if(new Set(keys).size!==keys.length) invalid=true;
@@ -9483,7 +9491,7 @@ function parseAskAi(text) {
       if(g.cutoffs!=null){var prev=Infinity;cutoffs={};labels.forEach(function(k){var v=g.cutoffs[k];if(typeof v!=='number'||v<=0||v>100||v>=prev)invalid=true;cutoffs[k]=v;prev=v;});if(g.referencing!=='criterion'||g.method!=='letter')invalid=true;}
       var mpl=nul(g.mpl);if(mpl!==null&&(mpl<=0||mpl>100||g.method!=='su'))invalid=true;
       if(g.method!=null&&!['letter','su'].includes(g.method)||g.referencing!=null&&!['criterion','norm'].includes(g.referencing))invalid=true;
-      if(g.method==='su'&&mpl===null || g.referencing==='criterion'&&g.method!=='su'&&!cutoffs)invalid=true;
+      if(g.method==='su'&&mpl===null)invalid=true;
       if(g.method||g.referencing||cutoffs)out.grading={method:g.method,referencing:g.referencing,mpl:mpl,cutoffs:cutoffs,minimumGrades:g.minimumGrades,advancedRules:g.advancedRules};
     }
     var ws = out.assessments.filter(function(a){return !a.group;}).map(function (a) { return a.weight; }).concat(out.groups.map(function(g){return g.weight;})).filter(function (w) { return w !== null; });
@@ -9503,6 +9511,10 @@ function AskAiModal(p) {
   var es = useState(null), err = es[0], setErr = es[1];
   var cs = useState(false), copied = cs[0], setCopied = cs[1];
   var shs = useState(false), show = shs[0], setShow = shs[1];
+  var ds=useState(null), draft=ds[0], setDraft=ds[1];
+  var ms=useState([]), mapping=ms[0], setMapping=ms[1];
+  var available=state.courses.filter(function(c){return cur&&c.semesterId===cur.id&&!c.finalGrade;});
+  function patchTarget(i,patch){setMapping(function(old){return old.map(function(m,j){return j===i?Object.assign({},m,patch):m;});});}
   // Copy must finish before the AI opens in a new tab/app: once the page loses focus the browser refuses
   // navigator.clipboard. So copy synchronously (execCommand on a hidden textarea, works on iOS/Android/desktop)
   // inside the tap, and only then open the AI.
@@ -9538,13 +9550,34 @@ function AskAiModal(p) {
   }
   function check() {
     var r = parseAskAi(pasted);
-    if (r.error) { setErr(r.error); return; }
-    if(cur && r.courses.some(function(sc){
-      var code=String(sc.code||'').split('.')[0], sec=String(sc.section||(String(sc.code||'').match(/\.(\d+)$/)||[])[1]||'').replace(/^0+(?=\d)/,'');
-      var matches=state.courses.filter(function(c){return c.semesterId===cur.id && (code ? String(c.code||'').split('.')[0]===code : String(c.name||'').trim().toLowerCase()===sc.name.toLowerCase());});
-      return matches.length>0 && (sec ? !matches.some(function(c){return sectionOf(c)===sec;}) : matches.length>1);
-    })){setErr('askai.invalid');return;}
-    closeModal(); openModal('scan', { semesterId: cur && cur.id, preset: { courses: r.courses, notes:r.notes }, title: t('askai.reviewT') });
+    if(r.error){setErr(r.error);return;}
+    var maps=r.courses.map(function(sc){
+      var code=String(sc.code||'').split('.')[0],sec=String(sc.section||(String(sc.code||'').match(/\.(\d+)$/)||[])[1]||'').replace(/^0+(?=\d)/,'');
+      var hits=available.filter(function(c){return (code?String(c.code||'').split('.')[0]===code:sc.name&&String(c.name||'').trim().toLowerCase()===sc.name.toLowerCase())&&(!sec||sectionOf(c)===sec);});
+      return {id:hits.length===1?hits[0].id:'',name:sc.name||'',credits:sc.credits==null?'':String(sc.credits)};
+    });
+    setDraft(r);setMapping(maps);setErr(null);
+  }
+  function readyTargets(){
+    if(!draft||mapping.length!==draft.courses.length)return false;
+    var ids=new Set();
+    return mapping.every(function(m){if(m.id==='__new')return !!m.name.trim()&&m.credits!==''&&Number.isFinite(Number(m.credits))&&Number(m.credits)>=0&&Number(m.credits)<=30;
+      if(!m.id||ids.has(m.id)||!available.some(function(c){return c.id===m.id;}))return false;ids.add(m.id);return true;});
+  }
+  function reviewTargets(){
+    if(!readyTargets())return;
+    var courses=draft.courses.map(function(sc,i){
+      var m=mapping[i], c=available.find(function(x){return x.id===m.id;});
+      var out=Object.assign({},sc,c?{_targetId:c.id,code:c.code||'',name:c.name,section:sectionOf(c)||'',credits:null}:{_new:true,name:m.name.trim(),credits:Number(m.credits)});
+      if(c)out.assessments=sc.assessments.map(function(a){
+        var cats=state.categories.filter(function(k){return k.courseId===c.id;});
+        var matches=state.assessments.filter(function(x){var k=cats.find(function(y){return y.id===x.categoryId;});return String(x.name||'').trim().toLowerCase()===a.name.toLowerCase()&&(!a.group||(k&&k.name.toLowerCase()===a.group.toLowerCase()));});
+        if(a.max==null&&matches.length===1&&matches[0].max>0)return Object.assign({},a,{max:matches[0].max,_m:String(matches[0].max)});
+        return a;
+      });
+      return out;
+    });
+    closeModal();openModal('scan',{semesterId:cur&&cur.id,preset:{courses:courses,notes:draft.notes},title:t('askai.reviewT')});
   }
   return html`<${Modal} title=${t(p.props && p.props.onboarding ? 'askai.onboardTitle' : 'askai.title')} onClose=${closeModal} wide=${true}>
     <div className="stack" data-testid="ask-ai" style=${{ gap: 12 }}>
@@ -9571,9 +9604,10 @@ function AskAiModal(p) {
         <button className="btn ghost sm" style=${{ justifySelf: 'start' }} onClick=${function () { setTab('paste'); }}>${t('askai.next')} ›</button>
       <//>` : html`<${React.Fragment}>
         <p className="small" style=${{ margin: 0 }}>${t('askai.pasteIntro')}</p>
-        <textarea className="input askai-text" value=${pasted} data-testid="askai-paste" placeholder=${t('askai.pastePh')} onChange=${function (e) { setPasted(e.target.value); setErr(null); }} aria-label=${t('askai.step2')}></textarea>
+        <textarea className="input askai-text" value=${pasted} data-testid="askai-paste" placeholder=${t('askai.pastePh')} onChange=${function (e) { setPasted(e.target.value); setErr(null); setDraft(null); }} aria-label=${t('askai.step2')}></textarea>
         <div><button className="btn primary" data-testid="askai-check" disabled=${!pasted.trim()} onClick=${check}>${t('askai.check')}</button></div>
         ${err && html`<${Banner} kind="bad">${t(err)}<//>`}
+        ${draft && html`<div className="stack" data-testid="askai-targets"><b>${t('askai.targetTitle')}</b>${draft.courses.map(function(sc,i){var m=mapping[i];return html`<div className="card pad stack" key=${i}><b>${sc.name||sc.code||t('askai.targetMissing')}</b><div className="small muted">${(sc.assessments||[]).map(function(a){return a.name;}).join(' · ')}</div><select className="input" aria-label=${t('askai.targetPick')} data-testid=${'askai-target-'+i} value=${m.id} onChange=${function(e){patchTarget(i,{id:e.target.value});}}><option value="">${t('askai.targetPick')}</option>${available.map(function(c){return html`<option key=${c.id} value=${c.id}>${courseDisplayTitle(c)}</option>`;})}<option value="__new">${t('askai.targetNew')}</option></select>${m.id==='__new'&&html`<${Field} label=${t('askai.targetName')} id=${'askai-name-'+i}><input className="input" id=${'askai-name-'+i} value=${m.name} onInput=${function(e){patchTarget(i,{name:e.target.value});}}/><//><${Field} label=${t('askai.targetCredits')} id=${'askai-credits-'+i}><input className="input" type="number" min="0" max="30" id=${'askai-credits-'+i} value=${m.credits} onInput=${function(e){patchTarget(i,{credits:e.target.value});}}/><//>`}</div>`;})}<button className="btn primary" data-testid="askai-review-targets" disabled=${!readyTargets()} onClick=${reviewTargets}>${t('askai.reviewT')}</button></div>`}
       <//>`}
     </div><//>`;
 }

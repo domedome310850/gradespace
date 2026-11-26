@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: incomplete CU/TU AI imports
+
+- `public/index.html`: external AI can return anonymous partial course data, choose an existing destination or manually name a new course and enter credits; preserve unknown weights/max, existing grades and manual grading choices; review unresolved distributions and missing criteria without guessing. Browser CI pending.
+
 ## 2026-11-26 — ChatGPT: CU plan AI onboarding
 
 - `public/index.html`: open existing external-AI import after first successful CU study-plan add; bilingual skip/guide, syllabus prompt, grouped grading import, validation, visible weights/cutoffs/due dates and preserved semester on review back. No auth, database or external connector changes. Browser CI pending.
