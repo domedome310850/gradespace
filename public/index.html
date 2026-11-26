@@ -4978,21 +4978,21 @@ function titleWithSection(name, c) {
   var sec = sectionOf(c) || parts.sec;
   return (niceName(parts.name) || String(c && c.code || '') || t('course')) + (sec ? ' [Sec ' + sec + ']' : '');
 }
+// Use one English catalog title everywhere, independently of interface language.
+function standardCourseName(c) {
+  if (!c) return t('course');
+  var saved=splitCourseSection(c.name).name;
+  var catalog=c.code?CATALOG.get(c.code):null;
+  var reg=c.code&&isCU()&&typeof RegData!=='undefined'&&RegData&&S.state?RegData.get(c,S.state):null;
+  var english=function(name){var n=splitCourseSection(name).name;return /[A-Za-z]/.test(n)&&!/[\u0E00-\u0E7F]/.test(n)?n:'';};
+  // Reg is enrollment-scoped; the catalog is scoped to the active university.
+  return niceName(english(reg&&reg.name_en)||english(catalog&&catalog.aka)||english(catalog&&catalog.n)||saved)||String(c.code||'')||t('course');
+}
 function courseDisplayTitle(c) {
-  return titleWithSection(c && c.name, c);
+  return titleWithSection(standardCourseName(c), c);
 }
 function upcomingCourseTitle(c) {
-  if (!c) return t('course');
-  var savedName = splitCourseSection(c.name).name;
-  var catalog = c.code ? CATALOG.get(c.code) : null;
-  var officialName = catalog && splitCourseSection(catalog.aka).name || '';
-  var catalogShort = catalog && splitCourseSection(catalog.n).name || '';
-  var isThai = /[\u0E00-\u0E7F]/;
-  var preferred = savedName && !isThai.test(savedName)
-    ? (officialName && savedName.toLowerCase() === catalogShort.toLowerCase() ? officialName : savedName)
-    : (officialName || catalogShort || savedName);
-  // short lists (coming up, calendar, timetable) leave the Sec out; the course card and page show it
-  return niceName(preferred) || String(c.code || '') || t('course');
+  return standardCourseName(c);
 }
 function upcomingTypeShort(a) {
   var type = a && a.type || 'custom';
@@ -6587,7 +6587,7 @@ function CourseCard(p) {
   return html`<article className="card ccard" style=${{ '--cc': courseColor(c.color) }}>
     <div className="ccard-top">
       <div className="grow">
-        <a href=${href} className="ccard-name" style=${{ color: 'inherit', textDecoration: 'none' }}>${niceName(splitCourseSection(c.name).name) || c.code || t('course')}</a>
+        <a href=${href} className="ccard-name" style=${{ color: 'inherit', textDecoration: 'none' }}>${standardCourseName(c)}</a>
         <div className="ccard-meta">
           ${[c.code && String(c.code).split('.')[0], sec && 'Sec ' + sec, t('nCredits', { n: fmtT(c.credits) })].filter(Boolean).join(' · ')}
           ${p.showSem ? ' · ' + semFull(state, state.semesters.find(function (s) { return s.id === c.semesterId; }) || {}) : ''}
@@ -7485,7 +7485,7 @@ function CoursesPage(p) {
       return html`<section key=${s.id} className="section" style=${{ marginTop: 22 }}>
         <div className="section-head"><h2>${semFull(state, s)}</h2><div className="row wrap"><span className="tiny muted">${t(isManualCourseOrder(state,s.id)?"sort.manualOrder":"sort.autoOrder")}</span>${isManualCourseOrder(state,s.id)&&html`<button type="button" className="btn sm ghost" onClick=${function(){resetCourseOrder(s.id);}}>${t("sort.resetOrder")}</button>`}</div></div>
         <${SortableGrid} ids=${cs.map(function (c) { return c.id; })} disabled=${!!q.trim()}
-          label=${function (id) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? c.name : ''; }}
+          label=${function (id) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? courseDisplayTitle(c) : ''; }}
           onReorder=${function (ids) { reorderSemester(s.id, ids); }}
           render=${function (id, handle) { var c = state.courses.find(function (x) { return x.id === id; }); return c ? html`<${CourseCard} course=${c} state=${state} handle=${handle} />` : null; }} />
       </section>`;
@@ -7852,7 +7852,7 @@ function CourseDetail(p) {
     <a className="back" href="#courses"><${Icon} n="back" s=${16} />${t('nav.courses')}</a>
     <div className="course-head">
       <div className="grow">
-        <div className="row" style=${{ gap: 10 }}><span className="dot" style=${{ width: 12, height: 12 }}></span><h1>${niceName(splitCourseSection(c.name).name) || c.code}</h1></div>
+        <div className="row" style=${{ gap: 10 }}><span className="dot" style=${{ width: 12, height: 12 }}></span><h1>${standardCourseName(c)}</h1></div>
         <div className="row wrap small muted" style=${{ gap: '4px 14px', marginTop: 4 }}>
           ${c.code && html`<span>${String(c.code).split('.')[0]}</span>`}${sectionOf(c) && html`<span>Sec ${sectionOf(c)}</span>`}<span>${t('nCredits', { n: fmtT(c.credits) })}</span><${KindChip} course=${c} />
           ${sem && html`<span>${semFull(state, sem)}</span>`}${c.instructor && html`<span>${t('instructor')}: ${c.instructor}</span>`}
@@ -8866,7 +8866,7 @@ function FinalGradeModal(p) {
   return html`<${Modal} title=${t('recordGradeT')} onClose=${closeModal} onEnter=${save} foot=${html`
     ${c.finalGrade && html`<button className="btn danger" style=${{ marginRight: 'auto' }} onClick=${function () { update(function (d) { d.courses.find(function (x) { return x.id === c.id; }).finalGrade = null; }); toast(t('gradeCleared')); closeModal(); }}>${t('clearGrade')}</button>`}
     <button className="btn" onClick=${closeModal}>${t('cancel')}</button><button className="btn primary" disabled=${!g} onClick=${save}>${t('saveGrade')}</button>`}>
-    <p className="small muted" style=${{ margin: 0 }}>${t('recordGradeP', { name: c.name })}</p>
+    <p className="small muted" style=${{ margin: 0 }}>${t('recordGradeP', { name: courseDisplayTitle(c) })}</p>
     ${calc && calc.kind !== 'none' && html`<${Banner} kind="info">${calc.kind === 'calculated' ? t('suggestCalc', { g: calc.label, p: fmt(calc.pct) }) : t('suggestEst', { g: calc.label, p: fmt(calc.pct) })}<//>`}
     ${sum && sum.pendingRows.length > 0 && html`<p className="small muted" style=${{ margin: 0 }}>${t('gm.noFinalScore')}</p>`}
     <${Field} label=${t('officialGrade')} id="fg" hint=${g ? impliedText(impliedRange(c, state, g)) : ''}><select id="fg" className="select" value=${g} onChange=${function (e) { setG(e.target.value); }}>
@@ -10397,7 +10397,7 @@ function boot() {
     emit();
   });
 }
-window.GradeSpace = { S: S, update: update, Calc: C, Store: Store, switchSpace: switchSpace, catalogSearch: function (q) { return CATALOG.search(q, 8); }, whatIf: function () { return whatIfCourses(S.state).map(function (r) { return { code: r.c.code, cr: r.cr, max: r.asc[r.maxIdx].label, asc: r.asc.map(function (g) { return g.label + ':' + g.points; }).join(' ') }; }); } };
+window.GradeSpace = { S: S, update: update, Calc: C, Store: Store, switchSpace: switchSpace, courseDisplayTitle: courseDisplayTitle, standardCourseName: standardCourseName, catalogSearch: function (q) { return CATALOG.search(q, 8); }, whatIf: function () { return whatIfCourses(S.state).map(function (r) { return { code: r.c.code, cr: r.cr, max: r.asc[r.maxIdx].label, asc: r.asc.map(function (g) { return g.label + ':' + g.points; }).join(' ') }; }); } };
 boot();
 })();
 
