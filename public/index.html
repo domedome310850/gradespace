@@ -5248,7 +5248,7 @@ function GoalPicker(p) {
   }, [opened]);
   var choose = function (target) { saveCourseTarget(c.id, target); setOpened(false); };
   return html`<div className="goal-pick" ref=${root}>
-    <button type="button" className="goal-pick-button" aria-label=${criterion ? t('goal.chooseAria', { name: c.name }) : t('grading.numericGoal') + ': ' + c.name}
+    <button type="button" className="goal-pick-button" aria-label=${criterion ? t('goal.chooseAria', { name: courseDisplayTitle(c) }) : t('grading.numericGoal') + ': ' + courseDisplayTitle(c)}
       aria-haspopup="true" aria-expanded=${opened ? 'true' : 'false'}
       title=${criterion ? t('goal.chooseHere') : t('grading.numericGoalHint')} onClick=${function () { setOpened(!opened); }}>
       <${Icon} n="target" s=${15} /><span className="goal-pick-label">${criterion ? (c.target ? t('targetX', { g: c.target }) : t('noTarget')) : (numericGoalFor(c) != null ? t('targetX', { g: fmtT(numericGoalFor(c)) + '%' }) : t('noTarget'))}</span>
@@ -5320,14 +5320,14 @@ function GradeBadge(p) {
 
 /* ================= shared actions ================= */
 function deleteCourse(c) {
-  confirmDialog({ title: t('delCourseQ'), body: t('delCourseBody', { name: c.name }), danger: true, confirmLabel: t('delete'),
+  confirmDialog({ title: t('delCourseQ'), body: t('delCourseBody', { name: courseDisplayTitle(c) }), danger: true, confirmLabel: t('delete'),
     onConfirm: function () {
       update(function (d) {
         d.courses = d.courses.filter(function (x) { return x.id !== c.id; });
         d.assessments = d.assessments.filter(function (x) { return x.courseId !== c.id; });
         d.categories = d.categories.filter(function (x) { return x.courseId !== c.id; });
       }, { undo: true });
-      toast(t('deletedX', { name: c.name }), { undo: true });
+      toast(t('deletedX', { name: courseDisplayTitle(c) }), { undo: true });
       if (parseHash().page === 'course') go('courses');
     } });
 }
@@ -7373,10 +7373,10 @@ function YearsPage(p) {
                   <span className=${'chip ' + (info.kind === 'confirmed' ? 'ok' : info.kind === 'calculated' ? 'accent' : info.kind === 'estimated' ? 'outline' : '')}>
                     ${info.label ? info.label + ' ' : ''}${t('kind.' + info.kind)}</span>
                   <label className="row small muted" style=${{ gap: 6 }}><${Icon} n="folder" s=${14} /><span className="hide-sm">${t('moveTo')}</span>
-                    <${SemesterSelect} state=${state} value=${c.semesterId} label=${t('moveCourseX', { name: c.name })} onChange=${function (v) {
+                    <${SemesterSelect} state=${state} value=${c.semesterId} label=${t('moveCourseX', { name: courseDisplayTitle(c) })} onChange=${function (v) {
                       if (v === c.semesterId) return;
                       update(function (d) { d.courses.find(function (x) { return x.id === c.id; }).semesterId = v; }, { undo: true });
-                      toast(t('movedX', { name: c.name, s: semFull(state, allSems.find(function (x) { return x.id === v; })) }), { undo: true });
+                      toast(t('movedX', { name: courseDisplayTitle(c), s: semFull(state, allSems.find(function (x) { return x.id === v; })) }), { undo: true });
                     }} /></label>
                 </div>`;
               })}</div>` : html`<p className="muted small" style=${{ margin: '8px 0 0' }}>${t('noCoursesYet')}</p>`}
@@ -7884,7 +7884,7 @@ function CourseDetail(p) {
         <div className="row wrap" style=${{ gap: 6 }}>
           <button className="btn sm" onClick=${function () { openModal('final', { courseId: c.id }); }}><${Icon} n="check" s=${15} />${c.finalGrade ? t('changeGrade') : t('recordGrade')}</button>
           <button className="btn sm" onClick=${function () { openModal('course', { id: c.id }); }}><${Icon} n="edit" s=${15} />${t('edit')}</button>
-          <button className="btn sm icon danger" aria-label=${t('deleteX', { name: c.name })} onClick=${function () { deleteCourse(c); }}><${Icon} n="trash" s=${16} /></button>
+          <button className="btn sm icon danger" aria-label=${t('deleteX', { name: courseDisplayTitle(c) })} onClick=${function () { deleteCourse(c); }}><${Icon} n="trash" s=${16} /></button>
         </div>
       </div>
     </div>
