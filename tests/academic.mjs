@@ -16,3 +16,10 @@ assert.equal(api.eligibility({...args,code:'AA102',courses:[]}).status,'blocked'
 assert.equal(api.eligibility({...args,code:'AA102',prereq:{AA102:[[1,'สอบได้วิชา ก.101 และมี 87 หน่วยกิต']]}}).status,'review');
 assert.equal(api.audit({...args,courses:[...courses,{code:'AA102',credits:3,semesterId:'s2',finalGrade:'B'}]}).earned,6);
 console.log('Academic advisory checks passed');
+
+assert.equal(api.amendmentActive({academic:2569,term:'s1'}),false);
+assert.equal(api.amendmentActive({academic:'2569',term:'s2'}),true);
+assert.equal(api.amendmentActive({academic:'',term:'s2'}),null);
+const g=api.guidedPlan({track,plan:{total:135,terms:[{year:1,term:1,credits:9,rows:[{codes:['AA101'],label:'one'},{codes:['AA102','AA103'],label:'หรือ'},{codes:[],label:'elective'}]}]},structure,rules,targetInfo:{academic:2569,level:1,term:'s1'}});
+assert.deepEqual(g.bulk,['AA101']);assert.equal(g.open.length,2);assert.equal(g.canBulk,true);
+const bad=api.guidedPlan({track,plan:{total:132,terms:[{year:1,term:1,credits:9,rows:[{codes:['AA101'],label:'one'}]}]},structure,rules,targetInfo:{level:1,term:'s1'}});assert.deepEqual(bad.bulk,[]);

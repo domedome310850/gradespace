@@ -11,11 +11,16 @@
     for(const r of gen){if(!byCode[r[1]])byCode[r[1]]={code:r[1],th:r[2],en:r[3],credits:r[4]};aliases[compact(r[1])]=r[1];}
     return {byCode,normalize:v=>aliases[compact(v)]||compact(v).replace(/^มธ(?=\d)/,'TU')};
   }
-  function audit({courses=[],track,structure,rules,cat,gen=[],allocations={}}){
+  function amendmentActive(info){const y=Number(info?.academic), t=info?.term;if(!Number.isInteger(y)||y<2500||y>2700||!['s1','s2','summer'].includes(t))return null;return y>2569||y===2569&&t!=='s1';}
+  function basketsFor(track,rules,active){return (rules.electiveBaskets[track.id]||[]).map((b,i)=>track.id==='FN'&&i===0&&active?{...b,codes:[...new Set([...b.codes,'FN494'])]}:b);}
+  function guidedPlan({track,plan,structure,rules,targetInfo}){const termNo={s1:1,s2:2,summer:3}[targetInfo?.term],term=plan?.terms.find(t=>t.year===targetInfo?.level&&t.term===termNo)||null;const allowed=new Set([...track.core,...track.required,...structure.genEdSlots.flat()]);const named=[],alternatives=[],open=[];for(const row of term?.rows||[]){const codes=[...new Set(row.codes)];if(codes.length===1&&allowed.has(codes[0]))named.push(codes[0]);else if(codes.length>1&&codes.every(x=>allowed.has(x))&&/หรือ/.test(row.label)&&!/และ/.test(row.label))alternatives.push(codes);else open.push(row.label);}
+    const unique=[...new Set(named)], alt=new Set(alternatives.flat()), canBulk=!!term&&plan.total===135&&term.numericCellTotal===undefined&&term.rowCredits===undefined;
+    return {term,named:unique,alternatives,open,canBulk,bulk:canBulk?unique.filter(x=>!alt.has(x)):[],remaining:[...new Set([...track.core,...track.required,...structure.genEdSlots.filter(x=>x.length===1).flat()])].filter(x=>!unique.includes(x)&&!alt.has(x)),genAlternatives:structure.genEdSlots.filter(x=>x.length>1),baskets:basketsFor(track,rules,amendmentActive(targetInfo)===true)};}
+  function audit({courses=[],track,structure,rules,cat,gen=[],allocations={},termInfo={}}){
     const attempts={},review=[],used=new Set(),groups=[],missing=[];
     for(const c of courses){const code=cat.normalize(c.code);if(!code){review.push({code:'?',reason:'missing-code'});continue;}(attempts[code]??=[]).push(c);}
     const special=rules.specialCourses||{};
-    const valid=(code,isMajor)=> (attempts[code]||[]).filter(c=>!special[code]&&(isMajor?major(c.finalGrade):ordinary(c.finalGrade))&&cat.byCode[code]&&Number(c.credits)===cat.byCode[code].credits);
+    const valid=(code,isMajor)=> (attempts[code]||[]).filter(c=>!special[code]&&(code!=='FN494'||amendmentActive(termInfo[c.semesterId])===true)&&(isMajor?major(c.finalGrade):ordinary(c.finalGrade))&&cat.byCode[code]&&Number(c.credits)===cat.byCode[code].credits);
     function use(code){used.add(code);return cat.byCode[code].credits;}
     function group(id,need,earned,codes){groups.push({id,need,earned,remaining:Math.max(0,need-earned),codes});}
     function required(id,slots,isMajor){
@@ -29,7 +34,7 @@
     const geExtra=Object.keys(attempts).filter(x=>geSet.has(x)&&!used.has(x)&&valid(x,false).length&&cat.byCode[x].credits===3&&!track.core.includes(x)&&!track.required.includes(x));
     const ge=geExtra.slice(0,1);group('genExtra',structure.genEdOtherCredits,ge.reduce((n,x)=>n+use(x),0),ge);
     required('core',track.core.map(x=>[x]),false);required('major',track.required.map(x=>[x]),true);
-    const baskets=rules.electiveBaskets[track.id]||[];
+    const baskets=basketsFor(track,rules,true);
     // Enumerate feasible choices (small credit caps); optimize total filled, never count a code twice.
     function choices(b,available){
       const out=[[]];const pairs=b.alternativePairs||[];
@@ -77,7 +82,7 @@
     const majorGpa=majorRows.every(x=>x.length)?majorRows.reduce((n,x)=>n+Math.max(...x),0)/majorRows.length:null;
     return {groups,missing,review,earned,remaining:Math.max(0,structure.minTotal-earned),majorGpa,academicChecklistComplete:groups.every(g=>g.remaining===0)&&missing.length===0,graduationCertified:false};
   }
-  function eligibility({code,courses=[],track,rules,prereq,cat,targetIndex=Infinity,termIndex={}}){
+  function eligibility({code,courses=[],track,rules,prereq,cat,targetIndex=Infinity,termIndex={},targetInfo}){
     code=cat.normalize(code);
     const attempts=courses.filter(c=>cat.normalize(c.code)===code);
     if(rules.specialCourses?.[code])return {status:'review',reason:'special-course',source:[]};
@@ -85,11 +90,15 @@
     if(attempts.some(c=>termIndex[c.semesterId]===undefined||termIndex[c.semesterId]>=targetIndex))return {status:'blocked',reason:'already-planned',source:[]};
     if(attempts.some(c=>track.required.includes(code)?major(c.finalGrade):ordinary(c.finalGrade)))return {status:'blocked',reason:'already-passed',source:[]};
     if(attempts.some(c=>!c.finalGrade||['ACC','EXE','I','AUD'].includes(c.finalGrade)))return {status:'review',reason:'prior-unresolved',source:[]};
-    const source=(prereq[code]||[]).filter(r=>r[0]===(track.id==='AC'?0:1)).map(r=>r[1]);
+    const effective=amendmentActive(targetInfo);
+    if(code==='FN494'&&effective!==true)return {status:effective===null?'review':'blocked',reason:effective===null?'term-unknown':'not-effective',source:[]};
+    if(code==='MK412'&&effective===null)return {status:'review',reason:'term-unknown',source:[]};
+    if(code==='MK412'&&track.id!=='MK')return {status:'blocked',reason:'major-restriction',source:[]};
+    const source=code==='FN494'?['สอบได้วิชา กง.311 และ กง.312']:code==='MK412'?['นักศึกษาเอกวิชาการตลาด และสอบได้วิชา กต.'+(effective?'313':'318')]:(prereq[code]||[]).filter(r=>r[0]===(track.id==='AC'?0:1)).map(r=>r[1]);
     if(!source.length)return {status:'review',reason:'no-verified-rule',source};
     if(new Set(source).size!==1)return {status:'review',reason:'complex-rule',source};
     // Only exact simple "passed course" AND/OR statements are executable; no extrapolation.
-    const body=source[0].trim().replace(/^สอบได้(?:วิชา)?\s*/,'');
+    const body=source[0].trim().replace(code==='MK412'?/^นักศึกษาเอกวิชาการตลาด และสอบได้วิชา\s*/:/^สอบได้(?:วิชา)?\s*/,'');
     if(body===source[0].trim()||/และ/.test(body)&&/หรือ/.test(body))return {status:'review',reason:'complex-rule',source};
     const raw=body.split(/\s*(?:และ|หรือ)\s*/);
     if(raw.some(x=>!/^[A-Zก-๙.]+\s*\d{3}$/i.test(x.trim())))return {status:'review',reason:'complex-rule',source};
@@ -102,5 +111,5 @@
     const rows=args.result.missing.flatMap(m=>m.options.map(code=>({code,group:m.group,alternative:m.options.length>1,priority:m.status==='retake'?0:m.group==='core'?1:m.group==='major'?2:3,...eligibility({...args,code})})));
     const seen=new Set();return rows.sort((a,b)=>(a.status==='academic-pass'?0:a.status==='review'?1:2)-(b.status==='academic-pass'?0:b.status==='review'?1:2)||a.priority-b.priority||a.code.localeCompare(b.code)).filter(x=>!seen.has(x.code)&&seen.add(x.code));
   }
-  return {catalog,audit,eligibility,plan};
+  return {catalog,audit,eligibility,plan,amendmentActive,guidedPlan};
 })();if(typeof module==='object'&&module.exports)module.exports=api;else root.GSAcademic=api;})(globalThis);
