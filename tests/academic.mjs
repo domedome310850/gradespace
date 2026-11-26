@@ -23,3 +23,15 @@ assert.equal(api.amendmentActive({academic:'',term:'s2'}),null);
 const g=api.guidedPlan({track,plan:{total:135,terms:[{year:1,term:1,credits:9,rows:[{codes:['AA101'],label:'one'},{codes:['AA102','AA103'],label:'หรือ'},{codes:[],label:'elective'}]}]},structure,rules,targetInfo:{academic:2569,level:1,term:'s1'}});
 assert.deepEqual(g.bulk,['AA101']);assert.equal(g.open.length,2);assert.equal(g.canBulk,true);
 const bad=api.guidedPlan({track,plan:{total:132,terms:[{year:1,term:1,credits:9,rows:[{codes:['AA101'],label:'one'}]}]},structure,rules,targetInfo:{level:1,term:'s1'}});assert.deepEqual(bad.bulk,[]);
+
+import {readFileSync} from 'node:fs';
+const html=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
+const read=n=>JSON.parse(html.match(new RegExp('^var '+n+' = ([\\s\\S]*?);$','m'))[1]);
+const realRules=read('TU_TBS_REQUIREMENTS_2566'),realStructure=read('TU_TBS_THAI_2566'),realPlans=read('TU_TBS_TERM_PLANS'),realPre=read('TU_TBS_THAI_PREREQ');
+const realCat=api.catalog([...read('TU_TBS_THAI_COURSES'),read('TU_FN494')],read('TU_GENED'));
+let termCount=0;for(const p of realPlans){const track=realRules.tracks.find(x=>x.id===(p.id.startsWith('MK')?'MK':p.id));for(const t of p.terms){const g=api.guidedPlan({track,plan:p,structure:realStructure,rules:realRules,targetInfo:{level:t.year,term:['s1','s2','summer'][t.term-1],academic:2569}});assert.ok(g.term);assert.ok(g.bulk.every(x=>realCat.byCode[x]));termCount++;}}assert.equal(termCount,99);
+const mk=realRules.tracks.find(x=>x.id==='MK'),fn=realRules.tracks.find(x=>x.id==='FN');
+const course=code=>({code,credits:realCat.byCode[code].credits,semesterId:'old',finalGrade:'B'});
+const elig=(code,track,courses,term)=>api.eligibility({code,track,courses,rules:realRules,cat:realCat,prereq:realPre,targetIndex:1,termIndex:{old:0},targetInfo:{academic:2569,term}});
+assert.equal(elig('MK412',mk,[course('MK313')],'s1').status,'blocked');assert.equal(elig('MK412',mk,[course('MK313')],'s2').status,'academic-pass');assert.equal(elig('MK412',fn,[course('MK313')],'s2').reason,'major-restriction');assert.equal(elig('FN494',fn,[course('FN311'),course('FN312')],'s1').reason,'not-effective');assert.equal(elig('FN494',fn,[course('FN311'),course('FN312')],'s2').status,'academic-pass');assert.equal(elig('FN494',fn,[course('FN311')],'s2').status,'blocked');
+console.log('99 term plans and effective amendments checked');

@@ -4422,12 +4422,13 @@ var TU_CATALOG = (function () {
 function tuCode(code) { var v=String(code||'').toUpperCase().replace(/\s+/g,''); var alias=TU_TBS_THAI_COURSES.find(function(r){return r[4].replace(/\./g,'')===v.replace(/\./g,'');}); return alias?alias[0]:v.replace(/^มธ\.?\s*(?=\d)/,'TU').split('.')[0]; }
 (function () {
   var cuGet = CATALOG.get, cuSearch = CATALOG.search;
-  CATALOG.get = function (code) { if (isCU()) return cuGet(code); var x = TU_CATALOG[tuCode(code)]; return x ? Object.assign({}, x) : null; };
+  function scopedTuCourse(code){var x=TU_CATALOG[code],profile=S&&S.state&&S.state.settings.tuAcademicProfile,thai=profile&&profile.curriculumYear===2566&&profile.track&&TU_TBS_THAI_BY_CODE[code];if(thai)return Object.assign({},x||{code:code},{n:thai[2],aka:thai[2],th:thai[1],cr:thai[3],sourceUrl:TU_TBS_THAI_SOURCES[thai[5][0]]});return x;}
+  CATALOG.get = function (code) { if (isCU()) return cuGet(code); var x = scopedTuCourse(tuCode(code)); return x ? Object.assign({}, x) : null; };
   CATALOG.search = function (q, limit) {
     if (isCU()) return cuSearch(q, limit);
     var n = function (x) { return String(x || '').toLowerCase().replace(/\s+/g, ''); }, qq = n(q), cq = n(tuCode(q));
     if (!qq) return [];
-    return Object.keys(TU_CATALOG).map(function (k) { return TU_CATALOG[k]; })
+    return Object.keys(TU_CATALOG).map(function (k) { return scopedTuCourse(k); })
       .filter(function (x) { return [x.code, x.n, x.th, (TU_TBS_THAI_BY_CODE[x.code]||[])[4]].some(function (v) { return n(v).indexOf(qq) >= 0; }) || (cq && n(x.code).indexOf(cq) >= 0); })
       .sort(function (a, b) { return (n(b.code).indexOf(qq) === 0) - (n(a.code).indexOf(qq) === 0) || a.code.localeCompare(b.code); })
       .slice(0, limit || 8).map(function (x) { return Object.assign({}, x); });
@@ -4624,7 +4625,7 @@ function TuPlanModal(p) {
   var chosen = Object.keys(pick).filter(function (k) { return pick[k] && byCode[k] && !blocked(k); });
   var selectedCredits=chosen.reduce((n,k)=>n+byCode[k].cr,0), existingCredits=state.courses.filter(x=>x.semesterId===semId).reduce((n,x)=>n+(Number(x.credits)||0),0);
   function selectBulk(){var next={};guide.bulk.forEach(code=>{var el=eligibility(code);if(byCode[code]&&!blocked(code)&&(!el||el.status!=='blocked'))next[code]=true;});setPick(next);}
-  function choice(code,alternatives){var x=byCode[code];if(!x)return null;var el=eligibility(code);return html`<label className="me-row tup-row" key=${code}><input type="checkbox" checked=${!!pick[code]&&!blocked(code)} disabled=${blocked(code)} onChange=${ev=>{var n=Object.assign({},pick);if(ev.target.checked&&alternatives)alternatives.forEach(k=>{n[k]=false;});n[code]=ev.target.checked;setPick(n);}}/><span className="grow"><b>${code}</b> ${x.name}<span className="tiny muted" style=${{display:'block'}}>${t('nCredits',{n:x.cr})} · ${blocked(code)?t('tuge.have'):el?t('academic.'+(el.status==='review'?'reviewStatus':el.status)):t('tup.pending')}${el&&el.source.length?' · '+el.source.join(' / '):''}</span></span></label>`;}
+  function choice(code,alternatives){var x=byCode[code];if(!x)return null;var el=eligibility(code);return html`<label className="me-row tup-row" key=${code}><input type="checkbox" checked=${!!pick[code]&&!blocked(code)} disabled=${blocked(code)} onChange=${ev=>{var n=Object.assign({},pick);if(ev.target.checked&&alternatives)alternatives.forEach(k=>{n[k]=false;});n[code]=ev.target.checked;setPick(n);}}/><span className="grow"><b>${code}</b> ${x.name}<span className="tiny muted" style=${{display:'block'}}>${t('nCredits',{n:x.cr})} · ${blocked(code)?t('tuge.have'):el?t('academic.'+(el.status==='review'?'reviewStatus':el.status))+' · '+t('academic.reason.'+el.reason):t('tup.pending')}${el&&el.source.length?' · '+el.source.join(' / '):''}</span></span></label>`;}
   function add() {
     if (!semId || !chosen.length) return;
     update(function (d) {
@@ -4642,7 +4643,7 @@ function TuPlanModal(p) {
     <div className="stack" data-testid="tu-plan" style=${{ gap: 10 }}>
       <p className="small muted" style=${{ margin: 0 }}>${t('tup.chooseTrack')}</p>
       <select className="select" aria-label=${LANG==='th'?'หลักสูตร TBS':'TBS program'} value=${program} onChange=${function(e){setProgram(e.target.value);setTrackId('');setGrp('ge1');setPick({});}}><option value="thai">${LANG==='th'?'หลักสูตรภาษาไทย 2566':'Thai programs 2023'}</option><option value="bba">BBA International 2023</option></select>
-      ${program==='thai'&&html`<select className="select" aria-label=${LANG==='th'?'เลือกเอกหรือกลุ่มวิชา':'Select major or concentration'} value=${trackId} onChange=${function(e){setTrackId(e.target.value);setGrp(e.target.value?'guided':'ge1');setPick({});}}><option value="">${LANG==='th'?'เลือกเอกหรือกลุ่มวิชา (ถ้าทราบ)':'Select your major (if known)'}</option>${TU_TBS_REQUIREMENTS_2566.tracks.map(function(x){return html`<option key=${x.id} value=${x.id}>${LANG==='th'?x.th:x.en}</option>`;})}</select>`}
+      ${program==='thai'&&html`<select className="select" data-testid="tup-track" aria-label=${LANG==='th'?'เลือกเอกหรือกลุ่มวิชา':'Select major or concentration'} value=${trackId} onChange=${function(e){setTrackId(e.target.value);setGrp(e.target.value?'guided':'ge1');setPick({});}}><option value="">${LANG==='th'?'เลือกเอกหรือกลุ่มวิชา (ถ้าทราบ)':'Select your major (if known)'}</option>${TU_TBS_REQUIREMENTS_2566.tracks.map(function(x){return html`<option key=${x.id} value=${x.id}>${LANG==='th'?x.th:x.en}</option>`;})}</select>`}
       <select className="select" data-testid="tup-target" value=${semId} aria-label=${t('tup.toTerm')} onChange=${e=>{setSemId(e.target.value);setPick({});}}>${!semsAll.length&&html`<option value="">${t('tup.noTerm')}</option>`}${semsAll.map(x=>html`<option key=${x.id} value=${x.id}>${semFull(state,x)}</option>`)}</select>
       ${track&&track.id==='MK'&&html`<select className="select" aria-label=${t('tup.planVariant')} value=${variant} onChange=${e=>{setVariant(e.target.value);setPick({});}}>${TU_TBS_TERM_PLANS.filter(x=>x.id==='MK1'||x.id==='MK2').map(x=>html`<option value=${x.id} key=${x.id}>${LANG==='th'?x.th:x.en}</option>`)}</select>`}
       <p className="tiny muted">${LANG==='th'?'วิชาที่ไม่ทราบหมวดจะบันทึกเป็นวิชาเลือกชั่วคราว แก้หมวดภายหลังได้; การเพิ่มวิชาเรียนซ้ำเป็นเพียงแผน ต้องตรวจสิทธิ์ลงทะเบียนกับคณะ':'Unclassified courses use an editable provisional elective label. A repeat plan does not guarantee registration eligibility.'}</p>

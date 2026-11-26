@@ -384,10 +384,15 @@ async function runTU(browser, lang, width) {
   await page.locator('.courses-actions .btn').nth(1).click();
   await page.getByTestId('tu-plan').waitFor({timeout:5000}).catch(()=>errors.push('TU plan picker did not open'));
   if(await page.locator('.modal').filter({hasText:/บริหารธุรกิจ|ปี 1 เทอม 1 ของ/}).count()) errors.push('Chula plan window shown in TU space');
-  await page.locator('.tup-groups button').filter({hasText:/บัญชี|Accounting/}).click();
-  await page.locator('.tup-row').filter({hasText:'AC201'}).locator('input').check();
+  await page.getByTestId('tup-track').selectOption('AC');
+  const guided=page.getByTestId('tup-guided');await guided.waitFor();
+  await page.getByTestId('tup-bulk').click();
+  const selected=await guided.locator('input:checked:not(:disabled)').count();
+  if(selected!==2)errors.push('TU accounting semester 1 must select exactly AC201 and IS201, got '+selected);
+  if(!(await guided.locator('.tup-row').filter({hasText:'AC201'}).locator('input').isChecked()))errors.push('AC201 not selected by guided bulk');
   await page.getByTestId('tup-add').click(); await page.waitForTimeout(300);
-  if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')))) errors.push('TU picker did not add AC201');
+  if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')&&GradeSpace.S.state.courses.some(c=>c.code==='IS201')&&GradeSpace.S.state.settings.tuAcademicProfile.track==='AC'))) errors.push('TU guided picker did not add the named accounting courses and persist major');
+  if(!(await page.evaluate(()=>GradeSpace.catalogSearch('AC396').some(x=>x.code==='AC396'&&x.cr===1.5))))errors.push('Thai scoped catalog credits incorrect');
   // Switch to Chula and back: each space comes back intact, nothing deleted.
   const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
   await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
