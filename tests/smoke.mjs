@@ -122,6 +122,19 @@ async function run(browser, lang, width) {
   await page.keyboard.press('Control+k'); await page.locator('.cmd-input').fill(lang==='th'?'GPA':'สรุป');
   if(await page.locator('.cmd-item').count()<1) errors.push('command search should match both languages');
   await page.keyboard.press('Escape');
+  // University spaces: a Chula space left aside while Chula is active comes back on load, and switching never
+  // puts an empty space over a stored one.
+  const sp=await page.evaluate(()=>{
+    const G=window.GradeSpace, base=JSON.parse(JSON.stringify(G.S.state));
+    const stash={savedAt:1,years:base.years,semesters:base.semesters,courses:base.courses,categories:base.categories,assessments:base.assessments,settings:{currentSemesterId:base.settings.currentSemesterId}};
+    const broken=Object.assign({},base,{years:[],semesters:[],courses:[],categories:[],assessments:[],settings:Object.assign({},base.settings,{institution:'cu',currentSemesterId:null,spaces:{cu:stash}})});
+    const healed=G.Store.normalize(JSON.parse(JSON.stringify(broken)));
+    const d=JSON.parse(JSON.stringify(broken)); d.settings.spaces=JSON.parse(JSON.stringify(broken.settings.spaces));
+    G.switchSpace(d,'cu','tu');
+    return {n:base.courses.length, healed:healed.courses.length, left:!!(healed.settings.spaces&&healed.settings.spaces.cu), kept:d.settings.spaces.cu.courses.length};
+  });
+  if(sp.healed!==sp.n||sp.left) errors.push('stored Chula space not restored on load: '+JSON.stringify(sp));
+  if(sp.kept!==sp.n) errors.push('switching from an empty space overwrote the stored one: '+JSON.stringify(sp));
   // What-if grades on the GPA page (nothing saved).
   await page.evaluate(()=>{location.hash='gpa';}); await page.waitForTimeout(300);
   const wi=page.getByTestId('whatif'); await wi.waitFor();

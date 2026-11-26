@@ -1759,6 +1759,17 @@ var Store = (function () {
   }
 
   /* ---- validation / migration of loaded or imported data ---- */
+  // A university space put aside under settings.spaces[<active>] while the active space is empty (left by an
+  // older copy of the site that changed only the university label) is brought back. Nothing is merged or deleted.
+  function healSpace(s) {
+    var st = s.settings, sp = st.spaces, act = st.institution === 'tu' ? 'tu' : 'cu';
+    var back = sp && typeof sp === 'object' ? sp[act] : null;
+    var has = function (o) { return ['years', 'semesters', 'courses', 'assessments'].some(function (k) { return Array.isArray(o[k]) && o[k].length; }); };
+    if (!back || typeof back !== 'object' || !has(back) || has(s)) return;
+    ['years', 'semesters', 'courses', 'categories', 'assessments'].forEach(function (k) { if (Array.isArray(back[k])) s[k] = back[k]; });
+    if (back.settings && typeof back.settings === 'object') Object.keys(back.settings).forEach(function (k) { st[k] = back.settings[k]; });
+    st.spaces = Object.assign({}, sp); delete st.spaces[act];
+  }
   function normalize(raw) {
     if (!raw || typeof raw !== 'object') throw new Error('not_object');
     if (!Array.isArray(raw.courses) || !Array.isArray(raw.years) || !Array.isArray(raw.semesters)) throw new Error('bad_shape');
@@ -1775,6 +1786,7 @@ var Store = (function () {
     if (!raw.settings || raw.settings.thaiDefaultV !== 1) { s.settings.lang = 'th'; s.settings.thaiDefaultV = 1; }
     s.settings.planner = Object.assign({}, base.settings.planner, (raw.settings && raw.settings.planner) || {});
     if (!Array.isArray(s.settings.planner.rows)) s.settings.planner.rows = [];
+    healSpace(s);
     var N = function (v) { return Calc.toNum(v); };
     s.assessments.forEach(function (a) {
       a.weight = N(a.weight); a.max = N(a.max); a.score = N(a.score); a.predicted = N(a.predicted);
@@ -3816,6 +3828,12 @@ function switchSpace(d, from, to) {
   var keep = { savedAt: Date.now() };
   SPACE_KEYS.forEach(function (k) { keep[k] = Array.isArray(d[k]) ? d[k] : []; });
   keep.settings = {}; SPACE_SETTINGS.forEach(function (k) { if (st[k] !== undefined) keep.settings[k] = st[k]; });
+  // Never put an empty space over one that already holds data; if both hold data keep the older one too.
+  var old = spaces[from];
+  if (old && typeof old === 'object' && spaceHasData(old)) {
+    if (!spaceHasData(d)) keep = old;
+    else spaces[from + '-' + (old.savedAt || Date.now())] = old;
+  }
   spaces[from] = keep;
   var back = spaces[to];
   SPACE_KEYS.forEach(function (k) { d[k] = back && Array.isArray(back[k]) ? back[k] : []; });
@@ -9202,7 +9220,7 @@ function boot() {
     emit();
   });
 }
-window.GradeSpace = { S: S, update: update, Calc: C, catalogSearch: function (q) { return CATALOG.search(q, 8); }, whatIf: function () { return whatIfCourses(S.state).map(function (r) { return { code: r.c.code, cr: r.cr, max: r.asc[r.maxIdx].label, asc: r.asc.map(function (g) { return g.label + ':' + g.points; }).join(' ') }; }); } };
+window.GradeSpace = { S: S, update: update, Calc: C, Store: Store, switchSpace: switchSpace, catalogSearch: function (q) { return CATALOG.search(q, 8); }, whatIf: function () { return whatIfCourses(S.state).map(function (r) { return { code: r.c.code, cr: r.cr, max: r.asc[r.maxIdx].label, asc: r.asc.map(function (g) { return g.label + ':' + g.points; }).join(' ') }; }); } };
 boot();
 })();
 
