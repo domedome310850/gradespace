@@ -5356,7 +5356,7 @@ function GradeBadge(p) {
 
 /* ================= shared actions ================= */
 function deleteCourse(c) {
-  confirmDialog({ title: t('delCourseQ'), body: t('delCourseBody', { name: courseDisplayTitle(c) }), danger: true, confirmLabel: t('delete'),
+  confirmDialog({ title: t('delCourseQ'), body: t('delCourseBody', { name: courseDisplayTitle(c) }), danger: true, confirmLabel: t('confirm'),
     onConfirm: function () {
       update(function (d) {
         d.courses = d.courses.filter(function (x) { return x.id !== c.id; });
