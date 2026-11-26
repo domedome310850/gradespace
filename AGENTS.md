@@ -173,3 +173,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner feedback: show GradeSpace CU/TU from sign-in, campus colors CU pink / TU red and yellow, and natural-language AI examples (อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง). Ambiguous course/item aliases must be clarified, not guessed. No data/auth changes. CI pending.
 
 - Owner refinement: CU/TU suffix same size and weight as GradeSpace, no badge; TU Space red and TU yellow (contrast-aware light/dark). Preserve responsive layout. Address English AI guide overflow at 320px; verify in CI.
+
+- Owner-approved TU wordmark: Space yellow/gold, TU red; logo yellow background with red G. CU unchanged. CI pending.

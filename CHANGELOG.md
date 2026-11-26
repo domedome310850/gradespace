@@ -1,3 +1,7 @@
+## 2026-11-26 — TU logo color refinement
+
+- Swap TU wordmark colors: yellow/gold Space and red TU. Yellow icon with red G and dot. Preserve contrast-aware light/dark variants and CU branding. Browser assertions added; CI pending.
+
 ## 2026-11-26 — Campus wordmark refinements
 
 - CU/TU now use the same type size and weight as GradeSpace without a badge. TU Space is red and TU is golden yellow, adjusted for light/dark contrast. Tighten AI instructions on 320px screens after CI identified English overflow. New wordmark smoke assertions; CI pending.

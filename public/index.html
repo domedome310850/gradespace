@@ -107,11 +107,11 @@ a { color: var(--accent-text); }
 .brand-campus{font:inherit;letter-spacing:inherit;color:var(--accent-text);flex:none}
 :root[data-uni="cu"][data-theme="dark"] .brand-name-accent{color:#FFFFFF}
 @media(prefers-color-scheme:dark){:root[data-uni="cu"]:not([data-theme="light"]) .brand-name-accent{color:#FFFFFF}}
-:root[data-uni="tu"] .brand-name-accent{color:#C3002F}
-:root[data-uni="tu"] .brand-campus{color:#946900}
-:root[data-uni="tu"][data-theme="dark"] .brand-name-accent{color:#EF536C}
-:root[data-uni="tu"][data-theme="dark"] .brand-campus{color:#FFD13F}
-@media(prefers-color-scheme:dark){:root[data-uni="tu"]:not([data-theme="light"]) .brand-name-accent{color:#EF536C}:root[data-uni="tu"]:not([data-theme="light"]) .brand-campus{color:#FFD13F}}
+:root[data-uni="tu"] .brand-name-accent{color:#946900}
+:root[data-uni="tu"] .brand-campus{color:#C3002F}
+:root[data-uni="tu"][data-theme="dark"] .brand-name-accent{color:#FFD13F}
+:root[data-uni="tu"][data-theme="dark"] .brand-campus{color:#EF536C}
+@media(prefers-color-scheme:dark){:root[data-uni="tu"]:not([data-theme="light"]) .brand-name-accent{color:#FFD13F}:root[data-uni="tu"]:not([data-theme="light"]) .brand-campus{color:#EF536C}}
 .side .brand{padding-inline:4px;gap:8px}
 .side .brand-name{font-size:18px}
 .brand-mark,.brand:hover .brand-mark{box-shadow:0 4px 11px color-mix(in srgb,var(--accent) 22%,transparent)}
@@ -964,7 +964,7 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .help-tabs{margin:4px 0 6px}.help-tabs .seg{max-width:360px}
 /* Thammasat GenEd picker (2026-11-26). */
 .tuge-group h3{font-size:14px;margin:16px 0 4px;color:var(--accent-text)}.tuge-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
-:root[data-uni="tu"] .brand-mark{box-shadow:0 4px 11px rgba(195,0,47,.20)}
+:root[data-uni="tu"] .brand-mark{box-shadow:0 4px 11px rgba(195,137,0,.20)}
 :root[data-uni="tu"] .ai-fab{background:linear-gradient(135deg,#D90038,#C3002F 55%,#8C0022);box-shadow:0 8px 22px rgba(195,0,47,.38),0 0 0 4px color-mix(in srgb,var(--bg) 70%,transparent)}
 :root[data-uni="tu"] .nav-item[aria-current="page"]{border-inline-start:3px solid #FFD13F}
 :root[data-uni="tu"] .metric.hero{border-bottom:4px solid #FFD13F}
@@ -5164,11 +5164,11 @@ function CampusBrand(p) {
   return html`<div className="brand-name" data-testid="campus-brand" aria-label=${'GradeSpace '+u}><span className="brand-word">Grade<span className="brand-name-accent">Space</span></span><span className="brand-campus">${u}</span></div>`;
 }
 function Logo(p) {
-  var tu=(p.uni||uniOf())==='tu', colors=tu?['#E33D58','#C3002F','#8C0022']:['#F178AD','#D52B79','#A51A60'];
+  var tu=(p.uni||uniOf())==='tu', colors=tu?['#FFE78A','#FFD13F','#F5B91D']:['#F178AD','#D52B79','#A51A60'];
   // Each logo needs its own gradient id: the sidebar copy is hidden on phones, and a
   // gradient referenced from a hidden (display:none) SVG renders black.
   var gid = useRef(null); if (!gid.current) gid.current = 'gsGradient' + (++logoSeq);
-  return html`<span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"> <defs> <linearGradient id=${gid.current} x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" stop-color=${colors[0]}/> <stop offset="55%" stop-color=${colors[1]}/> <stop offset="100%" stop-color=${colors[2]}/> </linearGradient> </defs> <rect width="48" height="48" rx="14" fill=${'url(#' + gid.current + ')'}/> <path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke="#fff" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/> <circle cx="34.8" cy="12.6" r="3" fill=${tu?'#FFD13F':'#FCE0EF'}/> </svg></span>`;
+  return html`<span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"> <defs> <linearGradient id=${gid.current} x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" stop-color=${colors[0]}/> <stop offset="55%" stop-color=${colors[1]}/> <stop offset="100%" stop-color=${colors[2]}/> </linearGradient> </defs> <rect width="48" height="48" rx="14" fill=${'url(#' + gid.current + ')'}/> <path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke=${tu?'#C3002F':'#fff'} stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/> <circle cx="34.8" cy="12.6" r="3" fill=${tu?'#C3002F':'#FCE0EF'}/> </svg></span>`;
 }
 function Tip(p) {
   var posState = useState(null), pos = posState[0], setPos = posState[1];
