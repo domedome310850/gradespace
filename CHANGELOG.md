@@ -1,3 +1,13 @@
+## 2026-11-26 — Claude (claude.ai): what-if grades, phone one-row layouts, plain AI menu, Thammasat picker
+
+- `public/index.html`:
+  - **What-if grades** (`WhatIfCard` on the GPA page; link “ลองสมมติเกรด” on the overview; command menu): pick a letter for each in-progress course this term and see term GPA and GPAX at once; “I want 2.50” (term or GPAX) suggests up to four grade sets (`whatIfSolve`: same grade everywhere, fewest changes from now, high-credit first, all-in on a few), never above what a course can still reach under its cut-offs. S/U courses don’t count. Nothing is saved.
+  - **Phone layouts:** overview term picker + Add course + Quick score on one row (`.dash-bar`), facts line shortened to one row, next-term actions scroll in one row; Courses page buttons on one row (Add / By major / scan icon) and term filter + search on one row; GPA tiles: GPAX full width then 2×2. Removed the rectangle around the centre AI button.
+  - **AI menu** (`AiHubModal`) redone as a plain list like Settings: Ask ChatGPT/Claude (copy-paste), @GradeSpace in ChatGPT and Claude (coming soon), then scan / paste / quick score.
+  - **Thammasat:** in a TU space the Chula major/year plan windows (`plan`, `studyplan`) are replaced by `TuPlanModal` (GenEd groups 1–5 and TBS subject groups; tick and add to a term). The sign-in screen’s university choice now only applies when the student actually picks it, and it switches to that university’s space after the account loads (same email, separate spaces) — fixes landing in the Chula space after choosing Thammasat.
+- `tests/smoke.mjs`: what-if (best vs worst grades, a suggested set reaches 2.50, saved grades unchanged); TU “By major” opens the TU picker and adds AC201.
+- Not yet: year-by-year study plans for Thammasat majors.
+
 ## 2026-11-26 — Claude (claude.ai): ask your own AI by copy-paste (free plans)
 
 - `public/index.html`: most students use free ChatGPT, which can’t add custom connectors, so until GradeSpace is in ChatGPT’s directory there is a copy-paste bridge (`AskAiModal`, modal `askAi`; card in the AI hub and a command-menu item). Step 1 copies this term’s courses/items/scores as JSON plus rules (score null ≠ 0, never invent; answer new scores in a ```gradespace-scores block) and opens ChatGPT or Claude; no email or student ID is included. Step 2 parses the pasted answer (`parseAskAi`), matches only existing courses/items, shows each row to approve (unknown course/item or impossible score is skipped), and saves with undo. TH/EN.
