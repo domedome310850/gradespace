@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: concise course deletion confirmation
+
+- Course deletion confirmation button uses ยืนยัน / Confirm; cancellation, warning, deletion and GPA behavior unchanged. Smoke assertion added; CI pending.
+
 ## 2026-11-26 — ChatGPT: delete courses directly from cards
 
 - Course cards in both campus spaces now have a trash button beside View Details. Existing confirmed deletion removes only the selected course and linked assessments/categories, with undo. Confirmation explains GPA/GPAX exclusion. Added bilingual UI smoke coverage for cancel, confirm, linked records and both GPA modes. Browser CI pending; no storage schema changes.
