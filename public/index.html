@@ -1021,17 +1021,22 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 :root[data-uni="tu"] .btn.primary:hover{border-color:var(--tu-red-border)}
 :root[data-uni="tu"] .nav-item[aria-current="page"]{box-shadow:inset 3px 0 var(--tu-gold);color:var(--accent-text)}
 :root[data-uni="tu"] .bottomnav a[aria-current="page"]{color:var(--tu-gold-text);box-shadow:inset 0 -2px var(--tu-gold)}
-:root[data-uni="tu"] .nav-ai-dot,:root[data-uni="tu"] .ai-fab{background:#8C1D2C;color:#FFD13F;box-shadow:0 0 0 4px var(--surface)}
+:root[data-uni="tu"] .nav-ai-dot,:root[data-uni="tu"] .ai-fab{background-color:#8C1D2C;background-image:radial-gradient(ellipse at 30% 12%,#AB3443 0%,transparent 58%),linear-gradient(155deg,#981F32 0%,#8C1D2C 55%,#671422 100%);color:#FFD13F;box-shadow:inset 0 1px 1px rgba(255,255,255,.24),inset 0 -2px 3px rgba(55,0,12,.34),0 4px 10px rgba(140,29,44,.28),0 0 0 4px var(--surface)}
 /* CU: rich campus pink plus fresh petal pink, mirroring the TU two-tone system. */
-:root[data-uni="cu"] .nav-ai-dot,:root[data-uni="cu"] .ai-fab{background:#F4A5C9;color:#891749;box-shadow:0 0 0 4px var(--surface)}
+:root[data-uni="cu"] .nav-ai-dot,:root[data-uni="cu"] .ai-fab{background-color:#F4A5C9;background-image:radial-gradient(ellipse at 30% 12%,#FFDAE9 0%,transparent 58%),linear-gradient(155deg,#FBD0E2 0%,#F4A5C9 58%,#EFA0C1 100%);color:#891749;box-shadow:inset 0 1px 2px rgba(255,255,255,.72),inset 0 -2px 3px rgba(137,23,73,.17),0 4px 10px rgba(167,29,93,.23),0 0 0 4px var(--surface)}
+:root[data-uni] .nav-ai-dot,:root[data-uni] .ai-fab{transition:transform .18s ease,filter .18s ease}
+@media(hover:hover){:root[data-uni] .nav-ai:hover .nav-ai-dot,:root[data-uni] .ai-fab:hover{transform:translateY(-2px);filter:brightness(1.04)}}
+:root[data-uni] .nav-ai:active .nav-ai-dot,:root[data-uni] .ai-fab:active{transform:scale(.96);filter:brightness(.98)}
+@media(prefers-reduced-motion:reduce){:root[data-uni] .nav-ai-dot,:root[data-uni] .ai-fab{transition:none}:root[data-uni] .nav-ai:hover .nav-ai-dot,:root[data-uni] .nav-ai:active .nav-ai-dot,:root[data-uni] .ai-fab:hover,:root[data-uni] .ai-fab:active{transform:none}}
 :root[data-uni="cu"] .nav-item[aria-current="page"]{box-shadow:inset 3px 0 #E86BA5}
 :root[data-uni="cu"] .bottomnav a[aria-current="page"]{box-shadow:inset 0 -2px #E86BA5}
 :root[data-uni="cu"] .metric.hero{box-shadow:inset 0 3px #E86BA5,var(--shadow)}
 :root[data-uni="cu"] .btn.primary{border-color:#A71D5D}
 :root[data-uni="cu"] .btn.primary:hover{border-color:#891749}
 /* AI sidebar is a single highlighted row: white label and glyph, campus-tinted background only. */
-:root[data-uni] .side .nav-ai-main{background:var(--ai-highlight);color:#FFFFFF;border-color:transparent}
-:root[data-uni] .side .nav-ai-main:hover{background:var(--ai-highlight-hover);color:#FFFFFF;border-color:transparent}
+:root[data-uni] .side .nav-ai-main{background-color:var(--ai-highlight);background-image:linear-gradient(155deg,rgba(255,255,255,.085),transparent 48%,rgba(0,0,0,.07));color:#FFFFFF;border-color:transparent;box-shadow:inset 0 1px 1px rgba(255,255,255,.14),0 2px 5px rgba(0,0,0,.10);transition:background-color .18s ease,box-shadow .18s ease}
+:root[data-uni] .side .nav-ai-main:hover{background-color:var(--ai-highlight-hover);color:#FFFFFF;border-color:transparent;box-shadow:inset 0 1px 1px rgba(255,255,255,.16),0 3px 7px rgba(0,0,0,.13)}
+:root[data-uni] .side .nav-ai-main:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.18)}
 :root[data-uni] .side .nav-ai-main .ic{color:#FFFFFF}
 :root[data-uni="tu"] .metric.hero{box-shadow:inset 0 3px var(--tu-gold),var(--shadow)}
 :root[data-uni="tu"] .hub-kicker>span:first-child{color:var(--tu-gold-text)}
