@@ -25,3 +25,8 @@ assert.equal(thai.core.length*3,45);assert.equal(thai.accountingCore.length*3,42
 for(const m of thai.majors){for(const t of m.required)assert.equal(t.codes.length*3,t.credits);if(m.majorElective!==null)assert.equal(m.coreCredits+m.required[0].credits+m.majorElective+m.other,99);}
 assert.equal(syllabi.find(x=>x.code==='RB211').cutoffs,null);
 assert.equal(syllabi.find(x=>x.code==='RB211').weights.at(-1)[2],40);
+
+const thaiCourses=read('TU_TBS_THAI_COURSES');
+assert.equal(thaiCourses.length,294);assert.equal(new Set(thaiCourses.map(x=>x[0])).size,thaiCourses.length);
+assert.ok(thaiCourses.every(x=>x[1]&&x[2]&&x[3]>0&&x[4]&&x[5].length));
+assert.equal(thaiCourses.find(x=>x[0]==='AC201')[4],'บช.201');

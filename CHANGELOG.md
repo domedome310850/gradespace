@@ -1,3 +1,8 @@
+## 2026-11-26 — ChatGPT: TBS Thai bilingual course catalog
+
+- `public/index.html`: 294 Thai 2566 course records from official degree curriculum documents; 96 additional distinct codes, Thai code lookup and Thai/BBA picker selector, source references. Preserve existing data and credits. No automated grading or schedules.
+- `tests/tu-catalog.mjs`, `docs/tu-public-data.md`: catalog checks, provenance and known gaps. Visual source verification/CI pending.
+
 ## 2026-11-26 — ChatGPT: prioritize TBS Thai curriculum and assessment sources
 
 - `public/index.html`: Thai 2566 degree-audit reference for all eight majors, including track choices, GenEd alternatives and official source links; RB211 historical grading weights only (no fabricated cutoffs). No graduation claims or student state changes.
