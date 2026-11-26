@@ -5124,7 +5124,19 @@ function persist() {
 window.addEventListener('pagehide', function () {
   if (S.state && S.ready) Store.Local.save(S.state, S.localKey);
 });
+function hasRealCourseHistory(d) {
+  if (!d) return false;
+  var real = function (space) { return !!(space && Array.isArray(space.courses) && space.courses.some(function (c) { return c && !c.demo; })); };
+  var spaces = d.settings && d.settings.spaces || {};
+  return real(d) || Object.keys(spaces).some(function (k) { return real(spaces[k]); });
+}
 function commit(next, opts) {
+  var prior = S.state;
+  var seen = !!(prior && prior.settings && prior.settings.firstCourseAiSeen) || hasRealCourseHistory(prior) || !!next.settings.firstCourseAiSeen;
+  var hasCourse = hasRealCourseHistory(next);
+  // Account-wide, not per semester/campus. Preserve the marker through undo, deletes and imports.
+  if (seen || hasCourse) next.settings.firstCourseAiSeen = true;
+  if (!seen && hasCourse && !(opts && opts.skipFirstCourseAi) && !(S.modal && S.modal.type === 'scan')) S.firstCourseAiPending = true;
   if (opts && opts.undo) S.undo = { prev: S.state };
   ensureCourseColors(next);
   next.updatedAt = Date.now();
@@ -5132,7 +5144,13 @@ function commit(next, opts) {
 }
 function update(fn, opts) { var d = clone(S.state); var r = fn(d); commit(d, opts); return r; }
 function useApp() { useSyncExternalStore(subscribe, function () { return S.version; }); return S.state; }
-function openModal(type, props) { S.modal = { type: type, props: props || {} }; emit(); }
+function openModal(type, props) {
+  if (type === 'chat') {
+    S.firstCourseAiPending = false;
+    try { localStorage.setItem(AI_FAB_INTRO_KEY, '1'); } catch (e) { /* ignore */ }
+  }
+  S.modal = { type: type, props: props || {} }; emit();
+}
 function closeModal() { S.modal = null; emit(); }
 var toastId = 0;
 function toast(msg, opts) {
@@ -5145,7 +5163,7 @@ function doUndo(id) {
   if (!S.undo) return;
   var prev = S.undo.prev; S.undo = null;
   S.toasts = S.toasts.filter(function (x) { return x.id !== id; });
-  commit(clone(prev));
+  commit(clone(prev), { skipFirstCourseAi: true });
   toast(t('restored'));
 }
 function confirmDialog(o) { openModal('confirm', o); }
@@ -8312,7 +8330,7 @@ function importData(text) {
     onConfirm: function () {
       parsed.settings.onboarded = true;
       if (!parsed.settings.lang) parsed.settings.lang = S.state.settings.lang;
-      commit(parsed, { undo: true });
+      commit(parsed, { undo: true, skipFirstCourseAi: true });
       toast(t('imported'), { undo: true });
     } });
 }
@@ -9385,6 +9403,7 @@ function AiHubModal(p) {
   ];
   return html`<${Modal} title=${t('aihub.title')} onClose=${closeModal}>
     <div data-testid="ai-hub">
+      ${p.props && p.props.firstCourse && html`<div className="banner info" data-testid="first-course-ai-tip">${LANG==='th'?'เพิ่มวิชาแรกแล้ว! ลองใช้ AI ช่วยเพิ่มเกณฑ์เกรดและคะแนนได้เลย หรือปิดหน้าต่างนี้แล้วทำภายหลัง':'Your first course is added! Try AI to add grading rules and scores, or close this window and do it later.'}</div>`}
       <p className="small muted hub-intro">${t('ai.entryHint')}</p>
       <h2 className="me-h" style=${{ marginTop: 0 }}>${t('hub2.aiH')}</h2>
       <div className="card me-list hub-ai-card" data-testid="connect-card">${ai.map(row)}</div>
@@ -9603,7 +9622,7 @@ function AiFab() {
   function open() { seen(); openModal('chat', {}); }
   function hide() { seen(); try { sessionStorage.setItem('gradespace.aifab', 'hidden'); } catch (e) { /* ignore */ } setHidden(true); }
   return html`<div className="ai-fab-wrap">
-    ${intro && html`<div className="ai-fab-intro" role="dialog" aria-labelledby="ai-fab-t"><b id="ai-fab-t">${t('fab.introT')}</b><span>${t(isCU() ? 'fab.introP' : 'fab.introPGeneric')}</span>
+    ${intro && !(function(){try{return !!localStorage.getItem(AI_FAB_INTRO_KEY);}catch(e){return false;}})() && html`<div className="ai-fab-intro" role="dialog" aria-labelledby="ai-fab-t"><b id="ai-fab-t">${t('fab.introT')}</b><span>${t(isCU() ? 'fab.introP' : 'fab.introPGeneric')}</span>
       <div className="row"><button className="btn primary sm" onClick=${open}>${t('fab.try')}</button><button className="btn ghost sm" onClick=${seen}>${t('fab.later')}</button></div></div>`}
     <button className="ai-fab" onClick=${open} aria-label=${t('ai.title')} title=${t('ai.title')}><${Icon} n="spark" s=${26} /></button>
     <button className="ai-fab-x" onClick=${hide} aria-label=${t('fab.hide')} title=${t('fab.hide')}><${Icon} n="x" s=${12} /></button>
@@ -9931,6 +9950,12 @@ function App() {
   var route = useRoute();
   var personal = usePersonalExams(state);
   LANG = state.settings.lang || LANG;
+  useEffect(function () {
+    // Do not interrupt Save & add another or any open dialog; show once after the add flow closes.
+    if (!S.firstCourseAiPending || S.modal) return;
+    S.firstCourseAiPending = false;
+    if (hasRealCourseHistory(S.state)) openModal('chat', { firstCourse: true });
+  }, [state, S.modal]);
   if (S.web) { try { localStorage.setItem('gradespace.lang', LANG); } catch (e) { /* ignore */ } }
   useEffect(function () {
     var el = document.documentElement;
@@ -10022,6 +10047,7 @@ var EMAIL_KEY = 'gradespace.email';
 function initialOf(user) { return ((user && user.email) || '?').trim().charAt(0).toUpperCase(); }
 function freshState() { var e = Store.emptyState(); e.settings.lang = LANG; return e; }
 function stopSync() {
+  S.firstCourseAiPending = false;
   // Flush the last pending local edit before changing identity/storage keys.
   if (localTimer && S.state) Store.Local.save(S.state, S.localKey);
   clearTimeout(localTimer); localTimer = null;
