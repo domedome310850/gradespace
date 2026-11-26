@@ -165,3 +165,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Fresh TU space: course picker can create first term and add courses atomically, with explicit study year/B.E. year/term; no separate setup page. New tests exercise actual UI rather than injecting a semester. CI pending.
 
 - Owner decision: permanent AI item in desktop sidebar; floating AI may be hidden without losing access. Course scan shortcut becomes Add with AI, with clear bilingual explanation, direct scanning retained inside AI hub, and selected semester carried through import. Mobile center AI stays. CI pending.
+
+- Owner UI feedback: give GPA cards breathing room, highlight desktop AI menu, recommend external AI import prominently, prefer short Thai/English UI copy across mobile/tablet/desktop. Allow natural wrap for essential content, do not globally clip text. CI pending.
