@@ -64,6 +64,41 @@ async function checkAiColors(page, uni, errors) {
   },uni);
   if(!result)errors.push(uni+' AI shortcut colors incorrect');
 }
+// Exercise the real card action using disposable, graded fixtures in the active university.
+async function checkCourseCardDelete(page,errors) {
+  await page.evaluate(()=>{location.hash='courses';});
+  await page.waitForSelector('.ccard');
+  const fixture=await page.evaluate(()=>{
+    const d=GradeSpace.S.state, c=d.courses[0], id='smoke-delete-course';
+    if(!c)return null;
+    const copy={...c,id,code:'',name:'Delete GPA fixture',credits:3,finalGrade:'A',demo:false};
+    GradeSpace.update(s=>{s.courses.push(copy);s.categories.push({id:id+'-cat',courseId:id,name:'Delete fixture',type:'homework',weight:100,dist:'manual'});s.assessments.push({id:id+'-a',courseId:id,categoryId:id+'-cat',name:'Delete fixture',type:'homework',weight:100,max:100,score:100,status:'graded'});});
+    const state=GradeSpace.S.state, C=GradeSpace.Calc;
+    const stats=mode=>({term:C.semesterStats(state,copy.semesterId,mode),all:C.cumulativeStats(state,mode)});
+    return {id,sem:copy.semesterId,before:stats('confirmed'),estimate:stats('estimated'),count:state.courses.length};
+  });
+  if(!fixture){errors.push('missing course deletion fixture');return;}
+  const card=page.locator('[data-course-id="smoke-delete-course"]'), button=card.getByTestId('delete-course-card');
+  await button.click();
+  const dialog=page.getByRole('dialog');await dialog.waitFor();
+  if(!(await dialog.innerText()).includes('Delete GPA fixture'))errors.push('delete confirmation missing course name');
+  await dialog.locator('.modal-foot .btn:not(.danger)').click();
+  if(!(await card.isVisible()))errors.push('cancel deleted course');
+  await button.click();
+  if(!['Confirm','ยืนยัน'].includes((await dialog.locator('.modal-foot .btn.danger').innerText()).trim()))errors.push('course deletion confirm label incorrect');
+  await dialog.locator('.modal-foot .btn.danger').click();
+  await card.waitFor({state:'detached'});
+  const result=await page.evaluate(f=>{
+    const s=GradeSpace.S.state,C=GradeSpace.Calc,stats=m=>({term:C.semesterStats(s,f.sem,m),all:C.cumulativeStats(s,m)});
+    return {count:s.courses.length,exists:s.courses.some(c=>c.id===f.id),orphan:s.assessments.some(a=>a.courseId===f.id)||s.categories.some(c=>c.courseId===f.id),confirmed:stats('confirmed'),estimate:stats('estimated')};
+  },fixture);
+  if(result.exists||result.orphan||result.count!==fixture.count-1)errors.push('course deletion did not remove linked records');
+  for(const scope of ['term','all'])for(const [before,after] of [[fixture.before,result.confirmed],[fixture.estimate,result.estimate]]){
+    if(Math.abs(before[scope].gpaCredits-after[scope].gpaCredits-3)>1e-8||Math.abs(before[scope].qp-after[scope].qp-12)>1e-8)errors.push('deleted course still counted in '+scope+' GPA');
+    const g=after[scope].gpaCredits?after[scope].qp/after[scope].gpaCredits:null;
+    if(g!==after[scope].gpa)errors.push('GPA not recalculated');
+  }
+}
 async function run(browser, lang, width) {
   const errors = [], overflow = [];
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
@@ -436,6 +471,7 @@ async function run(browser, lang, width) {
     const extra = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     if (extra > 1) overflow.push(h + ' +' + extra + 'px');
   }
+  await checkCourseCardDelete(page,errors);
   await ctx.close();
   console.log(`${lang} ${width}px: ${hashes.length} pages, overflow ${overflow.length ? overflow.join(', ') : 'none'}, errors ${errors.length ? errors.join(' | ') : 'none'}`);
   return errors.length + overflow.length;
@@ -585,6 +621,7 @@ async function runTU(browser, lang, width) {
   if(await page.evaluate(()=>[GradeSpace.Calc.fmt(2.345),GradeSpace.Calc.fmt(3.4949),GradeSpace.Calc.fmt(1.005)].join())!=='2.35,3.49,1.01') errors.push('GPA rounding is not half-up (TU ข้อ 48)');
   const sugg=await page.evaluate(()=>GradeSpace.catalogSearch?GradeSpace.catalogSearch('AC201').length:-1);
   if(sugg===0) errors.push('TU catalog search found nothing for AC201');
+  await checkCourseCardDelete(page,errors);
   await ctx.close();
   console.log(`TU ${lang} ${width}px: ${hashes.length} pages, overflow ${overflow.length ? overflow.join(', ') : 'none'}, errors ${errors.length ? errors.join(' | ') : 'none'}`);
   return errors.length + overflow.length;
