@@ -99,6 +99,11 @@ async function run(browser, lang, width) {
   await page.getByTestId('askai-open').click();
   for(const k of ['gpt','gemini','claude']) if(!(await page.getByTestId('askai-'+k).isVisible())) errors.push('ask-AI missing '+k+' button');
   const prompt=await page.getByTestId('askai-prompt').inputValue();
+  // Tapping an AI copies the instruction first, then opens the AI (copy must not wait until the tab has opened).
+  await page.evaluate(()=>{window.__opened=[];window.open=(u)=>{window.__opened.push(u);return {};};document.addEventListener('copy',()=>{window.__copied=String(document.getSelection());},{once:true});});
+  await page.getByTestId('askai-gemini').click();
+  if(!(await page.evaluate(()=>window.__opened[0]==='https://gemini.google.com/app'))) errors.push('ask-AI did not open Gemini');
+  if(!(await page.evaluate((p)=>window.__copied===p,prompt))) errors.push('ask-AI did not copy the instruction before opening');
   if(!prompt.includes('```gradespace')||!prompt.includes('2900111')) errors.push('ask-AI text lacks format or known courses');
   if(prompt.includes('test@example.com')||prompt.includes('6940102426')) errors.push('ask-AI text leaks email or student ID');
   await page.getByTestId('ask-ai').locator('.seg button').nth(1).click();

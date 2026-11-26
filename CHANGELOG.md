@@ -1,3 +1,7 @@
+## 2026-11-26 — Claude: fix “Copy & open” not copying
+
+- Tapping ChatGPT/Gemini/Claude opened the AI before the async clipboard write finished, so the browser refused it (page no longer focused). Now `AskAiModal` copies synchronously first (`execCommand` on a hidden textarea), falls back to `navigator.clipboard`, and only then opens the AI; if both fail it shows the text to copy by hand. Smoke test taps Gemini and checks the copy happened before opening. Files: `public/index.html`, `tests/smoke.mjs`.
+
 ## 2026-11-26 — Claude: “Add with your own AI” (ChatGPT, Gemini, Claude) reads screenshots/voice/text
 
 - The copy-paste bridge (`AskAiModal`) now brings data *in*: one tap copies an instruction and opens ChatGPT, Gemini or Claude (each with its site icon, loaded live). The student sends a screenshot, voice message or text (“got 24/30 in the midterm”, “new course 2603111”, “30% midterm, 40% final”); the AI answers with a ```gradespace block in the scanner's shape; pasting it opens the scan review (`ScanModal` `props.preset`) where every course, item and score is approved before `Scan.apply`. New courses and items can now be added this way. Old ```gradespace-scores answers still parse.
