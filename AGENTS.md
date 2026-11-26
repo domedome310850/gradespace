@@ -181,3 +181,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner-approved neutral UI redesign: shared surfaces and chart/status tokens, neutral GradeSpace wordmark and campus-colored suffix, original SVG logos, solid AI accent and neutral GPA hero. Browser CI/visual check pending; do not merge until approved.
 
 - Owner feedback: CU pink too bright against dark mode. Use muted dusty rose accent, neutral primary buttons, charcoal surfaces and restrained status colors; no logo change. Standardize English course display names from active catalog or scoped CU Reg; preserve unknown saved names. Manifest neutral, cache v17. Browser CI and Android installed-app visual check pending; merge only on approval.
+
+- Owner refinement: TU must have a recognizable deep red + yellow/gold identity, not a single red accent. Deep red primary actions and logo background, gold suffix/selection/AI/GPA details, neutral surfaces, CU unchanged. Browser CI and device visual review pending. Merge only on approval.
