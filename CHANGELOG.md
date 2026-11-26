@@ -6,6 +6,10 @@
 
 - `public/index.html`: open existing external-AI import after first successful CU study-plan add; bilingual skip/guide, syllabus prompt, grouped grading import, validation, visible weights/cutoffs/due dates and preserved semester on review back. No auth, database or external connector changes. Browser CI pending.
 
+## 2026-11-26 — ChatGPT: icon-only topbar theme switch
+
+- `public/index.html`: replace desktop/tablet Light/Dark text with existing sun/moon SVG icons, preserving localized accessible names, tooltips and selected state. Language and settings switches unchanged. Browser CI pending.
+
 ## 2026-11-26 — ChatGPT: concise course deletion confirmation
 
 - Course deletion confirmation button uses ยืนยัน / Confirm; cancellation, warning, deletion and GPA behavior unchanged. Smoke assertion added; CI pending.
