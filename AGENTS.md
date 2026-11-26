@@ -189,3 +189,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner refinement: CU was too muted; use rich campus pink and fresh light pink two-tone accents, parallel to TU red and gold. Keep neutral backgrounds/status cards, white sidebar AI label/icon and existing logo. Cache v20; CI and device visual review pending.
 
 - Latest owner correction supersedes earlier TU AI circle request: deep red fill (#8C1D2C), yellow symbol (#FFD13F), CU/sidebar unchanged. Cache v21; CI pending.
+
+- Owner requested trash icon on each course card; reuse existing confirmation and undo. Deleted course and related assessments/categories no longer contribute to semester/cumulative GPA; test confirmed and estimated modes in CU/TU. Browser CI pending.
