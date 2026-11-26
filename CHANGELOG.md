@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: shared neutral campus UI
+
+- `public/index.html`: neutral surfaces and shared chart/status colors; campus accents limited to actions, active navigation and campus suffix. GradeSpace wordmark is neutral, original CU/TU SVG logos unchanged. GPA hero uses neutral card; AI shortcut uses solid accent. Dark mode retains readable campus accents. `tests/smoke.mjs`: updated branding and palette assertions; `public/sw.js`: cache v16. Browser CI and visual verification pending; no merge/deploy or data/auth changes.
+
 ## 2026-11-26 — Refine CU wordmark pink tones
 
 - Space uses the previous CU accent pink in light/dark mode; CU uses a deeper, university-inspired pink with a contrast-conscious dark variant. Restore TU red-gradient icon, white G and yellow dot; keep TU wordmark colors unchanged. CI pending.
