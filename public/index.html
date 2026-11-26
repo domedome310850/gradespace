@@ -10202,7 +10202,9 @@ function startUser(user) {
   try { localStorage.removeItem('gradespace.mode'); localStorage.setItem(EMAIL_KEY, user.email); } catch (e) { /* ignore */ }
   S.localKey = Store.KEY + ':' + user.email;
   S.state = Store.Local.load(S.localKey) || freshState();
-  S.sync = 'saving'; S.authScreen = false; S.ready = true; emit();
+  // Resolve the saved account campus before mounting the app or dispatching campus-specific RPCs.
+  // The login selection is only a registration preference, never the campus of an existing account.
+  S.sync = 'saving'; S.authScreen = false; S.ready = false; emit();
   var cloud = Store.makeEmailStore(w.client, user.email, !!user.verified);
   var attempt = function () {
     if (w.user !== user) return;
@@ -10225,6 +10227,7 @@ function startUser(user) {
         Store.Local.save(S.state, S.localKey);
       }
       S.cloud = cloud;
+      S.ready = true;
       S.unwatch = cloud.watch(function (fresh) {
         if (w.user === user && fresh.updatedAt > S.state.updatedAt) {
           S.state = fresh; Store.Local.save(fresh, S.localKey); S.sync = 'account';
@@ -10238,6 +10241,9 @@ function startUser(user) {
       cloud.save(S.state).then(function (r) { S.sync = r === 'ok' ? 'account' : 'error'; emit(); });
     }, function () {
       if (w.user !== user) return;
+      // A cached, explicit account campus is safe for offline use. With no known campus,
+      // stay on the loading screen rather than briefly mounting CU for a TU account.
+      S.ready = S.state.settings.institution === 'cu' || S.state.settings.institution === 'tu';
       S.sync = 'error'; emit();
       setTimeout(attempt, 20000);
     });
