@@ -167,3 +167,11 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner decision: permanent AI item in desktop sidebar; floating AI may be hidden without losing access. Course scan shortcut becomes Add with AI, with clear bilingual explanation, direct scanning retained inside AI hub, and selected semester carried through import. Mobile center AI stays. CI pending.
 
 - Owner UI feedback: give GPA cards breathing room, highlight desktop AI menu, recommend external AI import prominently, prefer short Thai/English UI copy across mobile/tablet/desktop. Allow natural wrap for essential content, do not globally clip text. CI pending.
+
+- Owner feedback: AI import guide must explain what to upload or say, with concrete examples for courses, weights and scores. Short responsive labels but actionable instructions, copy-before-open and review unchanged. CI pending.
+
+- Owner feedback: show GradeSpace CU/TU from sign-in, campus colors CU pink / TU red and yellow, and natural-language AI examples (อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง). Ambiguous course/item aliases must be clarified, not guessed. No data/auth changes. CI pending.
+
+- Owner refinement: CU/TU suffix same size and weight as GradeSpace, no badge; TU Space red and TU yellow (contrast-aware light/dark). Preserve responsive layout. Address English AI guide overflow at 320px; verify in CI.
+
+- Owner-approved TU wordmark: Space yellow/gold, TU red; logo yellow background with red G. CU unchanged. CI pending.
