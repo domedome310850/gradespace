@@ -84,7 +84,9 @@ async function checkCourseCardDelete(page,errors) {
   if(!(await dialog.innerText()).includes('Delete GPA fixture'))errors.push('delete confirmation missing course name');
   await dialog.locator('.modal-foot .btn:not(.danger)').click();
   if(!(await card.isVisible()))errors.push('cancel deleted course');
-  await button.click();await dialog.locator('.modal-foot .btn.danger').click();
+  await button.click();
+  if(!['Confirm','ยืนยัน'].includes((await dialog.locator('.modal-foot .btn.danger').innerText()).trim()))errors.push('course deletion confirm label incorrect');
+  await dialog.locator('.modal-foot .btn.danger').click();
   await card.waitFor({state:'detached'});
   const result=await page.evaluate(f=>{
     const s=GradeSpace.S.state,C=GradeSpace.Calc,stats=m=>({term:C.semesterStats(s,f.sem,m),all:C.cumulativeStats(s,m)});
