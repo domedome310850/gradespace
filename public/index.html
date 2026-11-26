@@ -104,12 +104,17 @@ a { color: var(--accent-text); }
 .brand-name-accent { color: var(--accent-text); }
 .brand-name{display:flex;align-items:baseline;gap:5px}
 .brand-word{white-space:nowrap}
-.brand-campus{font-size:11px;line-height:1.2;font-weight:750;letter-spacing:.04em;color:var(--accent-text);background:var(--accent-soft);padding:3px 5px;border-radius:5px;flex:none}
+.brand-campus{font:inherit;letter-spacing:inherit;color:var(--accent-text);flex:none}
+:root[data-uni="tu"] .brand-name-accent{color:#C3002F}
+:root[data-uni="tu"] .brand-campus{color:#946900}
+:root[data-uni="tu"][data-theme="dark"] .brand-name-accent{color:#EF536C}
+:root[data-uni="tu"][data-theme="dark"] .brand-campus{color:#FFD13F}
+@media(prefers-color-scheme:dark){:root[data-uni="tu"]:not([data-theme="light"]) .brand-name-accent{color:#EF536C}:root[data-uni="tu"]:not([data-theme="light"]) .brand-campus{color:#FFD13F}}
 .side .brand{padding-inline:4px;gap:8px}
 .side .brand-name{font-size:18px}
 .brand-mark,.brand:hover .brand-mark{box-shadow:0 4px 11px color-mix(in srgb,var(--accent) 22%,transparent)}
 .auth-card .auth-brand-row{flex-wrap:wrap;gap:12px}
-@media(max-width:560px){.topbar .brand{gap:6px}.topbar .brand-mark{width:32px;height:32px;border-radius:10px}.topbar .brand-name{font-size:16px;gap:3px}.topbar .brand-campus{font-size:10px;padding:2px 4px}}
+@media(max-width:560px){.topbar .brand{gap:6px}.topbar .brand-mark{width:32px;height:32px;border-radius:10px}.topbar .brand-name{font-size:16px;gap:3px}}
 :root[data-uni="cu"] .nav-ai-dot,:root[data-uni="cu"] .ai-fab{background:linear-gradient(135deg,#F178AD,#D52B79 55%,#A51A60);box-shadow:0 6px 18px rgba(213,43,121,.30),0 0 0 4px var(--surface)}
 .brand:hover .brand-mark { box-shadow: 0 6px 14px rgba(79,70,229,.24); }
 .auth-card .brand-mark { width: 44px; height: 44px; border-radius: 15px; }
@@ -945,7 +950,12 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .askai-providers .btn{justify-content:center;min-width:0;white-space:nowrap}
 .askai-privacy{margin:0;line-height:1.5}
 @media(max-width:560px){.askai-examples{grid-template-columns:1fr}.askai-example{padding:10px;gap:3px}.askai-providers{gap:6px}.askai-providers .btn{padding:8px 5px;gap:4px;font-size:12px}.askai-providers .askai-logo{width:16px;height:16px}}
-@media(max-width:360px){.askai-providers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+[data-testid="ask-ai"]{min-width:0;max-width:100%;overflow-wrap:anywhere}
+[data-testid="ask-ai"] .seg{min-width:0;max-width:100%}
+[data-testid="ask-ai"] .seg button{flex:1;min-width:0;white-space:normal;line-height:1.3}
+[data-testid="ask-ai"] details{min-width:0;max-width:100%}
+[data-testid="ask-ai"] .askai-guide h3{overflow-wrap:anywhere}
+@media(max-width:360px){.askai-providers{grid-template-columns:repeat(2,minmax(0,1fr))}.askai-examples{grid-template-columns:minmax(0,1fr)}[data-testid="ask-ai"] .seg button{padding:7px 5px;font-size:12px}[data-testid="ask-ai"] .btn:not(.askai-app){max-width:100%;white-space:normal}}
 .askai-rows{display:grid;gap:6px}.askai-row{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}.askai-row input{margin-top:3px}
 .askai-row.bad{opacity:.65}.askai-row.bad .small{color:var(--bad)}
 /* Help + feedback tabs (2026-11-26). */

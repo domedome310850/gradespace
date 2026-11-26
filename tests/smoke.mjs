@@ -52,6 +52,7 @@ async function run(browser, lang, width) {
   await page.goto(PAGE);
   await page.locator('#au-e').fill('test@example.com');
   if((await page.locator('.auth-card [data-testid=campus-brand]').getAttribute('aria-label'))!=='GradeSpace CU')errors.push('CU auth brand missing');
+  if(!(await page.locator('.auth-card [data-testid=campus-brand]').evaluate(el=>{const a=getComputedStyle(el.querySelector('.brand-word')),b=getComputedStyle(el.querySelector('.brand-campus'));return a.fontSize===b.fontSize&&a.fontWeight===b.fontWeight&&b.backgroundColor==='rgba(0, 0, 0, 0)';})))errors.push('CU suffix should match brand size without badge');
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='cu')errors.push('CU theme missing on auth');
   await page.locator('#au-student').fill('6940102426');
   await page.locator('#au-student').press('Enter');
@@ -459,6 +460,7 @@ async function runTU(browser, lang, width) {
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
   if(await page.getByTestId('campus-brand').filter({hasText:'TU'}).count()!==2)errors.push('TU workspace wordmarks missing');
+  if(!(await page.getByTestId('campus-brand').first().evaluate(el=>{const w=el.querySelector('.brand-word'),c=el.querySelector('.brand-campus'),a=getComputedStyle(w),b=getComputedStyle(c);return a.fontSize===b.fontSize&&a.fontWeight===b.fontWeight&&b.backgroundColor==='rgba(0, 0, 0, 0)'&&b.paddingLeft==='0px'&&getComputedStyle(el.querySelector('.brand-name-accent')).color!==b.color;})))errors.push('TU suffix should match brand size without badge and use distinct color');
   const rpcs=await page.evaluate(()=>window.__rpcs||[]);
   for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
   if(!(await page.getByTestId('tu-exam-note').isVisible())) errors.push('TU exam note missing');

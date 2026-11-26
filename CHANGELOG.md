@@ -1,3 +1,7 @@
+## 2026-11-26 — Campus wordmark refinements
+
+- CU/TU now use the same type size and weight as GradeSpace without a badge. TU Space is red and TU is golden yellow, adjusted for light/dark contrast. Tighten AI instructions on 320px screens after CI identified English overflow. New wordmark smoke assertions; CI pending.
+
 ## 2026-11-26 — ChatGPT: university branding and natural AI speech
 
 - GradeSpace CU uses a pink identity; GradeSpace TU uses red and yellow. Campus suffix and logo switch on sign-in selection and active workspace, including mobile topbar and page title. Keep existing university-level selection, data separation and account flow. Casual TH/EN AI examples and prompt instructions resolve nicknames only when unambiguous; ask before guessing. Smoke checks for branding and examples; CI pending.
