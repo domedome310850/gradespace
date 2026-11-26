@@ -134,7 +134,9 @@ data and fails on any error or sideways scrolling. Also click through what you c
   (`https://vnweb68.reg.tu.ac.th/registrar/classinfo`, linked from reg.tu.ac.th) is a JavaScript app; its data API
   was not inspected yet (needs a real browser’s network tab). Next: capture that API, add a `tu-sync` edge function +
   migration mirroring `reg-sync`, then feed exam dates into `examsFor`. Also missing: TU faculty study plans (TBS 2566
-  curriculum PDFs on tbs.tu.ac.th) for `TuPlanModal`, more TU faculties’ course lists.
+  curriculum PDFs) for `TuPlanModal`, more TU faculties’ course lists. **Done 2026-11-26:** `TU_PLANS` has TBS BBA International 2566
+  Finance + Marketing. **Still missing:** Thai-language BBA 2566 plans (`tbs.tu.ac.th/wp-content/uploads/2023/09/บริหารธุรกิจบัณฑิต-ภาษาไทย-66.pdf`)
+  and Accounting (`…/2024/02/บัญชี-BBA-66-13.02.67.pdf`): tbs.tu.ac.th was unreachable from the AI sandbox — ask the owner to attach the PDFs.
 - Installable app (PWA) and a privacy (PDPA) page.
 - Move the two Google Sheets into Supabase tables.
 - MyCourseVille: official API needs an app key from the MCV team; meanwhile "Paste from MCV" and
