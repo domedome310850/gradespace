@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: fix course selection in a fresh TU workspace
+
+- The previous TU picker required an existing semester and silently disabled course selection for a new university space. Allow selecting courses and creating the first year/semester directly in the picker, with explicit year and term, saving both atomically on Add. Keep selections across term choice, existing records intact, and make the empty-state CTA match course-first search. Extended browser tests now create the initial term via real UI; fix false-positive Chula-modal matcher and exercise actual language controls after account load. No deploy until CI passes.
+
 ## 2026-11-26 — ChatGPT: restore direct language and theme controls on wide screens
 
 - Place TH/EN and light/dark segments directly left of profile at viewport widths 768px and above (including portrait iPad). Phone layout and existing settings retained. Controls use the same saved settings for both universities; no data or authentication changes. Add desktop/tablet interaction and overflow checks; CI pending.

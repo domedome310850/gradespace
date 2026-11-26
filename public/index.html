@@ -2768,6 +2768,18 @@ var SharedCatalog = (function () {
 
 var I18N = {
 en: {
+"tup.newTerm": "Create a semester",
+"tup.yearLevel": "Study year",
+"tup.academicBE": "Academic year (B.E.)",
+"tup.termHelp": "The semester will be created when you add your courses.",
+"tup.termInvalid": "Enter a valid academic year in B.E.",
+"plan.btn@tu": "Choose courses",
+"plan.btnShort@tu": "Choose courses",
+"start.desc@tu": "Search and select your courses, choose the semester, then add them. You can create a semester right here.",
+"start.dashboard@tu": "Go to My Courses and choose the courses you take.",
+"start.step1@tu": "Find courses",
+"start.step2@tu": "Choose year and semester",
+"start.step3@tu": "Add courses",
 "tup.pickTitle": "Add courses",
 "tup.browse": "Find courses",
 "tup.planMode": "By study plan",
@@ -3419,6 +3431,18 @@ en: {
   'onb4Note': 'Anything not graded yet is counted as still to come, never as zero.', 'goToCourse': 'Go to my course'
 },
 th: {
+"tup.newTerm": "สร้างเทอมใหม่",
+"tup.yearLevel": "ชั้นปี",
+"tup.academicBE": "ปีการศึกษา (พ.ศ.)",
+"tup.termHelp": "ระบบจะสร้างเทอมให้เมื่อกดเพิ่มวิชา",
+"tup.termInvalid": "ระบุปีการศึกษา พ.ศ. ให้ถูกต้อง",
+"plan.btn@tu": "เลือกวิชา",
+"plan.btnShort@tu": "เลือกวิชา",
+"start.desc@tu": "ค้นหาวิชาที่เรียน เลือกเทอม แล้วกดเพิ่มได้เลย สร้างเทอมใหม่จากหน้าเลือกวิชาได้",
+"start.dashboard@tu": "ไปที่วิชาของฉัน แล้วเลือกวิชาที่เรียนอยู่",
+"start.step1@tu": "ค้นหารายวิชา",
+"start.step2@tu": "เลือกปีและเทอม",
+"start.step3@tu": "กดเพิ่มวิชา",
 "tup.pickTitle": "เพิ่มรายวิชา",
 "tup.browse": "ค้นหารายวิชา",
 "tup.planMode": "ตามแผนการเรียน",
@@ -4741,7 +4765,11 @@ function TuTbsRequirementChecklist(p) {
 function TuPlanModal(p) {
   var state=useApp(), props=p.props||{}, profile=state.settings.tuAcademicProfile||{};
   var semsAll=C.orderedSemesters?C.orderedSemesters(state):state.semesters;
-  var ss=useState(props.semesterId||(curSemester(state)||latestSemester(state)||{}).id||''),semId=ss[0],setSemId=ss[1];
+  var ss=useState(props.semesterId||(curSemester(state)||latestSemester(state)||{}).id||'new'),semId=ss[0],setSemId=ss[1];
+  var now=new Date(), defaultAcademic=now.getFullYear()+543-(now.getMonth()<5?1:0);
+  var ys=useState(state.years.length?Number(state.years[state.years.length-1].level)||1:1),newLevel=ys[0],setNewLevel=ys[1];
+  var as=useState(String(defaultAcademic)),newAcademic=as[0],setNewAcademic=as[1];
+  var ns=useState('s1'),newKind=ns[0],setNewKind=ns[1];
   var ms=useState('browse'),mode=ms[0],setMode=ms[1];
   var ps=useState('thai'),program=ps[0],setProgram=ps[1];
   var ts=useState(profile.track||''),trackId=ts[0],setTrackId=ts[1];
@@ -4751,7 +4779,22 @@ function TuPlanModal(p) {
   var ls=useState(40),limit=ls[0],setLimit=ls[1];
   var ks=useState({}),pick=ks[0],setPick=ks[1];
   var track=program==='thai'?TU_TBS_REQUIREMENTS_2566.tracks.find(x=>x.id===trackId):null;
-  var target=semsAll.find(x=>x.id===semId),targetInfo=tuTermInfo(state,target),cat=tuAcademicCatalog();
+  var newValid=/^25\d{2}$/.test(newAcademic)&&newLevel>=1&&newLevel<=12;
+  function resolveTarget(d,preview){
+    if(semId!=='new')return d.semesters.find(x=>x.id===semId)||null;
+    if(!newValid)return null;
+    var y=d.years.find(x=>Number(x.level)===newLevel&&String(x.academic)===newAcademic);
+    if(!y){y={id:preview?'__tu_draft_year':Store.uid('y-'),level:newLevel,academic:newAcademic,name:''};d.years.push(y);}
+    var existing=d.semesters.find(x=>x.yearId===y.id&&x.kind===newKind);
+    if(existing)return existing;
+    var term={id:preview?'__tu_draft_term':Store.uid('s-'),yearId:y.id,kind:newKind,name:''},rank={s1:1,s2:2,summer:3};
+    var pos=d.semesters.findIndex(x=>x.yearId===y.id&&rank[x.kind]>rank[newKind]);
+    if(pos<0)d.semesters.push(term);else d.semesters.splice(pos,0,term);
+    return term;
+  }
+  var previewState=Object.assign({},state,{years:state.years.slice(),semesters:state.semesters.slice()}),target=resolveTarget(previewState,true);
+  var targetId=target&&target.id,targetInfo=tuTermInfo(previewState,target),cat=tuAcademicCatalog();
+  var previewTerms=C.orderedSemesters(previewState);
   var effective=GSAcademic.amendmentActive(targetInfo),plan=track&&TU_TBS_TERM_PLANS.find(x=>x.id===(track.id==='MK'?variant:track.id));
   var guide=track?GSAcademic.guidedPlan({track,plan,structure:TU_TBS_THAI_2566,rules:TU_TBS_REQUIREMENTS_2566,targetInfo}):null;
   var facultyOrder=['BA','AC','FN','MK','IS','HR','ER','OM','IB','LO','IT','RB'];
@@ -4765,9 +4808,9 @@ function TuPlanModal(p) {
   var prefixes=[...new Set(programRows.map(x=>x.group))],faculty=facultyOrder.filter(k=>prefixes.includes(k)),other=prefixes.filter(k=>!faculty.includes(k)).sort((a,b)=>prefixLabel(a).localeCompare(prefixLabel(b),LANG));
   function majorRequired(code){return !!track&&track.required.includes(code);}
   function kindFor(x){return track&&(track.core.includes(x.code)||track.required.includes(x.code))?'required':x.ge?'gened':'elective';}
-  function blocked(code){return !semId||tuPickBlocked(state,code,semId,majorRequired(code));}
+  function blocked(code){return !!targetId&&tuPickBlocked(previewState,code,targetId,majorRequired(code));}
   function special(code){return program==='thai'&&!!TU_TBS_REQUIREMENTS_2566.specialCourses[code];}
-  function eligibility(code){return track?GSAcademic.eligibility({code,courses:state.courses,track,rules:TU_TBS_REQUIREMENTS_2566,prereq:TU_TBS_THAI_PREREQ,cat,targetIndex:semsAll.findIndex(s=>s.id===semId),termIndex:Object.fromEntries(semsAll.map((s,i)=>[s.id,i])),targetInfo}):null;}
+  function eligibility(code){return track?GSAcademic.eligibility({code,courses:state.courses,track,rules:TU_TBS_REQUIREMENTS_2566,prereq:TU_TBS_THAI_PREREQ,cat,targetIndex:previewTerms.findIndex(s=>s.id===targetId),termIndex:Object.fromEntries(previewTerms.map((s,i)=>[s.id,i])),targetInfo}):null;}
   var chosen=Object.keys(pick).filter(k=>pick[k]&&byCode[k]&&!blocked(k));
   var selectedCredits=chosen.reduce((n,k)=>n+byCode[k].cr,0);
   var norm=v=>String(v||'').toLowerCase().replace(/[\s.]+/g,''),query=norm(q),codeQuery=query?norm(tuCode(q)):'';
@@ -4783,12 +4826,14 @@ function TuPlanModal(p) {
   }
   function choice(code,alts){return row(byCode[code],alts,true);}
   function add(){
-    if(!semId||!chosen.length)return;
+    if(!targetId||!chosen.length)return;
     var added=0;update(d=>{
+      var actual=resolveTarget(d,false);if(!actual)return;
+      if(!d.settings.currentSemesterId)d.settings.currentSemesterId=actual.id;
       if(mode==='guided'&&track){var prior=d.settings.tuAcademicProfile||{};d.settings.tuAcademicProfile=Object.assign({},prior,{curriculumYear:2566,track:track.id,allocations:prior.track===track.id?prior.allocations||{}:{}});}
       chosen.forEach(code=>{
-        var x=byCode[code];if(!x||tuPickBlocked(d,code,semId,majorRequired(code)))return;
-        var course={id:Store.uid('c-'),semesterId:semId,name:x.name,code:x.code,credits:x.cr,section:'',instructor:'',target:null,scaleId:'scale-th',gradingMode:'unknown',targetPct:null,kind:kindFor(x),color:COLORS[d.courses.length%COLORS.length],finalGrade:null};
+        var x=byCode[code];if(!x||tuPickBlocked(d,code,actual.id,majorRequired(code)))return;
+        var course={id:Store.uid('c-'),semesterId:actual.id,name:x.name,code:x.code,credits:x.cr,section:'',instructor:'',target:null,scaleId:'scale-th',gradingMode:'unknown',targetPct:null,kind:kindFor(x),color:COLORS[d.courses.length%COLORS.length],finalGrade:null};
         d.courses.push(course);Store.placeCourse(d,course.id);added++;
       });
     },{undo:true});toast(t('tup.added',{n:added}),{undo:true});closeModal();
@@ -4797,9 +4842,13 @@ function TuPlanModal(p) {
   return html`<${Modal} title=${t('tup.pickTitle')} onClose=${closeModal} wide=${true}>
     <div className="stack tup-picker" data-testid="tu-plan">
       <div className="tup-controls">
-        <label className="small"><span className="muted">${t('tup.toTerm')}</span><select className="select" data-testid="tup-target" value=${semId} onChange=${e=>{setSemId(e.target.value);setPick({});}}>${!semsAll.length&&html`<option value="">${t('tup.noTerm')}</option>`}${semsAll.map(x=>html`<option key=${x.id} value=${x.id}>${semFull(state,x)}</option>`)}</select></label>
+        <label className="small"><span className="muted">${t('tup.toTerm')}</span><select className="select" data-testid="tup-target" value=${semId} onChange=${e=>setSemId(e.target.value)}>${semsAll.map(x=>html`<option key=${x.id} value=${x.id}>${semFull(state,x)}</option>`)}<option value="new">${t('tup.newTerm')}</option></select></label>
         <label className="small"><span className="muted">${t('tup.program')}</span><select className="select" data-testid="tup-program" value=${program} onChange=${e=>{setProgram(e.target.value);setMode('browse');setTrackId(profile.track||'');setCategory('all');setQ('');setPick({});}}><option value="thai">${LANG==='th'?'ภาคไทย 2566':'Thai 2023'}</option><option value="bba">BBA International 2023</option></select></label>
       </div>
+      ${semId==='new'&&html`<div className="card pad stack" style=${{gap:8}} data-testid="tup-new-term"><div className="tup-controls">
+        <label className="small"><span className="muted">${t('tup.yearLevel')}</span><select className="select" data-testid="tup-new-level" value=${newLevel} onChange=${e=>setNewLevel(Number(e.target.value))}>${Array.from({length:Math.max(6,newLevel)},(_,i)=>i+1).map(y=>html`<option key=${y} value=${y}>${t('yearN',{n:y})}</option>`)}</select></label>
+        <label className="small"><span className="muted">${t('tup.academicBE')}</span><input className="input" inputMode="numeric" data-testid="tup-new-academic" value=${newAcademic} onChange=${e=>setNewAcademic(e.target.value)}/></label>
+      </div><label className="small"><span className="muted">${t('semester')}</span><select className="select" data-testid="tup-new-kind" value=${newKind} onChange=${e=>setNewKind(e.target.value)}>${['s1','s2','summer'].map(k=>html`<option key=${k} value=${k}>${t('sem.'+k)}</option>`)}</select></label><span className="tiny muted">${t(newValid?'tup.termHelp':'tup.termInvalid')}</span></div>`}
       <div className="tup-modes" aria-label=${t('tup.pickTitle')}><button type="button" className="tup-mode" data-testid="tup-browse-mode" aria-pressed=${mode==='browse'} onClick=${()=>setMode('browse')}>${t('tup.browse')}</button><button type="button" className="tup-mode" data-testid="tup-guide-mode" aria-pressed=${mode==='guided'} disabled=${program!=='thai'} onClick=${()=>setMode('guided')}>${t('tup.planMode')}</button></div>
       ${mode==='browse'?html`<div className="tup-filter">
         <label className="small"><span className="muted">${t('tup.search')}</span><input type="search" className="input" data-testid="tup-search" value=${q} placeholder=${LANG==='th'?'เช่น MK201 หรือ การตลาด':'e.g. MK201 or Marketing'} onChange=${e=>{setQ(e.target.value);setLimit(40);}}/></label>
@@ -4818,7 +4867,7 @@ function TuPlanModal(p) {
         ${guide.open.length>0&&html`<details><summary>${t('tup.openShort')}</summary>${guide.open.map((label,i)=>html`<div className="small muted" key=${i}>${label}</div>`)}</details>`}`:null}
       </div>`}
       ${chosen.length>0&&html`<details><summary>${t('tup.selectedList')} (${chosen.length})</summary><div className="tup-selected-tags">${chosen.map(code=>html`<button type="button" className="btn sm" key=${code} onClick=${()=>toggle(code,false)} aria-label=${code+' '+t('tup.clear')}>${code} ×</button>`)}</div><button type="button" className="btn ghost sm" onClick=${()=>setPick({})}>${t('tup.clear')}</button></details>`}
-      <div className="tup-sticky"><span className="tup-count" data-testid="tup-selected">${t('tup.creditTotal',{n:chosen.length,cr:selectedCredits})}</span><button className="btn primary" data-testid="tup-add" disabled=${!semId||!chosen.length} onClick=${add}>${t('tup.addShort',{n:chosen.length})}</button></div>
+      <div className="tup-sticky"><span className="tup-count" data-testid="tup-selected">${t('tup.creditTotal',{n:chosen.length,cr:selectedCredits})}</span><button className="btn primary" data-testid="tup-add" disabled=${!targetId||!chosen.length} onClick=${add}>${t('tup.addShort',{n:chosen.length})}</button></div>
     </div><//>`;
 }
 function TuGenEdModal(p) {

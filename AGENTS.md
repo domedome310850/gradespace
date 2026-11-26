@@ -159,3 +159,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner decision (2026-11-26): GradeSpace is a learning tracker/planner, not a registration website. Default TU picker is course-first search/browse, expanded subject labels, faculty before GenEd, optional sample-plan mode, concise controls and persistent selection. Keep academic/regulatory references on the academic overview rather than requiring them in course entry. Do not treat unknown prereqs or approval as a barrier to manual course logging. Browser CI pending.
 
 - Owner decision: direct TH/EN and light/dark controls beside profile on desktop and tablet (>=768px), not only within account menu. Phones keep the existing You settings and compact topbar. Browser CI pending.
+
+- Fresh TU space: course picker can create first term and add courses atomically, with explicit study year/B.E. year/term; no separate setup page. New tests exercise actual UI rather than injecting a semester. CI pending.

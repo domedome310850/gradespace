@@ -371,8 +371,24 @@ async function runTU(browser, lang, width) {
   // Separate spaces: the fixture's Chula courses are put aside, Thammasat starts empty.
   const sp=await page.evaluate(()=>({n:GradeSpace.S.state.courses.length,cu:(GradeSpace.S.state.settings.spaces.cu||{}).courses}));
   if(sp.n!==0||!sp.cu||sp.cu.length<5) errors.push('TU should start in its own empty space with Chula courses kept aside: '+JSON.stringify({n:sp.n,cu:sp.cu&&sp.cu.length}));
-  // Student sets up a Thammasat year/term (as with "Add year").
-  await page.evaluate(()=>GradeSpace.update(d=>{d.years.push({id:'y-tu',level:1,academic:2569});d.semesters.push({id:'s-tu',yearId:'y-tu',kind:'s1'});d.settings.currentSemesterId='s-tu';}));
+  // Set language using actual controls after loading account (server fixture may override sign-in language).
+  if(width>=768){await page.getByTestId('topbar-display').getByRole('button',{name:lang.toUpperCase(),exact:true}).click();}
+  else{await page.evaluate(()=>location.hash='me');await page.locator('.me-page button',{hasText:lang.toUpperCase()}).click();}
+  await page.waitForFunction(l=>document.documentElement.lang===l,lang);
+  // Fresh TU workspace: create the first term through the picker, not by injecting a test semester.
+  await page.evaluate(()=>location.hash='courses');
+  await page.locator('.course-start-action .btn.primary').click();
+  await page.getByTestId('tup-new-term').waitFor();
+  await page.getByTestId('tup-new-level').selectOption('1');
+  await page.getByTestId('tup-new-academic').fill('2569');
+  await page.getByTestId('tup-new-kind').selectOption('s1');
+  await page.getByTestId('tup-search').fill('MK201');
+  await page.getByTestId('tu-plan').locator('.tup-row').filter({hasText:'MK201'}).locator('input').check();
+  if(!(await page.getByTestId('tup-add').isEnabled()))errors.push('fresh TU workspace cannot add a course');
+  await page.getByTestId('tup-add').click();
+  await page.waitForFunction(()=>GradeSpace.S.state.courses.some(c=>c.code==='MK201'));
+  const fresh=await page.evaluate(()=>({years:GradeSpace.S.state.years,terms:GradeSpace.S.state.semesters,courses:GradeSpace.S.state.courses,current:GradeSpace.S.state.settings.currentSemesterId}));
+  if(fresh.years.length!==1||fresh.terms.length!==1||fresh.courses.length!==1||fresh.terms[0].id!==fresh.current||fresh.courses[0].semesterId!==fresh.current)errors.push('first semester/course not saved correctly');
   await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
   await page.locator('.dashboard-exam-panel').first().waitFor();
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
@@ -405,7 +421,7 @@ async function runTU(browser, lang, width) {
   await page.evaluate(()=>{location.hash='courses';}); await page.waitForTimeout(300);
   await page.locator('.courses-actions .btn').nth(1).click();
   await page.getByTestId('tu-plan').waitFor({timeout:5000}).catch(()=>errors.push('TU plan picker did not open'));
-  if(await page.locator('.modal').filter({hasText:/บริหารธุรกิจ|ปี 1 เทอม 1 ของ/}).count()) errors.push('Chula plan window shown in TU space');
+  if(await page.locator('.modal .planner,.modal .prog-tiles').count()) errors.push('Chula plan window shown in TU space');
   const picker=page.getByTestId('tu-plan'), category=page.getByTestId('tup-category'), search=page.getByTestId('tup-search');
   if(await category.inputValue()!=='all')errors.push('TU picker should start on faculty courses');
   if(await category.locator('optgroup').first().getAttribute('label')!==(lang==='th'?'วิชาคณะพาณิชย์ฯ':'Business school'))errors.push('faculty category not first');
