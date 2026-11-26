@@ -58,8 +58,23 @@ async function run(browser, lang, width) {
   if(await page.locator('.side .nav-item').first().getAttribute('href')!=='#dashboard') errors.push('overview is not first menu');
   if(await page.locator('.side .nav-item[aria-current="page"]').getAttribute('href')!=='#dashboard') errors.push('overview is not default');
   if(await page.locator('#exam-student-id').count()) errors.push('student ID form leaked into dashboard');
-  // Top bar: only logo + account menu; language/theme live inside the menu (2026-11-25).
-  if(await page.locator('.topbar .seg').count()) errors.push('language switch should be inside the account menu');
+  // Desktop and tablet quick display controls; phones retain You-page settings.
+  const display=page.getByTestId('topbar-display');
+  if((await display.isVisible())!==(width>=768))errors.push('wrong topbar display control visibility');
+  if(width===390){
+    await page.setViewportSize({width:768,height:1024});
+    if(!(await display.isVisible())||!(await page.locator('.topbar .acct-btn').isVisible()))errors.push('portrait tablet quick controls/profile missing');
+    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1))errors.push('tablet topbar overflow');
+    await display.getByRole('button',{name:'EN',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.lang==='en');
+    await display.getByRole('button',{name:'Dark',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='dark');
+    await display.getByRole('button',{name:'Light',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='light');
+    await display.getByRole('button',{name:'TH',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.lang==='th');
+    await page.setViewportSize({width,height:900});
+  }
   if(width<=900){
     // Phones: YouTube-style bottom bar (5 tabs); language/theme live under the “You” tab.
     if(await page.locator('.bottomnav > *').count()!==5) errors.push('bottom bar should have 5 items');
@@ -72,8 +87,15 @@ async function run(browser, lang, width) {
   } else {
     await page.locator('.topbar .acct-btn').click();
     if(!(await page.locator('.acct-menu').isVisible())) errors.push('account menu did not open');
-    if(lang==='en'){await page.locator('.acct-menu button',{hasText:'EN'}).click();await page.waitForTimeout(300);}
     await page.keyboard.press('Escape');
+    if(lang==='en')await display.getByRole('button',{name:'EN',exact:true}).click();
+    await page.waitForFunction(l=>document.documentElement.lang===l,lang);
+    const previousTheme=await page.evaluate(()=>GradeSpace.S.state.settings.theme);
+    await display.getByRole('button',{name:lang==='th'?'มืด':'Dark',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='dark');
+    await display.getByRole('button',{name:lang==='th'?'สว่าง':'Light',exact:true}).click();
+    await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='light');
+    await page.evaluate(v=>GradeSpace.update(d=>{d.settings.theme=v;}),previousTheme);
     if(await page.locator('.acct-menu').count()) errors.push('account menu did not close on Escape');
     if(await page.locator('.side .nav-group').count()!==2) errors.push('sidebar should have 2 labelled groups');
   }
@@ -117,6 +139,28 @@ async function run(browser, lang, width) {
   await page.evaluate(()=>GradeSpace.update(d=>{const c=d.courses.find(x=>x.code==='2603111');if(c){d.courses=d.courses.filter(x=>x!==c);d.assessments=d.assessments.filter(a=>a.courseId!==c.id);d.categories=d.categories.filter(k=>k.courseId!==c.id);}}));
   if(await page.locator('.modal').count()) await page.keyboard.press('Escape');
   await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
+  // Hiding the floating AI button must not remove the permanent desktop entry.
+  if(width>900){
+    await page.locator('.ai-fab-x').click();
+    if(await page.locator('.ai-fab').count()) errors.push('floating AI button not hidden');
+    await page.getByTestId('sidebar-ai').click();
+    await page.getByTestId('ai-hub').waitFor();
+    await page.keyboard.press('Escape');
+    if(!(await page.getByTestId('sidebar-ai').isVisible())) errors.push('desktop AI entry disappeared');
+  }
+  // Course action replaces the scan shortcut, but direct scan remains available inside AI.
+  await page.evaluate(()=>location.hash='courses');
+  const courseAi=page.getByTestId('course-ai');
+  await courseAi.waitFor();
+  if(!(await courseAi.innerText()).includes('AI')) errors.push('course AI label missing');
+  if(await page.locator('.courses-actions .scan-icon').count()) errors.push('duplicate standalone scan shortcut');
+  await courseAi.click();
+  await page.getByTestId('ai-hub').waitFor();
+  if(!(await page.getByTestId('askai-open').isVisible())) errors.push('course AI cannot open external AI');
+  if(await page.locator('[data-testid="ai-hub"] .hub-tools .hub-row').count()!==3) errors.push('course AI lost in-app tools');
+  await page.keyboard.press('Escape');
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.locator('.side .nav-item[aria-current="page"][href="#dashboard"]').waitFor({state:'attached'});
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');
@@ -358,8 +402,24 @@ async function runTU(browser, lang, width) {
   // Separate spaces: the fixture's Chula courses are put aside, Thammasat starts empty.
   const sp=await page.evaluate(()=>({n:GradeSpace.S.state.courses.length,cu:(GradeSpace.S.state.settings.spaces.cu||{}).courses}));
   if(sp.n!==0||!sp.cu||sp.cu.length<5) errors.push('TU should start in its own empty space with Chula courses kept aside: '+JSON.stringify({n:sp.n,cu:sp.cu&&sp.cu.length}));
-  // Student sets up a Thammasat year/term (as with "Add year").
-  await page.evaluate(()=>GradeSpace.update(d=>{d.years.push({id:'y-tu',level:1,academic:2569});d.semesters.push({id:'s-tu',yearId:'y-tu',kind:'s1'});d.settings.currentSemesterId='s-tu';}));
+  // Set language using actual controls after loading account (server fixture may override sign-in language).
+  if(width>=768){await page.getByTestId('topbar-display').getByRole('button',{name:lang.toUpperCase(),exact:true}).click();}
+  else{await page.evaluate(()=>location.hash='me');await page.locator('.me-page button',{hasText:lang.toUpperCase()}).click();}
+  await page.waitForFunction(l=>document.documentElement.lang===l,lang);
+  // Fresh TU workspace: create the first term through the picker, not by injecting a test semester.
+  await page.evaluate(()=>location.hash='courses');
+  await page.locator('.course-start-action .btn.primary').click();
+  await page.getByTestId('tup-new-term').waitFor();
+  await page.getByTestId('tup-new-level').selectOption('1');
+  await page.getByTestId('tup-new-academic').fill('2569');
+  await page.getByTestId('tup-new-kind').selectOption('s1');
+  await page.getByTestId('tup-search').fill('MK201');
+  await page.getByTestId('tu-plan').locator('.tup-row').filter({hasText:'MK201'}).locator('input').check();
+  if(!(await page.getByTestId('tup-add').isEnabled()))errors.push('fresh TU workspace cannot add a course');
+  await page.getByTestId('tup-add').click();
+  await page.waitForFunction(()=>GradeSpace.S.state.courses.some(c=>c.code==='MK201'));
+  const fresh=await page.evaluate(()=>({years:GradeSpace.S.state.years,terms:GradeSpace.S.state.semesters,courses:GradeSpace.S.state.courses,current:GradeSpace.S.state.settings.currentSemesterId}));
+  if(fresh.years.length!==1||fresh.terms.length!==1||fresh.courses.length!==1||fresh.terms[0].id!==fresh.current||fresh.courses[0].semesterId!==fresh.current)errors.push('first semester/course not saved correctly');
   await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
   await page.locator('.dashboard-exam-panel').first().waitFor();
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
@@ -392,7 +452,20 @@ async function runTU(browser, lang, width) {
   await page.evaluate(()=>{location.hash='courses';}); await page.waitForTimeout(300);
   await page.locator('.courses-actions .btn').nth(1).click();
   await page.getByTestId('tu-plan').waitFor({timeout:5000}).catch(()=>errors.push('TU plan picker did not open'));
-  if(await page.locator('.modal').filter({hasText:/บริหารธุรกิจ|ปี 1 เทอม 1 ของ/}).count()) errors.push('Chula plan window shown in TU space');
+  if(await page.locator('.modal .planner,.modal .prog-tiles').count()) errors.push('Chula plan window shown in TU space');
+  const picker=page.getByTestId('tu-plan'), category=page.getByTestId('tup-category'), search=page.getByTestId('tup-search');
+  if(await category.inputValue()!=='all')errors.push('TU picker should start on faculty courses');
+  if(await category.locator('optgroup').first().getAttribute('label')!==(lang==='th'?'วิชาคณะพาณิชย์ฯ':'Business school'))errors.push('faculty category not first');
+  if(!(await category.locator('option[value="MK"]').innerText()).includes(lang==='th'?'การตลาด':'Marketing'))errors.push('marketing category not expanded');
+  if(!(await category.locator('option[value="IB"]').innerText()).includes(lang==='th'?'ธุรกิจระหว่างประเทศ':'International business'))errors.push('IB category not expanded');
+  await search.fill('AC201');
+  await picker.locator('.tup-row').filter({hasText:'AC201'}).locator('input').check();
+  await search.fill('IS201');
+  await picker.locator('.tup-row').filter({hasText:'IS201'}).locator('input').check();
+  if(!(await page.getByTestId('tup-selected').innerText()).includes('2'))errors.push('selection did not survive search');
+  await search.fill('TU101');
+  if(!(await picker.locator('.tup-row').filter({hasText:'TU101'}).locator('input').isDisabled()))errors.push('existing TU101 should not be added twice');
+  await page.getByTestId('tup-guide-mode').click();
   await page.getByTestId('tup-track').selectOption('AC');
   const guided=page.getByTestId('tup-guided');await guided.waitFor();
   await page.getByTestId('tup-bulk').click();
@@ -402,6 +475,7 @@ async function runTU(browser, lang, width) {
   await page.getByTestId('tup-add').click(); await page.waitForTimeout(300);
   if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')&&GradeSpace.S.state.courses.some(c=>c.code==='IS201')&&GradeSpace.S.state.settings.tuAcademicProfile.track==='AC'))) errors.push('TU guided picker did not add the named accounting courses and persist major');
   if(!(await page.evaluate(()=>GradeSpace.catalogSearch('AC396').some(x=>x.code==='AC396'&&x.cr===1.5))))errors.push('Thai scoped catalog credits incorrect');
+  if(await page.evaluate(()=>GradeSpace.S.state.courses.filter(c=>c.code==='TU101').length)!==1)errors.push('TU101 duplicate');
   // Switch to Chula and back: each space comes back intact, nothing deleted.
   const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
   await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);

@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: unify AI entry points
+
+- Add permanent AI menu after GPA in the desktop sidebar; hiding the floating shortcut never removes sidebar access. Replace the standalone course screenshot shortcut with Add with AI, including the empty course state. Explain screenshot, voice and text import and distinguish external AI from direct in-app scanning. Preserve selected semester through the AI hub and external AI review. Existing mobile AI navigation and scanning remain. Browser smoke coverage added; CI pending.
+
 ## 2026-11-26 — Claude: fix “Copy & open” not copying
 
 - Tapping ChatGPT/Gemini/Claude opened the AI before the async clipboard write finished, so the browser refused it (page no longer focused). Now `AskAiModal` copies synchronously first (`execCommand` on a hidden textarea), falls back to `navigator.clipboard`, and only then opens the AI; if both fail it shows the text to copy by hand. Smoke test taps Gemini and checks the copy happened before opening. Files: `public/index.html`, `tests/smoke.mjs`.
@@ -7,6 +11,18 @@
 - The copy-paste bridge (`AskAiModal`) now brings data *in*: one tap copies an instruction and opens ChatGPT, Gemini or Claude (each with its site icon, loaded live). The student sends a screenshot, voice message or text (“got 24/30 in the midterm”, “new course 2603111”, “30% midterm, 40% final”); the AI answers with a ```gradespace block in the scanner's shape; pasting it opens the scan review (`ScanModal` `props.preset`) where every course, item and score is approved before `Scan.apply`. New courses and items can now be added this way. Old ```gradespace-scores answers still parse.
 - Only course codes, names, item names, weights and full marks are copied out (no scores, email or ID).
 - Files: `public/index.html`, `tests/smoke.mjs`, `AGENTS.md`.
+
+## 2026-11-26 — ChatGPT: fix course selection in a fresh TU workspace
+
+- The previous TU picker required an existing semester and silently disabled course selection for a new university space. Allow selecting courses and creating the first year/semester directly in the picker, with explicit year and term, saving both atomically on Add. Keep selections across term choice, existing records intact, and make the empty-state CTA match course-first search. Extended browser tests now create the initial term via real UI; fix false-positive Chula-modal matcher and exercise actual language controls after account load. No deploy until CI passes.
+
+## 2026-11-26 — ChatGPT: restore direct language and theme controls on wide screens
+
+- Place TH/EN and light/dark segments directly left of profile at viewport widths 768px and above (including portrait iPad). Phone layout and existing settings retained. Controls use the same saved settings for both universities; no data or authentication changes. Add desktop/tablet interaction and overflow checks; CI pending.
+
+## 2026-11-26 — ChatGPT: simplify TU course-first picker
+
+- Redesign `TuPlanModal`: default searchable course catalog, full Thai/English subject names, faculty groups first and GenEd last, no horizontal scrolling, compact term/program controls, readable selectable rows, persistent cross-search selection and sticky add summary. Optional guided sample plan is separate; remove registration/long reference material from picker. Manual recording does not require verified prerequisites or permission; existing duplicate/retake protections retained. No data migrations or changes to CU picker. Browser tests extended, CI pending.
 
 ## 2026-11-26 — ChatGPT: re-audit TBS and simplify course selection
 
