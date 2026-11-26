@@ -160,10 +160,16 @@ async function run(browser, lang, width) {
   await page.locator('.dashboard-cal-event').getByText('TEST-ROOM-A',{exact:false}).waitFor();
   // Update the saved ID via the email-entry screen only, and verify both calendar and upcoming change.
   await page.evaluate(()=>location.hash='preferences');
-  await page.getByRole('button',{name:lang==='th'?'แก้ไขเลขนิสิต':'Edit student ID',exact:true}).click();
+  const editId=page.getByTestId('student-id-edit');
+  if((await editId.innerText())!==(lang==='th'?'แก้ไขเลขนิสิต':'Edit student ID')) errors.push('CU student ID action label changed');
+  await editId.click();
   await page.locator('#au-student').fill('6940102526');
   await page.locator('#au-student').press('Enter');
   await page.locator('#au-student').waitFor({state:'detached'});
+  await page.evaluate(()=>location.hash='dashboard');
+  await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-B',{exact:false}).waitFor();
+  await page.evaluate(()=>location.hash='preferences');
+  await page.getByTestId('student-identity').filter({hasText:'6940102526'}).waitFor();
   await page.evaluate(()=>location.hash='dashboard');
   await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-B',{exact:false}).waitFor();
   const changed=page.locator('.dashboard-upcoming-row').filter({hasText:'TEST-ROOM-B'});
@@ -335,6 +341,7 @@ async function runTU(browser, lang, width) {
   if(lang==='en'){await page.locator('.auth-card button',{hasText:'EN'}).first().click();}
   await page.locator('.auth-card button',{hasText:lang==='th'?'ธรรมศาสตร์':'Thammasat'}).click();
   if(await page.locator('#au-student').count()) errors.push('TU sign-in should not ask for a Chula student ID');
+  await page.locator('#au-tu-student').fill('0000000001');
   await page.locator('#au-e').fill('tu@example.com');
   await page.locator('#au-e').press('Enter');
   await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.state&&GradeSpace.S.state.settings.institution==='tu'&&GradeSpace.S.state.settings.spaces);
@@ -352,6 +359,15 @@ async function runTU(browser, lang, width) {
   for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
   if(!(await page.getByTestId('tu-exam-note').isVisible())) errors.push('TU exam note missing');
   if(await page.locator('.sp-card').count()) errors.push('CBS study plan card shown for TU');
+  if(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--uni-secondary').trim())!=='#FFD13F') errors.push('TU gold palette missing');
+  if(!(await page.getByTestId('tu-academic').isVisible())) errors.push('TU academic profile missing');
+  await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
+  if(!(await page.getByTestId('student-identity').innerText()).includes('0000000001')) errors.push('TU own session ID missing');
+  if(!(await page.getByTestId('workspace-shortcut').isVisible())) errors.push('workspace shortcut missing');
+  if(await page.evaluate(()=>JSON.stringify(GradeSpace.S.state).includes('0000000001'))) errors.push('TU student ID leaked into grade JSON');
+  await page.getByTestId('profile-signout').click();
+  if(!(await page.locator('.modal').isVisible())) errors.push('profile sign-out confirmation missing');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(150);
   // GenEd: TU list, add TU101 through the course form.
   await page.evaluate(()=>{location.hash='years';}); await page.waitForTimeout(300);
   await page.getByTestId('tu-gened-open').click();

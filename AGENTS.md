@@ -141,3 +141,15 @@ data and fails on any error or sideways scrolling. Also click through what you c
   screenshot scanning exist. A bookmarklet that sends the Portfolio table was proposed, not built.
 - Study plans cover Accounting, BBA majors and Statistics from the faculty's 2569 timetable; some terms
   (e.g. MIS year 4) have no published plan.
+
+- **TU public data audit, PR #33 (2026-11-26):** 12 TBS Thai sample plan variants, public schedule references, 2569/2570 registrar calendar references, historical syllabus data. User ZIP: 34 distinct PDFs/408 pages rendered; detailed visual check incomplete. IB/IT/RB discrepancies documented; never coerce source totals or auto-apply historical grades/exams. Curriculum 2556 forms are not 2566. See `docs/tu-public-data.md`; remaining tasks: visual row validation, live TU sync and safe program/section scoping, browser tests. Do not deploy draft without approval.
+
+- November final notice pp.9,10,17,20,23 visually reconciled; p.23 weekday/date conflict flagged, IS281 9000/01 blank code omitted. No automatic calendar insertion.
+
+- TU ZIP all 408 pages rendered and contact-sheet visually surveyed; 99 term credit sums checked (additional FN/IS anomalies). 15 missing course records recovered; 312 Thai records. Individual data-field audit still incomplete; do not mark all fields verified or deploy draft.
+
+- TBS workflow audit: `docs/tu-registration-workflow.md`; 11 track checklists and major-elective baskets, registration guide, repeat-planning and legacy shared Chula isolation. Remaining: persisted curriculum/major, precise other/minor allocation, live quota/offerings, cohort-specific rules, test CI, remaining detailed 408-page field audit. No auto-registration, no merge/deploy.
+
+- TU advisory draft: dashboard uses `public/academic-core.js` and space-scoped `settings.tuAcademicProfile`. Only Thai four-year 2566; recorded grades only, provisional allocations, conservative simple prerequisite parser. Still requires full minor/double-major/elective and GPA rule audit, official live offering/quota feed, real-student testing and browser CI before deployment. Profile and desktop account menu reuse existing safe signOut handler; no auth/storage migration.
+
+- Student identity UI: CU device RPC result is transient; TU ID is optional 10-digit self-reported session-only and never synced. Alt+Shift+T is an ordinary signed-in user's own workspace shortcut, not an admin authorization mechanism. Do not add an admin bypass to legacy email-only authentication; verified server-side role required.

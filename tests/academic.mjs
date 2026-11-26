@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+const api=require('../public/academic-core.js');
+const cat=api.catalog([['AA101','a','a',3,'ก.101'],['AA102','b','b',3,'ก.102'],['AA103','c','c',3,'ก.103']],[]);
+const track={id:'X',core:['AA101'],required:['AA102'],other:3};
+const rules={electiveBaskets:{X:[]},specialCourses:{}};
+const structure={genEdSlots:[],genEdOtherCredits:0,minFreeElective:0,minTotal:9};
+const courses=[{code:'AA101',credits:3,semesterId:'s1',finalGrade:'C'},{code:'AA101',credits:3,semesterId:'s2',finalGrade:'A'},{code:'AA102',credits:3,semesterId:'s1',finalGrade:'D'},{code:'AA103',credits:3,semesterId:'s1',finalGrade:null}];
+const args={courses,track,rules,structure,cat,termIndex:{s1:0,s2:1},targetIndex:2,prereq:{AA102:[[1,'สอบได้วิชา ก.101']]}};
+const a=api.audit(args);
+assert.equal(a.earned,3);assert.equal(a.missing[0].status,'retake');assert.equal(a.graduationCertified,false);
+assert.equal(api.eligibility({...args,code:'AA102'}).status,'academic-pass');
+assert.equal(api.eligibility({...args,code:'AA103'}).status,'review');
+assert.equal(api.eligibility({...args,code:'AA102',courses:[]}).status,'blocked');
+assert.equal(api.eligibility({...args,code:'AA102',prereq:{AA102:[[1,'สอบได้วิชา ก.101 และมี 87 หน่วยกิต']]}}).status,'review');
+assert.equal(api.audit({...args,courses:[...courses,{code:'AA102',credits:3,semesterId:'s2',finalGrade:'B'}]}).earned,6);
+console.log('Academic advisory checks passed');

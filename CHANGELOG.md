@@ -1,3 +1,71 @@
+## 2026-11-26 — ChatGPT: restore CU ID edit action and stable browser selector
+
+- Preserve the existing CU-specific edit label, use the TU-specific label in TU, add a stable test ID, and keep the end-to-end ID edit and exam-room assertions. Also assert the updated CU account ID appears in Settings. Earlier browser run stopped at the outdated label selector; full CI still required.
+
+## 2026-11-26 — ChatGPT: fix legacy shared catalog scope regression
+
+- Previous draft browser CI timed out at the first CU exam room display. SharedCatalog is outside the app IIFE: its newly added calls to private isCU were out of scope. Use explicit state at all shared-section/policy calls; remain fail-closed for TU. Add source checks and a TU ID non-persistence assertion. Browser CI must be green before deploy.
+
+## 2026-11-26 — ChatGPT: account student IDs and safe university shortcut
+
+- Show current-university student ID in profile/account menu/settings. CU uses the existing device-scoped exam profile; TU optional 10-digit self-reported ID is stored in sessionStorage only and cleared on logout. Never mix IDs, grade JSON, score mirrors, or CU exam RPC.
+- Alt+Shift+T and profile button switch only the signed-in user's own university space with existing confirmation; no admin bypass or hardcoded secrets. Verified admin role remains blocked by legacy email-only authentication.
+- Added TU synthetic-ID smoke checks; CI pending.
+
+## 2026-11-26 — ChatGPT: TBS academic advisory, TU palette, profile sign-out
+
+- Add source-scoped advisory audit and simple prerequisite checks in `public/academic-core.js`; dashboard with per-university saved academic profile, provisional credit allocation, prioritized missing-course suggestions, graduation checklist and warnings. Unknown rules require manual review; no enrollment or degree certification.
+- Strong TU red/gold palette, direct sign-out from profile and desktop account menu using existing save-before-sign-out confirmation. CU data and theme remain separate.
+- Cache the new module and add advisory and browser regression tests. Browser CI pending; detailed curriculum verification and live REG remain out of scope.
+
+## 2026-11-26 — ChatGPT: align TU planner with TBS registration and curriculum rules
+
+- `public/index.html`: source-backed registration guide, 11 track-specific required-course checklists, major elective baskets, provisional course types, retake planning for recorded F/U/W or low grades in selected required-major courses, and fail-closed legacy shared Chula schedule/policy isolation. No auto-registration, grade or graduation decisions.
+- `docs/tu-registration-workflow.md`, `tests/tu-catalog.mjs`, `AGENTS.md`: scope, workflow, remaining audit and regression checks.
+
+## 2026-11-26 — ChatGPT: full 408-page visual overview and deeper curriculum validation
+
+- 15 missing Thai course records (including seven 1.5-credit entries), nine additional prerequisite keys, source-backed track elective quotas and major-grade rules. Flag two additional printed plan anomalies after 99 table sum checks. No automatic enrollment or grade application.
+- Document distinction between all-page visual overview and remaining individual-field verification.
+
+## 2026-11-26 — ChatGPT: recover multi-slot TBS final-exam references from uploaded PDFs
+
+- Add 40 section references from five visually checked pages, preserving curriculum code pairs and flagging three weekday/date conflicts. No automatic calendar use.
+
+## 2026-11-26 — ChatGPT: verify uploaded TBS PDF discrepancies and registrar calendars
+
+- Preserve printed and row-sum credits for IB, document source-confirmed IT/RB discrepancies; correct RB313 page and curriculum scope, verify RB211 weights. Add regular TU calendar reference for 2569–2570 from four visual pages. No automatic grading or calendar mutation.
+- Record ZIP inventory, partial visual audit and remaining tasks in documentation and tests.
+
+## 2026-11-26 — ChatGPT: discover IBMP grade ranges and FN201 syllabus lead
+
+- `public/index.html`: four historical official IBMP syllabus grade-range references, three with complete weights; FN201 third-party source explicitly labeled unverified and norm-referenced. No automatic grade policies. `tests/tu-catalog.mjs`, `docs/tu-public-data.md`: provenance and checks. PDF images and CI still pending.
+
+## 2026-11-26 — ChatGPT: TBS semester plans and schedule/assessment references
+
+- `public/index.html`: 12 source-scoped semester plans, 395 conservative schedule references, two additional historical TBS syllabi; no automatic application to grades, calendars or saved data. Distinguish curriculum code pairs, section/group, tentative and final notice.
+- `tests/tu-catalog.mjs` and `docs/tu-public-data.md`: source scope and integrity checks. Visual review incomplete, CI pending.
+
+## 2026-11-26 — ChatGPT: TBS Thai prerequisite references and required internships
+
+- `public/index.html`: recover 3 internship course rows, 210 source-scoped Thai-program prerequisites, flag mismatched credits. All captured required/core codes have metadata. No automatic rules or student data changes.
+- `tests/tu-catalog.mjs` and `docs/tu-public-data.md`: updated integrity checks and source scope.
+
+## 2026-11-26 — ChatGPT: TBS Thai bilingual course catalog
+
+- `public/index.html`: 294 Thai 2566 course records from official degree curriculum documents; 96 additional distinct codes, Thai code lookup and Thai/BBA picker selector, source references. Preserve existing data and credits. No automated grading or schedules.
+- `tests/tu-catalog.mjs`, `docs/tu-public-data.md`: catalog checks, provenance and known gaps. Visual source verification/CI pending.
+
+## 2026-11-26 — ChatGPT: prioritize TBS Thai curriculum and assessment sources
+
+- `public/index.html`: Thai 2566 degree-audit reference for all eight majors, including track choices, GenEd alternatives and official source links; RB211 historical grading weights only (no fabricated cutoffs). No graduation claims or student state changes.
+- `tests/tu-catalog.mjs`: verify credit sums, track counts and absent cutoffs; `docs/tu-public-data.md`: source scope. Browser tests and full visual verification pending.
+
+## 2026-11-26 — ChatGPT: expand TU public academic catalog and syllabus references
+
+- `public/index.html`: 229 GenEd 2566 rows and 208 BBA 2023 rows from official TU sources; 429 unique catalog codes including three social-administration syllabi. Expand picker prefixes, deduplicate GenEd overlap, expose prerequisites and section/term-scoped syllabus score weights and grade floors as reference only. No automatic grading or student data changes. Note 2570 curriculum is different.
+- `docs/tu-public-data.md`: provenance, limitations, and next steps. `tests/tu-catalog.mjs` and `tests/package.json`: catalog integrity tests. Full visual PDF verification, CI, Reg TU sync, and deployment pending.
+
 ## 2026-11-26 — Claude (claude.ai): bring back a university space that was put aside by mistake
 
 - `public/index.html`: one account was found with the Chula label active, an empty current space, and all its Chula data (14 courses, 47 items, years, terms) stored under `settings.spaces.cu` (put aside when switching to Thammasat, then only the label went back). Nothing was lost. `Store.normalize` now runs `healSpace`: if the active university's stored space holds data and the current space is empty, it is brought back (nothing merged or deleted). `switchSpace` never puts an empty space over a stored one with data, and if both hold data the older one is kept as `spaces['<uni>-<savedAt>']`. `window.GradeSpace` exposes `Store` and `switchSpace` for tests.
