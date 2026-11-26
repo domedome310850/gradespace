@@ -4925,8 +4925,8 @@ function TuPlanModal(p) {
   var prefixLabel=k=>I18N[LANG]['tup.prefix.'+k]?t('tup.prefix.'+k):t('tup.prefix.other');
   var thaiRows=TU_TBS_THAI_COURSES.concat(effective===true?[TU_FN494]:[]);
   var geCodes=new Set(TU_GENED.map(r=>r[1]));
-  var programRows=program==='thai'?thaiRows.filter(r=>!geCodes.has(r[0])).map(r=>({code:r[0],name:LANG==='th'?r[1]:r[2],th:r[1],en:r[2],alias:r[4],cr:r[3],ge:false,group:prefix(r[0])})):TU_TBS.filter(r=>!geCodes.has(r[0])).concat(effective===true?[[TU_FN494[0],TU_FN494[2],3]]:[]).map(r=>({code:r[0],name:r[1],en:r[1],cr:r[2],ge:false,group:prefix(r[0])}));
-  var geRows=TU_GENED.map(r=>({code:r[1],name:LANG==='th'?r[2]:r[3],th:r[2],en:r[3],cr:r[4],ge:true,group:'ge'+r[0]}));
+  var programRows=program==='thai'?thaiRows.filter(r=>!geCodes.has(r[0])).map(r=>({code:r[0],name:r[2]||r[1],th:r[1],en:r[2],alias:r[4],cr:r[3],ge:false,group:prefix(r[0])})):TU_TBS.filter(r=>!geCodes.has(r[0])).concat(effective===true?[[TU_FN494[0],TU_FN494[2],3]]:[]).map(r=>({code:r[0],name:r[1],en:r[1],cr:r[2],ge:false,group:prefix(r[0])}));
+  var geRows=TU_GENED.map(r=>({code:r[1],name:r[3]||r[2],th:r[2],en:r[3],cr:r[4],ge:true,group:'ge'+r[0]}));
   var all=programRows.concat(geRows),byCode=Object.fromEntries(all.map(x=>[x.code,x]));
   var prefixes=[...new Set(programRows.map(x=>x.group))],faculty=facultyOrder.filter(k=>prefixes.includes(k)),other=prefixes.filter(k=>!faculty.includes(k)).sort((a,b)=>prefixLabel(a).localeCompare(prefixLabel(b),LANG));
   function majorRequired(code){return !!track&&track.required.includes(code);}
@@ -5004,7 +5004,7 @@ function TuGenEdModal(p) {
     ${[1, 2, 3, 4, 5].map(function (g) {
       var list = rows.filter(function (r) { return r[0] === g; }); if (!list.length) return null;
       return html`<div key=${g} className="tuge-group"><h3>${g}. ${t('tuge.g' + g)}</h3>
-        ${list.map(function (r) { return html`<div key=${r[1]} className="tuge-row"><div className="grow"><b className="num">${r[1]}</b> ${LANG === 'th' ? r[2] : r[3]}<div className="tiny muted">${LANG === 'th' ? r[3] : r[2]} · ${t('nCredits', { n: r[4] })}</div></div>
+        ${list.map(function (r) { return html`<div key=${r[1]} className="tuge-row"><div className="grow"><b className="num">${r[1]}</b> ${r[3] || r[2]}<div className="tiny muted">${r[2]} · ${t('nCredits', { n: r[4] })}</div></div>
           ${have[r[1]] ? html`<span className="small muted">${t('tuge.have')}</span>` : html`<button className="btn sm" disabled=${!semId} onClick=${function () { closeModal(); openModal('course', { semesterId: semId, catalogCode: r[1] }); }}><${Icon} n="plus" s=${14} />${t('tuge.add')}</button>`}</div>`; })}</div>`;
     })}
     <p className="tiny muted">${t('tuge.source')} <a href=${TU_GENED_SOURCE} target="_blank" rel="noopener noreferrer">↗</a></p><//>`;
