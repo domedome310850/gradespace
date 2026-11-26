@@ -21,7 +21,7 @@ const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{
   signInWithOtp:async({email})=>{window.__otpTo=email;return {error:null};},
   verifyOtp:async({email,token})=>{if(token!=='123456')return {data:{},error:{message:'bad code'}};const sess={user:{id:'u-1',email}};sessionStorage.setItem('fakeSess',JSON.stringify(sess));return {data:{user:sess.user,session:sess},error:null};},
   signOut:async()=>{sessionStorage.removeItem('fakeSess');return {error:null};}},functions:{},rpc:async(fn,args)=>{(window.__rpcs=window.__rpcs||[]).push(fn);
-  if(fn==='gs_load'||fn==='gs_me_load')return {data:[{data:window.__D,client_updated_at:Date.now()}],error:null};
+  if(fn==='gs_load'||fn==='gs_me_load')return {data:window.__D?[{data:window.__D,client_updated_at:Date.now()}]:[],error:null};
   if(fn==='gs_exam_device'){
     if(args.p_email!=='test@example.com'||!(/^[0-9a-f]{64}$/).test(args.p_device))throw Error('invalid device scope');
     if(args.p_action==='get')return {data:{studentId:window.__studentId||null},error:null};
@@ -60,7 +60,7 @@ async function checkAiColors(page, uni, errors) {
     const dark=root.colorScheme==='dark';
     const expected=uni==='tu'?(dark?'rgb(81, 42, 44)':'rgb(140, 29, 44)'):(dark?'rgb(112, 38, 75)':'rgb(167, 29, 93)');
     return st.color==='rgb(255, 255, 255)'&&icon&&getComputedStyle(icon).color==='rgb(255, 255, 255)'&&st.backgroundColor===expected&&
-      (uni==='tu'?(getComputedStyle(dot).backgroundColor==='rgb(140, 29, 44)'&&getComputedStyle(dot).color==='rgb(255, 209, 63)'):(getComputedStyle(dot).backgroundColor==='rgb(244, 165, 201)'&&getComputedStyle(dot).color==='rgb(137, 23, 73)'));
+      (uni==='tu'?(getComputedStyle(dot).backgroundColor==='rgb(140, 29, 44)'&&getComputedStyle(dot).color==='rgb(255, 255, 255)'):(getComputedStyle(dot).backgroundColor==='rgb(244, 165, 201)'&&getComputedStyle(dot).color==='rgb(137, 23, 73)'));
   },uni);
   if(!result)errors.push(uni+' AI shortcut colors incorrect');
 }
@@ -209,7 +209,8 @@ async function run(browser, lang, width) {
     const example=page.getByTestId('askai-example-'+k);
     if(!(await example.isVisible()))errors.push('missing AI import example: '+k);
     const sample=await example.locator('.askai-sample').innerText();
-    if(!/อีคอน|econ/i.test(sample))errors.push('missing conversational AI example: '+k);
+    if(!/econ/i.test(sample)||/อีคอน/.test(sample))errors.push('missing Econ conversational AI example: '+k);
+    if(k==='weights'&&lang==='th'&&!/30%.*40%.*30%/.test(sample))errors.push('Thai AI weights should use %');
   }
   if(width===390){
     for(const w of [320,768,1024]){
@@ -221,7 +222,7 @@ async function run(browser, lang, width) {
   }
   for(const k of ['gpt','gemini','claude']) if(!(await page.getByTestId('askai-'+k).isVisible())) errors.push('ask-AI missing '+k+' button');
   const prompt=await page.getByTestId('askai-prompt').inputValue();
-  if(!/อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง|got 5 out of 20 on econ homework 1/i.test(prompt)) errors.push('AI prompt lacks casual speech example');
+  if(!/Econ ได้ 5 เต็ม 20 การบ้านหนึ่ง|got 5 out of 20 on econ homework 1/i.test(prompt)) errors.push('AI prompt lacks casual speech example');
   // Tapping an AI copies the instruction first, then opens the AI (copy must not wait until the tab has opened).
   await page.evaluate(()=>{window.__opened=[];window.open=(u)=>{window.__opened.push(u);return {};};document.addEventListener('copy',()=>{window.__copied=String(document.getSelection());},{once:true});});
   await page.getByTestId('askai-gemini').click();
@@ -482,7 +483,7 @@ async function runTU(browser, lang, width) {
   const errors = [], overflow = [];
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
   const page = await ctx.newPage();
-  await page.addInitScript(([d]) => { window.__D = d; localStorage.removeItem('gradespace.email'); localStorage.removeItem('gradespace.mode'); }, [state]);
+  await page.addInitScript(([d]) => { window.__D = d; localStorage.removeItem('gradespace.email'); localStorage.removeItem('gradespace.mode'); }, [null]);
   await page.route('**/*', (route) => {
     const u = route.request().url();
     if (u.startsWith('file:') || u.startsWith('data:') || u.startsWith('blob:')) return route.continue();
@@ -504,11 +505,9 @@ async function runTU(browser, lang, width) {
   await page.locator('#au-tu-student').fill('0000000001');
   await page.locator('#au-e').fill('tu@example.com');
   await page.locator('#au-e').press('Enter');
-  await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.state&&GradeSpace.S.state.settings.institution==='tu'&&GradeSpace.S.state.settings.spaces);
+  await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.state&&GradeSpace.S.state.settings.institution==='tu'&&GradeSpace.S.cloud);
   await page.waitForTimeout(400);
-  // Separate spaces: the fixture's Chula courses are put aside, Thammasat starts empty.
-  const sp=await page.evaluate(()=>({n:GradeSpace.S.state.courses.length,cu:(GradeSpace.S.state.settings.spaces.cu||{}).courses}));
-  if(sp.n!==0||!sp.cu||sp.cu.length<5) errors.push('TU should start in its own empty space with Chula courses kept aside: '+JSON.stringify({n:sp.n,cu:sp.cu&&sp.cu.length}));
+  if(await page.evaluate(()=>GradeSpace.S.state.courses.length!==0)) errors.push('new TU account should start empty');
   // Set language using actual controls after loading account (server fixture may override sign-in language).
   if(width>=768){await page.getByTestId('topbar-display').getByRole('button',{name:lang.toUpperCase(),exact:true}).click();}
   else{await page.evaluate(()=>location.hash='me');await page.locator('.me-page button',{hasText:lang.toUpperCase()}).click();}
@@ -545,7 +544,9 @@ async function runTU(browser, lang, width) {
   if(!(await page.getByTestId('tu-academic').isVisible())) errors.push('TU academic profile missing');
   await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
   if(!(await page.getByTestId('student-identity').innerText()).includes('0000000001')) errors.push('TU own session ID missing');
-  if(!(await page.getByTestId('workspace-shortcut').isVisible())) errors.push('workspace shortcut missing');
+  if(await page.getByTestId('workspace-shortcut').count()) errors.push('normal TU account must not have a workspace shortcut');
+  await page.keyboard.press('Alt+Shift+t');
+  if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('normal TU account switched campus through keyboard');
   if(await page.evaluate(()=>JSON.stringify(GradeSpace.S.state).includes('0000000001'))) errors.push('TU student ID leaked into grade JSON');
   await page.getByTestId('profile-signout').click();
   if(!(await page.locator('.modal').isVisible())) errors.push('profile sign-out confirmation missing');
@@ -589,22 +590,14 @@ async function runTU(browser, lang, width) {
   if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')&&GradeSpace.S.state.courses.some(c=>c.code==='IS201')&&GradeSpace.S.state.settings.tuAcademicProfile.track==='AC'))) errors.push('TU guided picker did not add the named accounting courses and persist major');
   if(!(await page.evaluate(()=>GradeSpace.catalogSearch('AC396').some(x=>x.code==='AC396'&&x.cr===1.5))))errors.push('Thai scoped catalog credits incorrect');
   if(await page.evaluate(()=>GradeSpace.S.state.courses.filter(c=>c.code==='TU101').length)!==1)errors.push('TU101 duplicate');
-  // Switch to Chula and back: each space comes back intact, nothing deleted.
+  // Ordinary TU accounts cannot switch via settings or direct hash navigation.
   const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
-  await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
-  await page.evaluate(()=>{location.hash='preferences';}); await page.waitForTimeout(300);
-  await page.locator('.seg button',{hasText:/^(จุฬาฯ|Chulalongkorn)$/}).first().click();
-  await page.locator('.modal .btn.primary, .modal .btn.danger').last().click();
-  await page.waitForTimeout(300);
-  const cuBack=await page.evaluate(()=>({u:GradeSpace.S.state.settings.institution,n:GradeSpace.S.state.courses.length,tu:(GradeSpace.S.state.settings.spaces.tu||{}).courses}));
-  if(cuBack.u!=='cu'||cuBack.n<5||!cuBack.tu||!cuBack.tu.some(c=>c.code==='TU101')) errors.push('switch to Chula did not restore its space: '+JSON.stringify({u:cuBack.u,n:cuBack.n,tu:cuBack.tu&&cuBack.tu.length}));
-  if(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='TU101'))) errors.push('Thammasat course leaked into Chula space');
-  await page.locator('.seg button',{hasText:/^(ธรรมศาสตร์|Thammasat)$/}).first().click();
-  await page.locator('.modal .btn.primary, .modal .btn.danger').last().click();
-  await page.waitForTimeout(300);
-  const after=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
-  if(JSON.stringify(after)!==JSON.stringify(before)) errors.push('Thammasat space not restored: '+JSON.stringify(after));
-  if(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>/^\d{7}/.test(c.code)))) errors.push('Chula course leaked into Thammasat space');
+  await page.evaluate(()=>location.hash='preferences'); await page.waitForTimeout(300);
+  if(await page.locator('.seg button',{hasText:/^(จุฬาฯ|Chulalongkorn|ธรรมศาสตร์|Thammasat)$/}).count()) errors.push('normal TU account has a campus picker');
+  await page.keyboard.press('Alt+Shift+t');
+  await page.evaluate(()=>location.hash='dashboard'); await page.waitForTimeout(300);
+  const after=await page.evaluate(()=>({u:GradeSpace.S.state.settings.institution,codes:GradeSpace.S.state.courses.map(c=>c.code)}));
+  if(after.u!=='tu'||JSON.stringify(after.codes)!==JSON.stringify(before)) errors.push('normal TU account campus or courses changed');
   // Course search suggests Thammasat codes.
   await page.evaluate(()=>{location.hash='courses';}); await page.waitForTimeout(300);
   const hashes = ['dashboard', 'years', 'courses', 'gpa', 'me', 'preferences'];
@@ -662,6 +655,17 @@ async function runOTP(browser, width) {
   const rpcs=await page.evaluate(()=>window.__rpcs||[]);
   if(!rpcs.includes('gs_me_load')) errors.push('verified load not used');
   if(rpcs.includes('gs_load')||rpcs.includes('gs_save')) errors.push('email-only RPC used after code sign-in');
+  // Non-admin verified CU cannot switch even with a valid session.
+  await page.waitForFunction(()=>GradeSpace.S.cloud&&GradeSpace.S.state.settings.institution==='cu');
+  await page.evaluate(()=>location.hash='me');
+  await page.locator('.me-page').waitFor();
+  if(await page.getByTestId('workspace-shortcut').count())errors.push('normal verified CU has workspace shortcut');
+  await page.keyboard.press('Alt+Shift+t');
+  if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='cu')errors.push('normal verified CU switched with keyboard');
+  await page.evaluate(()=>location.hash='preferences');
+  await page.waitForTimeout(300);
+  if(await page.locator('.seg button',{hasText:/^(จุฬาฯ|Chulalongkorn|ธรรมศาสตร์|Thammasat)$/}).count())errors.push('normal verified CU has campus picker');
+  await page.evaluate(()=>location.hash='dashboard');
   // Session survives a reload; no sign-in screen.
   await page.reload();
   await page.locator('.dashboard-exam-panel').first().waitFor({timeout:10000}).catch(()=>errors.push('session not restored after reload'));
@@ -670,11 +674,48 @@ async function runOTP(browser, width) {
   return errors.length;
 }
 
+
+// Verified admin can switch both ways, restoring the existing CU courses.
+async function runCampusAdmin(browser) {
+  const errors=[];
+  const ctx=await browser.newContext({viewport:{width:390,height:900}});
+  const page=await ctx.newPage();
+  await page.addInitScript(d=>{
+    window.__D=d; let g;
+    Object.defineProperty(window,'GS_WEB',{configurable:true,get(){return g;},set(v){g=Object.assign(v,{otp:true});}});
+    sessionStorage.setItem('fakeSess',JSON.stringify({user:{id:'admin-1',email:'admin@example.com',app_metadata:{gradespace_admin:true}}}));
+  },state);
+  await page.route('**/*',route=>{
+    const u=route.request().url();
+    if(u.startsWith('file:')||u.startsWith('data:')||u.startsWith('blob:'))return route.continue();
+    for(const [k,f] of Object.entries(LIBS))if(u.includes(k))return route.fulfill({path:f,contentType:'application/javascript'});
+    if(u.includes('supabase.js'))return route.fulfill({body:FAKE_SUPABASE,contentType:'application/javascript'});
+    return route.abort();
+  });
+  page.on('pageerror',e=>errors.push('pageerror: '+e.message));
+  await page.goto(PAGE);
+  await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.cloud&&GradeSpace.S.state.courses.length>=5);
+  const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.id));
+  await page.evaluate(()=>location.hash='me');
+  await page.getByTestId('workspace-shortcut').click();
+  await page.locator('.modal .btn.primary, .modal .btn.danger').last().click();
+  await page.waitForFunction(()=>GradeSpace.S.state.settings.institution==='tu');
+  if(await page.evaluate(()=>GradeSpace.S.state.courses.length!==0))errors.push('admin TU did not start with separate space');
+  await page.keyboard.press('Alt+Shift+t');
+  await page.waitForFunction(()=>GradeSpace.S.state.settings.institution==='cu');
+  const after=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.id));
+  if(JSON.stringify(before)!==JSON.stringify(after))errors.push('admin switch failed to restore CU courses');
+  await ctx.close();
+  console.log('Campus admin: errors '+(errors.join(' | ')||'none'));
+  return errors.length;
+}
+
 const browser = await chromium.launch();
 let bad = 0;
 for (const lang of ['th', 'en']) for (const w of [390, 1280, 1800]) bad += await run(browser, lang, w);
 for (const lang of ['th', 'en']) for (const w of [390, 1280]) bad += await runTU(browser, lang, w);
 for (const w of [390, 1280]) bad += await runOTP(browser, w);
+bad += await runCampusAdmin(browser);
 await browser.close();
 if (bad) { console.error('FAILED'); process.exit(1); }
 console.log('OK');
