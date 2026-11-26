@@ -27,7 +27,7 @@ assert.equal(syllabi.find(x=>x.code==='RB211').cutoffs,null);
 assert.equal(syllabi.find(x=>x.code==='RB211').weights.at(-1)[2],40);
 
 const thaiCourses=read('TU_TBS_THAI_COURSES');
-assert.equal(thaiCourses.length,297);assert.equal(new Set(thaiCourses.map(x=>x[0])).size,thaiCourses.length);
+assert.equal(thaiCourses.length,312);assert.equal(new Set(thaiCourses.map(x=>x[0])).size,thaiCourses.length);
 assert.ok(thaiCourses.every(x=>x[1]&&x[2]&&x[3]>0&&x[4]&&x[5].length));
 assert.equal(thaiCourses.find(x=>x[0]==='AC201')[4],'บช.201');
 
@@ -59,3 +59,11 @@ assert.deepEqual(syllabi.find(x=>x.code==='RB313').curriculumYears,[2556,2561]);
 
 assert.equal(sched.filter(x=>x.reviewStatus==='weekday-conflict').length,3);
 assert.equal(sched.find(x=>x.source===9&&x.page===20&&x.codes[1]==='RB211').final.start,'09:00');
+
+assert.equal(thaiCourses.find(x=>x[0]==='BA341')[3],1.5);
+assert.equal(thaiCourses.find(x=>x[0]==='FN399')[3],3);
+assert.match(thaiPre.FN399[0][1],/311.*312/);
+assert.equal(thai.majors.find(x=>x.id==='MOEH').required[0].majorElective,3);
+assert.equal(thai.majors.find(x=>x.id==='IBLT').required[1].majorElective,6);
+assert.equal(termPlans.find(x=>x.id==='FN').terms.find(x=>x.year===1&&x.term===2).numericCellTotal,21);
+assert.equal(termPlans.find(x=>x.id==='IS').terms.find(x=>x.year===2&&x.term===1).numericCellTotal,21);

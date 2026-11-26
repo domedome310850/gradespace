@@ -1,3 +1,8 @@
+## 2026-11-26 — ChatGPT: full 408-page visual overview and deeper curriculum validation
+
+- 15 missing Thai course records (including seven 1.5-credit entries), nine additional prerequisite keys, source-backed track elective quotas and major-grade rules. Flag two additional printed plan anomalies after 99 table sum checks. No automatic enrollment or grade application.
+- Document distinction between all-page visual overview and remaining individual-field verification.
+
 ## 2026-11-26 — ChatGPT: recover multi-slot TBS final-exam references from uploaded PDFs
 
 - Add 40 section references from five visually checked pages, preserving curriculum code pairs and flagging three weekday/date conflicts. No automatic calendar use.
