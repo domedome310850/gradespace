@@ -1021,9 +1021,11 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 :root[data-uni="tu"] .btn.primary:hover{border-color:var(--tu-red-border)}
 :root[data-uni="tu"] .nav-item[aria-current="page"]{box-shadow:inset 3px 0 var(--tu-gold);color:var(--accent-text)}
 :root[data-uni="tu"] .bottomnav a[aria-current="page"]{color:var(--tu-gold-text);box-shadow:inset 0 -2px var(--tu-gold)}
-:root[data-uni="tu"] .nav-ai-dot,:root[data-uni="tu"] .ai-fab{background:var(--action);color:var(--tu-gold);box-shadow:0 0 0 1px var(--tu-gold),0 0 0 4px var(--surface)}
-:root[data-uni="tu"] .side .nav-ai-main{background:var(--tu-gold-soft);color:var(--tu-gold-text);border-color:color-mix(in srgb,var(--tu-gold) 50%,var(--line))}
-:root[data-uni="tu"] .side .nav-ai-main .ic{color:var(--tu-gold-text)}
+:root[data-uni="tu"] .nav-ai-dot,:root[data-uni="tu"] .ai-fab{background:#FFD13F;color:#8C1D2C;box-shadow:0 0 0 4px var(--surface)}
+/* AI sidebar is a single highlighted row: white label and glyph, campus-tinted background only. */
+:root[data-uni] .side .nav-ai-main{background:var(--ai-highlight);color:#FFFFFF;border-color:transparent}
+:root[data-uni] .side .nav-ai-main:hover{background:var(--ai-highlight-hover);color:#FFFFFF;border-color:transparent}
+:root[data-uni] .side .nav-ai-main .ic{color:#FFFFFF}
 :root[data-uni="tu"] .metric.hero{box-shadow:inset 0 3px var(--tu-gold),var(--shadow)}
 :root[data-uni="tu"] .hub-kicker>span:first-child{color:var(--tu-gold-text)}
 :root[data-uni="tu"] .dash-whatif{color:var(--tu-gold-text)}
@@ -4697,9 +4699,11 @@ function applyUniTheme(uni, dark) {
   ['--earned','--lav','--sky','--sky-soft','--pending-a','--pending-b'].forEach(function(k){el.style.removeProperty(k);});
   var v={'--accent':a,'--accent-hover':hover,'--accent-ink':ink,'--accent-soft':soft,'--accent-text':txt,'--uni-secondary':tu?'#FFD13F':'#F5A4CC'};
   // TU: deep red action surfaces, gold details; CU keeps its neutral actions.
-  var campusKeys=['--action','--action-hover','--action-ink','--tu-gold','--tu-gold-text','--tu-gold-soft','--tu-red-border'];
+  var campusKeys=['--action','--action-hover','--action-ink','--tu-gold','--tu-gold-text','--tu-gold-soft','--tu-red-border','--ai-highlight','--ai-highlight-hover'];
   campusKeys.forEach(function(k){el.style.removeProperty(k);});
   if(tu)Object.assign(v,{'--action':'#8C1D2C','--action-hover':'#741726','--action-ink':'#FFFFFF','--tu-gold':'#D8B84C','--tu-gold-text':dark?'#E4C35E':'#806016','--tu-gold-soft':dark?'#322B1D':'#F8F3E3','--tu-red-border':dark?'#C65B50':'#8C1D2C'});
+  v['--ai-highlight']=tu?(dark?'#512A2C':'#8C1D2C'):(dark?'#533543':'#84506A');
+  v['--ai-highlight-hover']=tu?(dark?'#653337':'#741726'):(dark?'#694355':'#713E59');
   Object.keys(v).forEach(function(k){el.style.setProperty(k,v[k]);});
   el.setAttribute('data-uni',tu?'tu':'cu');
   var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#151517':'#F7F8FA';
