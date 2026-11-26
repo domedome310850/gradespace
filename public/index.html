@@ -880,11 +880,16 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 }
 /* Ask your AI by copy-paste (2026-11-26). */
 .askai-card{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+/* 3 numbered steps (2026-11-26). */
+.askai-steps{display:grid;gap:4px}.askai-step{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.askai-step:last-of-type{border-bottom:0}.askai-num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--accent-soft);color:var(--accent-text)}
+.askai-step.done .askai-num{background:var(--ok-soft);color:var(--ok)}.askai-body{display:grid;gap:8px;min-width:0}.askai-body>b{font-size:15px}.askai-body>.small{margin-top:-4px}
+.askai-copy{justify-self:start;min-width:160px}.askai-paste{width:100%;resize:vertical}
 .askai-sends{display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--accent-soft, var(--surface-2));font-size:13.5px}
 .askai-q{width:100%;resize:vertical;margin-top:6px}.askai-ideas{display:flex;gap:6px;flex-wrap:wrap}.askai-ideas .chat-chip{white-space:normal;text-align:left}
 .askai-go{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.askai-ai{justify-content:space-between;text-align:left;padding:10px 12px;min-height:56px}
 .askai-ai .grow{display:flex;flex-direction:column;gap:2px;min-width:0}
-@media (max-width:560px){.askai-ai{min-height:46px;padding:8px;justify-content:center;text-align:center}.askai-ai .tiny,.askai-ai svg{display:none}}
+.askai-ai{justify-content:center;text-align:center;min-height:44px;padding:8px}
 .askai-raw summary{cursor:pointer;color:var(--muted);margin-bottom:6px}
 .askai-text{width:100%;min-height:150px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
 .askai-rows{display:grid;gap:6px}.askai-row{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}.askai-row input{margin-top:3px}
@@ -2760,7 +2765,7 @@ en: {
   'askai.title': 'Ask your AI', 'askai.step1': '1. Copy to your AI', 'askai.step2': '2. Paste the answer',
   'askai.cardT': 'Use your AI now (works on free plans)', 'askai.cardP': 'Copy this term’s courses into ChatGPT, Claude or Gemini, ask anything, then paste its answer back to save new scores.', 'askai.cardBtn': 'Ask your AI',
   'askai.copyIntro': 'Tap an AI: GradeSpace copies your courses and question, then opens it. Just paste and send.', 'askai.copy': 'Copy text', 'askai.copiedBtn': 'Copied ✓', 'askai.copied': 'Copied. Paste it into your AI.',
-  'askai.openGpt': 'Open ChatGPT', 'askai.openClaude': 'Open Claude', 'askai.openGemini': 'Open Gemini', 'askai.sends': 'Your AI gets {c} courses and {n} items · {s} (no email or student ID)', 'askai.pick': 'What do you want to ask?', 'askai.qPh': 'Type a question, or pick one below (optional)', 'askai.idea1': 'What do I need on the final to get an A?', 'askai.idea2': 'Which course should I worry about most?', 'askai.idea3': 'Plan my study this week', 'askai.goWith': 'Copy and open', 'askai.howPaste': 'Copied. In the AI’s chat box, paste (long-press or Ctrl+V) and send.', 'askai.show': 'See exactly what is copied', 'askai.next': 'Got an answer? Paste it',
+  'askai.openGpt': 'Open ChatGPT', 'askai.openClaude': 'Open Claude', 'askai.openGemini': 'Open Gemini', 'askai.sends': '{c} courses · {n} items · {s}', 'askai.pick': 'What do you want to ask?', 'askai.qPh': 'Type a question, or pick one below (optional)', 'askai.idea1': 'What do I need on the final to get an A?', 'askai.idea2': 'Which course should I worry about most?', 'askai.idea3': 'Plan my study this week', 'askai.goWith': 'Copy and open', 'askai.howPaste': 'Copied. In the AI’s chat box, paste (long-press or Ctrl+V) and send.', 'askai.show': 'See what is copied', 'askai.s1T': 'Copy your courses', 'askai.s2T': 'Paste into your AI and ask', 'askai.s2P': 'Paste in the chat box, type your question after it, and send.', 'askai.s3T': 'Paste the AI’s answer here', 'askai.s3P': 'Only when it gives you new scores. You check each one before it is saved.', 'askai.next': 'Got an answer? Paste it',
   'askai.privacy': 'Only course names, items and scores are copied — no email or student ID. Your AI provider’s own privacy terms apply to what you paste there.',
   'askai.pasteIntro': 'Paste the AI’s whole answer. GradeSpace reads the gradespace-scores block and shows each change for you to approve.', 'askai.pastePh': 'Paste the answer here',
   'askai.check': 'Check', 'askai.noBlock': 'No score list found. Ask your AI to “give the gradespace-scores block”.', 'askai.badJson': 'The score list is broken. Ask your AI to send the gradespace-scores block again.',
@@ -3269,7 +3274,7 @@ th: {
   'askai.title': 'ถาม AI ของคุณ', 'askai.step1': '1. คัดลอกไปถาม', 'askai.step2': '2. วางคำตอบ',
   'askai.cardT': 'ใช้ AI ของคุณได้เลยตอนนี้ (แพ็กเกจฟรีก็ได้)', 'askai.cardP': 'คัดลอกวิชาเทอมนี้ไปถาม ChatGPT, Claude หรือ Gemini ได้ทุกเรื่อง แล้ววางคำตอบกลับมาเพื่อบันทึกคะแนนใหม่', 'askai.cardBtn': 'ถาม AI ของคุณ',
   'askai.copyIntro': 'กดเลือก AI แล้ว GradeSpace จะคัดลอกวิชากับคำถามให้และเปิด AI นั้น แค่วางแล้วกดส่ง', 'askai.copy': 'คัดลอกข้อความ', 'askai.copiedBtn': 'คัดลอกแล้ว ✓', 'askai.copied': 'คัดลอกแล้ว ไปวางใน AI ได้เลย',
-  'askai.openGpt': 'เปิด ChatGPT', 'askai.openClaude': 'เปิด Claude', 'askai.openGemini': 'เปิด Gemini', 'askai.sends': 'AI จะได้ {c} วิชา {n} งาน · {s} (ไม่มีอีเมลหรือเลขนิสิต)', 'askai.pick': 'อยากถามอะไร', 'askai.qPh': 'พิมพ์คำถาม หรือเลือกด้านล่าง (ไม่ใส่ก็ได้)', 'askai.idea1': 'ไฟนอลต้องได้เท่าไหร่ถึงจะได้ A', 'askai.idea2': 'วิชาไหนน่าห่วงที่สุด', 'askai.idea3': 'ช่วยวางแผนอ่านหนังสือสัปดาห์นี้', 'askai.goWith': 'คัดลอกแล้วเปิด', 'askai.howPaste': 'คัดลอกแล้ว ไปที่ช่องแชทของ AI กดค้างแล้ววาง (หรือ Ctrl+V) แล้วกดส่ง', 'askai.show': 'ดูข้อความที่จะคัดลอก', 'askai.next': 'ได้คำตอบแล้ว? วางที่นี่',
+  'askai.openGpt': 'เปิด ChatGPT', 'askai.openClaude': 'เปิด Claude', 'askai.openGemini': 'เปิด Gemini', 'askai.sends': '{c} วิชา · {n} งาน · {s}', 'askai.pick': 'อยากถามอะไร', 'askai.qPh': 'พิมพ์คำถาม หรือเลือกด้านล่าง (ไม่ใส่ก็ได้)', 'askai.idea1': 'ไฟนอลต้องได้เท่าไหร่ถึงจะได้ A', 'askai.idea2': 'วิชาไหนน่าห่วงที่สุด', 'askai.idea3': 'ช่วยวางแผนอ่านหนังสือสัปดาห์นี้', 'askai.goWith': 'คัดลอกแล้วเปิด', 'askai.howPaste': 'คัดลอกแล้ว ไปที่ช่องแชทของ AI กดค้างแล้ววาง (หรือ Ctrl+V) แล้วกดส่ง', 'askai.show': 'ดูข้อความที่คัดลอก', 'askai.s1T': 'คัดลอกวิชาของคุณ', 'askai.s2T': 'วางใน AI ของคุณแล้วถามได้เลย', 'askai.s2P': 'วางในช่องแชท พิมพ์คำถามต่อท้าย แล้วกดส่ง', 'askai.s3T': 'คัดลอกคำตอบของ AI มาวางที่นี่', 'askai.s3P': 'เฉพาะตอนที่ AI ให้คะแนนใหม่ คุณจะได้ดูทีละรายการก่อนบันทึก', 'askai.next': 'ได้คำตอบแล้ว? วางที่นี่',
   'askai.privacy': 'คัดลอกเฉพาะชื่อวิชา งาน และคะแนน ไม่มีอีเมลหรือเลขนิสิต ข้อมูลที่คุณวางในบริการ AI จะอยู่ภายใต้นโยบายความเป็นส่วนตัวของผู้ให้บริการนั้น',
   'askai.pasteIntro': 'วางคำตอบของ AI ทั้งหมด GradeSpace จะอ่านเฉพาะบล็อก gradespace-scores แล้วแสดงทีละรายการให้คุณยืนยัน', 'askai.pastePh': 'วางคำตอบที่นี่',
   'askai.check': 'ตรวจ', 'askai.noBlock': 'ไม่พบรายการคะแนน ลองบอก AI ว่า “ขอบล็อก gradespace-scores”', 'askai.badJson': 'รายการคะแนนเสียหาย ลองให้ AI ส่งบล็อก gradespace-scores ใหม่',
@@ -8305,22 +8310,19 @@ function parseAskAi(text, state) {
   }) };
 }
 function AskAiModal(p) {
+  // One screen, three numbered steps: copy → paste into your AI and ask → paste the answer back. The copied
+  // text itself stays out of sight (open “See what is copied” to check it).
   var state = useApp();
-  var ts = useState(p.props && p.props.step === 'paste' ? 'paste' : 'copy'), tab = ts[0], setTab = ts[1];
-  var qs = useState(''), question = qs[0], setQuestion = qs[1];
-  var prompt = askAiPrompt(state, question);
+  var prompt = askAiPrompt(state);
   var curS = curSemester(state), mine = state.courses.filter(function (c) { return !curS || c.semesterId === curS.id; });
   var nItems = state.assessments.filter(function (a) { return mine.some(function (c) { return c.id === a.courseId; }); }).length;
   var AIS = [{ k: 'gpt', n: 'ChatGPT', url: 'https://chatgpt.com/' }, { k: 'claude', n: 'Claude', url: 'https://claude.ai/new' }, { k: 'gemini', n: 'Gemini', url: 'https://gemini.google.com/app' }];
-  function copyOpen(ai) {
-    // Open first (still inside the tap, so it isn't blocked as a pop-up), then copy.
-    try { window.open(ai.url, '_blank', 'noopener'); } catch (e) { /* ignore */ }
-    copy();
-  }
   var ps = useState(''), pasted = ps[0], setPasted = ps[1];
   var rs = useState(null), res = rs[0], setRes = rs[1];
   var ks = useState({}), keep = ks[0], setKeep = ks[1];
   var cs = useState(false), copied = cs[0], setCopied = cs[1];
+  var pasteRef = useRef(null);
+  useEffect(function () { if (p.props && p.props.step === 'paste' && pasteRef.current) pasteRef.current.focus(); }, []);
   function copy() {
     var done = function () { setCopied(true); toast(t('askai.copied')); };
     try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(prompt).then(done, function () { setCopied(true); }); return; } } catch (e) { /* fall back */ }
@@ -8334,37 +8336,31 @@ function AskAiModal(p) {
     toast(t('askai.saved', { n: rows.length }), { undo: true }); closeModal();
   }
   var good = res && res.rows ? res.rows.filter(function (x) { return !x.bad && keep[x.i]; }).length : 0;
-  return html`<${Modal} title=${t('askai.title')} onClose=${closeModal} wide=${true}>
-    <div className="stack" data-testid="ask-ai" style=${{ gap: 12 }}>
-      <${Seg} label=${t('askai.title')} value=${tab} onChange=${setTab} options=${[{ v: 'copy', l: t('askai.step1') }, { v: 'paste', l: t('askai.step2') }]} />
-      ${tab === 'copy' ? html`<${React.Fragment}>
-        <div className="askai-sends" data-testid="askai-sends"><${Icon} n="book" s=${16} /><span>${t('askai.sends', { c: mine.length, n: nItems, s: curS ? semFull(state, curS) : '' })}</span></div>
-        <label className="field" style=${{ margin: 0 }}><span className="small" style=${{ fontWeight: 600 }}>${t('askai.pick')}</span>
-          <textarea className="input askai-q" rows="2" value=${question} data-testid="askai-question" placeholder=${t('askai.qPh')} onChange=${function (e) { setQuestion(e.target.value); setCopied(false); }}></textarea></label>
-        <div className="askai-ideas">${['askai.idea1', 'askai.idea2', 'askai.idea3'].map(function (k) {
-          return html`<button key=${k} type="button" className=${'chat-chip' + (question === t(k) ? ' on' : '')} onClick=${function () { setQuestion(t(k)); setCopied(false); }}>${t(k)}</button>`; })}</div>
-        <div className="askai-go">${AIS.map(function (ai) {
-          return html`<button key=${ai.k} type="button" className="btn askai-ai" data-testid=${'askai-go-' + ai.k} onClick=${function () { copyOpen(ai); }}>
-            <span className="grow"><b>${ai.n}</b><span className="tiny muted">${t('askai.goWith')}</span></span><${Icon} n="chevronRight" /></button>`; })}</div>
-        <p className="tiny muted" style=${{ margin: 0 }}>${copied ? t('askai.howPaste') : t('askai.copyIntro')}</p>
+  var step = function (n, done, title, sub, body) {
+    return html`<div className=${'askai-step' + (done ? ' done' : '')}>
+      <span className="askai-num" aria-hidden="true">${done ? '✓' : n}</span>
+      <div className="askai-body"><b>${title}</b>${sub && html`<span className="small muted">${sub}</span>`}${body}</div></div>`;
+  };
+  return html`<${Modal} title=${t('askai.title')} onClose=${closeModal}>
+    <div className="askai-steps" data-testid="ask-ai">
+      ${step(1, copied, t('askai.s1T'), t('askai.sends', { c: mine.length, n: nItems, s: curS ? semFull(state, curS) : '' }), html`
+        <button className="btn primary askai-copy" data-testid="askai-copy" onClick=${copy}><${Icon} n="clipboard" s=${16} />${copied ? t('askai.copiedBtn') : t('askai.copy')}</button>
         <details className="askai-raw"><summary className="tiny">${t('askai.show')}</summary>
-          <textarea className="input askai-text" readOnly=${true} value=${prompt} data-testid="askai-prompt" onFocus=${function (e) { e.target.select(); }} aria-label=${t('askai.step1')}></textarea>
-          <button className="btn sm" style=${{ marginTop: 6 }} onClick=${copy}><${Icon} n="clipboard" s=${14} />${copied ? t('askai.copiedBtn') : t('askai.copy')}</button>
-        </details>
-        <p className="tiny muted" style=${{ margin: 0 }}>${t('askai.privacy')}</p>
-        <button className="btn ghost sm" style=${{ justifySelf: 'start' }} onClick=${function () { setTab('paste'); }}>${t('askai.next')} ›</button>
-      <//>` : html`<${React.Fragment}>
-        <p className="small" style=${{ margin: 0 }}>${t('askai.pasteIntro')}</p>
-        <textarea className="input askai-text" value=${pasted} data-testid="askai-paste" placeholder=${t('askai.pastePh')} onChange=${function (e) { setPasted(e.target.value); setRes(null); }} aria-label=${t('askai.step2')}></textarea>
-        <div><button className="btn" disabled=${!pasted.trim()} onClick=${check}>${t('askai.check')}</button></div>
+          <textarea className="input askai-text" readOnly=${true} value=${prompt} data-testid="askai-prompt" onFocus=${function (e) { e.target.select(); }} aria-label=${t('askai.show')}></textarea></details>`)}
+      ${step(2, false, t('askai.s2T'), t('askai.s2P'), html`
+        <div className="askai-go">${AIS.map(function (ai) {
+          return html`<a key=${ai.k} className="btn askai-ai" data-testid=${'askai-go-' + ai.k} href=${ai.url} target="_blank" rel="noopener noreferrer" onClick=${function () { if (!copied) copy(); }}>${ai.n} ↗</a>`; })}</div>`)}
+      ${step(3, !!good, t('askai.s3T'), t('askai.s3P'), html`
+        <textarea ref=${pasteRef} className="input askai-paste" rows="3" value=${pasted} data-testid="askai-paste" placeholder=${t('askai.pastePh')} onChange=${function (e) { setPasted(e.target.value); setRes(null); }} aria-label=${t('askai.s3T')}></textarea>
+        ${!(res && res.rows) && html`<div><button className="btn" data-testid="askai-check" disabled=${!pasted.trim()} onClick=${check}>${t('askai.check')}</button></div>`}
         ${res && res.error && html`<${Banner} kind="bad">${t(res.error)}<//>`}
         ${res && res.rows && html`<div className="askai-rows">${res.rows.map(function (x) {
           return html`<label key=${x.i} className=${'askai-row' + (x.bad ? ' bad' : '')}>
             <input type="checkbox" disabled=${!!x.bad} checked=${!x.bad && !!keep[x.i]} onChange=${function (e) { var k = Object.assign({}, keep); k[x.i] = e.target.checked; setKeep(k); }} />
             <div className="grow"><b>${x.c ? courseDisplayTitle(x.c) : x.code} · ${x.a ? aName(x.a) : x.item}</b>
               <div className="small">${x.bad ? t(x.bad) : fmtT(x.score) + '/' + fmtT(x.max) + (x.old ? ' · ' + t('askai.was', { o: x.old }) : '')}</div></div></label>`; })}</div>
-          <button className="btn primary" data-testid="askai-save" disabled=${!good} onClick=${save}>${t('askai.save', { n: good })}</button>`}
-      <//>`}
+          <button className="btn primary" data-testid="askai-save" disabled=${!good} onClick=${save}>${t('askai.save', { n: good })}</button>`}`)}
+      <p className="tiny muted" style=${{ margin: 0 }}>${t('askai.privacy')}</p>
     </div><//>`;
 }
 function commandItems(state) {

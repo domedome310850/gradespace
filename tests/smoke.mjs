@@ -97,15 +97,14 @@ async function run(browser, lang, width) {
   // Copy-paste bridge to the student's own AI (works on free plans).
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
   await page.getByTestId('askai-open').click();
-  await page.getByTestId('askai-question').fill('Need on final?');
   if(!(await page.getByTestId('askai-go-gemini').isVisible())) errors.push('ask-AI should offer ChatGPT, Claude and Gemini');
   const prompt=await page.getByTestId('askai-prompt').inputValue();
-  if(!prompt.trim().endsWith('Need on final?')) errors.push('ask-AI text should end with the question');
+  if(await page.locator('[data-testid="ask-ai"] .askai-step').count()!==3) errors.push('ask-AI should show 3 steps');
+  if(await page.getByTestId('askai-prompt').isVisible()) errors.push('ask-AI should hide the copied text by default');
   if(!prompt.includes('"gradespace":1')||!prompt.includes('2900111')) errors.push('ask-AI text lacks course data');
   if(prompt.includes('test@example.com')||prompt.includes('6940102426')) errors.push('ask-AI text leaks email or student ID');
-  await page.getByTestId('ask-ai').locator('.seg button').nth(1).click();
   await page.getByTestId('askai-paste').fill('Sure!\n```gradespace-scores\n{"updates":[{"code":"2900111","item":"HW5","score":4,"max":5},{"code":"2900111","item":"Quiz 99","score":3,"max":5}]}\n```');
-  await page.getByTestId('ask-ai').getByRole('button',{name:lang==='th'?'ตรวจ':'Check',exact:true}).click();
+  await page.getByTestId('askai-check').click();
   if(await page.locator('.askai-row').count()!==2||await page.locator('.askai-row.bad').count()!==1) errors.push('ask-AI review should list 1 valid and 1 skipped row');
   await page.getByTestId('askai-save').click();
   if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.status==='graded';}))) errors.push('ask-AI did not save HW5');
