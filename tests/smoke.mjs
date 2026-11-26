@@ -44,8 +44,9 @@ async function checkCampusPalette(page, uni, errors) {
       token('--surface')===(dark?'#1C1C20':'#FFFFFF') &&
       token('--earned')===(dark?'#9BB2CE':'#526B88') &&
       token('--sky')===(dark?'#8FC5EE':'#286795') &&
-      token('--accent')===(uni==='tu'?(dark?'#D6A09E':'#A3454C'):(dark?'#D6A2B9':'#9C436B')) &&
-      token('--action')===(dark?'#E7E3E7':'#303037') &&
+      token('--accent')===(uni==='tu'?(dark?'#D8B84C':'#8C1D2C'):(dark?'#D6A2B9':'#9C436B')) &&
+      token('--action')===(uni==='tu'?'#8C1D2C':(dark?'#E7E3E7':'#303037')) &&
+      (uni!=='tu'||(token('--tu-gold')==='#D8B84C'&&token('--tu-gold-text')===(dark?'#E4C35E':'#806016')&&getComputedStyle(campus).color===(dark?'rgb(228, 195, 94)':'rgb(128, 96, 22)'))) &&
       document.querySelector('meta[name="theme-color"]').content.toUpperCase()===token('--bg');
   },uni);
   if(!valid) errors.push(uni+' should use neutral shared palette and campus-only accents');
@@ -484,7 +485,7 @@ async function runTU(browser, lang, width) {
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
   if(await page.getByTestId('campus-brand').filter({hasText:'TU'}).count()!==2)errors.push('TU workspace wordmarks missing');
   if(!(await page.getByTestId('campus-brand').first().evaluate(el=>{const w=el.querySelector('.brand-word'),c=el.querySelector('.brand-campus'),a=getComputedStyle(w),b=getComputedStyle(c);return a.fontSize===b.fontSize&&a.fontWeight===b.fontWeight&&b.backgroundColor==='rgba(0, 0, 0, 0)'&&b.paddingLeft==='0px'&&getComputedStyle(el.querySelector('.brand-name-accent')).color!==b.color;})))errors.push('TU suffix should match brand size without badge and use distinct color');
-  if(!(await page.locator('.side .brand-mark').evaluate(el=>el.querySelector('path').getAttribute('stroke')==='#fff'&&el.querySelector('stop[offset="55%"]').getAttribute('stop-color')==='#C3002F'&&el.querySelector('circle').getAttribute('fill')==='#FFD13F')))errors.push('TU logo should have red background, white G and yellow dot');
+  if(!(await page.locator('.side .brand-mark').evaluate(el=>el.querySelector('path').getAttribute('stroke')==='#fff'&&el.querySelector('stop[offset="55%"]').getAttribute('stop-color')==='#8C1D2C'&&el.querySelector('circle').getAttribute('fill')==='#FFD13F')))errors.push('TU logo should have red background, white G and yellow dot');
   await checkCampusPalette(page,'tu',errors);
   const rpcs=await page.evaluate(()=>window.__rpcs||[]);
   for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
