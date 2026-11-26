@@ -881,6 +881,9 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 /* Ask your AI by copy-paste (2026-11-26). */
 .askai-card{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 .askai-text{width:100%;min-height:150px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
+.askai-app{font-weight:600}
+.askai-logo{width:20px;height:20px;border-radius:5px;background:#fff;flex:none}
+.askai-steps{margin:0;padding-left:20px;display:grid;gap:6px}.askai-text{margin-top:8px}
 .askai-rows{display:grid;gap:6px}.askai-row{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}.askai-row input{margin-top:3px}
 .askai-row.bad{opacity:.65}.askai-row.bad .small{color:var(--bad)}
 /* Help + feedback tabs (2026-11-26). */
@@ -2849,13 +2852,13 @@ en: {
   'connect.title': 'Use GradeSpace from ChatGPT or Claude', 'connect.soon': 'Coming soon', 'connect.with': 'Connect {n}',
   'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
   'connect.own': 'Or ask GradeSpace AI now:',
-  'askai.title': 'Ask ChatGPT or Claude', 'askai.step1': '1. Copy to your AI', 'askai.step2': '2. Paste the answer',
+  'askai.how1': 'Tap an AI below. The instructions are copied for you — paste them as your first message.', 'askai.how2': 'Then send a screenshot, a voice message or just type: “got 24/30 in the Econ midterm”, “I have a new course 2603111”, “this course is 30% midterm, 40% final…”.', 'askai.how3': 'Copy the AI’s whole answer, come back and paste it in step 2. You check everything before it is saved.', 'askai.copyOpen': 'Copy & open {n}', 'askai.showText': 'Show the text that will be copied', 'askai.reviewT': 'Check what your AI found', 'askai.back': 'Paste again', 'askai.title': 'Add with ChatGPT, Gemini or Claude', 'askai.step1': '1. Send to your AI', 'askai.step2': '2. Paste the answer',
   'askai.cardT': 'Use your AI now (works on free plans)', 'askai.cardP': 'Copy this term’s courses into ChatGPT or Claude, ask anything, then paste its answer back to save new scores.', 'askai.cardBtn': 'Ask your AI',
   'askai.copyIntro': 'Copy this text, paste it into ChatGPT or Claude, then type your question at the end.', 'askai.copy': 'Copy text', 'askai.copiedBtn': 'Copied ✓', 'askai.copied': 'Copied. Paste it into your AI.',
   'askai.openGpt': 'Open ChatGPT', 'askai.openClaude': 'Open Claude', 'askai.next': 'Got an answer? Paste it',
-  'askai.privacy': 'Only course names, items and scores are copied — no email or student ID. Your AI provider’s own privacy terms apply to what you paste there.',
-  'askai.pasteIntro': 'Paste the AI’s whole answer. GradeSpace reads the gradespace-scores block and shows each change for you to approve.', 'askai.pastePh': 'Paste the answer here',
-  'askai.check': 'Check', 'askai.noBlock': 'No score list found. Ask your AI to “give the gradespace-scores block”.', 'askai.badJson': 'The score list is broken. Ask your AI to send the gradespace-scores block again.',
+  'askai.privacy': 'Only your course codes, names, item names, weights and full marks are copied — no scores, email or student ID. Your AI provider’s own privacy terms apply to what you send there.',
+  'askai.pasteIntro': 'Paste the AI’s whole answer. GradeSpace reads the gradespace block and shows every course, item and score for you to check before adding.', 'askai.pastePh': 'Paste the answer here',
+  'askai.check': 'Check', 'askai.noBlock': 'No GradeSpace data found. Ask your AI: “send it as the gradespace block”.', 'askai.badJson': 'The data block is broken. Ask your AI to send the gradespace block again.',
   'askai.noCourse': 'Course not found here — skipped', 'askai.noItem': 'Item not found in this course — skipped (GradeSpace never creates items)', 'askai.badScore': 'Score doesn’t fit full marks — skipped',
   'askai.was': 'was {o}', 'askai.save': 'Save {n} scores', 'askai.saved': 'Saved {n} scores',
   'aihub.title': 'Your AI', 'hub.bridge': 'GradeSpace connects your own AI to your grades. Ask in ChatGPT or Claude; it reads your courses and suggests scores, and you approve every change here.',
@@ -2887,7 +2890,7 @@ en: {
   'wi.set.even': 'Same grade everywhere', 'wi.set.near': 'Fewest changes from now', 'wi.set.heavy': 'Focus on high-credit courses', 'wi.set.focus': 'All-in on a few courses', 'wi.use': 'Try this set',
   'wi.note': 'Confirmed grades stay as they are. “Out of reach” means your scores so far can’t reach that grade under the course’s cut-offs.', 'wi.link': 'Try grades',
   'plan.btnShort': 'By major', 'dash.coursesS': '{n} courses · {p} ongoing', 'dash.gradedS': 'graded {g}/{n}', 'dash.creditsS': '{n} cr earned',
-  'hub2.aiH': 'With your own AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Ask ChatGPT or Claude', 'hub2.askP': 'Copy & paste · works on free plans',
+  'hub2.aiH': 'With your own AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Add with ChatGPT, Gemini or Claude', 'hub2.askP': 'Screenshot, voice or text → paste back · free plans work',
   'hub2.gptT': '@GradeSpace in ChatGPT', 'hub2.gptP': 'Direct link, no copying', 'hub2.claudeT': 'GradeSpace in Claude', 'hub2.claudeP': 'Add as a connector',
   'hub2.scanP': 'Read scores from screenshots', 'hub2.pasteP': 'Paste a score table', 'hub2.quickP': 'Type one score',
   'hub2.note': 'GradeSpace has no AI of its own. Your AI suggests; you approve every change here.',
@@ -3445,13 +3448,13 @@ th: {
   'connect.title': 'ใช้ GradeSpace ผ่าน ChatGPT หรือ Claude', 'connect.soon': 'เร็ว ๆ นี้', 'connect.with': 'เชื่อม {n}',
   'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
   'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
-  'askai.title': 'ถาม ChatGPT หรือ Claude', 'askai.step1': '1. คัดลอกไปถาม', 'askai.step2': '2. วางคำตอบ',
+  'askai.how1': 'กดเลือก AI ด้านล่าง ระบบจะคัดลอกคำสั่งให้อัตโนมัติ แล้ววางเป็นข้อความแรกในแชต', 'askai.how2': 'จากนั้นส่งภาพหน้าจอ ข้อความเสียง หรือพิมพ์บอกได้เลย เช่น “มิดเทอมเศรษฐศาสตร์ได้ 24/30” “มีวิชาใหม่ 2603111” “วิชานี้มิดเทอม 30% ไฟนอล 40%…”', 'askai.how3': 'คัดลอกคำตอบของ AI ทั้งหมด กลับมาวางในขั้นที่ 2 คุณตรวจทุกอย่างก่อนบันทึก', 'askai.copyOpen': 'คัดลอกแล้วเปิด {n}', 'askai.showText': 'ดูข้อความที่จะถูกคัดลอก', 'askai.reviewT': 'ตรวจสิ่งที่ AI อ่านได้', 'askai.back': 'วางใหม่', 'askai.title': 'เพิ่มข้อมูลผ่าน ChatGPT, Gemini หรือ Claude', 'askai.step1': '1. ส่งไปที่ AI', 'askai.step2': '2. วางคำตอบ',
   'askai.cardT': 'ใช้ AI ของคุณได้เลยตอนนี้ (แพ็กเกจฟรีก็ได้)', 'askai.cardP': 'คัดลอกวิชาเทอมนี้ไปถาม ChatGPT หรือ Claude ได้ทุกเรื่อง แล้ววางคำตอบกลับมาเพื่อบันทึกคะแนนใหม่', 'askai.cardBtn': 'ถาม AI ของคุณ',
   'askai.copyIntro': 'คัดลอกข้อความนี้ไปวางใน ChatGPT หรือ Claude แล้วพิมพ์คำถามต่อท้าย', 'askai.copy': 'คัดลอกข้อความ', 'askai.copiedBtn': 'คัดลอกแล้ว ✓', 'askai.copied': 'คัดลอกแล้ว ไปวางใน AI ได้เลย',
   'askai.openGpt': 'เปิด ChatGPT', 'askai.openClaude': 'เปิด Claude', 'askai.next': 'ได้คำตอบแล้ว? วางที่นี่',
-  'askai.privacy': 'คัดลอกเฉพาะชื่อวิชา งาน และคะแนน ไม่มีอีเมลหรือเลขนิสิต ข้อมูลที่คุณวางในบริการ AI จะอยู่ภายใต้นโยบายความเป็นส่วนตัวของผู้ให้บริการนั้น',
-  'askai.pasteIntro': 'วางคำตอบของ AI ทั้งหมด GradeSpace จะอ่านเฉพาะบล็อก gradespace-scores แล้วแสดงทีละรายการให้คุณยืนยัน', 'askai.pastePh': 'วางคำตอบที่นี่',
-  'askai.check': 'ตรวจ', 'askai.noBlock': 'ไม่พบรายการคะแนน ลองบอก AI ว่า “ขอบล็อก gradespace-scores”', 'askai.badJson': 'รายการคะแนนเสียหาย ลองให้ AI ส่งบล็อก gradespace-scores ใหม่',
+  'askai.privacy': 'คัดลอกไปเฉพาะรหัสวิชา ชื่อวิชา ชื่องาน สัดส่วน และคะแนนเต็ม ไม่มีคะแนนที่ได้ อีเมล หรือรหัสนิสิต สิ่งที่ส่งให้ AI เป็นไปตามนโยบายความเป็นส่วนตัวของผู้ให้บริการนั้น',
+  'askai.pasteIntro': 'วางคำตอบของ AI ทั้งหมด GradeSpace จะอ่านบล็อก gradespace แล้วแสดงทุกวิชา งาน และคะแนนให้คุณตรวจก่อนเพิ่ม', 'askai.pastePh': 'วางคำตอบที่นี่',
+  'askai.check': 'ตรวจ', 'askai.noBlock': 'ไม่พบข้อมูล GradeSpace ลองบอก AI ว่า “ขอเป็นบล็อก gradespace”', 'askai.badJson': 'บล็อกข้อมูลเสียหาย ลองให้ AI ส่งบล็อก gradespace ใหม่',
   'askai.noCourse': 'ไม่พบวิชานี้ — ข้าม', 'askai.noItem': 'ไม่พบงานนี้ในวิชา — ข้าม (GradeSpace ไม่สร้างงานเอง)', 'askai.badScore': 'คะแนนไม่สอดคล้องกับคะแนนเต็ม — ข้าม',
   'askai.was': 'เดิม {o}', 'askai.save': 'บันทึก {n} คะแนน', 'askai.saved': 'บันทึก {n} คะแนนแล้ว',
   'aihub.title': 'AI ของคุณ', 'hub.bridge': 'GradeSpace เป็นตัวเชื่อม AI ของคุณเองเข้ากับคะแนน ถามใน ChatGPT หรือ Claude ได้เลย AI จะอ่านวิชาและเสนอคะแนน แล้วคุณกดยืนยันทุกครั้งในนี้',
@@ -3483,7 +3486,7 @@ th: {
   'wi.set.even': 'ได้เท่ากันทุกวิชา', 'wi.set.near': 'เปลี่ยนจากตอนนี้น้อยที่สุด', 'wi.set.heavy': 'เน้นวิชาหน่วยกิตเยอะ', 'wi.set.focus': 'ทุ่มบางวิชา ปล่อยบางวิชา', 'wi.use': 'ลองชุดนี้',
   'wi.note': 'เกรดจริงที่บันทึกแล้วไม่เปลี่ยน “ไม่ทันแล้ว” หมายถึงคะแนนที่มีอยู่ไปไม่ถึงเกรดนั้นตามเกณฑ์ของวิชา', 'wi.link': 'ลองสมมติเกรด',
   'plan.btnShort': 'ตามสาขา', 'dash.coursesS': '{n} วิชา · เรียน {p}', 'dash.gradedS': 'ตรวจ {g}/{n} งาน', 'dash.creditsS': 'ได้ {n} นก.',
-  'hub2.aiH': 'ใช้กับ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'ถาม ChatGPT หรือ Claude', 'hub2.askP': 'คัดลอก-วาง · แพ็กเกจฟรีก็ใช้ได้',
+  'hub2.aiH': 'ใช้กับ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'เพิ่มข้อมูลผ่าน ChatGPT, Gemini หรือ Claude', 'hub2.askP': 'ภาพหน้าจอ เสียง หรือพิมพ์ → วางกลับ · แพ็กเกจฟรีก็ได้',
   'hub2.gptT': '@GradeSpace ใน ChatGPT', 'hub2.gptP': 'เชื่อมตรง ไม่ต้องคัดลอก', 'hub2.claudeT': 'GradeSpace ใน Claude', 'hub2.claudeP': 'เพิ่มเป็นตัวเชื่อม',
   'hub2.scanP': 'อ่านคะแนนจากภาพหน้าจอ', 'hub2.pasteP': 'วางตารางคะแนน', 'hub2.quickP': 'พิมพ์คะแนนทีละรายการ',
   'hub2.note': 'GradeSpace ไม่มี AI ของตัวเอง AI ของคุณเป็นคนเสนอ คุณเป็นคนยืนยันทุกครั้ง',
@@ -8618,12 +8621,14 @@ function scanRowFlag(a) {
 function ScanModal(p) {
   var state = useApp(), o = p.props;
   var cur = curSemester(state);
-  var ss = useState('pick'), step = ss[0], setStep = ss[1];
+  // props.preset: courses already read by the student's own AI (AskAiModal) → open straight at review.
+  var preset = o.preset && Array.isArray(o.preset.courses) ? o.preset : null;
+  var ss = useState(preset ? 'review' : 'pick'), step = ss[0], setStep = ss[1];
   var fs = useState([]), files = fs[0], setFiles = fs[1];
   var ps = useState(false), preparing = ps[0], setPreparing = ps[1];
   var ms = useState(o.semesterId || (cur && cur.id) || '__new'), semId = ms[0], setSemId = ms[1];
-  var rs = useState(null), res = rs[0], setRes = rs[1];
-  var cs = useState([]), chosen = cs[0], setChosen = cs[1];
+  var rs = useState(preset ? { courses: preset.courses, notes: [], check: null } : null), res = rs[0], setRes = rs[1];
+  var cs = useState(preset ? preset.courses.map(function () { return true; }) : []), chosen = cs[0], setChosen = cs[1];
   var es = useState(null), err = es[0], setErr = es[1];
   var inputRef = useRef(null);
   var rds = useState(null), ready = rds[0], setReady = rds[1];
@@ -8725,11 +8730,11 @@ function ScanModal(p) {
   };
   var check = res && res.check;
   var foot = step === 'review'
-    ? html`<button className="btn" onClick=${function () { setStep('pick'); setRes(null); }}>${t('scan.again')}</button>
+    ? html`<button className="btn" onClick=${preset ? function () { closeModal(); openModal('askAi', { step: 'paste' }); } : function () { setStep('pick'); setRes(null); }}>${preset ? t('askai.back') : t('scan.again')}</button>
         <button className="btn primary" disabled=${!nChosen || badInput} onClick=${apply}>${t('scan.apply', { n: nChosen })}</button>`
     : html`<button className="btn" onClick=${closeModal}>${t('cancel')}</button>
         <button className="btn primary" disabled=${!files.length || preparing || step === 'scanning' || ready === false} onClick=${run}><${Icon} n="zap" s=${16} />${step === 'scanning' ? t('scan.running') : t('scan.run')}</button>`;
-  return html`<${Modal} title=${t('scan.title')} wide=${true} onClose=${closeModal} foot=${foot}>
+  return html`<${Modal} title=${o.title || t('scan.title')} wide=${true} onClose=${closeModal} foot=${foot}>
     ${step !== 'review' ? html`
       <p className="small muted" style=${{ margin: 0 }}>${t('scan.intro')}</p>
       ${ready === false && html`<${Banner} kind="warn"><b>${t('scan.setupT')}</b>
@@ -9049,95 +9054,132 @@ function AiHubModal(p) {
       <p className="tiny muted" style=${{ margin: '12px 4px 0' }}>${t('hub2.note')}</p>
     </div><//>`;
 }
-/* ===== Ask your own AI by copy-paste (works on every ChatGPT/Claude plan, incl. Free) =====
-   The student copies a summary of this term's courses into their AI; the AI answers with a small JSON
-   block; the student pastes it back and approves each row. Only existing courses/items are matched;
-   nothing is created. No email, student ID or account data goes into the copied text. */
-var ASKAI_TAG = 'gradespace-scores';
+/* ===== Bring data in through the student's own AI (ChatGPT, Claude, Gemini; works on free plans) =====
+   Owner, 2026-11-26: GradeSpace can't read voice notes or every screenshot itself, so the student's own AI
+   does the reading. GradeSpace gives a ready-made instruction; the student pastes it into their AI together
+   with a screenshot, a voice message or plain text ("got 24/30 in the midterm", "new course 2603111",
+   "this course is 30% midterm, 40% final…"). The AI answers with a ```gradespace block (the same shape the
+   screenshot scanner returns), the student pastes the answer back and approves everything in the scan review
+   (ScanModal with props.preset). New courses and items can be added; nothing is saved without approval.
+   Only course codes, names, item names, weights and full marks are copied out — no scores, email or ID. */
+var ASKAI_TAG = 'gradespace';
+var ASKAI_APPS = [
+  { k: 'gpt', label: 'ChatGPT', url: 'https://chatgpt.com/', host: 'chatgpt.com' },
+  { k: 'gemini', label: 'Gemini', url: 'https://gemini.google.com/app', host: 'gemini.google.com' },
+  { k: 'claude', label: 'Claude', url: 'https://claude.ai/new', host: 'claude.ai' }
+];
+// Each AI's own site icon, loaded live from the site (not redrawn here); hidden if it can't load.
+function askAiIcon(a) { return 'https://www.google.com/s2/favicons?sz=64&domain=' + a.host; }
+var ASKAI_TYPES = ['midterm', 'final', 'assignment', 'homework', 'quiz', 'project', 'presentation', 'lab', 'participation', 'attendance', 'custom'];
 function askAiPrompt(state) {
-  var cur = curSemester(state);
-  var courses = state.courses.filter(function (c) { return !cur || c.semesterId === cur.id; }).map(function (c) {
-    var sm = C.courseSummary(c, state), g = C.courseGrade(c, state);
-    return { code: String(c.code || '').split('.')[0], name: courseDisplayTitle(c), credits: toNum(c.credits),
-      grade: c.finalGrade || null, estimate: g.label || null, totalPct: isNum(sm.earned) ? +sm.earned.toFixed(2) : null,
-      items: state.assessments.filter(function (a) { return a.courseId === c.id; }).map(function (a) {
-        return { item: aName(a), type: a.type, weightPct: +(toNum(C.effectiveWeights(c.id, state)[a.id]) || 0).toFixed(2), max: toNum(a.max), score: C.isGraded(a) ? a.score : null, due: a.due || null };
-      }) };
-  });
-  var th = LANG === 'th';
-  var rules = th ? [
-    'นี่คือข้อมูลวิชาและคะแนนของฉันจาก GradeSpace (' + (cur ? semFull(state, cur) : '') + ') score: null แปลว่ายังไม่มีคะแนน ไม่ใช่ 0',
-    'ช่วยตอบคำถามของฉันจากข้อมูลนี้ ห้ามเดาหรือสร้างคะแนนหรือชื่องานขึ้นเอง',
-    'ถ้าฉันบอกคะแนนใหม่ ให้ตอบท้ายด้วยโค้ดบล็อก ```' + ASKAI_TAG + ' ที่มี JSON แบบนี้ {"updates":[{"code":"รหัสวิชา","item":"ชื่องานตรงตามข้อมูล","score":ตัวเลข,"max":ตัวเลข}]} ใช้เฉพาะวิชาและงานที่มีอยู่ในข้อมูลเท่านั้น',
-    'คำถามของฉัน: '
+  var cur = curSemester(state), th = LANG === 'th';
+  var known = cur ? Scan.hints(state, cur.id) : [];
+  var example = { gradespace: 2, courses: [{ code: '2603111', name: 'Principles of Economics', credits: 3, section: '1',
+    assessments: [{ name: 'Midterm', type: 'midterm', weight: 30, score: 24, max: 30, due: null }] }] };
+  var lines = th ? [
+    'ช่วยจัดข้อมูลการเรียนของฉันให้นำเข้าแอป GradeSpace ได้',
+    'ฉันจะส่งภาพหน้าจอ ข้อความเสียง หรือพิมพ์บอก เช่น ได้คะแนนวิชาไหนเท่าไหร่จากเต็มเท่าไหร่ มีวิชาใหม่ หรือวิชานี้มีงาน/สอบอะไรบ้าง คิดกี่เปอร์เซ็นต์',
+    'ให้ตอบเป็นโค้ดบล็อก ```' + ASKAI_TAG + ' ที่มี JSON รูปแบบเดียวกับตัวอย่างนี้ เพียงบล็อกเดียว:',
+    'กติกา:',
+    '- ใส่เฉพาะสิ่งที่ฉันส่งหรือบอกจริง ห้ามเดา ห้ามแต่งตัวเลขหรือชื่องาน ถ้าไม่รู้ให้ใส่ null',
+    '- score = คะแนนที่ได้, max = คะแนนเต็ม, weight = กี่เปอร์เซ็นต์ของเกรดวิชา (ไม่รู้ใส่ null) ยังไม่มีคะแนนใส่ score: null',
+    '- type เลือกหนึ่งใน: ' + ASKAI_TYPES.join(', ') + '  ส่วน due เป็น YYYY-MM-DD หรือ null',
+    '- ถ้าเป็นวิชา/งานที่มีอยู่แล้วในรายการด้านล่าง ให้ใช้รหัสวิชาและชื่องานให้ตรงกันทุกตัวอักษร',
+    '- ถ้าข้อมูลไม่ชัด ให้ถามฉันก่อน แล้วค่อยส่งบล็อก',
+    'วิชาที่ฉันมีอยู่แล้วเทอมนี้:',
+    'ถ้าเข้าใจแล้ว ตอบว่า "พร้อม ส่งภาพหรือบอกคะแนนมาได้เลย"'
   ] : [
-    'Here are my courses and scores from GradeSpace (' + (cur ? semFull(state, cur) : '') + '). score: null means not graded yet, not zero.',
-    'Answer my questions from this data. Never guess or invent scores or item names.',
-    'If I tell you new scores, end your reply with a ```' + ASKAI_TAG + ' code block containing JSON like {"updates":[{"code":"course code","item":"exact item name from the data","score":number,"max":number}]}. Only use courses and items that exist in the data.',
-    'My question: '
+    'Help me put my university course data into the GradeSpace app.',
+    'I will send screenshots, a voice message or text — e.g. what I scored out of what in a course, a new course I am taking, or what a course is graded on and how much each part counts.',
+    'Reply with exactly one ```' + ASKAI_TAG + ' code block containing JSON in the same shape as this example:',
+    'Rules:',
+    '- Only include what I actually sent or said. Never guess or invent numbers or item names; use null when unknown.',
+    '- score = points I got, max = full marks, weight = % of the course grade (null if unknown). Not graded yet → score: null.',
+    '- type is one of: ' + ASKAI_TYPES.join(', ') + '. due is YYYY-MM-DD or null.',
+    '- If a course or item is already in my list below, reuse its code and item name exactly.',
+    '- If something is unclear, ask me first, then send the block.',
+    'Courses I already have this term:',
+    'If you understand, reply "Ready — send a screenshot or tell me your scores."'
   ];
-  return rules.slice(0, 3).join('\n') + '\n\n```json\n' + JSON.stringify({ gradespace: 1, courses: courses }) + '\n```\n\n' + rules[3];
+  return lines.slice(0, 3).join('\n') + '\n\n```' + ASKAI_TAG + '\n' + JSON.stringify(example) + '\n```\n\n' +
+    lines.slice(3, 9).join('\n') + '\n\n' + lines[9] + '\n' + (known.length ? JSON.stringify(known) : (th ? '(ยังไม่มี)' : '(none yet)')) + '\n\n' + lines[10];
 }
-function parseAskAi(text, state) {
-  var raw = String(text || ''), m = raw.match(new RegExp('```\\s*' + ASKAI_TAG + '\\s*([\\s\\S]*?)```')) || raw.match(/(\{[\s\S]*"updates"[\s\S]*\})/);
-  if (!m) return { error: 'askai.noBlock' };
-  var data; try { data = JSON.parse(m[1].trim()); } catch (e) { return { error: 'askai.badJson' }; }
-  var list = Array.isArray(data.updates) ? data.updates.slice(0, 60) : [];
-  if (!list.length) return { error: 'askai.noBlock' };
-  var low = function (x) { return String(x || '').trim().toLowerCase(); };
-  return { rows: list.map(function (u, i) {
-    var c = state.courses.find(function (x) { return low(String(x.code || '').split('.')[0]) === low(u.code); });
-    var a = c && state.assessments.find(function (x) { return x.courseId === c.id && low(aName(x)) === low(u.item); });
-    var sc = Number(u.score), mx = u.max == null ? (a ? Number(a.max) : NaN) : Number(u.max);
-    var bad = !c ? 'askai.noCourse' : !a ? 'askai.noItem' : !(isFinite(sc) && isFinite(mx) && mx > 0 && sc >= 0 && (sc <= mx + C.EPS || a.extra)) ? 'askai.badScore' : null;
-    return { i: i, code: u.code, item: u.item, score: sc, max: mx, c: c, a: a, bad: bad, old: a && C.isGraded(a) ? a.score + '/' + a.max : null };
-  }) };
+// Reads the AI's answer → { courses } in the scanner's shape, or { error }. Also accepts the older
+// ```gradespace-scores {"updates":[…]} answers so links shared before this change keep working.
+function parseAskAi(text) {
+  var raw = String(text || '');
+  var blocks = [], re = /```\s*([a-z-]*)\s*\n?([\s\S]*?)```/gi, m;
+  while ((m = re.exec(raw))) blocks.push({ tag: m[1].toLowerCase(), body: m[2] });
+  var pick = blocks.find(function (b) { return b.tag === ASKAI_TAG || b.tag === 'gradespace-scores'; }) ||
+    blocks.find(function (b) { return /"(courses|updates)"/.test(b.body); });
+  var body = pick ? pick.body : (raw.match(/(\{[\s\S]*"(?:courses|updates)"[\s\S]*\})/) || [])[1];
+  if (!body) return { error: 'askai.noBlock' };
+  var data; try { data = JSON.parse(body.trim()); } catch (e) { return { error: 'askai.badJson' }; }
+  if (Array.isArray(data)) data = { courses: data };
+  var str = function (v, n) { return v == null ? '' : String(v).trim().slice(0, n); };
+  var nul = function (v) { var x = Calc.toNum(v); return x === null || !isFinite(x) ? null : x; };
+  var list = [];
+  if (Array.isArray(data && data.courses)) list = data.courses;
+  else if (Array.isArray(data && data.updates)) {
+    var by = {};
+    data.updates.forEach(function (u) { var k = str(u && u.code, 20); if (!k) return; (by[k] = by[k] || { code: k, assessments: [] }).assessments.push({ name: u.item, score: u.score, max: u.max }); });
+    list = Object.keys(by).map(function (k) { return by[k]; });
+  }
+  var courses = list.slice(0, 30).filter(function (c) { return c && (str(c.code, 20) || str(c.name, 200)); }).map(function (c) {
+    var out = { code: str(c.code, 20), name: str(c.name, 200), credits: nul(c.credits), section: str(c.section, 10),
+      assessments: (Array.isArray(c.assessments) ? c.assessments : []).slice(0, 80).filter(function (a) { return a && (str(a.name, 120) || a.type); }).map(function (a) {
+        var s = nul(a.score), mx = nul(a.max), w = nul(a.weight);
+        return { name: str(a.name, 120), type: ASKAI_TYPES.indexOf(a.type) >= 0 ? a.type : 'custom', weight: w, score: s, max: mx,
+          group: str(a.group, 80) || undefined, due: /^\d{4}-\d{2}-\d{2}$/.test(a.due || '') ? a.due : '',
+          _s: s === null ? '' : String(s), _m: mx === null ? '' : String(mx) };
+      }) };
+    if (c.grading && typeof c.grading === 'object') out.grading = { method: c.grading.method, referencing: c.grading.referencing, mpl: c.grading.mpl, cutoffs: c.grading.cutoffs };
+    var ws = out.assessments.map(function (a) { return a.weight; }).filter(function (w) { return w !== null; });
+    var sum = ws.reduce(function (t, w) { return t + w; }, 0);
+    if (ws.length === out.assessments.length && ws.length > 1 && Math.abs(sum - 100) > 0.5) out.weightFlag = sum;
+    return out;
+  });
+  if (!courses.length) return { error: 'askai.noBlock' };
+  return { courses: courses };
 }
 function AskAiModal(p) {
-  var state = useApp();
+  var state = useApp(), cur = curSemester(state);
   var ts = useState(p.props && p.props.step === 'paste' ? 'paste' : 'copy'), tab = ts[0], setTab = ts[1];
   var prompt = askAiPrompt(state);
   var ps = useState(''), pasted = ps[0], setPasted = ps[1];
-  var rs = useState(null), res = rs[0], setRes = rs[1];
-  var ks = useState({}), keep = ks[0], setKeep = ks[1];
+  var es = useState(null), err = es[0], setErr = es[1];
   var cs = useState(false), copied = cs[0], setCopied = cs[1];
   function copy() {
     var done = function () { setCopied(true); toast(t('askai.copied')); };
     try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(prompt).then(done, function () { setCopied(true); }); return; } } catch (e) { /* fall back */ }
     setCopied(true);
   }
-  function check() { var r = parseAskAi(pasted, S.state); setRes(r); var k = {}; (r.rows || []).forEach(function (x) { if (!x.bad) k[x.i] = true; }); setKeep(k); }
-  function save() {
-    var rows = (res && res.rows || []).filter(function (x) { return !x.bad && keep[x.i]; });
-    if (!rows.length) return;
-    update(function (d) { rows.forEach(function (x) { var a = d.assessments.find(function (y) { return y.id === x.a.id; }); if (a) { a.score = x.score; a.max = x.max; a.status = 'graded'; } }); }, { undo: true });
-    toast(t('askai.saved', { n: rows.length }), { undo: true }); closeModal();
+  function check() {
+    var r = parseAskAi(pasted);
+    if (r.error) { setErr(r.error); return; }
+    closeModal(); openModal('scan', { semesterId: cur && cur.id, preset: { courses: r.courses }, title: t('askai.reviewT') });
   }
-  var good = res && res.rows ? res.rows.filter(function (x) { return !x.bad && keep[x.i]; }).length : 0;
   return html`<${Modal} title=${t('askai.title')} onClose=${closeModal} wide=${true}>
     <div className="stack" data-testid="ask-ai" style=${{ gap: 12 }}>
       <${Seg} label=${t('askai.title')} value=${tab} onChange=${setTab} options=${[{ v: 'copy', l: t('askai.step1') }, { v: 'paste', l: t('askai.step2') }]} />
       ${tab === 'copy' ? html`<${React.Fragment}>
-        <p className="small" style=${{ margin: 0 }}>${t('askai.copyIntro')}</p>
-        <textarea className="input askai-text" readOnly=${true} value=${prompt} data-testid="askai-prompt" onFocus=${function (e) { e.target.select(); }} aria-label=${t('askai.step1')}></textarea>
+        <ol className="small askai-steps">
+          <li>${t('askai.how1')}</li><li>${t('askai.how2')}</li><li>${t('askai.how3')}</li>
+        </ol>
         <div className="row wrap" style=${{ gap: 8 }}>
-          <button className="btn primary" onClick=${copy}><${Icon} n="clipboard" s=${16} />${copied ? t('askai.copiedBtn') : t('askai.copy')}</button>
-          <a className="btn" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">${t('askai.openGpt')} ↗</a>
-          <a className="btn" href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">${t('askai.openClaude')} ↗</a>
+          ${ASKAI_APPS.map(function (a) { return html`<a key=${a.k} className="btn askai-app" data-testid=${'askai-' + a.k} href=${a.url} target="_blank" rel="noopener noreferrer" onClick=${copy}><img className="askai-logo" src=${askAiIcon(a)} alt="" width="20" height="20" loading="lazy" referrerPolicy="no-referrer" onError=${function (e) { e.target.style.display = 'none'; }} />${t('askai.copyOpen', { n: a.label })} ↗</a>`; })}
+          <button className="btn" onClick=${copy}><${Icon} n="clipboard" s=${16} />${copied ? t('askai.copiedBtn') : t('askai.copy')}</button>
         </div>
+        <details className="small"><summary>${t('askai.showText')}</summary>
+          <textarea className="input askai-text" readOnly=${true} value=${prompt} data-testid="askai-prompt" onFocus=${function (e) { e.target.select(); }} aria-label=${t('askai.step1')}></textarea>
+        </details>
         <p className="tiny muted" style=${{ margin: 0 }}>${t('askai.privacy')}</p>
         <button className="btn ghost sm" style=${{ justifySelf: 'start' }} onClick=${function () { setTab('paste'); }}>${t('askai.next')} ›</button>
       <//>` : html`<${React.Fragment}>
         <p className="small" style=${{ margin: 0 }}>${t('askai.pasteIntro')}</p>
-        <textarea className="input askai-text" value=${pasted} data-testid="askai-paste" placeholder=${t('askai.pastePh')} onChange=${function (e) { setPasted(e.target.value); setRes(null); }} aria-label=${t('askai.step2')}></textarea>
-        <div><button className="btn" disabled=${!pasted.trim()} onClick=${check}>${t('askai.check')}</button></div>
-        ${res && res.error && html`<${Banner} kind="bad">${t(res.error)}<//>`}
-        ${res && res.rows && html`<div className="askai-rows">${res.rows.map(function (x) {
-          return html`<label key=${x.i} className=${'askai-row' + (x.bad ? ' bad' : '')}>
-            <input type="checkbox" disabled=${!!x.bad} checked=${!x.bad && !!keep[x.i]} onChange=${function (e) { var k = Object.assign({}, keep); k[x.i] = e.target.checked; setKeep(k); }} />
-            <div className="grow"><b>${x.c ? courseDisplayTitle(x.c) : x.code} · ${x.a ? aName(x.a) : x.item}</b>
-              <div className="small">${x.bad ? t(x.bad) : fmtT(x.score) + '/' + fmtT(x.max) + (x.old ? ' · ' + t('askai.was', { o: x.old }) : '')}</div></div></label>`; })}</div>
-          <button className="btn primary" data-testid="askai-save" disabled=${!good} onClick=${save}>${t('askai.save', { n: good })}</button>`}
+        <textarea className="input askai-text" value=${pasted} data-testid="askai-paste" placeholder=${t('askai.pastePh')} onChange=${function (e) { setPasted(e.target.value); setErr(null); }} aria-label=${t('askai.step2')}></textarea>
+        <div><button className="btn primary" data-testid="askai-check" disabled=${!pasted.trim()} onClick=${check}>${t('askai.check')}</button></div>
+        ${err && html`<${Banner} kind="bad">${t(err)}<//>`}
       <//>`}
     </div><//>`;
 }
@@ -9148,7 +9190,7 @@ function commandItems(state) {
   items = items.concat([
     { g: 'cmd.gActions', icon: 'spark', label: t('ai.btn'), meta2: both('ai.btn') + ' chatgpt claude', run: function () { openModal('chat', {}); } },
     { g: 'cmd.gActions', icon: 'trend', label: t('wi.link'), meta2: both('wi.link') + ' what if gpa', run: function () { location.hash = 'gpa'; setTimeout(function () { var el = document.querySelector('[data-testid=whatif]'); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' }); }, 120); } },
-    { g: 'cmd.gActions', icon: 'clipboard', label: t('askai.title'), meta2: both('askai.title') + ' chatgpt claude', run: function () { openModal('askAi', {}); } },
+    { g: 'cmd.gActions', icon: 'clipboard', label: t('askai.title'), meta2: both('askai.title') + ' chatgpt claude gemini', run: function () { openModal('askAi', {}); } },
     { g: 'cmd.gActions', icon: 'plus', label: t('addCourse'), meta2: both('addCourse'), run: function () { openModal('course', { semesterId: cur && cur.id }); } },
     { g: 'cmd.gActions', icon: 'edit', label: t('quickScore'), meta2: both('quickScore'), run: function () { openModal('quick', {}); } },
     canScan() && { g: 'cmd.gActions', icon: 'zap', label: t('scan.btn'), meta2: both('scan.btn'), run: function () { openModal('scan', { semesterId: cur && cur.id }); } },
