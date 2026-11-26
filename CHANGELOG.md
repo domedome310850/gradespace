@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: muted CU pink and standardized English course titles
+
+- `public/index.html`: replace bright CU pink with dusty rose, keep primary actions neutral and both logo SVGs unchanged; warm charcoal dark palette, neutral status banners and GPA cards, muted priority cues and AI shortcut. English course names now resolve by enrollment-scoped CU Reg or active university catalog, independent of interface language; unknown names fall back to saved text. No new data/auth migrations or stored-name rewrites. `public/manifest.webmanifest`: neutral system bar (installed Android may retain prior manifest until refreshed). `public/sw.js`: cache v17. `tests/smoke.mjs`: updated palette and course-name checks. Browser CI and actual device visual review pending.
+
 ## 2026-11-26 — ChatGPT: shared neutral campus UI
 
 - `public/index.html`: neutral surfaces and shared chart/status colors; campus accents limited to actions, active navigation and campus suffix. GradeSpace wordmark is neutral, original CU/TU SVG logos unchanged. GPA hero uses neutral card; AI shortcut uses solid accent. Dark mode retains readable campus accents. `tests/smoke.mjs`: updated branding and palette assertions; `public/sw.js`: cache v16. Browser CI and visual verification pending; no merge/deploy or data/auth changes.
