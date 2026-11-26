@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: fresh Chula two-tone identity
+
+- CU uses rich campus pink (#A71D5D) for primary actions, fresh petal pink (#F4A5C9) with deep pink glyph for circular AI, and pink details for active navigation and GPA. Sidebar AI retains white label/icon with a richer pink background. Neutral surfaces/status cards and original logos remain; TU yellow/red AI refinement unchanged. Smoke assertions and cache v20. Device review/CI pending.
+
 ## 2026-11-26 — ChatGPT: refine AI shortcut highlights
 
 - TU AI circle/mobile and desktop FAB: yellow fill (#FFD13F) and deep red glyph (#8C1D2C). Both CU/TU sidebar AI rows use white text and icon with a campus-tinted highlight background, no colored outline. Updated browser checks and cache v19. CI and device visual review pending; no data changes.
