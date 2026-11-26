@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: simplify TU course-first picker
+
+- Redesign `TuPlanModal`: default searchable course catalog, full Thai/English subject names, faculty groups first and GenEd last, no horizontal scrolling, compact term/program controls, readable selectable rows, persistent cross-search selection and sticky add summary. Optional guided sample plan is separate; remove registration/long reference material from picker. Manual recording does not require verified prerequisites or permission; existing duplicate/retake protections retained. No data migrations or changes to CU picker. Browser tests extended, CI pending.
+
 ## 2026-11-26 — ChatGPT: re-audit TBS and simplify course selection
 
 - Add major/semester guided picker, explicit named-course batch selection, separate alternatives/open slots, term-credit summary, scoped 2/2569 MK412/FN494 amendment and tests. No registration claims; full PDF field verification and live REG remain open. See `docs/tu-guided-picker-audit.md`.

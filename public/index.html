@@ -855,7 +855,33 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 /* One-time-code sign-in (2026-11-26). */
 .otp-input{font-size:22px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
 /* Thammasat course picker (2026-11-26). */
-.tup-groups{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}.tup-groups .chat-chip{flex:none}.chat-chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}.tup-row{cursor:pointer}.tup-row input{flex:none}
+.tup-groups{display:flex;gap:6px;flex-wrap:wrap}.tup-groups .chat-chip{flex:none}
+.tup-picker{gap:12px;min-width:0}
+.tup-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.tup-controls label,.tup-filter label{display:flex;flex-direction:column;gap:5px;min-width:0}
+.tup-picker .select,.tup-picker .input{width:100%;min-width:0}
+.tup-modes{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md)}
+.tup-mode{border:1px solid transparent;border-radius:var(--r-sm);background:transparent;color:var(--ink-2);font-weight:600;padding:10px 7px;cursor:pointer;min-width:0;white-space:normal;font:inherit}
+.tup-mode[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:650}
+.tup-filter{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:10px}
+.tup-course-list{padding:0;overflow:hidden;border-radius:var(--r-md);min-width:0}
+.tup-course-list .tup-row{padding:12px;gap:12px;align-items:center;min-height:62px;overflow-wrap:anywhere}
+.tup-course-list .tup-row .grow{min-width:0}
+.tup-course-list .tup-row:hover{background:var(--surface-2)}
+.tup-course-list .tup-row.is-picked{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.tup-course-list .tup-row.is-recorded{cursor:default}
+.tup-course-list .tup-row input{width:20px;height:20px;accent-color:var(--accent)}
+.tup-code{font-size:12px;font-weight:700;color:var(--accent-text);letter-spacing:.02em}
+.tup-name{font-size:14px;font-weight:600;display:block;line-height:1.4}
+.tup-credit{white-space:nowrap;flex:none;color:var(--muted);font-size:12px}
+.tup-picker details{min-width:0}
+.tup-picker summary{cursor:pointer}
+.tup-sticky{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:12px 0 8px;background:var(--surface);border-top:1px solid var(--line)}
+.tup-sticky .btn.primary{min-height:44px}
+.tup-sticky .tup-count{font-size:14px;font-weight:650;min-width:0}
+.tup-selected-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tup-selected-tags button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:560px){.tup-filter{grid-template-columns:1fr}.tup-controls{grid-template-columns:1fr 1fr}.tup-sticky .btn.primary{flex:1}.tup-picker .tup-row{padding:10px}.tup-credit{font-size:11px}}.chat-chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}.tup-row{cursor:pointer}.tup-row input{flex:none}
 /* AI hub as a plain settings-style list (2026-11-26). */
 .hub-row{width:100%;border:0;background:none;font:inherit;text-align:left;cursor:pointer}.hub-row .grow{display:grid;gap:1px;min-width:0}.hub-row b{font-weight:600;font-size:15px}
 .hub-row:disabled,.hub-row[aria-disabled=true]{cursor:default}.hub-row:disabled .grow,.hub-row[aria-disabled=true] .grow{opacity:.6}.hub-row:not(:disabled):not([aria-disabled=true]):hover{background:var(--surface-2)}
@@ -2736,6 +2762,61 @@ var SharedCatalog = (function () {
 
 var I18N = {
 en: {
+"tup.pickTitle": "Add courses",
+"tup.browse": "Find courses",
+"tup.planMode": "By study plan",
+"tup.search": "Search code or course name",
+"tup.category": "Subject group",
+"tup.all": "All faculty & related courses",
+"tup.faculty": "Business school",
+"tup.related": "Other subject groups",
+"tup.ge": "General education (GenEd)",
+"tup.geAll": "All general education",
+"tup.results": "{n} courses",
+"tup.noResults": "No matching courses. Try another code or name.",
+"tup.more": "Show more courses",
+"tup.clear": "Clear selection",
+"tup.inList": "Already in your records",
+"tup.selectedList": "Selected courses",
+"tup.addShort": "Add {n} courses",
+"tup.program": "Program",
+"tup.quickNote": "Add courses you take or plan to take.",
+"tup.planNote": "Sample plan for guidance only.",
+"tup.selectNamed": "Select named courses",
+"tup.otherNamed": "Other required courses",
+"tup.openShort": "Other slots in the sample plan",
+"tup.planCheck": "Check plan details",
+"tup.noBulk": "Source plan needs review. Choose courses individually.",
+"tup.noNamed": "No named courses in this term.",
+"tup.manualSpecial": "Special course",
+"tup.prefix.AC": "Accounting",
+"tup.prefix.BA": "Business administration",
+"tup.prefix.FN": "Finance",
+"tup.prefix.MK": "Marketing",
+"tup.prefix.IS": "Information systems",
+"tup.prefix.HR": "Human resource management",
+"tup.prefix.ER": "Entrepreneurship and management",
+"tup.prefix.OM": "Operations management",
+"tup.prefix.IB": "International business",
+"tup.prefix.LO": "Logistics",
+"tup.prefix.IT": "International transport",
+"tup.prefix.RB": "Real estate business",
+"tup.prefix.CS": "Computer science",
+"tup.prefix.EC": "Economics",
+"tup.prefix.EL": "English",
+"tup.prefix.ES": "Environmental studies",
+"tup.prefix.JC": "Journalism and communication",
+"tup.prefix.LA": "Law",
+"tup.prefix.LAS": "Liberal arts",
+"tup.prefix.PO": "Political science",
+"tup.prefix.PY": "Psychology",
+"tup.prefix.SO": "Sociology",
+"tup.prefix.ST": "Statistics and insurance",
+"tup.prefix.SW": "Social administration",
+"tup.prefix.TU": "University courses",
+"tup.prefix.other": "Other subjects",
+"tup.noGuided": "Select a major to see the sample plan.",
+"tup.repeatNote": "Previously passed or already planned courses are not selected twice.",
 "tup.guided": "By major & semester",
 "tup.chooseTrack": "Choose your actual major to see suggested courses.",
 "tup.planVariant": "Sample plan variant",
@@ -3332,6 +3413,61 @@ en: {
   'onb4Note': 'Anything not graded yet is counted as still to come, never as zero.', 'goToCourse': 'Go to my course'
 },
 th: {
+"tup.pickTitle": "เพิ่มรายวิชา",
+"tup.browse": "ค้นหารายวิชา",
+"tup.planMode": "ตามแผนการเรียน",
+"tup.search": "ค้นหารหัสหรือชื่อวิชา",
+"tup.category": "กลุ่มรายวิชา",
+"tup.all": "วิชาคณะและวิชาที่เกี่ยวข้องทั้งหมด",
+"tup.faculty": "วิชาคณะพาณิชย์ฯ",
+"tup.related": "วิชาจากสาขาอื่น",
+"tup.ge": "ศึกษาทั่วไป (GenEd)",
+"tup.geAll": "ศึกษาทั่วไปทั้งหมด",
+"tup.results": "{n} รายวิชา",
+"tup.noResults": "ไม่พบรายวิชา ลองเปลี่ยนรหัสหรือชื่อวิชา",
+"tup.more": "แสดงรายวิชาเพิ่มเติม",
+"tup.clear": "ล้างที่เลือก",
+"tup.inList": "มีในรายการแล้ว",
+"tup.selectedList": "วิชาที่เลือก",
+"tup.addShort": "เพิ่ม {n} วิชา",
+"tup.program": "หลักสูตร",
+"tup.quickNote": "เลือกวิชาที่เรียนอยู่หรือวางแผนจะเรียน",
+"tup.planNote": "แผนตัวอย่างสำหรับช่วยเลือกวิชา",
+"tup.selectNamed": "เลือกวิชาที่ระบุในแผน",
+"tup.otherNamed": "วิชาบังคับอื่น",
+"tup.openShort": "หมวดวิชาอื่นในแผน",
+"tup.planCheck": "ดูรายละเอียดแผน",
+"tup.noBulk": "แผนต้นฉบับต้องตรวจเพิ่ม เลือกทีละวิชา",
+"tup.noNamed": "เทอมนี้ไม่มีรายวิชาที่ระบุชื่อ",
+"tup.manualSpecial": "วิชาเงื่อนไขพิเศษ",
+"tup.prefix.AC": "การบัญชี",
+"tup.prefix.BA": "บริหารธุรกิจ",
+"tup.prefix.FN": "การเงิน",
+"tup.prefix.MK": "การตลาด",
+"tup.prefix.IS": "ระบบสารสนเทศ",
+"tup.prefix.HR": "การบริหารทรัพยากรมนุษย์",
+"tup.prefix.ER": "ผู้ประกอบการและการบริหาร",
+"tup.prefix.OM": "การบริหารการปฏิบัติการ",
+"tup.prefix.IB": "ธุรกิจระหว่างประเทศ",
+"tup.prefix.LO": "โลจิสติกส์",
+"tup.prefix.IT": "การขนส่งระหว่างประเทศ",
+"tup.prefix.RB": "ธุรกิจอสังหาริมทรัพย์",
+"tup.prefix.CS": "วิทยาการคอมพิวเตอร์",
+"tup.prefix.EC": "เศรษฐศาสตร์",
+"tup.prefix.EL": "ภาษาอังกฤษ",
+"tup.prefix.ES": "สิ่งแวดล้อม",
+"tup.prefix.JC": "วารสารศาสตร์และการสื่อสาร",
+"tup.prefix.LA": "กฎหมาย",
+"tup.prefix.LAS": "ศิลปศาสตร์",
+"tup.prefix.PO": "รัฐศาสตร์",
+"tup.prefix.PY": "จิตวิทยา",
+"tup.prefix.SO": "สังคมวิทยา",
+"tup.prefix.ST": "สถิติและการประกันภัย",
+"tup.prefix.SW": "สังคมสงเคราะห์",
+"tup.prefix.TU": "วิชามหาวิทยาลัย",
+"tup.prefix.other": "วิชาอื่น",
+"tup.noGuided": "เลือกสาขาเพื่อดูรายวิชาตามแผนตัวอย่าง",
+"tup.repeatNote": "วิชาที่ผ่านแล้วหรือมีในแผนแล้วจะไม่ถูกเพิ่มซ้ำ",
 "tup.guided": "ตามสาขาและเทอม",
 "tup.chooseTrack": "เลือกสาขาตามหลักสูตรจริง แล้วระบบจะแสดงวิชาให้เลือก",
 "tup.planVariant": "รูปแบบแผนตัวอย่าง",
@@ -4597,68 +4733,86 @@ function TuTbsRequirementChecklist(p) {
     <div className="small">${th?'เอกเลือก':'Major elective'}: ${track.majorElective} · ${th?'วิชาโทหรือวิชาเลือก':'Minor/other elective'}: ${track.other}</div><p className="small muted">${th?'วิชาโทและเอกคู่มีเงื่อนไขเฉพาะ ห้ามนับหน่วยกิตซ้ำ; GenEd รหัสระดับ 100 ไม่นับเป็นวิชาเลือกเสรี':'Minors and double majors have separate rules; do not double-count credits. Level-100 GenEd cannot count as free electives.'}</p><a href=${TU_TBS_THAI_SOURCES[track.id==='AC'?0:1]} target="_blank" rel="noopener noreferrer">${th?'หลักสูตรฉบับเต็ม หมวด 4 และ 7':'Full curriculum, sections 4 and 7'}</a></details>`;
 }
 function TuPlanModal(p) {
-  var state = useApp(), props = p.props || {};
-  var semsAll = C.orderedSemesters ? C.orderedSemesters(state) : state.semesters;
-  var ss = useState(props.semesterId || (curSemester(state) || latestSemester(state) || {}).id || ''), semId = ss[0], setSemId = ss[1];
-  var gs = useState((state.settings.tuAcademicProfile||{}).track?'guided':'ge1'), grp = gs[0], setGrp = gs[1];
-  var ps=useState('thai'), program=ps[0], setProgram=ps[1];
-  var ts=useState((state.settings.tuAcademicProfile||{}).track||''), trackId=ts[0], setTrackId=ts[1];
-  var track=program==='thai'?TU_TBS_REQUIREMENTS_2566.tracks.find(function(x){return x.id===trackId;}):null;
+  var state=useApp(), props=p.props||{}, profile=state.settings.tuAcademicProfile||{};
+  var semsAll=C.orderedSemesters?C.orderedSemesters(state):state.semesters;
+  var ss=useState(props.semesterId||(curSemester(state)||latestSemester(state)||{}).id||''),semId=ss[0],setSemId=ss[1];
+  var ms=useState('browse'),mode=ms[0],setMode=ms[1];
+  var ps=useState('thai'),program=ps[0],setProgram=ps[1];
+  var ts=useState(profile.track||''),trackId=ts[0],setTrackId=ts[1];
   var vs=useState('MK1'),variant=vs[0],setVariant=vs[1];
-  var target=semsAll.find(x=>x.id===semId), targetInfo=tuTermInfo(state,target), cat=tuAcademicCatalog();
-  var effective=GSAcademic.amendmentActive(targetInfo);
-  var plan=track&&TU_TBS_TERM_PLANS.find(x=>x.id===(track.id==='MK'?variant:track.id));
+  var gs=useState('all'),grp=gs[0],setGrp=gs[1];
+  var qs=useState(''),q=qs[0],setQ=qs[1];
+  var ls=useState(40),limit=ls[0],setLimit=ls[1];
+  var ks=useState({}),pick=ks[0],setPick=ks[1];
+  var track=program==='thai'?TU_TBS_REQUIREMENTS_2566.tracks.find(x=>x.id===trackId):null;
+  var target=semsAll.find(x=>x.id===semId),targetInfo=tuTermInfo(state,target),cat=tuAcademicCatalog();
+  var effective=GSAcademic.amendmentActive(targetInfo),plan=track&&TU_TBS_TERM_PLANS.find(x=>x.id===(track.id==='MK'?variant:track.id));
   var guide=track?GSAcademic.guidedPlan({track,plan,structure:TU_TBS_THAI_2566,rules:TU_TBS_REQUIREMENTS_2566,targetInfo}):null;
-  function eligibility(code){return track?GSAcademic.eligibility({code,courses:state.courses,track,rules:TU_TBS_REQUIREMENTS_2566,prereq:TU_TBS_THAI_PREREQ,cat,targetIndex:semsAll.findIndex(s=>s.id===semId),termIndex:Object.fromEntries(semsAll.map((s,i)=>[s.id,i])),targetInfo}):null;}
+  var facultyOrder=['BA','AC','FN','MK','IS','HR','ER','OM','IB','LO','IT','RB'];
+  var prefix=x=>x.match(/^[A-Z]+/)[0];
+  var prefixLabel=k=>I18N[LANG]['tup.prefix.'+k]?t('tup.prefix.'+k):t('tup.prefix.other');
+  var thaiRows=TU_TBS_THAI_COURSES.concat(effective===true?[TU_FN494]:[]);
+  var geCodes=new Set(TU_GENED.map(r=>r[1]));
+  var programRows=program==='thai'?thaiRows.filter(r=>!geCodes.has(r[0])).map(r=>({code:r[0],name:LANG==='th'?r[1]:r[2],th:r[1],en:r[2],alias:r[4],cr:r[3],ge:false,group:prefix(r[0])})):TU_TBS.filter(r=>!geCodes.has(r[0])).concat(effective===true?[[TU_FN494[0],TU_FN494[2],3]]:[]).map(r=>({code:r[0],name:r[1],en:r[1],cr:r[2],ge:false,group:prefix(r[0])}));
+  var geRows=TU_GENED.map(r=>({code:r[1],name:LANG==='th'?r[2]:r[3],th:r[2],en:r[3],cr:r[4],ge:true,group:'ge'+r[0]}));
+  var all=programRows.concat(geRows),byCode=Object.fromEntries(all.map(x=>[x.code,x]));
+  var prefixes=[...new Set(programRows.map(x=>x.group))],faculty=facultyOrder.filter(k=>prefixes.includes(k)),other=prefixes.filter(k=>!faculty.includes(k)).sort((a,b)=>prefixLabel(a).localeCompare(prefixLabel(b),LANG));
   function majorRequired(code){return !!track&&track.required.includes(code);}
   function kindFor(x){return track&&(track.core.includes(x.code)||track.required.includes(x.code))?'required':x.ge?'gened':'elective';}
-  function blocked(code){return !semId||tuPickBlocked(state,code,semId,majorRequired(code))||program==='thai'&&!!TU_TBS_REQUIREMENTS_2566.specialCourses[code]||code==='FN494'&&effective!==true;}
-  var programRows=program==='thai'?TU_TBS_THAI_COURSES.concat(effective===true?[TU_FN494]:[]).filter(function(r){return !TU_CATALOG[r[0]]||!TU_CATALOG[r[0]].ge;}).map(function(r){return [r[0],LANG==='th'?r[1]:r[2],r[3]];}):TU_TBS.filter(function(r){return !TU_CATALOG[r[0]].ge;}).concat(effective===true?[[TU_FN494[0],TU_FN494[2],3]]:[]);
-  var ks = useState({}), pick = ks[0], setPick = ks[1];
-  var have = {}; state.courses.forEach(function (c) { var code=tuCode(c.code);if(blocked(code))have[code]=1; });
-  var groups = (track?[{k:'guided',l:t('tup.guided'),full:t('tup.guided')}]:[]).concat([1, 2, 3, 4, 5].map(function (g) { return { k: 'ge' + g, l: 'GenEd ' + g, full: t('tuge.g' + g) }; }))
-    .concat(Array.from(new Set(programRows.map(function(r){return r[0].match(/^[A-Z]+/)[0];}))).sort().map(function(k){var label=TU_PREFIX[k]?t(TU_PREFIX[k]):k;return {k:k,l:label,full:label+(program==='thai'?' (TBS Thai 2566)':' (TBS BBA 2023)')};}));
-  var list = grp.indexOf('ge') === 0 ? TU_GENED.filter(function (r) { return 'ge' + r[0] === grp; }).map(function (r) { return { code: r[1], name: LANG === 'th' ? r[2] : r[3], sub: LANG === 'th' ? r[3] : r[2], cr: r[4], ge: true }; })
-    : programRows.filter(function(r){return r[0].match(/^[A-Z]+/)[0]===grp;}).map(function(r){return {code:r[0],name:r[1],sub:program==='thai'?'TBS Thai 2566':'TBS BBA 2023',cr:r[2],ge:false};});
-  var all = TU_GENED.map(function (r) { return { code: r[1], name: LANG === 'th' ? r[2] : r[3], cr: r[4], ge: true }; }).concat(programRows.map(function (r) { return { code: r[0], name: r[1], cr: r[2], ge: false }; }));
-  var byCode=Object.fromEntries(all.map(x=>[x.code,x]));
-  var chosen = Object.keys(pick).filter(function (k) { return pick[k] && byCode[k] && !blocked(k); });
-  var selectedCredits=chosen.reduce((n,k)=>n+byCode[k].cr,0), existingCredits=state.courses.filter(x=>x.semesterId===semId).reduce((n,x)=>n+(Number(x.credits)||0),0);
-  function selectBulk(){var next={};guide.bulk.forEach(code=>{var el=eligibility(code);if(byCode[code]&&!blocked(code)&&(!el||el.status!=='blocked'))next[code]=true;});setPick(next);}
-  function choice(code,alternatives){var x=byCode[code];if(!x)return null;var el=eligibility(code);return html`<label className="me-row tup-row" key=${code}><input type="checkbox" checked=${!!pick[code]&&!blocked(code)} disabled=${blocked(code)} onChange=${ev=>{var n=Object.assign({},pick);if(ev.target.checked&&alternatives)alternatives.forEach(k=>{n[k]=false;});n[code]=ev.target.checked;setPick(n);}}/><span className="grow"><b>${code}</b> ${x.name}<span className="tiny muted" style=${{display:'block'}}>${t('nCredits',{n:x.cr})} · ${blocked(code)?t('tuge.have'):el?t('academic.'+(el.status==='review'?'reviewStatus':el.status))+' · '+t('academic.reason.'+el.reason):t('tup.pending')}${el&&el.source.length?' · '+el.source.join(' / '):''}</span></span></label>`;}
-  function add() {
-    if (!semId || !chosen.length) return;
-    update(function (d) {
-      if(track){var prior=d.settings.tuAcademicProfile||{};d.settings.tuAcademicProfile=Object.assign({},prior,{curriculumYear:2566,track:track.id,allocations:prior.track===track.id?prior.allocations||{}:{}});}
-      chosen.forEach(function (code) {
-        var x = all.find(function (y) { return y.code === code; }); if (!x || tuPickBlocked(d,code,semId,majorRequired(code))) return;
-        var c = { id: Store.uid('c-'), semesterId: semId, name: x.name, code: x.code, credits: x.cr, section: '', instructor: '', target: null,
-          scaleId: 'scale-th', gradingMode: 'unknown', targetPct: null, kind: kindFor(x), color: COLORS[d.courses.length % COLORS.length], finalGrade: null };
-        d.courses.push(c); Store.placeCourse(d, c.id);
-      });
-    }, { undo: true });
-    toast(t('tup.added', { n: chosen.length }), { undo: true }); closeModal();
+  function blocked(code){return !semId||tuPickBlocked(state,code,semId,majorRequired(code));}
+  function special(code){return program==='thai'&&!!TU_TBS_REQUIREMENTS_2566.specialCourses[code];}
+  function eligibility(code){return track?GSAcademic.eligibility({code,courses:state.courses,track,rules:TU_TBS_REQUIREMENTS_2566,prereq:TU_TBS_THAI_PREREQ,cat,targetIndex:semsAll.findIndex(s=>s.id===semId),termIndex:Object.fromEntries(semsAll.map((s,i)=>[s.id,i])),targetInfo}):null;}
+  var chosen=Object.keys(pick).filter(k=>pick[k]&&byCode[k]&&!blocked(k));
+  var selectedCredits=chosen.reduce((n,k)=>n+byCode[k].cr,0);
+  var norm=v=>String(v||'').toLowerCase().replace(/[\s.]+/g,''),query=norm(q),codeQuery=query?norm(tuCode(q)):'';
+  var list=all.filter(x=>(grp==='all'?(query||!x.ge):grp==='geall'?x.ge:x.group===grp)&&(!query||[x.code,x.name,x.th,x.en,x.alias].some(v=>norm(v).includes(query))||codeQuery&&norm(x.code).includes(codeQuery)));
+  list.sort((a,b)=>(query?(norm(b.code)===codeQuery?2:norm(b.code).startsWith(codeQuery)?1:0)-(norm(a.code)===codeQuery?2:norm(a.code).startsWith(codeQuery)?1:0):0)||(faculty.includes(a.group)?faculty.indexOf(a.group):faculty.length)-(faculty.includes(b.group)?faculty.indexOf(b.group):faculty.length)||a.code.localeCompare(b.code));
+  function toggle(code,value,alternatives){setPick(old=>{var n=Object.assign({},old);if(value&&alternatives)alternatives.forEach(k=>{n[k]=false;});n[code]=value;return n;});}
+  function selectBulk(){if(!guide||!guide.canBulk)return;setPick(old=>{var next=Object.assign({},old);guide.bulk.forEach(code=>{var el=eligibility(code);if(byCode[code]&&!blocked(code)&&!special(code)&&(!el||el.status!=='blocked'))next[code]=true;});return next;});}
+  function row(x,alternatives,advisory){
+    if(!x)return null;var disabled=blocked(x.code),selected=!disabled&&!!pick[x.code],el=advisory&&!disabled?eligibility(x.code):null;
+    return html`<label key=${x.code} className=${'me-row tup-row'+(selected?' is-picked':'')+(disabled?' is-recorded':'')}>
+      <input type="checkbox" checked=${selected||!!(semId&&disabled)} disabled=${disabled} onChange=${ev=>toggle(x.code,ev.target.checked,alternatives)} aria-label=${x.code+' '+x.name}/>
+      <span className="grow"><span className="tup-code">${x.code}</span><span className="tup-name">${x.name}</span>${disabled&&semId?html`<span className="tiny muted">${t('tup.inList')}</span>`:special(x.code)?html`<span className="tiny muted">${t('tup.manualSpecial')}</span>`:el&&el.status==='blocked'?html`<span className="tiny muted">${t('academic.reason.'+el.reason)}</span>`:null}</span><span className="tup-credit">${t('nCredits',{n:x.cr})}</span></label>`;
   }
-  return html`<${Modal} title=${t('tup.title')} onClose=${closeModal} wide=${true}>
-    <div className="stack" data-testid="tu-plan" style=${{ gap: 10 }}>
-      <p className="small muted" style=${{ margin: 0 }}>${t('tup.chooseTrack')}</p>
-      <select className="select" aria-label=${LANG==='th'?'หลักสูตร TBS':'TBS program'} value=${program} onChange=${function(e){setProgram(e.target.value);setTrackId('');setGrp('ge1');setPick({});}}><option value="thai">${LANG==='th'?'หลักสูตรภาษาไทย 2566':'Thai programs 2023'}</option><option value="bba">BBA International 2023</option></select>
-      ${program==='thai'&&html`<select className="select" data-testid="tup-track" aria-label=${LANG==='th'?'เลือกเอกหรือกลุ่มวิชา':'Select major or concentration'} value=${trackId} onChange=${function(e){setTrackId(e.target.value);setGrp(e.target.value?'guided':'ge1');setPick({});}}><option value="">${LANG==='th'?'เลือกเอกหรือกลุ่มวิชา (ถ้าทราบ)':'Select your major (if known)'}</option>${TU_TBS_REQUIREMENTS_2566.tracks.map(function(x){return html`<option key=${x.id} value=${x.id}>${LANG==='th'?x.th:x.en}</option>`;})}</select>`}
-      <select className="select" data-testid="tup-target" value=${semId} aria-label=${t('tup.toTerm')} onChange=${e=>{setSemId(e.target.value);setPick({});}}>${!semsAll.length&&html`<option value="">${t('tup.noTerm')}</option>`}${semsAll.map(x=>html`<option key=${x.id} value=${x.id}>${semFull(state,x)}</option>`)}</select>
-      ${track&&track.id==='MK'&&html`<select className="select" aria-label=${t('tup.planVariant')} value=${variant} onChange=${e=>{setVariant(e.target.value);setPick({});}}>${TU_TBS_TERM_PLANS.filter(x=>x.id==='MK1'||x.id==='MK2').map(x=>html`<option value=${x.id} key=${x.id}>${LANG==='th'?x.th:x.en}</option>`)}</select>`}
-      <p className="tiny muted">${LANG==='th'?'วิชาที่ไม่ทราบหมวดจะบันทึกเป็นวิชาเลือกชั่วคราว แก้หมวดภายหลังได้; การเพิ่มวิชาเรียนซ้ำเป็นเพียงแผน ต้องตรวจสิทธิ์ลงทะเบียนกับคณะ':'Unclassified courses use an editable provisional elective label. A repeat plan does not guarantee registration eligibility.'}</p>
-      <div className="tup-groups" role="tablist">${groups.map(function (g) { return html`<button key=${g.k} type="button" role="tab" aria-selected=${grp === g.k ? 'true' : 'false'} className=${'chat-chip' + (grp === g.k ? ' on' : '')} title=${g.full} onClick=${function () { setGrp(g.k); }}>${g.l}</button>`; })}</div>
-      <div className="small"><b>${(groups.find(function (g) { return g.k === grp; }) || {}).full}</b></div>
-      ${grp==='guided'&&guide?html`<div className="stack" data-testid="tup-guided"><p className="small muted">${t('tup.reviewPlan')}</p>${guide.term?html`<div className="small"><b>${t('tup.termNamed')}</b> · ${guide.term.credits} ${LANG==='th'?'หน่วยกิตตามแผน':'printed credits'}</div>${guide.canBulk?html`<button type="button" data-testid="tup-bulk" className="btn" onClick=${selectBulk}>${t('tup.bulk')}</button>`:html`<p className="small muted">${t('tup.bulkUnavailable')}</p>`}<div className="me-list card">${guide.named.map(code=>choice(code))}${guide.alternatives.map((codes,i)=>html`<div key=${i}><div className="small muted" style=${{padding:8}}>${t('tup.options')}</div>${codes.map(code=>choice(code,codes))}</div>`)}</div>${guide.open.length>0&&html`<details><summary>${t('tup.openSlots')}</summary>${guide.open.map((label,i)=>html`<div className="small muted" key=${i}>${label}</div>`)}</details>`}`:html`<p className="small muted">${t('tup.noSample')}</p>`}<details><summary><b>${t('tup.requiredRemaining')}</b></summary><div className="me-list card">${guide.remaining.map(code=>choice(code))}</div>${guide.genAlternatives.map((codes,i)=>html`<div key=${i}><span className="small muted">${t('tup.options')}</span>${codes.map(code=>choice(code,codes))}</div>`)}</details>${guide.baskets.map((b,i)=>html`<details key=${i}><summary>${LANG==='th'?b.th:b.en} · ${b.credits}</summary><div className="me-list card">${b.codes.map(code=>choice(code))}</div></details>`)}</div>`:html`<div className="me-list card">${list.map(function (x) { return html`<label key=${x.code} className="me-row tup-row">
-        <input type="checkbox" disabled=${!!have[x.code]} checked=${!!have[x.code] || !!pick[x.code]} onChange=${function (e) { var n = Object.assign({}, pick); n[x.code] = e.target.checked; setPick(n); }} />
-        <span className="grow"><b className="num">${x.code}</b> ${x.name}<span className="tiny muted" style=${{ display: 'block' }}>${x.sub} · ${t('nCredits', { n: x.cr })}${have[x.code] ? ' · ' + t('tuge.have') : ''}${!x.ge&&track?' · '+(track.core.includes(x.code)?(LANG==='th'?'แกนร่วม':'Core'):track.required.includes(x.code)?(LANG==='th'?'เอกบังคับ':'Major required'):(LANG==='th'?'ตรวจหมวดวิชาเลือก':'Check elective category')):''}${program==='thai'&&TU_TBS_REQUIREMENTS_2566.specialCourses[x.code]?' · '+(TU_TBS_REQUIREMENTS_2566.specialCourses[x.code].kind==='exchange-only'?(LANG==='th'?'เฉพาะแลกเปลี่ยน':'Exchange only'):(LANG==='th'?'ACC ต้องอนุมัติ':'Approval-based ACC')):''}</span></span></label>`; })}</div>`}
-      <div className="row wrap" style=${{ gap: 8 }}>
-        <span className="small" data-testid="tup-selected">${t('tup.creditTotal',{n:chosen.length,cr:selectedCredits})}</span>
-        <button className="btn primary" data-testid="tup-add" disabled=${!semId || !chosen.length} onClick=${add}>${t('tup.add', { n: chosen.length })}</button>
+  function choice(code,alts){return row(byCode[code],alts,true);}
+  function add(){
+    if(!semId||!chosen.length)return;
+    var added=0;update(d=>{
+      if(mode==='guided'&&track){var prior=d.settings.tuAcademicProfile||{};d.settings.tuAcademicProfile=Object.assign({},prior,{curriculumYear:2566,track:track.id,allocations:prior.track===track.id?prior.allocations||{}:{}});}
+      chosen.forEach(code=>{
+        var x=byCode[code];if(!x||tuPickBlocked(d,code,semId,majorRequired(code)))return;
+        var course={id:Store.uid('c-'),semesterId:semId,name:x.name,code:x.code,credits:x.cr,section:'',instructor:'',target:null,scaleId:'scale-th',gradingMode:'unknown',targetPct:null,kind:kindFor(x),color:COLORS[d.courses.length%COLORS.length],finalGrade:null};
+        d.courses.push(course);Store.placeCourse(d,course.id);added++;
+      });
+    },{undo:true});toast(t('tup.added',{n:added}),{undo:true});closeModal();
+  }
+  function setCategory(k){setGrp(k);setLimit(40);}
+  return html`<${Modal} title=${t('tup.pickTitle')} onClose=${closeModal} wide=${true}>
+    <div className="stack tup-picker" data-testid="tu-plan">
+      <div className="tup-controls">
+        <label className="small"><span className="muted">${t('tup.toTerm')}</span><select className="select" data-testid="tup-target" value=${semId} onChange=${e=>{setSemId(e.target.value);setPick({});}}>${!semsAll.length&&html`<option value="">${t('tup.noTerm')}</option>`}${semsAll.map(x=>html`<option key=${x.id} value=${x.id}>${semFull(state,x)}</option>`)}</select></label>
+        <label className="small"><span className="muted">${t('tup.program')}</span><select className="select" data-testid="tup-program" value=${program} onChange=${e=>{setProgram(e.target.value);setMode('browse');setTrackId(profile.track||'');setCategory('all');setQ('');setPick({});}}><option value="thai">${LANG==='th'?'ภาคไทย 2566':'Thai 2023'}</option><option value="bba">BBA International 2023</option></select></label>
       </div>
-      ${existingCredits+selectedCredits>(target&&target.kind==='summer'?6:22)&&html`<p className="small muted">${t('tup.loadWarning')}</p>`}
-      <p className="tiny muted" style=${{ margin: 0 }}>${t('tup.bulkHint')} ${t('tup.registration')}</p><a className="small" href=${TU_2566_AMENDMENT_SOURCE} target="_blank" rel="noopener noreferrer">${t('tup.amendment')}</a>
-      <details><summary>${LANG==='th'?'ข้อมูลหลักสูตรและคู่มือลงทะเบียน':'Curriculum and registration references'}</summary><${TuTbsCurriculumReference}/><${TuTbsRequirementChecklist} track=${track} state=${state}/><${TuTbsTermPlanReference}/><${TuRegCalendarReference}/><${TuRegistrationGuide}/></details>
+      <div className="tup-modes" aria-label=${t('tup.pickTitle')}><button type="button" className="tup-mode" data-testid="tup-browse-mode" aria-pressed=${mode==='browse'} onClick=${()=>setMode('browse')}>${t('tup.browse')}</button><button type="button" className="tup-mode" data-testid="tup-guide-mode" aria-pressed=${mode==='guided'} disabled=${program!=='thai'} onClick=${()=>setMode('guided')}>${t('tup.planMode')}</button></div>
+      ${mode==='browse'?html`<div className="tup-filter">
+        <label className="small"><span className="muted">${t('tup.search')}</span><input type="search" className="input" data-testid="tup-search" value=${q} placeholder=${LANG==='th'?'เช่น MK201 หรือ การตลาด':'e.g. MK201 or Marketing'} onChange=${e=>{setQ(e.target.value);setLimit(40);}}/></label>
+        <label className="small"><span className="muted">${t('tup.category')}</span><select className="select" data-testid="tup-category" value=${grp} onChange=${e=>setCategory(e.target.value)}>
+          <option value="all">${t('tup.all')}</option>
+          <optgroup label=${t('tup.faculty')}>${faculty.map(k=>html`<option key=${k} value=${k}>${prefixLabel(k)} (${k})</option>`)}</optgroup>
+          <optgroup label=${t('tup.related')}>${other.map(k=>html`<option key=${k} value=${k}>${prefixLabel(k)} (${k})</option>`)}</optgroup>
+          <optgroup label=${t('tup.ge')}><option value="geall">${t('tup.geAll')}</option>${[1,2,3,4,5].map(g=>html`<option key=${g} value=${'ge'+g}>${g}. ${t('tuge.g'+g)}</option>`)}</optgroup>
+        </select></label>
+      </div><div className="small muted" data-testid="tup-results">${t('tup.results',{n:list.length})}</div>
+      ${list.length?html`<div className="me-list card tup-course-list" data-testid="tup-list">${list.slice(0,limit).map(x=>row(x))}</div>`:html`<p className="small muted">${t('tup.noResults')}</p>`}${list.length>limit&&html`<button className="btn" type="button" onClick=${()=>setLimit(limit+40)}>${t('tup.more')}</button>`}`:html`<div className="stack" data-testid="tup-guided">
+        <select className="select" data-testid="tup-track" aria-label=${t('academic.track')} value=${trackId} onChange=${e=>setTrackId(e.target.value)}><option value="">${t('tup.noGuided')}</option>${TU_TBS_REQUIREMENTS_2566.tracks.map(x=>html`<option key=${x.id} value=${x.id}>${LANG==='th'?x.th:prefixLabel(x.id)}</option>`)}</select>
+        ${track&&track.id==='MK'&&html`<select className="select" aria-label=${t('tup.planVariant')} value=${variant} onChange=${e=>setVariant(e.target.value)}>${TU_TBS_TERM_PLANS.filter(x=>x.id==='MK1'||x.id==='MK2').map(x=>html`<option key=${x.id} value=${x.id}>${LANG==='th'?x.th:x.en}</option>`)}</select>`}
+        ${guide?html`<div className="small muted">${t('tup.planNote')}</div>${guide.term?html`<div className="row wrap between"><b>${t('tup.termNamed')}</b>${guide.canBulk&&guide.bulk.length>0&&html`<button type="button" data-testid="tup-bulk" className="btn sm" onClick=${selectBulk}>${t('tup.selectNamed')}</button>`}</div>${!guide.canBulk&&html`<div className="small muted">${t('tup.noBulk')}</div>`}${guide.named.length||guide.alternatives.length?html`<div className="me-list card tup-course-list">${guide.named.map(code=>choice(code))}${guide.alternatives.map((codes,i)=>html`<div key=${i}><div className="small muted" style=${{padding:8}}>${t('tup.options')}</div>${codes.map(code=>choice(code,codes))}</div>`)}</div>`:html`<p className="small muted">${t('tup.noNamed')}</p>`}`:html`<p className="small muted">${t('tup.noSample')}</p>`}
+        <details><summary>${t('tup.otherNamed')}</summary><div className="me-list card tup-course-list">${guide.remaining.map(code=>choice(code))}</div>${guide.genAlternatives.map((codes,i)=>html`<div key=${i}><span className="small muted">${t('tup.options')}</span>${codes.map(code=>choice(code,codes))}</div>`)}</details>${guide.baskets.map((b,i)=>html`<details key=${i}><summary>${LANG==='th'?b.th:b.en}</summary><div className="me-list card tup-course-list">${b.codes.map(code=>choice(code))}</div></details>`)}
+        ${guide.open.length>0&&html`<details><summary>${t('tup.openShort')}</summary>${guide.open.map((label,i)=>html`<div className="small muted" key=${i}>${label}</div>`)}</details>`}`:null}
+      </div>`}
+      ${chosen.length>0&&html`<details><summary>${t('tup.selectedList')} (${chosen.length})</summary><div className="tup-selected-tags">${chosen.map(code=>html`<button type="button" className="btn sm" key=${code} onClick=${()=>toggle(code,false)} aria-label=${code+' '+t('tup.clear')}>${code} ×</button>`)}</div><button type="button" className="btn ghost sm" onClick=${()=>setPick({})}>${t('tup.clear')}</button></details>`}
+      <div className="tup-sticky"><span className="tup-count" data-testid="tup-selected">${t('tup.creditTotal',{n:chosen.length,cr:selectedCredits})}</span><button className="btn primary" data-testid="tup-add" disabled=${!semId||!chosen.length} onClick=${add}>${t('tup.addShort',{n:chosen.length})}</button></div>
     </div><//>`;
 }
 function TuGenEdModal(p) {

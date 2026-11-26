@@ -384,6 +384,19 @@ async function runTU(browser, lang, width) {
   await page.locator('.courses-actions .btn').nth(1).click();
   await page.getByTestId('tu-plan').waitFor({timeout:5000}).catch(()=>errors.push('TU plan picker did not open'));
   if(await page.locator('.modal').filter({hasText:/บริหารธุรกิจ|ปี 1 เทอม 1 ของ/}).count()) errors.push('Chula plan window shown in TU space');
+  const picker=page.getByTestId('tu-plan'), category=page.getByTestId('tup-category'), search=page.getByTestId('tup-search');
+  if(await category.inputValue()!=='all')errors.push('TU picker should start on faculty courses');
+  if(await category.locator('optgroup').first().getAttribute('label')!==(lang==='th'?'วิชาคณะพาณิชย์ฯ':'Business school'))errors.push('faculty category not first');
+  if(!(await category.locator('option[value="MK"]').innerText()).includes(lang==='th'?'การตลาด':'Marketing'))errors.push('marketing category not expanded');
+  if(!(await category.locator('option[value="IB"]').innerText()).includes(lang==='th'?'ธุรกิจระหว่างประเทศ':'International business'))errors.push('IB category not expanded');
+  await search.fill('AC201');
+  await picker.locator('.tup-row').filter({hasText:'AC201'}).locator('input').check();
+  await search.fill('IS201');
+  await picker.locator('.tup-row').filter({hasText:'IS201'}).locator('input').check();
+  if(!(await page.getByTestId('tup-selected').innerText()).includes('2'))errors.push('selection did not survive search');
+  await search.fill('TU101');
+  if(!(await picker.locator('.tup-row').filter({hasText:'TU101'}).locator('input').isDisabled()))errors.push('existing TU101 should not be added twice');
+  await page.getByTestId('tup-guide-mode').click();
   await page.getByTestId('tup-track').selectOption('AC');
   const guided=page.getByTestId('tup-guided');await guided.waitFor();
   await page.getByTestId('tup-bulk').click();
@@ -393,6 +406,7 @@ async function runTU(browser, lang, width) {
   await page.getByTestId('tup-add').click(); await page.waitForTimeout(300);
   if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')&&GradeSpace.S.state.courses.some(c=>c.code==='IS201')&&GradeSpace.S.state.settings.tuAcademicProfile.track==='AC'))) errors.push('TU guided picker did not add the named accounting courses and persist major');
   if(!(await page.evaluate(()=>GradeSpace.catalogSearch('AC396').some(x=>x.code==='AC396'&&x.cr===1.5))))errors.push('Thai scoped catalog credits incorrect');
+  if(await page.evaluate(()=>GradeSpace.S.state.courses.filter(c=>c.code==='TU101').length)!==1)errors.push('TU101 duplicate');
   // Switch to Chula and back: each space comes back intact, nothing deleted.
   const before=await page.evaluate(()=>GradeSpace.S.state.courses.map(c=>c.code));
   await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
