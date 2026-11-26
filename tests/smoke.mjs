@@ -33,6 +33,23 @@ const FAKE_SUPABASE = `window.supabase={createClient:()=>({auth:{
   return {data:0,error:null};}})};
 `;
 
+async function checkCampusPalette(page, uni, errors) {
+  const valid=await page.evaluate(uni=>{
+    const root=document.documentElement, css=getComputedStyle(root), token=k=>css.getPropertyValue(k).trim().toUpperCase();
+    const dark=css.colorScheme==='dark', word=document.querySelector('[data-testid="campus-brand"]');
+    const base=word.querySelector('.brand-word'), space=word.querySelector('.brand-name-accent'), campus=word.querySelector('.brand-campus');
+    return getComputedStyle(base).color===getComputedStyle(space).color &&
+      getComputedStyle(base).color!==getComputedStyle(campus).color &&
+      token('--bg')===(dark?'#0F1115':'#F7F8FA') &&
+      token('--surface')===(dark?'#171A20':'#FFFFFF') &&
+      token('--earned')===(dark?'#9BB2CE':'#526B88') &&
+      token('--sky')===(dark?'#8FC5EE':'#286795') &&
+      token('--accent')===(uni==='tu'?(dark?'#FF8294':'#B92342'):(dark?'#F08ABC':'#C02570')) &&
+      document.querySelector('meta[name="theme-color"]').content.toUpperCase()===token('--bg');
+  },uni);
+  if(!valid) errors.push(uni+' should use neutral shared palette and campus-only accents');
+}
+
 async function run(browser, lang, width) {
   const errors = [], overflow = [];
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
@@ -53,7 +70,7 @@ async function run(browser, lang, width) {
   await page.locator('#au-e').fill('test@example.com');
   if((await page.locator('.auth-card [data-testid=campus-brand]').getAttribute('aria-label'))!=='GradeSpace CU')errors.push('CU auth brand missing');
   if(!(await page.locator('.auth-card [data-testid=campus-brand]').evaluate(el=>{const a=getComputedStyle(el.querySelector('.brand-word')),b=getComputedStyle(el.querySelector('.brand-campus'));return a.fontSize===b.fontSize&&a.fontWeight===b.fontWeight&&b.backgroundColor==='rgba(0, 0, 0, 0)';})))errors.push('CU suffix should match brand size without badge');
-  if(!(await page.locator('.auth-card [data-testid=campus-brand]').evaluate(el=>{const a=getComputedStyle(el.querySelector('.brand-name-accent')).color,b=getComputedStyle(el.querySelector('.brand-campus')).color;return a!==b&&['rgb(146, 27, 81)','rgb(228, 91, 155)'].includes(b);})))errors.push('CU brand should have pink Space and deeper pink CU');
+  await checkCampusPalette(page,'cu',errors);
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='cu')errors.push('CU theme missing on auth');
   await page.locator('#au-student').fill('6940102426');
   await page.locator('#au-student').press('Enter');
@@ -73,6 +90,7 @@ async function run(browser, lang, width) {
     await page.waitForFunction(()=>document.documentElement.lang==='en');
     await display.getByRole('button',{name:'Dark',exact:true}).click();
     await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='dark');
+    await checkCampusPalette(page,'cu',errors);
     await display.getByRole('button',{name:'Light',exact:true}).click();
     await page.waitForFunction(()=>document.documentElement.getAttribute('data-theme')==='light');
     await display.getByRole('button',{name:'TH',exact:true}).click();
@@ -430,6 +448,7 @@ async function runTU(browser, lang, width) {
   if(await page.locator('#au-student').count()) errors.push('TU sign-in should not ask for a Chula student ID');
   if((await page.locator('.auth-card [data-testid=campus-brand]').getAttribute('aria-label'))!=='GradeSpace TU')errors.push('TU auth brand missing');
   await page.waitForFunction(()=>document.documentElement.getAttribute('data-uni')==='tu');
+  await checkCampusPalette(page,'tu',errors);
   await page.locator('#au-tu-student').fill('0000000001');
   await page.locator('#au-e').fill('tu@example.com');
   await page.locator('#au-e').press('Enter');
@@ -463,7 +482,7 @@ async function runTU(browser, lang, width) {
   if(await page.getByTestId('campus-brand').filter({hasText:'TU'}).count()!==2)errors.push('TU workspace wordmarks missing');
   if(!(await page.getByTestId('campus-brand').first().evaluate(el=>{const w=el.querySelector('.brand-word'),c=el.querySelector('.brand-campus'),a=getComputedStyle(w),b=getComputedStyle(c);return a.fontSize===b.fontSize&&a.fontWeight===b.fontWeight&&b.backgroundColor==='rgba(0, 0, 0, 0)'&&b.paddingLeft==='0px'&&getComputedStyle(el.querySelector('.brand-name-accent')).color!==b.color;})))errors.push('TU suffix should match brand size without badge and use distinct color');
   if(!(await page.locator('.side .brand-mark').evaluate(el=>el.querySelector('path').getAttribute('stroke')==='#fff'&&el.querySelector('stop[offset="55%"]').getAttribute('stop-color')==='#C3002F'&&el.querySelector('circle').getAttribute('fill')==='#FFD13F')))errors.push('TU logo should have red background, white G and yellow dot');
-  if(!(await page.getByTestId('campus-brand').first().evaluate(el=>{const a=getComputedStyle(el.querySelector('.brand-name-accent')).color,b=getComputedStyle(el.querySelector('.brand-campus')).color;return ['rgb(148, 105, 0)','rgb(255, 209, 63)'].includes(a)&&['rgb(195, 0, 47)','rgb(239, 83, 108)'].includes(b);})))errors.push('TU wordmark should have gold Space and red TU');
+  await checkCampusPalette(page,'tu',errors);
   const rpcs=await page.evaluate(()=>window.__rpcs||[]);
   for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
   if(!(await page.getByTestId('tu-exam-note').isVisible())) errors.push('TU exam note missing');
