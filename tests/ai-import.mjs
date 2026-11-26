@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const src=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
+const extract=(a,b)=>src.slice(src.indexOf(a),src.indexOf(b,src.indexOf(a)));
+const parse=new Function('Calc', 'ASKAI_TAG','ASKAI_TYPES',extract('function parseAskAi(text) {','function AskAiModal(p) {')+'\nreturn parseAskAi;')({toNum(v){return v==null||v===''?null:Number(v);}},'gradespace',['homework','midterm','final','custom']);
+let r=parse(JSON.stringify({courses:[{grading:{referencing:'norm'},groups:[{name:'Homework',weight:30,dist:null}],assessments:[{name:'HW1',type:'homework',score:8,max:10,group:'Homework'},{name:'Midterm',type:'midterm',weight:30}]}]}));
+assert.equal(r.error,undefined);
+assert.equal(r.courses[0].name,'');
+assert.equal(r.courses[0].grading.referencing,'norm');
+assert.equal(r.courses[0].groups[0].dist,'manual');
+assert.equal(r.courses[0].groups[0].weight,30);
+assert.equal(r.courses[0].assessments[1].max,null);
+r=parse(JSON.stringify({courses:[{grading:{referencing:'criterion'}}]}));
+assert.equal(r.error,undefined);assert.equal(r.courses[0].grading.cutoffs,null);
+r=parse(JSON.stringify({courses:[{name:'Not in catalogue',assessments:[{name:'HW1',type:'homework',score:0}]}]}));
+assert.equal(r.error,undefined);assert.equal(r.courses[0].assessments[0].score,0);assert.equal(r.courses[0].assessments[0].max,null);
+assert.equal(parse(JSON.stringify({courses:[{assessments:[{name:'HW1',score:11,max:10}]}]})).error,'askai.invalid');
+console.log('Partial external AI import parser cases passed');

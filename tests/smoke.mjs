@@ -232,12 +232,15 @@ async function run(browser, lang, width) {
   await page.getByTestId('ask-ai').locator('.seg button').nth(1).click();
   await page.getByTestId('askai-paste').fill('Here you go!\n```gradespace\n{"gradespace":2,"courses":[{"code":"2900111","assessments":[{"name":"HW5","type":"homework","score":4,"max":5}]},{"code":"2603111","name":"Principles of Economics","credits":3,"assessments":[{"name":"Midterm","type":"midterm","weight":30,"score":24,"max":30}]}]}\n```');
   await page.getByTestId('askai-check').click();
+  await page.getByTestId('askai-target-1').selectOption('__new');
+  await page.getByTestId('askai-review-targets').click();
   await page.locator('.scan-item').first().waitFor();
   if(await page.locator('.scan-item').count()!==2) errors.push('ask-AI review should list 2 courses');
   await page.locator('.modal .btn.primary').last().click();
   if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.status==='graded';}))) errors.push('ask-AI did not save HW5');
   if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(x=>x.code==='2603111');return c&&GradeSpace.S.state.assessments.some(a=>a.courseId===c.id&&a.score===24&&a.max===30);}))) errors.push('ask-AI did not add the new course');
   await page.evaluate(()=>GradeSpace.update(d=>{const c=d.courses.find(x=>x.code==='2603111');if(c){d.courses=d.courses.filter(x=>x!==c);d.assessments=d.assessments.filter(a=>a.courseId!==c.id);d.categories=d.categories.filter(k=>k.courseId!==c.id);}}));
+
   if(await page.locator('.modal').count()) await page.keyboard.press('Escape');
   await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
   // Hiding the floating AI button must not remove the permanent desktop entry.

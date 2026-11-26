@@ -191,3 +191,7 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Latest owner correction supersedes earlier TU AI circle request: deep red fill (#8C1D2C), yellow symbol (#FFD13F), CU/sidebar unchanged. Cache v21; CI pending.
 
 - Owner requested trash icon on each course card; reuse existing confirmation and undo. Deleted course and related assessments/categories no longer contribute to semester/cumulative GPA; test confirmed and estimated modes in CU/TU. Browser CI pending.
+
+- CU first-plan AI onboarding: external AI bridge extended for syllabus grading/group data. Browser CI pending; no deployment or merge without owner approval. Follow up on direct PDF scanning and exam-date import only if separately approved.
+
+- Partial CU/TU external AI imports: explicit target selection/manual new course; incomplete criterion kept in grading notes, unknown group distribution manual, score without max requires review. Browser CI pending. No direct scanner/API change or deployment.
