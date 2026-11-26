@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node planning.mjs && node smoke.mjs"
+    "test": "node tu-catalog.mjs && node planning.mjs && node smoke.mjs"
   },
   "devDependencies": {
     "playwright": "1.49.1",

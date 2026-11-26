@@ -1,3 +1,8 @@
+## 2026-11-26 — ChatGPT: expand TU public academic catalog and syllabus references
+
+- `public/index.html`: 229 GenEd 2566 rows and 208 BBA 2023 rows from official TU sources; 429 unique catalog codes including three social-administration syllabi. Expand picker prefixes, deduplicate GenEd overlap, expose prerequisites and section/term-scoped syllabus score weights and grade floors as reference only. No automatic grading or student data changes. Note 2570 curriculum is different.
+- `docs/tu-public-data.md`: provenance, limitations, and next steps. `tests/tu-catalog.mjs` and `tests/package.json`: catalog integrity tests. Full visual PDF verification, CI, Reg TU sync, and deployment pending.
+
 ## 2026-11-26 — Claude (claude.ai): bring back a university space that was put aside by mistake
 
 - `public/index.html`: one account was found with the Chula label active, an empty current space, and all its Chula data (14 courses, 47 items, years, terms) stored under `settings.spaces.cu` (put aside when switching to Thammasat, then only the label went back). Nothing was lost. `Store.normalize` now runs `healSpace`: if the active university's stored space holds data and the current space is empty, it is brought back (nothing merged or deleted). `switchSpace` never puts an empty space over a stored one with data, and if both hold data the older one is kept as `spaces['<uni>-<savedAt>']`. `window.GradeSpace` exposes `Store` and `switchSpace` for tests.
