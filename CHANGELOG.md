@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: CU major-plan to AI onboarding
+
+- After a CU study plan actually adds courses, open the existing AI import guide directly, with an added-course count, actual target semester and a Later button. No popup for duplicate-only additions or TU; closing does not undo course creation. AI import still requires manual copy/paste and review; returning from review preserves the semester. Added browser smoke coverage; CI pending. No account or storage changes.
+
 ## 2026-11-26 — ChatGPT: concise course deletion confirmation
 
 - Course deletion confirmation button uses ยืนยัน / Confirm; cancellation, warning, deletion and GPA behavior unchanged. Smoke assertion added; CI pending.
