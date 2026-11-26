@@ -189,3 +189,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner refinement: CU was too muted; use rich campus pink and fresh light pink two-tone accents, parallel to TU red and gold. Keep neutral backgrounds/status cards, white sidebar AI label/icon and existing logo. Cache v20; CI and device visual review pending.
 
 - Latest owner correction supersedes earlier TU AI circle request: deep red fill (#8C1D2C), yellow symbol (#FFD13F), CU/sidebar unchanged. Cache v21; CI pending.
+
+- Owner requested dimensional AI buttons on both campuses: subtle highlights, shading, shadows and press response, keep approved CU pink/deep pink and TU deep red/yellow colors, white sidebar labels/icons. Cache v22; CI and device review pending.

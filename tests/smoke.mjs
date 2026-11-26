@@ -59,7 +59,7 @@ async function checkAiColors(page, uni, errors) {
     const st=getComputedStyle(el), icon=el.querySelector('.ic'), root=getComputedStyle(document.documentElement);
     const dark=root.colorScheme==='dark';
     const expected=uni==='tu'?(dark?'rgb(81, 42, 44)':'rgb(140, 29, 44)'):(dark?'rgb(112, 38, 75)':'rgb(167, 29, 93)');
-    return st.color==='rgb(255, 255, 255)'&&icon&&getComputedStyle(icon).color==='rgb(255, 255, 255)'&&st.backgroundColor===expected&&
+    return st.color==='rgb(255, 255, 255)'&&icon&&getComputedStyle(icon).color==='rgb(255, 255, 255)'&&st.backgroundColor===expected&&st.backgroundImage.includes('linear-gradient')&&st.boxShadow.includes('inset')&&getComputedStyle(dot).backgroundImage.includes('radial-gradient')&&getComputedStyle(dot).boxShadow.includes('inset')&&
       (uni==='tu'?(getComputedStyle(dot).backgroundColor==='rgb(140, 29, 44)'&&getComputedStyle(dot).color==='rgb(255, 209, 63)'):(getComputedStyle(dot).backgroundColor==='rgb(244, 165, 201)'&&getComputedStyle(dot).color==='rgb(137, 23, 73)'));
   },uni);
   if(!result)errors.push(uni+' AI shortcut colors incorrect');
