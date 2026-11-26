@@ -44,8 +44,8 @@ async function checkCampusPalette(page, uni, errors) {
       token('--surface')===(dark?'#1C1C20':'#FFFFFF') &&
       token('--earned')===(dark?'#9BB2CE':'#526B88') &&
       token('--sky')===(dark?'#8FC5EE':'#286795') &&
-      token('--accent')===(uni==='tu'?(dark?'#D8B84C':'#8C1D2C'):(dark?'#D6A2B9':'#9C436B')) &&
-      token('--action')===(uni==='tu'?'#8C1D2C':(dark?'#E7E3E7':'#303037')) &&
+      token('--accent')===(uni==='tu'?(dark?'#D8B84C':'#8C1D2C'):(dark?'#F4A5C9':'#A71D5D')) &&
+      token('--action')===(uni==='tu'?'#8C1D2C':'#A71D5D') &&
       (uni!=='tu'||(token('--tu-gold')==='#D8B84C'&&token('--tu-gold-text')===(dark?'#E4C35E':'#806016')&&getComputedStyle(campus).color===(dark?'rgb(228, 195, 94)':'rgb(128, 96, 22)'))) &&
       document.querySelector('meta[name="theme-color"]').content.toUpperCase()===token('--bg');
   },uni);
@@ -58,9 +58,9 @@ async function checkAiColors(page, uni, errors) {
     if(!el||!dot)return false;
     const st=getComputedStyle(el), icon=el.querySelector('.ic'), root=getComputedStyle(document.documentElement);
     const dark=root.colorScheme==='dark';
-    const expected=uni==='tu'?(dark?'rgb(81, 42, 44)':'rgb(140, 29, 44)'):(dark?'rgb(83, 53, 67)':'rgb(132, 80, 106)');
+    const expected=uni==='tu'?(dark?'rgb(81, 42, 44)':'rgb(140, 29, 44)'):(dark?'rgb(112, 38, 75)':'rgb(167, 29, 93)');
     return st.color==='rgb(255, 255, 255)'&&icon&&getComputedStyle(icon).color==='rgb(255, 255, 255)'&&st.backgroundColor===expected&&
-      (uni!=='tu'||(getComputedStyle(dot).backgroundColor==='rgb(255, 209, 63)'&&getComputedStyle(dot).color==='rgb(140, 29, 44)'));
+      (uni==='tu'?(getComputedStyle(dot).backgroundColor==='rgb(255, 209, 63)'&&getComputedStyle(dot).color==='rgb(140, 29, 44)'):(getComputedStyle(dot).backgroundColor==='rgb(244, 165, 201)'&&getComputedStyle(dot).color==='rgb(137, 23, 73)'));
   },uni);
   if(!result)errors.push(uni+' AI shortcut colors incorrect');
 }
