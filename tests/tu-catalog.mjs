@@ -49,3 +49,10 @@ assert.equal(syllabi.find(x=>x.code==='BI251').cutoffs.A,90);
 assert.equal(syllabi.find(x=>x.code==='BI271').weights.length,0);
 assert.equal(syllabi.find(x=>x.code==='FN201').sourceStatus,'third-party-unverified');
 assert.equal(syllabi.find(x=>x.code==='FN201').cutoffs,null);
+
+const calendars=read('TU_REG_CALENDAR_REFERENCES');
+assert.equal(calendars.length,2);assert.ok(calendars.every(y=>y.terms.length===3));
+assert.equal(calendars[1].terms[0].start,'2027-08-02');
+assert.equal(termPlans.find(x=>x.id==='IB').rowTotal,135);assert.equal(termPlans.find(x=>x.id==='IB').terms.find(t=>t.year===4&&t.term===2).rowCredits,12);
+assert.equal(syllabi.find(x=>x.code==='RB313').pages,'1, 7–8');
+assert.deepEqual(syllabi.find(x=>x.code==='RB313').curriculumYears,[2556,2561]);

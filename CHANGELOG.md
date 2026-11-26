@@ -1,3 +1,8 @@
+## 2026-11-26 — ChatGPT: verify uploaded TBS PDF discrepancies and registrar calendars
+
+- Preserve printed and row-sum credits for IB, document source-confirmed IT/RB discrepancies; correct RB313 page and curriculum scope, verify RB211 weights. Add regular TU calendar reference for 2569–2570 from four visual pages. No automatic grading or calendar mutation.
+- Record ZIP inventory, partial visual audit and remaining tasks in documentation and tests.
+
 ## 2026-11-26 — ChatGPT: discover IBMP grade ranges and FN201 syllabus lead
 
 - `public/index.html`: four historical official IBMP syllabus grade-range references, three with complete weights; FN201 third-party source explicitly labeled unverified and norm-referenced. No automatic grade policies. `tests/tu-catalog.mjs`, `docs/tu-public-data.md`: provenance and checks. PDF images and CI still pending.
