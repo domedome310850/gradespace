@@ -27,6 +27,10 @@ assert.equal(syllabi.find(x=>x.code==='RB211').cutoffs,null);
 assert.equal(syllabi.find(x=>x.code==='RB211').weights.at(-1)[2],40);
 
 const thaiCourses=read('TU_TBS_THAI_COURSES');
-assert.equal(thaiCourses.length,294);assert.equal(new Set(thaiCourses.map(x=>x[0])).size,thaiCourses.length);
+assert.equal(thaiCourses.length,297);assert.equal(new Set(thaiCourses.map(x=>x[0])).size,thaiCourses.length);
 assert.ok(thaiCourses.every(x=>x[1]&&x[2]&&x[3]>0&&x[4]&&x[5].length));
 assert.equal(thaiCourses.find(x=>x[0]==='AC201')[4],'บช.201');
+
+const thaiPre=read('TU_TBS_THAI_PREREQ');
+assert.match(thaiPre.OM319[0][1],/87/);
+for(const m of thai.majors)for(const t of m.required)for(const code of t.codes)assert.ok(thaiCourses.some(x=>x[0]===code),code);

@@ -1,3 +1,8 @@
+## 2026-11-26 — ChatGPT: TBS Thai prerequisite references and required internships
+
+- `public/index.html`: recover 3 internship course rows, 210 source-scoped Thai-program prerequisites, flag mismatched credits. All captured required/core codes have metadata. No automatic rules or student data changes.
+- `tests/tu-catalog.mjs` and `docs/tu-public-data.md`: updated integrity checks and source scope.
+
 ## 2026-11-26 — ChatGPT: TBS Thai bilingual course catalog
 
 - `public/index.html`: 294 Thai 2566 course records from official degree curriculum documents; 96 additional distinct codes, Thai code lookup and Thai/BBA picker selector, source references. Preserve existing data and credits. No automated grading or schedules.
