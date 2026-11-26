@@ -187,3 +187,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner refinement: TU circular AI shortcut yellow with deep red symbol; both campus sidebar AI rows white label/icon, campus-tinted background highlight only. Cache v19; browser CI and device review pending.
 
 - Owner refinement: CU was too muted; use rich campus pink and fresh light pink two-tone accents, parallel to TU red and gold. Keep neutral backgrounds/status cards, white sidebar AI label/icon and existing logo. Cache v20; CI and device visual review pending.
+
+- Latest owner correction supersedes earlier TU AI circle request: deep red fill (#8C1D2C), yellow symbol (#FFD13F), CU/sidebar unchanged. Cache v21; CI pending.
