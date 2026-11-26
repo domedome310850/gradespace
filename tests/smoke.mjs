@@ -51,6 +51,8 @@ async function run(browser, lang, width) {
   await page.clock.setFixedTime(new Date('2026-11-22T07:00:00Z'));
   await page.goto(PAGE);
   await page.locator('#au-e').fill('test@example.com');
+  if((await page.locator('.auth-card [data-testid=campus-brand]').getAttribute('aria-label'))!=='GradeSpace CU')errors.push('CU auth brand missing');
+  if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='cu')errors.push('CU theme missing on auth');
   await page.locator('#au-student').fill('6940102426');
   await page.locator('#au-student').press('Enter');
   await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-A',{exact:false}).waitFor();
@@ -135,7 +137,8 @@ async function run(browser, lang, width) {
   for(const k of ['course','weights','score']){
     const example=page.getByTestId('askai-example-'+k);
     if(!(await example.isVisible()))errors.push('missing AI import example: '+k);
-    if(!(await example.locator('.askai-sample').innerText()).includes('Economics I'))errors.push('missing concrete AI example: '+k);
+    const sample=await example.locator('.askai-sample').innerText();
+    if(!/อีคอน|econ/i.test(sample))errors.push('missing conversational AI example: '+k);
   }
   if(width===390){
     for(const w of [320,768,1024]){
@@ -147,6 +150,7 @@ async function run(browser, lang, width) {
   }
   for(const k of ['gpt','gemini','claude']) if(!(await page.getByTestId('askai-'+k).isVisible())) errors.push('ask-AI missing '+k+' button');
   const prompt=await page.getByTestId('askai-prompt').inputValue();
+  if(!/อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง|got 5 out of 20 on econ homework 1/i.test(prompt)) errors.push('AI prompt lacks casual speech example');
   // Tapping an AI copies the instruction first, then opens the AI (copy must not wait until the tab has opened).
   await page.evaluate(()=>{window.__opened=[];window.open=(u)=>{window.__opened.push(u);return {};};document.addEventListener('copy',()=>{window.__copied=String(document.getSelection());},{once:true});});
   await page.getByTestId('askai-gemini').click();
@@ -422,6 +426,8 @@ async function runTU(browser, lang, width) {
   if(lang==='en'){await page.locator('.auth-card button',{hasText:'EN'}).first().click();}
   await page.locator('.auth-card button',{hasText:lang==='th'?'ธรรมศาสตร์':'Thammasat'}).click();
   if(await page.locator('#au-student').count()) errors.push('TU sign-in should not ask for a Chula student ID');
+  if((await page.locator('.auth-card [data-testid=campus-brand]').getAttribute('aria-label'))!=='GradeSpace TU')errors.push('TU auth brand missing');
+  await page.waitForFunction(()=>document.documentElement.getAttribute('data-uni')==='tu');
   await page.locator('#au-tu-student').fill('0000000001');
   await page.locator('#au-e').fill('tu@example.com');
   await page.locator('#au-e').press('Enter');
@@ -452,6 +458,7 @@ async function runTU(browser, lang, width) {
   await page.locator('.dashboard-exam-panel').first().waitFor();
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
+  if(await page.getByTestId('campus-brand').filter({hasText:'TU'}).count()!==2)errors.push('TU workspace wordmarks missing');
   const rpcs=await page.evaluate(()=>window.__rpcs||[]);
   for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
   if(!(await page.getByTestId('tu-exam-note').isVisible())) errors.push('TU exam note missing');

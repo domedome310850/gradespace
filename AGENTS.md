@@ -169,3 +169,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner UI feedback: give GPA cards breathing room, highlight desktop AI menu, recommend external AI import prominently, prefer short Thai/English UI copy across mobile/tablet/desktop. Allow natural wrap for essential content, do not globally clip text. CI pending.
 
 - Owner feedback: AI import guide must explain what to upload or say, with concrete examples for courses, weights and scores. Short responsive labels but actionable instructions, copy-before-open and review unchanged. CI pending.
+
+- Owner feedback: show GradeSpace CU/TU from sign-in, campus colors CU pink / TU red and yellow, and natural-language AI examples (อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง). Ambiguous course/item aliases must be clarified, not guessed. No data/auth changes. CI pending.

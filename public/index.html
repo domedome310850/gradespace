@@ -102,6 +102,15 @@ a { color: var(--accent-text); }
 .brand-mark svg { width: 100%; height: 100%; display: block; }
 .brand-name { font-weight: 700; font-size: 19px; letter-spacing: -.045em; line-height: 1.12; white-space: nowrap; }
 .brand-name-accent { color: var(--accent-text); }
+.brand-name{display:flex;align-items:baseline;gap:5px}
+.brand-word{white-space:nowrap}
+.brand-campus{font-size:11px;line-height:1.2;font-weight:750;letter-spacing:.04em;color:var(--accent-text);background:var(--accent-soft);padding:3px 5px;border-radius:5px;flex:none}
+.side .brand{padding-inline:4px;gap:8px}
+.side .brand-name{font-size:18px}
+.brand-mark,.brand:hover .brand-mark{box-shadow:0 4px 11px color-mix(in srgb,var(--accent) 22%,transparent)}
+.auth-card .auth-brand-row{flex-wrap:wrap;gap:12px}
+@media(max-width:560px){.topbar .brand{gap:6px}.topbar .brand-mark{width:32px;height:32px;border-radius:10px}.topbar .brand-name{font-size:16px;gap:3px}.topbar .brand-campus{font-size:10px;padding:2px 4px}}
+:root[data-uni="cu"] .nav-ai-dot,:root[data-uni="cu"] .ai-fab{background:linear-gradient(135deg,#F178AD,#D52B79 55%,#A51A60);box-shadow:0 6px 18px rgba(213,43,121,.30),0 0 0 4px var(--surface)}
 .brand:hover .brand-mark { box-shadow: 0 6px 14px rgba(79,70,229,.24); }
 .auth-card .brand-mark { width: 44px; height: 44px; border-radius: 15px; }
 .auth-card .brand-name { font-size: 22px; }
@@ -943,7 +952,7 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .help-tabs{margin:4px 0 6px}.help-tabs .seg{max-width:360px}
 /* Thammasat GenEd picker (2026-11-26). */
 .tuge-group h3{font-size:14px;margin:16px 0 4px;color:var(--accent-text)}.tuge-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
-:root[data-uni="tu"] .brand-mark rect{fill:#C3002F}:root[data-uni="tu"] .brand-mark circle{fill:var(--uni-secondary)}:root[data-uni="tu"] .brand-mark{box-shadow:none}
+:root[data-uni="tu"] .brand-mark{box-shadow:0 4px 11px rgba(195,0,47,.20)}
 :root[data-uni="tu"] .ai-fab{background:linear-gradient(135deg,#D90038,#C3002F 55%,#8C0022);box-shadow:0 8px 22px rgba(195,0,47,.38),0 0 0 4px color-mix(in srgb,var(--bg) 70%,transparent)}
 :root[data-uni="tu"] .nav-item[aria-current="page"]{border-inline-start:3px solid #FFD13F}
 :root[data-uni="tu"] .metric.hero{border-bottom:4px solid #FFD13F}
@@ -2979,10 +2988,10 @@ en: {
   'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
   'connect.own': 'Or ask GradeSpace AI now:',
   'askai.how1': 'Choose an AI below. Paste the copied instruction into a new chat.', 'askai.how2': 'In that chat, upload an image or tell the AI what to add.', 'askai.how3': 'Copy its full answer back to step 2. Review and save.',
-  'askai.exampleH': 'What can you send?', 'askai.exampleIntro': 'Choose any of these. Send an image, speak or type in your AI chat.',
-  'askai.ex.course': 'New courses', 'askai.ex.courseImage': 'Screenshot: registered courses or class timetable', 'askai.ex.courseText': '“Add Economics I, 3 credits.”',
-  'askai.ex.weights': 'Assignments & grading', 'askai.ex.weightsImage': 'Screenshot: syllabus or assessment weights', 'askai.ex.weightsText': '“Economics I: midterm 30%, final 40%, assignments 30%.”',
-  'askai.ex.score': 'Scores', 'askai.ex.scoreImage': 'Screenshot: gradebook or marked work', 'askai.ex.scoreText': '“Economics I, Quiz 1: 8/10.”',
+  'askai.exampleH': 'What can you send?', 'askai.exampleIntro': 'Send a photo or talk to your AI naturally. No special commands needed.',
+  'askai.ex.course': 'New courses', 'askai.ex.courseImage': 'Screenshot: registered courses or class timetable', 'askai.ex.courseText': '“I’m taking econ this term, 3 credits.”',
+  'askai.ex.weights': 'Assignments & grading', 'askai.ex.weightsImage': 'Screenshot: syllabus or assessment weights', 'askai.ex.weightsText': '“Econ is 30% midterm, 40% final and 30% homework.”',
+  'askai.ex.score': 'Scores', 'askai.ex.scoreImage': 'Screenshot: gradebook or marked work', 'askai.ex.scoreText': '“Got 5 out of 20 on econ homework 1.”',
   'askai.chooseH': 'Copy instructions & open AI', 'askai.copyOnly': 'Copy instructions only', 'askai.hidePrivate': 'Hide personal details in images before sending.', 'askai.copyFail': 'Couldn’t copy automatically. Select the text below, copy it, then open your AI.', 'askai.copyOpen': 'Copy & open {n}', 'askai.showText': 'Show the text that will be copied', 'askai.reviewT': 'Check what your AI found', 'askai.back': 'Paste again', 'askai.title': 'Add with AI', 'askai.step1': '1. Send to your AI', 'askai.step2': '2. Paste the answer',
   'askai.cardT': 'Use your AI now (works on free plans)', 'askai.cardP': 'Copy this term’s courses into ChatGPT or Claude, ask anything, then paste its answer back to save new scores.', 'askai.cardBtn': 'Ask your AI',
   'askai.copyIntro': 'Copy this text, paste it into ChatGPT or Claude, then type your question at the end.', 'askai.copy': 'Copy text', 'askai.copiedBtn': 'Copied ✓', 'askai.copied': 'Copied. Paste it into your AI.',
@@ -3647,10 +3656,10 @@ th: {
   'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
   'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
   'askai.how1': 'เลือก AI ด้านล่าง แล้ววางคำสั่งที่คัดลอกให้ในแชตใหม่', 'askai.how2': 'ในแชต AI ส่งภาพ หรือบอกข้อมูลที่ต้องการเพิ่ม', 'askai.how3': 'คัดลอกคำตอบทั้งหมดกลับมาวางในขั้นที่ 2 แล้วตรวจสอบก่อนบันทึก',
-  'askai.exampleH': 'ส่งข้อมูลอะไรได้บ้าง?', 'askai.exampleIntro': 'เลือกส่งภาพ พูด หรือพิมพ์บอกในแชต AI ได้เลย',
-  'askai.ex.course': 'เพิ่มวิชา', 'askai.ex.courseImage': 'ภาพรายวิชาที่ลงทะเบียน หรือตารางเรียน', 'askai.ex.courseText': '“เพิ่มวิชา Economics I 3 หน่วยกิต”',
-  'askai.ex.weights': 'เพิ่มงานและสัดส่วนเกรด', 'askai.ex.weightsImage': 'ภาพ Course Syllabus หรือตารางสัดส่วนคะแนน', 'askai.ex.weightsText': '“Economics I กลางภาค 30% ปลายภาค 40% งาน 30%”',
-  'askai.ex.score': 'เพิ่มคะแนน', 'askai.ex.scoreImage': 'ภาพคะแนนจากระบบรายวิชา หรืองานที่ตรวจแล้ว', 'askai.ex.scoreText': '“Economics I Quiz 1 ได้ 8/10”',
+  'askai.exampleH': 'ส่งข้อมูลอะไรได้บ้าง?', 'askai.exampleIntro': 'ส่งภาพ หรือพูดกับ AI แบบปกติได้เลย ไม่ต้องใช้คำสั่งพิเศษ',
+  'askai.ex.course': 'เพิ่มวิชา', 'askai.ex.courseImage': 'ภาพรายวิชาที่ลงทะเบียน หรือตารางเรียน', 'askai.ex.courseText': '“เทอมนี้เรียนอีคอนด้วย 3 หน่วยกิต”',
+  'askai.ex.weights': 'เพิ่มงานและสัดส่วนเกรด', 'askai.ex.weightsImage': 'ภาพ Course Syllabus หรือตารางสัดส่วนคะแนน', 'askai.ex.weightsText': '“อีคอนมิดเทอม 30 ไฟนอล 40 งานอีก 30 เปอร์เซ็นต์”',
+  'askai.ex.score': 'เพิ่มคะแนน', 'askai.ex.scoreImage': 'ภาพคะแนนจากระบบรายวิชา หรืองานที่ตรวจแล้ว', 'askai.ex.scoreText': '“อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง”',
   'askai.chooseH': 'คัดลอกคำสั่งและเปิด AI', 'askai.copyOnly': 'คัดลอกคำสั่งอย่างเดียว', 'askai.hidePrivate': 'ปิดข้อมูลส่วนตัวในภาพก่อนส่งให้ AI', 'askai.copyFail': 'คัดลอกอัตโนมัติไม่ได้ กดค้างที่ข้อความด้านล่างเพื่อคัดลอก แล้วค่อยเปิด AI', 'askai.copyOpen': 'คัดลอกแล้วเปิด {n}', 'askai.showText': 'ดูข้อความที่จะถูกคัดลอก', 'askai.reviewT': 'ตรวจสิ่งที่ AI อ่านได้', 'askai.back': 'วางใหม่', 'askai.title': 'เพิ่มข้อมูลด้วย AI', 'askai.step1': '1. ส่งไปที่ AI', 'askai.step2': '2. วางคำตอบ',
   'askai.cardT': 'ใช้ AI ของคุณได้เลยตอนนี้ (แพ็กเกจฟรีก็ได้)', 'askai.cardP': 'คัดลอกวิชาเทอมนี้ไปถาม ChatGPT หรือ Claude ได้ทุกเรื่อง แล้ววางคำตอบกลับมาเพื่อบันทึกคะแนนใหม่', 'askai.cardBtn': 'ถาม AI ของคุณ',
   'askai.copyIntro': 'คัดลอกข้อความนี้ไปวางใน ChatGPT หรือ Claude แล้วพิมพ์คำถามต่อท้าย', 'askai.copy': 'คัดลอกข้อความ', 'askai.copiedBtn': 'คัดลอกแล้ว ✓', 'askai.copied': 'คัดลอกแล้ว ไปวางใน AI ได้เลย',
@@ -4647,7 +4656,13 @@ function uniContrast(a, b) { var x = uniLum(a), y = uniLum(b); return (Math.max(
 function uniReadable(col, bg, dark) { for (var i = 0; i < 30 && uniContrast(col, bg) < 4.5; i++) col = uniMix(col, dark ? '#FFFFFF' : '#000000', .16); return col; }
 function applyUniTheme(uni, dark) {
   var el = document.documentElement, keys = ['--accent', '--accent-hover', '--accent-ink', '--accent-soft', '--accent-text', '--uni-secondary', '--earned', '--lav', '--sky', '--sky-soft', '--pending-a', '--pending-b'];
-  if (uni !== 'tu') { keys.forEach(function (k) { el.style.removeProperty(k); }); el.removeAttribute('data-uni'); var meta=document.querySelector('meta[name="theme-color"]'); if(meta)meta.content=dark?'#171A20':'#4F46E5'; return; }
+  if (uni !== 'tu') {
+    var cbg=dark?'#171A20':'#FFFFFF', pink='#C02570', ca=dark?uniReadable('#E45B9B',cbg,true):pink, cs=uniMix(cbg,pink,dark?.23:.09);
+    var ct=uniReadable(dark?'#F5A4CC':pink,cs,dark), ci=uniContrast(ca,'#000000')>=uniContrast(ca,'#FFFFFF')?'#000000':'#FFFFFF', ch=uniMix(ca,dark?'#FFFFFF':'#000000',.10);
+    if(uniContrast(ch,ci)<4.5)ch=ca;
+    var cv={'--accent':ca,'--accent-hover':ch,'--accent-ink':ci,'--accent-soft':cs,'--accent-text':ct,'--uni-secondary':'#F5A4CC','--earned':ca,'--lav':dark?'#C985AC':'#E9A0C4','--sky':dark?'#F5A4CC':'#A63F76','--sky-soft':dark?'#392434':'#FCE8F2','--pending-a':dark?'#492A3D':'#F6CDE2','--pending-b':dark?'#36232F':'#FCEAF3'};
+    keys.forEach(function(k){el.style.setProperty(k,cv[k]);});el.setAttribute('data-uni','cu');var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#171A20':pink;return;
+  }
   var bg = dark ? '#171A20' : '#FFFFFF', soft = uniMix(bg, '#C3002F', dark ? .21 : .09), a = dark ? uniReadable('#C3002F', bg, true) : '#C3002F', txt = dark ? '#FFD13F' : uniReadable(a, soft, false);
   var ink = uniContrast(a, '#000000') >= uniContrast(a, '#FFFFFF') ? '#000000' : '#FFFFFF', hover = uniMix(a, dark ? '#FFFFFF' : '#000000', .10);
   if (uniContrast(hover, ink) < 4.5) hover = a;
@@ -5132,11 +5147,16 @@ function Icon(p) {
     strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true', dangerouslySetInnerHTML: { __html: ICONS[p.n] || '' } });
 }
 var logoSeq = 0;
-function Logo() {
+function CampusBrand(p) {
+  var u=p.uni==='tu'?'TU':'CU';
+  return html`<div className="brand-name" data-testid="campus-brand" aria-label=${'GradeSpace '+u}><span className="brand-word">Grade<span className="brand-name-accent">Space</span></span><span className="brand-campus">${u}</span></div>`;
+}
+function Logo(p) {
+  var tu=(p.uni||uniOf())==='tu', colors=tu?['#E33D58','#C3002F','#8C0022']:['#F178AD','#D52B79','#A51A60'];
   // Each logo needs its own gradient id: the sidebar copy is hidden on phones, and a
   // gradient referenced from a hidden (display:none) SVG renders black.
   var gid = useRef(null); if (!gid.current) gid.current = 'gsGradient' + (++logoSeq);
-  return html`<span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"> <defs> <linearGradient id=${gid.current} x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" stop-color="#8C71FE"/> <stop offset="55%" stop-color="#6654E8"/> <stop offset="100%" stop-color="#3F51C9"/> </linearGradient> </defs> <rect width="48" height="48" rx="14" fill=${'url(#' + gid.current + ')'}/> <path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke="#fff" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/> <circle cx="34.8" cy="12.6" r="3" fill="#C5ECFF"/> </svg></span>`;
+  return html`<span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"> <defs> <linearGradient id=${gid.current} x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" stop-color=${colors[0]}/> <stop offset="55%" stop-color=${colors[1]}/> <stop offset="100%" stop-color=${colors[2]}/> </linearGradient> </defs> <rect width="48" height="48" rx="14" fill=${'url(#' + gid.current + ')'}/> <path d="M33.7 18.5A12 12 0 1 0 35 30.8V25.2H25.5" fill="none" stroke="#fff" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round"/> <circle cx="34.8" cy="12.6" r="3" fill=${tu?'#FFD13F':'#FCE0EF'}/> </svg></span>`;
 }
 function Tip(p) {
   var posState = useState(null), pos = posState[0], setPos = posState[1];
@@ -9336,7 +9356,7 @@ function askAiPrompt(state, semesterId) {
     '- score = คะแนนที่ได้, max = คะแนนเต็ม, weight = กี่เปอร์เซ็นต์ของเกรดวิชา (ไม่รู้ใส่ null) ยังไม่มีคะแนนใส่ score: null',
     '- type เลือกหนึ่งใน: ' + ASKAI_TYPES.join(', ') + '  ส่วน due เป็น YYYY-MM-DD หรือ null',
     '- ถ้าเป็นวิชา/งานที่มีอยู่แล้วในรายการด้านล่าง ให้ใช้รหัสวิชาและชื่องานให้ตรงกันทุกตัวอักษร',
-    '- ถ้าข้อมูลไม่ชัด ให้ถามฉันก่อน แล้วค่อยส่งบล็อก',
+    '- เข้าใจภาษาพูด ชื่อย่อวิชา ชื่องานแบบไม่เป็นทางการ และประโยคอย่าง อีคอนได้ 5 เต็ม 20 การบ้านหนึ่ง (5 คือคะแนนที่ได้ 20 คือคะแนนเต็ม) ให้เทียบกับรายการวิชา/งานเดิม ถ้ามีหลายวิชาหรืองานที่อาจตรงกัน หรือไม่แน่ใจเรื่องคะแนน/สัดส่วน ให้ถามฉันก่อน ห้ามเดา แล้วค่อยส่งบล็อก',
     'วิชาที่ฉันมีอยู่แล้วเทอมนี้:',
     'ถ้าเข้าใจแล้ว ตอบว่า "พร้อม ส่งภาพหรือบอกคะแนนมาได้เลย"'
   ] : [
@@ -9348,7 +9368,7 @@ function askAiPrompt(state, semesterId) {
     '- score = points I got, max = full marks, weight = % of the course grade (null if unknown). Not graded yet → score: null.',
     '- type is one of: ' + ASKAI_TYPES.join(', ') + '. due is YYYY-MM-DD or null.',
     '- If a course or item is already in my list below, reuse its code and item name exactly.',
-    '- If something is unclear, ask me first, then send the block.',
+    '- Understand casual speech, course nicknames and informal item names, e.g. got 5 out of 20 on econ homework 1 (5 is the score, 20 the maximum). Match against my existing courses/items. If multiple matches are possible or the score/weight is unclear, ask first; never guess, then send the block.',
     'Courses I already have this term:',
     'If you understand, reply "Ready — send a screenshot or tell me your scores."'
   ];
@@ -9848,7 +9868,7 @@ function App() {
     var el = document.documentElement;
     el.lang = LANG;
     if (state.settings.theme === 'light' || state.settings.theme === 'dark') el.setAttribute('data-theme', state.settings.theme); else el.removeAttribute('data-theme');
-    document.title = 'GradeSpace – ' + t('taglineShort');
+    document.title = 'GradeSpace '+uniOf(state).toUpperCase()+' – ' + t('taglineShort');
   });
   useEffect(function () {
     var k = function (e) { if ((e.metaKey || e.ctrlKey) && !e.altKey && String(e.key).toLowerCase() === 'k') { e.preventDefault(); openModal('cmd', {}); } };
@@ -9881,14 +9901,14 @@ function App() {
   var navLabel = function (n) { return t('nav.' + (n.key || n.id)); };
   return html`<${PersonalExamContext.Provider} value=${personal}><div className="shell">
     <aside className="side" aria-label=${t('mainNav')}>
-      <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div><div className="brand-tag">${t('taglineShort')}</div></div></a>
+      <a className="brand" href="#dashboard"><${Logo} uni=${uniOf(state)} /><div><${CampusBrand} uni=${uniOf(state)} /><div className="brand-tag">${t('taglineShort')}</div></div></a>
       ${NAV.map(function (n, i) { var head = n.group && (!NAV[i - 1] || NAV[i - 1].group !== n.group) ? html`<div className="nav-group" key=${'g' + n.group}>${t(n.group)}</div>` : null;
         return [head, html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`, n.id === 'gpa' ? html`<button key="ai" type="button" className="nav-item nav-ai-main" data-testid="sidebar-ai" title=${t('ai.entryHint')} onClick=${function () { try { localStorage.setItem(AI_FAB_INTRO_KEY, '1'); } catch (e) { /* ignore */ } openModal('chat', {}); }}><${Icon} n="spark" />${t('ai.nav')}</button>` : null]; })}
       <div className="side-foot">${state.settings.university ? html`<div style=${{ fontWeight: 600, color: 'var(--ink-2)' }}>${state.settings.university}</div>` : null}${S.web && S.web.user ? S.web.user.email : (S.cloud ? t('store.accountShort') : t('store.deviceShort'))}</div>
     </aside>
     <div className="main">
       <header className="topbar">
-        <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div></a>
+        <a className="brand" href="#dashboard"><${Logo} uni=${uniOf(state)} /><${CampusBrand} uni=${uniOf(state)} /></a>
         <div className="topbar-spacer"></div>
         <button className="top-search" onClick=${function () { openModal('cmd', {}); }} aria-label=${t('cmd.btn')} title=${t('cmd.hint')}><${Icon} n="search" s=${18} /><span>${t('cmd.btn')}</span><kbd>${/Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘K' : 'Ctrl K'}</kbd></button>
         <div className="topbar-spacer"></div>
@@ -10225,8 +10245,8 @@ function AuthScreen() {
     } catch (e) { setErr(t('otp.err.code')); }
     finally { setSaving(false); }
   };
-  useEffect(function () { document.documentElement.lang = LANG; document.title = 'GradeSpace – ' + t('taglineShort'); });
-  useEffect(function () { applyUniTheme(uni, !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) && document.documentElement.getAttribute('data-theme') !== 'light'); }, [uni]);
+  useEffect(function () { document.documentElement.lang = LANG; document.title = 'GradeSpace '+uni.toUpperCase()+' – ' + t('taglineShort'); });
+  useEffect(function () { var mode=document.documentElement.getAttribute('data-theme');applyUniTheme(uni, mode==='dark'||(mode!=='light'&&!!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches))); }, [uni]);
   var enter = async function () {
     if (otp) { if (step === 'email') sendCode(); else verifyCode(); return; }
     if(pending.current)return;
@@ -10251,8 +10271,8 @@ function AuthScreen() {
   var setLang = function (v) { LANG = v; try { localStorage.setItem('gradespace.lang', v); } catch (e) { /* ignore */ } emit(); };
   return html`<div className="auth-wrap">
     <div className="auth-card card">
-      <div className="row between" style=${{ marginBottom: 18 }}>
-        <div className="brand" style=${{ padding: 0 }}><${Logo} /><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div></div>
+      <div className="row between auth-brand-row" style=${{ marginBottom: 18 }}>
+        <div className="brand" style=${{ padding: 0 }}><${Logo} uni=${uni} /><${CampusBrand} uni=${uni} /></div>
         <${Seg} label=${t('language')} value=${LANG} onChange=${setLang} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} />
       </div>
       <h1 className="auth-title">${t('welcomeT')}</h1>
