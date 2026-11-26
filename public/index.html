@@ -887,6 +887,20 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .hub-row{width:100%;border:0;background:none;font:inherit;text-align:left;cursor:pointer}.hub-row .grow{display:grid;gap:1px;min-width:0}.hub-row b{font-weight:600;font-size:15px}
 .hub-row:disabled,.hub-row[aria-disabled=true]{cursor:default}.hub-row:disabled .grow,.hub-row[aria-disabled=true] .grow{opacity:.6}.hub-row:not(:disabled):not([aria-disabled=true]):hover{background:var(--surface-2)}
 .hub-row>.ic:first-child{color:var(--accent-text)}
+/* Compact, responsive AI and GPA surfaces. Keep important text readable; never clip it. */
+.side .nav-ai-main{background:var(--accent-soft);color:var(--accent-text);border:1px solid color-mix(in srgb,var(--accent) 36%,var(--line));font-weight:700;margin:3px 0 5px}
+.side .nav-ai-main:hover{background:color-mix(in srgb,var(--accent) 18%,var(--surface));color:var(--accent-text);border-color:var(--accent)}
+.side .nav-ai-main .ic{color:var(--accent-text)}
+.hub-row.hub-recommended{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 46%,var(--line));border-radius:var(--r-md);width:100%;padding:14px 12px;gap:10px}
+.hub-row.hub-recommended:not(:disabled):hover{background:color-mix(in srgb,var(--accent) 15%,var(--surface));border-color:var(--accent)}
+.hub-recommended .grow{gap:4px}
+.hub-recommended .hub-recommend-label{color:var(--accent-text);font-size:11px;font-weight:700;line-height:1.3}
+.hub-recommended .hub-providers{font-size:12px;color:var(--ink-2);line-height:1.4}
+.me-list.hub-ai-card{padding:6px;gap:4px}
+.hub-ai-card .hub-row+.hub-row{border-top:0}
+.hub-intro{margin:0 0 12px;line-height:1.5}
+.gpa-metrics{margin-bottom:20px}
+@media(max-width:560px){.gpa-metrics{margin-bottom:16px}.hub-row.hub-recommended{padding:12px 10px;gap:8px}.hub-recommended .hub-providers{font-size:11px}.hub-row .grow b{font-size:14px}}
 /* What-if grades + phone one-row layouts (2026-11-26). */
 .dash-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.dash-bar .dash-actions{margin-left:auto}
 .dash-whatif{font-weight:600;color:var(--accent-text);text-decoration:none}
@@ -2926,7 +2940,7 @@ en: {
 "academic.admission": "Admission year (B.E., optional)",
 "academic.allocation": "Tentative allocation (verify with faculty)",
 "academic.unassigned": "Unassigned",
-  'ai.btn': 'AI assistant', 'ai.title': 'GradeSpace AI', 'ai.entry': 'Add with AI', 'ai.entryShort': 'AI', 'ai.entryHint': 'Add courses, grading criteria or scores from screenshots, voice or text. Review before saving.', 'ai.nav': 'AI',
+  'ai.btn': 'AI assistant', 'ai.title': 'GradeSpace AI', 'ai.entry': 'Add with AI', 'ai.entryShort': 'AI', 'ai.entryHint': 'Add courses, grading rules and scores. Review before saving.', 'ai.nav': 'AI',
   'ai.intro': 'Send score screenshots, paste from MyCourseVille or type a score. You always review the list before anything is saved.',
   'ai.scanT': 'Scan screenshots', 'ai.scanP': 'Read courses and scores from several images at once',
   'ai.pasteT': 'Paste from MyCourseVille', 'ai.pasteP': 'Copy the score table, paste it and check each row',
@@ -2952,7 +2966,7 @@ en: {
   'connect.title': 'Use GradeSpace from ChatGPT or Claude', 'connect.soon': 'Coming soon', 'connect.with': 'Connect {n}',
   'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
   'connect.own': 'Or ask GradeSpace AI now:',
-  'askai.how1': 'Tap an AI below. The instructions are copied for you — paste them as your first message.', 'askai.how2': 'Then send a screenshot, a voice message or just type: “got 24/30 in the Econ midterm”, “I have a new course 2603111”, “this course is 30% midterm, 40% final…”.', 'askai.how3': 'Copy the AI’s whole answer, come back and paste it in step 2. You check everything before it is saved.', 'askai.copyFail': 'Couldn’t copy automatically. Select the text below, copy it, then open your AI.', 'askai.copyOpen': 'Copy & open {n}', 'askai.showText': 'Show the text that will be copied', 'askai.reviewT': 'Check what your AI found', 'askai.back': 'Paste again', 'askai.title': 'Add with ChatGPT, Gemini or Claude', 'askai.step1': '1. Send to your AI', 'askai.step2': '2. Paste the answer',
+  'askai.how1': 'Choose an AI and paste the copied instruction.', 'askai.how2': 'Send a screenshot, voice or text.', 'askai.how3': 'Copy the whole answer to step 2. Review and save.', 'askai.copyFail': 'Couldn’t copy automatically. Select the text below, copy it, then open your AI.', 'askai.copyOpen': 'Copy & open {n}', 'askai.showText': 'Show the text that will be copied', 'askai.reviewT': 'Check what your AI found', 'askai.back': 'Paste again', 'askai.title': 'Add with AI', 'askai.step1': '1. Send to your AI', 'askai.step2': '2. Paste the answer',
   'askai.cardT': 'Use your AI now (works on free plans)', 'askai.cardP': 'Copy this term’s courses into ChatGPT or Claude, ask anything, then paste its answer back to save new scores.', 'askai.cardBtn': 'Ask your AI',
   'askai.copyIntro': 'Copy this text, paste it into ChatGPT or Claude, then type your question at the end.', 'askai.copy': 'Copy text', 'askai.copiedBtn': 'Copied ✓', 'askai.copied': 'Copied. Paste it into your AI.',
   'askai.openGpt': 'Open ChatGPT', 'askai.openClaude': 'Open Claude', 'askai.next': 'Got an answer? Paste it',
@@ -2984,16 +2998,16 @@ en: {
   'space.q': 'Switch to {u}?', 'space.body': 'Each university has its own space. Your {n} courses at {a} are kept aside, not deleted.',
   'space.back': 'Your {n} courses there come back.', 'space.new': 'You start with an empty space there.', 'space.go': 'Switch',
   'space.switched': 'Now using {u}', 'space.note': 'Each university keeps its own courses and scores. Switching never deletes anything.',
-  'wi.title': 'Try grades: what would my GPA be?', 'wi.sub': 'Pick a grade for each course in {s}. Nothing is saved.', 'wi.none': '— not counted',
+  'wi.title': 'Try grades', 'wi.sub': '{s} · Not saved', 'wi.none': '— not counted',
   'wi.outOfReach': '(out of reach)', 'wi.reset': 'Back to my estimates', 'wi.goalT': 'I want a GPA of', 'wi.term': 'This term', 'wi.solve': 'Find grades',
   'wi.impossible': '{t} isn’t reachable any more. The best you can still get is {b}.', 'wi.secured': 'You reach {t} even with the lowest grades ({w}).',
   'wi.set.even': 'Same grade everywhere', 'wi.set.near': 'Fewest changes from now', 'wi.set.heavy': 'Focus on high-credit courses', 'wi.set.focus': 'All-in on a few courses', 'wi.use': 'Try this set',
   'wi.note': 'Confirmed grades stay as they are. “Out of reach” means your scores so far can’t reach that grade under the course’s cut-offs.', 'wi.link': 'Try grades',
   'plan.btnShort': 'By major', 'dash.coursesS': '{n} courses · {p} ongoing', 'dash.gradedS': 'graded {g}/{n}', 'dash.creditsS': '{n} cr earned',
-  'hub2.aiH': 'With your own AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Add with ChatGPT, Gemini or Claude', 'hub2.askP': 'Use screenshots, voice or text to add courses, grading criteria and scores. Paste the AI answer back here.',
+  'hub2.recommended': 'Recommended', 'hub2.aiH': 'Use your AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Add with your AI', 'hub2.askP': 'Send a screenshot, voice or text',
   'hub2.gptT': '@GradeSpace in ChatGPT', 'hub2.gptP': 'Direct link, no copying', 'hub2.claudeT': 'GradeSpace in Claude', 'hub2.claudeP': 'Add as a connector',
-  'hub2.scanP': 'Upload images directly here without switching apps; review the results.', 'hub2.pasteP': 'Paste a score table', 'hub2.quickP': 'Type one score',
-  'hub2.note': 'For external AI, copy the instruction and paste the answer back. Direct scanning is a separate in-app tool. You approve every change before saving.',
+  'hub2.scanP': 'Upload images here', 'hub2.pasteP': 'Paste a score table', 'hub2.quickP': 'Type one score',
+  'hub2.note': 'Review all changes before saving.',
   'tup.title': 'Pick Thammasat courses', 'tup.intro': 'Tick courses and add them to a term. GenEd groups follow the 2566 GenEd program; subject groups come from the TBS BBA course list.',
   'tup.ac': 'Accounting', 'tup.fn': 'Finance', 'tup.is': 'Information systems', 'tup.mg': 'Management', 'tup.toTerm': 'Add to term', 'tup.noTerm': 'Add a year/term first',
   'tup.add': 'Add {n} courses', 'tup.added': 'Added {n} courses', 'tup.note': 'Catalog only, not an official study plan. Confirm your course type, prerequisites and actual offerings with your faculty.',
@@ -3042,7 +3056,7 @@ en: {
   'plan.nCourses': '{n} courses',
   'plan.sourceShort': 'Courses from the faculty study plans, academic year 2569',
   'eg': 'e.g. {v}',
-  'creditsRegisteredSub': 'All your courses, excluding withdrawals',
+  'creditsRegisteredSub': 'Excludes withdrawals',
   'creditsRegistered': 'Credits registered',
   'official.done': 'Official grade recorded: {g}. Change it with “Change official grade”.',
   'official.withdrawn': 'Withdrawn ({g}). This course doesn’t count in your GPA, so there’s no target or simulator.',
@@ -3281,7 +3295,7 @@ en: {
   'performance': 'Performance on graded work', 'maxPossible': 'Maximum possible', 'expectedFinal': 'Expected final score',
   'start.kicker': 'MY COURSES · START HERE',
   'start.title': 'Add the courses you are taking',
-  'start.desc': 'Tap “Pick by major”, select your major, year and term, then tick the courses you are taking. We will add them to My Courses for you.',
+  'start.desc': 'Choose your major, year, term and courses.',
   'start.stepsLabel': 'How to add courses',
   'start.step1': 'Choose your major', 'start.step2': 'Select year and term', 'start.step3': 'Tick your courses',
   'start.manual': 'Or add a course manually',
@@ -3289,7 +3303,7 @@ en: {
   'start.goCourses': 'Go to My Courses',
   'emptyStartT': 'Start with one course', 'emptyStartP': 'Add a course you’re taking, enter its assessments and weights, and GradeSpace works out where you stand.',
   'addFirstCourse': 'Add your first course', 'tryDemo': 'Try with demo data', 'addCourse': 'Add course', 'quickScore': 'Quick score entry',
-  'viewingSemester': 'Showing', 'curSemGPA': 'Semester GPA', 'cumGPA': 'Cumulative GPA (GPAX)', 'cumGPAEst': 'Cumulative GPA with estimates',
+  'viewingSemester': 'Showing', 'curSemGPA': 'Semester GPA', 'cumGPA': 'Cumulative GPA (GPAX)', 'cumGPAEst': 'Estimated GPAX',
   'estX': 'Estimate with current work: {x}', 'confirmedOfN': '{a} of {n} courses have official grades', 'officialOnly': 'Official grades only',
   'creditsEarned': 'Credits earned', 'gpaCreditsX': '{n} credits count toward GPA', 'numCourses': 'Courses this semester', 'inProgressX': '{n} in progress',
   'completedAssess': 'Graded assessments', 'ofTotalX': 'of {n} this semester', 'pendingAssess': 'Pending assessments', 'nextX': 'Next: {name} · {kind} · {d}', 'nothingDue': 'No dates coming up',
@@ -3315,7 +3329,7 @@ en: {
   'delAssessQ': 'Delete this assessment?', 'delAssessBody': '{name} and its score will be deleted. You can undo right after.',
   'delCatQ': 'Delete this category?', 'delCatBody': 'The items in {name} are kept and keep their current weights as separate assessments.',
   'deletedX': 'Deleted {name}', 'restored': 'Restored', 'undo': 'Undo', 'saved': 'Saved', 'delete': 'Delete', 'edit': 'Edit', 'cancel': 'Cancel', 'save': 'Save', 'confirm': 'Confirm', 'close': 'Close', 'remove': 'Remove', 'next': 'Next', 'skip': 'Skip', 'reset': 'Reset', 'all': 'All',
-  'coursesSub': 'Every course you’ve added, grouped by semester.', 'allSemesters': 'All semesters', 'filterSemester': 'Filter by semester', 'searchCourses': 'Search courses, e.g. accounting, 2601, calc', 'noMatches': 'No courses match your search.',
+  'coursesSub': 'Courses by semester', 'allSemesters': 'All semesters', 'filterSemester': 'Filter by semester', 'searchCourses': 'Search courses, e.g. accounting, 2601, calc', 'noMatches': 'No courses match your search.',
   'gradeSummary': 'Grade summary',
   'warn.over': 'Assessment weights add up to {n}%, more than 100%. Check the weights so your grade is calculated correctly.',
   'warn.under': 'Weights add up to {n}% so far. {r}% of the course hasn’t been assigned to an assessment yet.',
@@ -3372,10 +3386,10 @@ en: {
   'simPageSub': 'Pick a course and find the score you need for your target grade.', 'simEmptyT': 'Nothing to simulate yet', 'simEmptyP': 'Add a course with assessments that haven’t been graded yet.',
   'course': 'Course', 'openCourse': 'Open course', 'courseNotFound': 'This course doesn’t exist anymore.',
   'instructor': 'Instructor', 'noneSet': 'None',
-  'gpaSub': 'Semester, year and cumulative GPA, weighted by credits.', 'gpaMode': 'Which grades to include', 'mode.confirmed': 'Official grades', 'mode.estimated': 'With estimates',
-  'modeNote.confirmed': 'Only courses with an official grade you recorded. Courses in progress are left out.',
-  'modeNote.estimated': 'Adds courses in progress using their calculated or estimated grade. Your official records don’t change.',
-  'basedOnX': 'From {n} course(s) that count in GPA', 'creditsAttempted': 'Credits attempted', 'targetCGPA': 'Target GPA', 'aboveTarget': 'At or above your target', 'belowTargetBy': '{n} below your target', 'setBelow': 'Set one in the planner below',
+  'gpaSub': 'Term, year and cumulative GPA', 'gpaMode': 'Which grades to include', 'mode.confirmed': 'Official grades', 'mode.estimated': 'With estimates',
+  'modeNote.confirmed': 'Only courses with official grades count.',
+  'modeNote.estimated': 'Includes ongoing course estimates. Official grades stay unchanged.',
+  'basedOnX': 'From {n} GPA courses', 'creditsAttempted': 'Credits attempted', 'targetCGPA': 'Target GPA', 'aboveTarget': 'At or above your target', 'belowTargetBy': '{n} below your target', 'setBelow': 'Set one in the planner below',
   'gpaBySemester': 'GPA by semester', 'yearBreakdown': 'Year by year', 'period': 'Year / semester', 'gpaCol': 'GPA', 'cumulativeCol': 'Cumulative', 'coursesCol': 'Courses',
   'goalPlanner': 'GPA goal planner', 'goalPlannerSub': 'Work out the average you need from here to reach a target GPA.',
   'targetCGPAHint': 'Up to {m}', 'remainingCredits': 'Credits still to take', 'remainingHint': '{p} program credits − {c} counted so far = {s}', 'remainingHint2': 'Set your program’s total credits in Settings to fill this in automatically.',
@@ -3589,7 +3603,7 @@ th: {
 "academic.admission": "ปีเข้า (พ.ศ. ไม่บังคับ)",
 "academic.allocation": "จัดหมวดเบื้องต้น (ต้องยืนยันกับคณะ)",
 "academic.unassigned": "ยังไม่จัดหมวด",
-  'ai.btn': 'ผู้ช่วย AI', 'ai.title': 'GradeSpace AI', 'ai.entry': 'เพิ่มข้อมูลด้วย AI', 'ai.entryShort': 'AI', 'ai.entryHint': 'เพิ่มวิชา เกณฑ์การให้คะแนน หรือคะแนนจากภาพหน้าจอ เสียง หรือข้อความ ตรวจสอบก่อนบันทึก', 'ai.nav': 'AI',
+  'ai.btn': 'ผู้ช่วย AI', 'ai.title': 'GradeSpace AI', 'ai.entry': 'เพิ่มข้อมูลด้วย AI', 'ai.entryShort': 'AI', 'ai.entryHint': 'เพิ่มวิชา เกณฑ์เกรด และคะแนน ตรวจสอบก่อนบันทึก', 'ai.nav': 'AI',
   'ai.intro': 'ส่งภาพหน้าจอคะแนน วางคะแนนจาก MyCourseVille หรือพิมพ์คะแนนได้เลย ระบบจะให้คุณตรวจรายการก่อนบันทึกเสมอ',
   'ai.scanT': 'สแกนภาพหน้าจอ', 'ai.scanP': 'อ่านวิชาและคะแนนจากหลายภาพพร้อมกัน',
   'ai.pasteT': 'วางคะแนนจาก MyCourseVille', 'ai.pasteP': 'คัดลอกตารางคะแนนมาวาง แล้วตรวจทีละแถว',
@@ -3615,7 +3629,7 @@ th: {
   'connect.title': 'ใช้ GradeSpace ผ่าน ChatGPT หรือ Claude', 'connect.soon': 'เร็ว ๆ นี้', 'connect.with': 'เชื่อม {n}',
   'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
   'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
-  'askai.how1': 'กดเลือก AI ด้านล่าง ระบบจะคัดลอกคำสั่งให้อัตโนมัติ แล้ววางเป็นข้อความแรกในแชต', 'askai.how2': 'จากนั้นส่งภาพหน้าจอ ข้อความเสียง หรือพิมพ์บอกได้เลย เช่น “มิดเทอมเศรษฐศาสตร์ได้ 24/30” “มีวิชาใหม่ 2603111” “วิชานี้มิดเทอม 30% ไฟนอล 40%…”', 'askai.how3': 'คัดลอกคำตอบของ AI ทั้งหมด กลับมาวางในขั้นที่ 2 คุณตรวจทุกอย่างก่อนบันทึก', 'askai.copyFail': 'คัดลอกอัตโนมัติไม่ได้ กดค้างที่ข้อความด้านล่างเพื่อคัดลอก แล้วค่อยเปิด AI', 'askai.copyOpen': 'คัดลอกแล้วเปิด {n}', 'askai.showText': 'ดูข้อความที่จะถูกคัดลอก', 'askai.reviewT': 'ตรวจสิ่งที่ AI อ่านได้', 'askai.back': 'วางใหม่', 'askai.title': 'เพิ่มข้อมูลผ่าน ChatGPT, Gemini หรือ Claude', 'askai.step1': '1. ส่งไปที่ AI', 'askai.step2': '2. วางคำตอบ',
+  'askai.how1': 'เลือก AI แล้ววางคำสั่งที่คัดลอกให้', 'askai.how2': 'ส่งภาพหน้าจอ เสียง หรือพิมพ์บอก', 'askai.how3': 'นำคำตอบทั้งหมดมาวางในขั้นที่ 2 แล้วตรวจสอบ', 'askai.copyFail': 'คัดลอกอัตโนมัติไม่ได้ กดค้างที่ข้อความด้านล่างเพื่อคัดลอก แล้วค่อยเปิด AI', 'askai.copyOpen': 'คัดลอกแล้วเปิด {n}', 'askai.showText': 'ดูข้อความที่จะถูกคัดลอก', 'askai.reviewT': 'ตรวจสิ่งที่ AI อ่านได้', 'askai.back': 'วางใหม่', 'askai.title': 'เพิ่มข้อมูลด้วย AI', 'askai.step1': '1. ส่งไปที่ AI', 'askai.step2': '2. วางคำตอบ',
   'askai.cardT': 'ใช้ AI ของคุณได้เลยตอนนี้ (แพ็กเกจฟรีก็ได้)', 'askai.cardP': 'คัดลอกวิชาเทอมนี้ไปถาม ChatGPT หรือ Claude ได้ทุกเรื่อง แล้ววางคำตอบกลับมาเพื่อบันทึกคะแนนใหม่', 'askai.cardBtn': 'ถาม AI ของคุณ',
   'askai.copyIntro': 'คัดลอกข้อความนี้ไปวางใน ChatGPT หรือ Claude แล้วพิมพ์คำถามต่อท้าย', 'askai.copy': 'คัดลอกข้อความ', 'askai.copiedBtn': 'คัดลอกแล้ว ✓', 'askai.copied': 'คัดลอกแล้ว ไปวางใน AI ได้เลย',
   'askai.openGpt': 'เปิด ChatGPT', 'askai.openClaude': 'เปิด Claude', 'askai.next': 'ได้คำตอบแล้ว? วางที่นี่',
@@ -3647,16 +3661,16 @@ th: {
   'space.q': 'สลับไป{u}?', 'space.body': 'แต่ละมหาวิทยาลัยมีพื้นที่ของตัวเอง วิชาของ{a} {n} วิชาจะถูกเก็บแยกไว้ ไม่ได้ลบ',
   'space.back': 'วิชาที่เคยบันทึกไว้ที่นั่น {n} วิชาจะกลับมา', 'space.new': 'ที่นั่นจะเริ่มจากพื้นที่ว่าง', 'space.go': 'สลับ',
   'space.switched': 'ตอนนี้ใช้พื้นที่ของ{u}', 'space.note': 'แต่ละมหาวิทยาลัยเก็บวิชาและคะแนนแยกกัน สลับไปมาได้ ไม่มีอะไรถูกลบ',
-  'wi.title': 'ลองสมมติเกรด: GPA จะเป็นเท่าไหร่?', 'wi.sub': 'เลือกเกรดที่คิดว่าจะได้ของแต่ละวิชาใน {s} ไม่บันทึกอะไรทั้งนั้น', 'wi.none': '— ไม่นับ',
+  'wi.title': 'ลองสมมติเกรด', 'wi.sub': '{s} · ไม่บันทึกผล', 'wi.none': '— ไม่นับ',
   'wi.outOfReach': '(ไม่ทันแล้ว)', 'wi.reset': 'กลับไปใช้ค่าคาดการณ์', 'wi.goalT': 'อยากได้ GPA', 'wi.term': 'เทอมนี้', 'wi.solve': 'หาชุดเกรด',
   'wi.impossible': 'ไม่ทันได้ {t} แล้ว สูงสุดที่ยังเป็นไปได้คือ {b}', 'wi.secured': 'ได้ {t} แน่นอน ต่อให้ได้เกรดต่ำสุดทุกวิชา ({w})',
   'wi.set.even': 'ได้เท่ากันทุกวิชา', 'wi.set.near': 'เปลี่ยนจากตอนนี้น้อยที่สุด', 'wi.set.heavy': 'เน้นวิชาหน่วยกิตเยอะ', 'wi.set.focus': 'ทุ่มบางวิชา ปล่อยบางวิชา', 'wi.use': 'ลองชุดนี้',
   'wi.note': 'เกรดจริงที่บันทึกแล้วไม่เปลี่ยน “ไม่ทันแล้ว” หมายถึงคะแนนที่มีอยู่ไปไม่ถึงเกรดนั้นตามเกณฑ์ของวิชา', 'wi.link': 'ลองสมมติเกรด',
   'plan.btnShort': 'ตามสาขา', 'dash.coursesS': '{n} วิชา · เรียน {p}', 'dash.gradedS': 'ตรวจ {g}/{n} งาน', 'dash.creditsS': 'ได้ {n} นก.',
-  'hub2.aiH': 'ใช้กับ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'เพิ่มข้อมูลผ่าน ChatGPT, Gemini หรือ Claude', 'hub2.askP': 'ใช้ภาพหน้าจอ เสียง หรือข้อความเพื่อเพิ่มวิชา เกณฑ์การให้คะแนน และคะแนน แล้วนำคำตอบกลับมาวางที่นี่',
+  'hub2.recommended': 'แนะนำ', 'hub2.aiH': 'ใช้ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'เพิ่มข้อมูลด้วย AI', 'hub2.askP': 'ส่งภาพ เสียง หรือข้อความ',
   'hub2.gptT': '@GradeSpace ใน ChatGPT', 'hub2.gptP': 'เชื่อมตรง ไม่ต้องคัดลอก', 'hub2.claudeT': 'GradeSpace ใน Claude', 'hub2.claudeP': 'เพิ่มเป็นตัวเชื่อม',
-  'hub2.scanP': 'อัปโหลดภาพโดยตรงที่นี่ ไม่ต้องสลับแอป แล้วตรวจสอบผลก่อนบันทึก', 'hub2.pasteP': 'วางตารางคะแนน', 'hub2.quickP': 'พิมพ์คะแนนทีละรายการ',
-  'hub2.note': 'หากใช้ AI ภายนอก ให้คัดลอกคำสั่งและนำคำตอบกลับมาวาง ส่วนสแกนภาพทำได้โดยตรงในเว็บ คุณต้องยืนยันทุกครั้งก่อนบันทึก',
+  'hub2.scanP': 'อัปโหลดภาพในเว็บ', 'hub2.pasteP': 'วางตารางคะแนน', 'hub2.quickP': 'พิมพ์คะแนนทีละรายการ',
+  'hub2.note': 'ตรวจสอบและยืนยันก่อนบันทึกทุกครั้ง',
   'tup.title': 'เลือกวิชาธรรมศาสตร์', 'tup.intro': 'ติ๊กวิชาแล้วเพิ่มเข้าเทอมที่เลือก หมวด GenEd อ้างอิงหลักสูตรวิชาศึกษาทั่วไป 2566 ส่วนหมวดวิชาอ้างอิงรายวิชา TBS BBA',
   'tup.ac': 'บัญชี', 'tup.fn': 'การเงิน', 'tup.is': 'ระบบสารสนเทศ', 'tup.mg': 'การจัดการ', 'tup.toTerm': 'เพิ่มเข้าเทอม', 'tup.noTerm': 'เพิ่มชั้นปี/เทอมก่อน',
   'tup.add': 'เพิ่ม {n} วิชา', 'tup.added': 'เพิ่ม {n} วิชาแล้ว', 'tup.note': 'เป็นรายชื่อวิชา ไม่ใช่แผนการเรียนทางการ โปรดตรวจประเภทวิชา วิชาบังคับก่อน และการเปิดสอนกับคณะ',
@@ -3705,8 +3719,8 @@ th: {
   'plan.nCourses': '{n} วิชา',
   'plan.sourceShort': 'รายวิชาจากแผนการเรียนของคณะ ปีการศึกษา 2569',
   'eg': 'เช่น {v}',
-  'creditsRegisteredSub': 'ทุกวิชาที่ลง ไม่รวมวิชาที่ถอน',
-  'creditsRegistered': 'หน่วยกิตที่ลงทะเบียน',
+  'creditsRegisteredSub': 'ไม่รวมวิชาที่ถอน',
+  'creditsRegistered': 'หน่วยกิตที่ลง',
   'official.done': 'บันทึกเกรดจริงแล้ว: {g} เปลี่ยนได้ที่ปุ่ม “แก้เกรดจริง”',
   'official.withdrawn': 'ถอนรายวิชาแล้ว ({g}) วิชานี้ไม่นับใน GPA และไม่ต้องตั้งเป้าหรือจำลองคะแนนอีก',
   'goal.examAssumes': 'คิดว่างานอื่นที่ยังไม่มีคะแนน ได้เท่างานแบบเดียวกันที่ตรวจแล้ว ({p}%)',
@@ -3944,7 +3958,7 @@ th: {
   'performance': 'ผลงานในส่วนที่ตรวจแล้ว', 'maxPossible': 'คะแนนสูงสุดที่เป็นไปได้', 'expectedFinal': 'คะแนนรวมที่คาดว่าจะได้',
   'start.kicker': 'วิชาของฉัน · เริ่มตรงนี้',
   'start.title': 'เริ่มเพิ่มวิชาที่เรียนอยู่',
-  'start.desc': 'กด “เลือกวิชาตามสาขา” แล้วเลือกสาขา ชั้นปี และเทอม จากนั้นติ๊กวิชาที่เรียนอยู่ ระบบจะเพิ่มวิชาให้ในหน้าวิชาของฉันโดยอัตโนมัติ',
+  'start.desc': 'เลือกสาขา ชั้นปี เทอม และวิชาที่เรียน',
   'start.stepsLabel': 'ขั้นตอนเลือกวิชา',
   'start.step1': 'เลือกสาขา', 'start.step2': 'เลือกปีและเทอม', 'start.step3': 'ติ๊กวิชาที่เรียนอยู่',
   'start.manual': 'หรือเพิ่มวิชาเอง',
@@ -3952,7 +3966,7 @@ th: {
   'start.goCourses': 'ไปที่วิชาของฉัน',
   'emptyStartT': 'เริ่มจากวิชาเดียวก่อน', 'emptyStartP': 'เพิ่มวิชาที่เรียนอยู่ กรอกงานและน้ำหนักคะแนน แล้ว GradeSpace จะคำนวณให้ว่าตอนนี้คุณอยู่ตรงไหน',
   'addFirstCourse': 'เพิ่มวิชาแรก', 'tryDemo': 'ลองใช้ข้อมูลตัวอย่าง', 'addCourse': 'เพิ่มวิชา', 'quickScore': 'กรอกคะแนนด่วน',
-  'viewingSemester': 'กำลังดู', 'curSemGPA': 'GPA เทอมนี้', 'cumGPA': 'GPA สะสม (GPAX)', 'cumGPAEst': 'GPA สะสมรวมเกรดคาดการณ์',
+  'viewingSemester': 'กำลังดู', 'curSemGPA': 'GPA เทอมนี้', 'cumGPA': 'GPA สะสม (GPAX)', 'cumGPAEst': 'GPAX รวมคาดการณ์',
   'estX': 'คาดการณ์จากคะแนนปัจจุบัน: {x}', 'confirmedOfN': 'มีเกรดจริงแล้ว {a} จาก {n} วิชา', 'officialOnly': 'นับเฉพาะเกรดจริง',
   'creditsEarned': 'หน่วยกิตที่ได้', 'gpaCreditsX': 'นับใน GPA {n} หน่วยกิต', 'numCourses': 'วิชาในเทอมนี้', 'inProgressX': 'กำลังเรียน {n} วิชา',
   'completedAssess': 'งานที่ได้คะแนนแล้ว', 'ofTotalX': 'จากทั้งหมด {n} ชิ้นในเทอมนี้', 'pendingAssess': 'งานที่รอคะแนน', 'nextX': 'ถัดไป: {name} · {kind} · {d}', 'nothingDue': 'ยังไม่มีกำหนดส่งเร็ว ๆ นี้',
@@ -3966,7 +3980,7 @@ th: {
   'trendEmptyConfirmed': 'บันทึกเกรดจริงของสักวิชาเพื่อดูแนวโน้ม GPA จริง หรือเปลี่ยนเป็น “รวมเกรดคาดการณ์”',
   'upcoming': 'กำลังจะถึง', 'upcomingEmpty': 'ใส่วันส่งงานหรือวันสอบ แล้วจะแสดงที่นี่', 'pastDue': 'เลยกำหนดแล้ว รอกรอกคะแนน', 'today': 'วันนี้', 'inDays': 'อีก {n} วัน', 'enterScore': 'กรอกคะแนน',
   'chartAria': 'กราฟเส้นแสดง GPA รายภาคและ GPA สะสม', 'chartTip': '{s}: รายภาค {a} สะสม {b}', 'chartHint': 'แตะหรือชี้ที่แต่ละภาคเพื่อดูรายละเอียด',
-  'semGPA': 'GPA รายภาค', 'est': 'คาดการณ์', 'withEstimates': 'รวมคาดการณ์', 'gpaCredits': 'หน่วยกิตที่นับ GPA', 'yearGPA': 'GPA ทั้งปี',
+  'semGPA': 'GPA รายภาค', 'est': 'คาดการณ์', 'withEstimates': 'รวมคาดการณ์', 'gpaCredits': 'หน่วยกิต GPA', 'yearGPA': 'GPA ทั้งปี',
   'yearsSub': 'จัดวิชาตามชั้นปีและเทอม เพิ่มได้ไม่จำกัด', 'addYear': 'เพิ่มชั้นปี', 'editYear': 'แก้ไขชั้นปี', 'addSemester': 'เพิ่มเทอม', 'editSemester': 'แก้ไขเทอม',
   'noYearsT': 'ยังไม่มีชั้นปี', 'noYearsP': 'เพิ่มชั้นปีแรก เช่น ปี 1 หรือ 2569 แล้วค่อยเพิ่มเทอมข้างใน',
   'noSemesters': 'ปีนี้ยังไม่มีเทอม', 'noCoursesYet': 'ยังไม่มีวิชา', 'academicLabelShort': 'ปีการศึกษา',
@@ -3978,7 +3992,7 @@ th: {
   'delAssessQ': 'ลบงานนี้?', 'delAssessBody': '{name} และคะแนนของงานนี้จะถูกลบ กดเลิกทำได้ทันทีหลังลบ',
   'delCatQ': 'ลบหมวดนี้?', 'delCatBody': 'ชิ้นงานใน {name} ยังอยู่ และใช้น้ำหนักเดิมในฐานะงานแยกชิ้น',
   'deletedX': 'ลบ {name} แล้ว', 'restored': 'กู้คืนแล้ว', 'undo': 'เลิกทำ', 'saved': 'บันทึกแล้ว', 'delete': 'ลบ', 'edit': 'แก้ไข', 'cancel': 'ยกเลิก', 'save': 'บันทึก', 'confirm': 'ยืนยัน', 'close': 'ปิด', 'remove': 'เอาออก', 'next': 'ถัดไป', 'skip': 'ข้าม', 'reset': 'รีเซ็ต', 'all': 'ทั้งหมด',
-  'coursesSub': 'วิชาทั้งหมดที่เพิ่มไว้ แยกตามเทอม', 'allSemesters': 'ทุกเทอม', 'filterSemester': 'กรองตามเทอม', 'searchCourses': 'ค้นหาวิชา เช่น บัญชี, 2601, calc', 'noMatches': 'ไม่พบวิชาที่ค้นหา',
+  'coursesSub': 'รายวิชาแยกตามเทอม', 'allSemesters': 'ทุกเทอม', 'filterSemester': 'กรองตามเทอม', 'searchCourses': 'ค้นหาวิชา เช่น บัญชี, 2601, calc', 'noMatches': 'ไม่พบวิชาที่ค้นหา',
   'gradeSummary': 'สรุปคะแนน',
   'warn.over': 'น้ำหนักคะแนนรวมกันได้ {n}% เกิน 100% ตรวจน้ำหนักอีกครั้งเพื่อให้คำนวณเกรดถูกต้อง',
   'warn.under': 'ตอนนี้น้ำหนักรวม {n}% ยังมีอีก {r}% ที่ยังไม่ได้กำหนดให้งานไหน',
@@ -4035,10 +4049,10 @@ th: {
   'simPageSub': 'เลือกวิชา แล้วดูว่าต้องได้คะแนนเท่าไรถึงจะได้เกรดที่ตั้งไว้', 'simEmptyT': 'ยังไม่มีอะไรให้จำลอง', 'simEmptyP': 'เพิ่มวิชาที่ยังมีงานรอคะแนนอยู่',
   'course': 'วิชา', 'openCourse': 'เปิดหน้าวิชา', 'courseNotFound': 'ไม่พบวิชานี้แล้ว',
   'instructor': 'อาจารย์ผู้สอน', 'noneSet': 'ไม่ระบุ',
-  'gpaSub': 'GPA รายภาค รายปี และสะสม ถ่วงน้ำหนักด้วยหน่วยกิต', 'gpaMode': 'เกรดที่นำมาคิด', 'mode.confirmed': 'เกรดจริง', 'mode.estimated': 'รวมเกรดคาดการณ์',
-  'modeNote.confirmed': 'นับเฉพาะวิชาที่บันทึกเกรดจริงแล้ว วิชาที่ยังเรียนอยู่ไม่นับ',
-  'modeNote.estimated': 'นับวิชาที่ยังเรียนอยู่ด้วยเกรดที่คำนวณหรือคาดการณ์ไว้ ข้อมูลเกรดจริงไม่เปลี่ยน',
-  'basedOnX': 'คิดจาก {n} วิชาที่นับ GPA', 'creditsAttempted': 'หน่วยกิตที่ลงทะเบียน', 'targetCGPA': 'GPA เป้าหมาย', 'aboveTarget': 'ถึงเป้าหมายแล้ว', 'belowTargetBy': 'ต่ำกว่าเป้า {n}', 'setBelow': 'ตั้งได้ในส่วนวางแผนด้านล่าง',
+  'gpaSub': 'GPA รายเทอม รายปี และสะสม', 'gpaMode': 'เกรดที่นำมาคิด', 'mode.confirmed': 'เกรดจริง', 'mode.estimated': 'รวมคาดการณ์',
+  'modeNote.confirmed': 'นับเฉพาะวิชาที่มีเกรดจริง',
+  'modeNote.estimated': 'รวมเกรดคาดการณ์ของวิชาที่เรียนอยู่ ไม่เปลี่ยนเกรดจริง',
+  'basedOnX': 'นับ {n} วิชา', 'creditsAttempted': 'หน่วยกิตที่ลงทะเบียน', 'targetCGPA': 'GPA เป้าหมาย', 'aboveTarget': 'ถึงเป้าหมายแล้ว', 'belowTargetBy': 'ต่ำกว่าเป้า {n}', 'setBelow': 'ตั้งได้ในส่วนวางแผนด้านล่าง',
   'gpaBySemester': 'GPA รายภาค', 'yearBreakdown': 'แยกตามชั้นปี', 'period': 'ชั้นปี / ภาค', 'gpaCol': 'GPA', 'cumulativeCol': 'สะสม', 'coursesCol': 'จำนวนวิชา',
   'goalPlanner': 'วางแผน GPA เป้าหมาย', 'goalPlannerSub': 'คำนวณว่าต่อจากนี้ต้องได้เฉลี่ยเท่าไร ถึงจะได้ GPA ตามเป้า',
   'targetCGPAHint': 'สูงสุด {m}', 'remainingCredits': 'หน่วยกิตที่ยังต้องเรียน', 'remainingHint': 'หลักสูตร {p} หน่วยกิต − นับแล้ว {c} = {s}', 'remainingHint2': 'ใส่หน่วยกิตตลอดหลักสูตรในหน้าตั้งค่า แล้วช่องนี้จะคำนวณให้อัตโนมัติ',
@@ -9245,12 +9259,12 @@ function AiHubModal(p) {
   var firstOpen = state.courses.find(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); });
   function go(type, props) { closeModal(); openModal(type, props); }
   var row = function (o) {
-    return html`<button key=${o.k} type="button" className="me-row hub-row" data-testid=${o.tid || null} disabled=${!!o.off} aria-disabled=${o.soon ? 'true' : null} onClick=${o.soon ? null : o.run}>
-      <${Icon} n=${o.icon} /><span className="grow"><b>${o.title}</b><span className="tiny muted">${o.sub}</span></span>
+    return html`<button key=${o.k} type="button" className=${"me-row hub-row"+(o.recommended?" hub-recommended":"")} data-testid=${o.tid || null} disabled=${!!o.off} aria-disabled=${o.soon ? 'true' : null} onClick=${o.soon ? null : o.run}>
+      <${Icon} n=${o.icon} /><span className="grow">${o.recommended && html`<span className="hub-recommend-label" data-testid="ai-recommended">${t('hub2.recommended')}</span>`}<b>${o.title}</b>${o.recommended && html`<span className="hub-providers">ChatGPT · Gemini · Claude</span>`}<span className="tiny muted">${o.sub}</span></span>
       ${o.soon ? html`<span className="connect-soon">${t('connect.soon')}</span>` : html`<${Icon} n="chevronRight" />`}</button>`;
   };
   var ai = [
-    { k: 'ask', tid: 'askai-open', icon: 'clipboard', title: t('hub2.askT'), sub: t('hub2.askP'), run: function () { go('askAi', { semesterId: cur && cur.id }); } },
+    { k: 'ask', tid: 'askai-open', recommended: true, icon: 'spark', title: t('hub2.askT'), sub: t('hub2.askP'), run: function () { go('askAi', { semesterId: cur && cur.id }); } },
     { k: 'gpt', tid: 'connect-gpt', icon: 'link', title: t('hub2.gptT'), sub: t('hub2.gptP'), soon: true },
     { k: 'claude', tid: 'connect-claude', icon: 'link', title: t('hub2.claudeT'), sub: t('hub2.claudeP'), soon: true }
   ];
@@ -9261,9 +9275,9 @@ function AiHubModal(p) {
   ];
   return html`<${Modal} title=${t('aihub.title')} onClose=${closeModal}>
     <div data-testid="ai-hub">
-      <p className="small muted" style=${{ margin: '0 0 12px' }}>${t('ai.entryHint')}</p>
+      <p className="small muted hub-intro">${t('ai.entryHint')}</p>
       <h2 className="me-h" style=${{ marginTop: 0 }}>${t('hub2.aiH')}</h2>
-      <div className="card me-list" data-testid="connect-card">${ai.map(row)}</div>
+      <div className="card me-list hub-ai-card" data-testid="connect-card">${ai.map(row)}</div>
       <h2 className="me-h">${t('hub2.toolsH')}</h2>
       <div className="card me-list hub-tools">${tools.map(row)}</div>
       <p className="tiny muted" style=${{ margin: '12px 4px 0' }}>${t('hub2.note')}</p>
@@ -9841,7 +9855,7 @@ function App() {
     <aside className="side" aria-label=${t('mainNav')}>
       <a className="brand" href="#dashboard"><${Logo} /><div><div className="brand-name">Grade<span className="brand-name-accent">Space</span></div><div className="brand-tag">${t('taglineShort')}</div></div></a>
       ${NAV.map(function (n, i) { var head = n.group && (!NAV[i - 1] || NAV[i - 1].group !== n.group) ? html`<div className="nav-group" key=${'g' + n.group}>${t(n.group)}</div>` : null;
-        return [head, html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`, n.id === 'gpa' ? html`<button key="ai" type="button" className="nav-item" data-testid="sidebar-ai" title=${t('ai.entryHint')} onClick=${function () { try { localStorage.setItem(AI_FAB_INTRO_KEY, '1'); } catch (e) { /* ignore */ } openModal('chat', {}); }}><${Icon} n="spark" />${t('ai.nav')}</button>` : null]; })}
+        return [head, html`<a key=${n.id} className="nav-item" href=${'#' + n.id} aria-current=${active === n.id ? 'page' : null}><${Icon} n=${n.icon} />${navLabel(n)}</a>`, n.id === 'gpa' ? html`<button key="ai" type="button" className="nav-item nav-ai-main" data-testid="sidebar-ai" title=${t('ai.entryHint')} onClick=${function () { try { localStorage.setItem(AI_FAB_INTRO_KEY, '1'); } catch (e) { /* ignore */ } openModal('chat', {}); }}><${Icon} n="spark" />${t('ai.nav')}</button>` : null]; })}
       <div className="side-foot">${state.settings.university ? html`<div style=${{ fontWeight: 600, color: 'var(--ink-2)' }}>${state.settings.university}</div>` : null}${S.web && S.web.user ? S.web.user.email : (S.cloud ? t('store.accountShort') : t('store.deviceShort'))}</div>
     </aside>
     <div className="main">

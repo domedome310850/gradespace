@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: compact GPA and recommended AI UI
+
+- Give GPA metrics and what-if card 20px (16px on phones) separation. Highlight the permanent desktop AI menu using the institution accent. Promote the external AI import as recommended; use short heading, separate provider line and concise bilingual instructions. Shorten GPA, course and AI copy without clipping safety or review information. Extend smoke checks for spacing and AI entry at 320/768/1024px. CI pending.
+
 ## 2026-11-26 — ChatGPT: unify AI entry points
 
 - Add permanent AI menu after GPA in the desktop sidebar; hiding the floating shortcut never removes sidebar access. Replace the standalone course screenshot shortcut with Add with AI, including the empty course state. Explain screenshot, voice and text import and distinguish external AI from direct in-app scanning. Preserve selected semester through the AI hub and external AI review. Existing mobile AI navigation and scanning remain. Browser smoke coverage added; CI pending.

@@ -112,6 +112,19 @@ async function run(browser, lang, width) {
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
   await page.getByTestId('ai-hub').waitFor();
   if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card missing');
+  const recommended=page.getByTestId('askai-open');
+  if(!(await recommended.getByTestId('ai-recommended').isVisible())) errors.push('recommended AI label missing');
+  if(!(await recommended.innerText()).includes('ChatGPT · Gemini · Claude')) errors.push('recommended providers missing');
+  if(!(await recommended.evaluate(el=>el.classList.contains('hub-recommended')))) errors.push('recommended AI styling missing');
+  if(width>900&&!(await page.getByTestId('sidebar-ai').evaluate(el=>el.classList.contains('nav-ai-main')))) errors.push('desktop AI emphasis missing');
+  if(width===390){
+    for(const w of [320,768,1024]){
+      await page.setViewportSize({width:w,height:1024});
+      if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1))errors.push('AI hub viewport overflow at '+w);
+      if(!(await recommended.isVisible()))errors.push('recommended AI missing at '+w);
+    }
+    await page.setViewportSize({width,height:900});
+  }
   if(!(await page.getByTestId('connect-gpt').isVisible())||!(await page.getByTestId('connect-claude').isVisible())) errors.push('AI hub should list ChatGPT and Claude');
   if(await page.locator('.chat-input').count()) errors.push('GradeSpace should not have its own chat');
   if(await page.locator('[data-testid="ai-hub"] .hub-tools .hub-row').count()!==3) errors.push('AI hub should keep 3 tools');
@@ -191,6 +204,8 @@ async function run(browser, lang, width) {
   // What-if grades on the GPA page (nothing saved).
   await page.evaluate(()=>{location.hash='gpa';}); await page.waitForTimeout(300);
   const wi=page.getByTestId('whatif'); await wi.waitFor();
+  const gpaGap=await page.evaluate(()=>{const m=document.querySelector('.gpa-metrics'),w=document.querySelector('.whatif');return w.getBoundingClientRect().top-m.getBoundingClientRect().bottom;});
+  if(gpaGap<15)errors.push('GPA metrics and what-if card touch: '+gpaGap);
   const wiBefore=await page.evaluate(()=>JSON.stringify(GradeSpace.S.state.courses.map(c=>c.finalGrade||null)));
   const sels=wi.locator('.whatif-row select'); const nSel=await sels.count();
   if(nSel<3) errors.push('what-if should list this term\'s courses');
