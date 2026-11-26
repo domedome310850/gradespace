@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GradeSpace</title>
 <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#4F46E5">
+<meta name="theme-color" content="#F7F8FA">
 <link rel="apple-touch-icon" href="/app-icon.svg">
 <meta name="description" content="GradeSpace – ติดตามคะแนน คำนวณเกรด และวางแผน GPA">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%20%3Cdefs%3E%20%20%3ClinearGradient%20id%3D%22gsGradient%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%238C71FE%22%2F%3E%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%236654E8%22%2F%3E%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%233F51C9%22%2F%3E%20%20%3C%2FlinearGradient%3E%20%3C%2Fdefs%3E%20%3Crect%20width%3D%2248%22%20height%3D%2248%22%20rx%3D%2214%22%20fill%3D%22url%28%23gsGradient%29%22%2F%3E%20%3Cpath%20d%3D%22M33.7%2018.5A12%2012%200%201%200%2035%2030.8V25.2H25.5%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%20%3Ccircle%20cx%3D%2234.8%22%20cy%3D%2212.6%22%20r%3D%223%22%20fill%3D%22%23C5ECFF%22%2F%3E%3C%2Fsvg%3E">
@@ -14,12 +14,12 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>:root {
   color-scheme: light;
-  --bg: #F7F7FB; --surface: #FFFFFF; --surface-2: #F2F1FA; --surface-3: #E9E7F7;
-  --line: #E5E3F0; --line-strong: #D2CFE5;
-  --ink: #1D1B36; --ink-2: #47456A; --muted: #75739A;
+  --bg: #F7F8FA; --surface: #FFFFFF; --surface-2: #F1F3F5; --surface-3: #E8EBEF;
+  --line: #E3E6EA; --line-strong: #CCD2D9;
+  --ink: #20212B; --ink-2: #454B57; --muted: #646B78;
   --accent: #4F46E5; --accent-hover: #4338CA; --accent-ink: #FFFFFF; --accent-soft: #ECEBFF; --accent-text: #4338CA;
-  --lav: #A5A0F5; --sky: #4C9BEA; --sky-soft: #E2EFFD;
-  --earned: #4F46E5; --lost: #DCD9EE; --pending-a: #CFE3FB; --pending-b: #E6F0FD;
+  --lav: #A2B0C5; --sky: #286795; --sky-soft: #EAF2FA;
+  --earned: #526B88; --lost: #DCE1E7; --pending-a: #DFE7F0; --pending-b: #F0F3F7;
   --ok: #157A52; --ok-soft: #E2F4EB; --warn: #9A5B00; --warn-soft: #FFF2DA; --bad: #BF3434; --bad-soft: #FCE7E7;
   --shadow: 0 1px 2px rgba(29,27,54,.05), 0 6px 18px -8px rgba(29,27,54,.10);
   --shadow-lg: 0 20px 60px -20px rgba(29,27,54,.35);
@@ -37,8 +37,8 @@
     --line: #2A2F38; --line-strong: #3A404B;
     --ink: #E8EBF0; --ink-2: #C3C8D1; --muted: #8D95A3;
     --accent: #78A9F5; --accent-hover: #93BBF8; --accent-ink: #0C1424; --accent-soft: #1A2638; --accent-text: #9CC2FA;
-    --lav: #5D7EAE; --sky: #6CC6D4; --sky-soft: #142D33;
-    --earned: #78A9F5; --lost: #343A45; --pending-a: #233449; --pending-b: #1A2636;
+    --lav: #8299B7; --sky: #8FC5EE; --sky-soft: #1D3041;
+    --earned: #9BB2CE; --lost: #343A45; --pending-a: #303B49; --pending-b: #252E39;
     --ok: #5CC795; --ok-soft: #142A20; --warn: #E5B055; --warn-soft: #2D2413; --bad: #EF8080; --bad-soft: #331B1D;
     --c-indigo: #7E8CF0; --c-blue: #5E9EF0; --c-teal: #3EBFB2; --c-green: #63B86F; --c-amber: #E0A43A; --c-rose: #E87595; --c-violet: #A983E8; --c-slate: #8B95AE;
     --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
@@ -51,8 +51,8 @@
   --line: #2A2F38; --line-strong: #3A404B;
   --ink: #E8EBF0; --ink-2: #C3C8D1; --muted: #8D95A3;
   --accent: #78A9F5; --accent-hover: #93BBF8; --accent-ink: #0C1424; --accent-soft: #1A2638; --accent-text: #9CC2FA;
-  --lav: #5D7EAE; --sky: #6CC6D4; --sky-soft: #142D33;
-  --earned: #78A9F5; --lost: #343A45; --pending-a: #233449; --pending-b: #1A2636;
+  --lav: #8299B7; --sky: #8FC5EE; --sky-soft: #1D3041;
+  --earned: #9BB2CE; --lost: #343A45; --pending-a: #303B49; --pending-b: #252E39;
   --ok: #5CC795; --ok-soft: #142A20; --warn: #E5B055; --warn-soft: #2D2413; --bad: #EF8080; --bad-soft: #331B1D;
   --c-indigo: #7E8CF0; --c-blue: #5E9EF0; --c-teal: #3EBFB2; --c-green: #63B86F; --c-amber: #E0A43A; --c-rose: #E87595; --c-violet: #A983E8; --c-slate: #8B95AE;
   --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.6);
@@ -105,21 +105,13 @@ a { color: var(--accent-text); }
 .brand-name{display:flex;align-items:baseline;gap:5px}
 .brand-word{white-space:nowrap}
 .brand-campus{font:inherit;letter-spacing:inherit;color:var(--accent-text);flex:none}
-:root[data-uni="cu"] .brand-name-accent{color:var(--accent-text)}
-:root[data-uni="cu"] .brand-campus{color:#921B51}
-:root[data-uni="cu"][data-theme="dark"] .brand-campus{color:#E45B9B}
-@media(prefers-color-scheme:dark){:root[data-uni="cu"]:not([data-theme="light"]) .brand-campus{color:#E45B9B}}
-:root[data-uni="tu"] .brand-name-accent{color:#946900}
-:root[data-uni="tu"] .brand-campus{color:#C3002F}
-:root[data-uni="tu"][data-theme="dark"] .brand-name-accent{color:#FFD13F}
-:root[data-uni="tu"][data-theme="dark"] .brand-campus{color:#EF536C}
-@media(prefers-color-scheme:dark){:root[data-uni="tu"]:not([data-theme="light"]) .brand-name-accent{color:#FFD13F}:root[data-uni="tu"]:not([data-theme="light"]) .brand-campus{color:#EF536C}}
+.brand-name-accent{color:inherit}
+:root[data-uni] .brand-campus{color:var(--accent-text)}
 .side .brand{padding-inline:4px;gap:8px}
 .side .brand-name{font-size:18px}
 .brand-mark,.brand:hover .brand-mark{box-shadow:0 4px 11px color-mix(in srgb,var(--accent) 22%,transparent)}
 .auth-card .auth-brand-row{flex-wrap:wrap;gap:12px}
 @media(max-width:560px){.topbar .brand{gap:6px}.topbar .brand-mark{width:32px;height:32px;border-radius:10px}.topbar .brand-name{font-size:16px;gap:3px}}
-:root[data-uni="cu"] .nav-ai-dot,:root[data-uni="cu"] .ai-fab{background:linear-gradient(135deg,#F178AD,#D52B79 55%,#A51A60);box-shadow:0 6px 18px rgba(213,43,121,.30),0 0 0 4px var(--surface)}
 .brand:hover .brand-mark { box-shadow: 0 6px 14px rgba(79,70,229,.24); }
 .auth-card .brand-mark { width: 44px; height: 44px; border-radius: 15px; }
 .auth-card .brand-name { font-size: 22px; }
@@ -366,8 +358,9 @@ button.dashboard-cal-cell { cursor:pointer; }
 .metric .m-label { font-size: 12.5px; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 5px; line-height: 1.35; }
 .metric .m-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-top: 6px; font-variant-numeric: tabular-nums; }
 .metric .m-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
-.metric.hero { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.metric.hero .m-label, .metric.hero .m-sub { color: color-mix(in srgb, var(--accent-ink) 78%, transparent); }
+.metric.hero { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
+.metric.hero .m-label, .metric.hero .m-sub { color: var(--ink-2); }
+.metric.hero .m-value { color: var(--accent-text); }
 
 /* ---------- grade bar (signature element) ---------- */
 .gbar { position: relative; }
@@ -855,7 +848,6 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .bottomnav .nav-ai{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;font:inherit;font-size:11px;color:var(--accent-text);cursor:pointer;padding:0 2px;margin-top:-18px}
 .bottomnav .nav-ai,.bottomnav .nav-ai:focus,.bottomnav .nav-ai:focus-visible{outline:none;border:0;box-shadow:none;background:none}.bottomnav .nav-ai:focus:not(:focus-visible){outline:none}.bottomnav .nav-ai:focus-visible .nav-ai-dot{outline:3px solid var(--accent-text);outline-offset:2px}
 .nav-ai-dot{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#8C71FE,#6654E8 55%,#3F51C9);box-shadow:0 6px 18px rgba(79,70,229,.4),0 0 0 4px var(--surface)}
-:root[data-uni="tu"] .nav-ai-dot{background:linear-gradient(135deg,#D9485C,#BC3346 55%,#8E1F2F);box-shadow:0 6px 18px rgba(188,51,70,.4),0 0 0 4px var(--surface)}
 @media(max-width:900px){.ai-fab-wrap .ai-fab,.ai-fab-wrap .ai-fab-x{display:none}.ai-fab-wrap{left:50%;right:auto;transform:translateX(-50%);align-items:center;bottom:calc(84px + env(safe-area-inset-bottom,0px))}.ai-fab-intro::after{right:calc(50% - 6px)}}
 .chat{display:flex;flex-direction:column;gap:10px;min-height:min(70vh,560px)}
 .chat-quick{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}.chat-q{display:flex;align-items:center;gap:6px;flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}.chat-q:disabled{opacity:.5;cursor:default}.chat-q .ic{color:var(--accent-text)}
@@ -967,9 +959,6 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 /* Thammasat GenEd picker (2026-11-26). */
 .tuge-group h3{font-size:14px;margin:16px 0 4px;color:var(--accent-text)}.tuge-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
 :root[data-uni="tu"] .brand-mark{box-shadow:0 4px 11px rgba(195,0,47,.20)}
-:root[data-uni="tu"] .ai-fab{background:linear-gradient(135deg,#D90038,#C3002F 55%,#8C0022);box-shadow:0 8px 22px rgba(195,0,47,.38),0 0 0 4px color-mix(in srgb,var(--bg) 70%,transparent)}
-:root[data-uni="tu"] .nav-item[aria-current="page"]{border-inline-start:3px solid #FFD13F}
-:root[data-uni="tu"] .metric.hero{border-bottom:4px solid #FFD13F}
 :root[data-uni="tu"] [data-testid="tu-academic"] progress{accent-color:var(--accent)}
 .me-signout{width:100%;text-align:start;cursor:pointer;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);color:var(--bad);margin-top:12px;font-weight:600}
 .me-signout:hover{background:var(--bad-soft)}
@@ -1013,6 +1002,9 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 .cmd-list{display:grid;gap:2px;margin-top:10px;max-height:min(55vh,420px);overflow:auto}.cmd-group{font-size:11.5px;font-weight:650;color:var(--muted);margin:8px 6px 2px}
 .cmd-item{display:flex;gap:10px;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:9px;background:none;text-align:left;cursor:pointer;color:var(--ink)}
 .cmd-item[aria-selected="true"],.cmd-item:hover{background:var(--accent-soft);color:var(--accent-text)}.cmd-item small{margin-left:auto;color:var(--muted);font-size:12px}
+/* GradeSpace shared neutral UI; campus color is reserved for actions and selection. */
+:root[data-uni] .nav-ai-dot,:root[data-uni] .ai-fab{background:var(--accent);color:var(--accent-ink);box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 20%,transparent),0 0 0 3px var(--surface)}
+:root[data-uni] .nav-item[aria-current="page"]{background:var(--accent-soft);color:var(--accent-text)}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -1041,11 +1033,11 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 .credit-row:first-of-type { border-top: 0; padding-top: 0; }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .metric.hero { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--ink); }
+  :root:not([data-theme="light"]) .metric.hero { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
   :root:not([data-theme="light"]) .metric.hero .m-label, :root:not([data-theme="light"]) .metric.hero .m-sub { color: var(--ink-2); }
   :root:not([data-theme="light"]) .metric.hero .m-value { color: var(--accent-text); }
 }
-:root[data-theme="dark"] .metric.hero { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--ink); }
+:root[data-theme="dark"] .metric.hero { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
 :root[data-theme="dark"] .metric.hero .m-label, :root[data-theme="dark"] .metric.hero .m-sub { color: var(--ink-2); }
 :root[data-theme="dark"] .metric.hero .m-value { color: var(--accent-text); }
 
@@ -4663,25 +4655,26 @@ function tuCode(code) { var v=String(code||'').toUpperCase().replace(/\s+/g,'');
       .slice(0, limit || 8).map(function (x) { return Object.assign({}, x); });
   };
 })();
-// Thammasat red/gold accent (contrast-checked; helpers adapted from PR #18). Chula keeps the default look.
+// Shared neutral UI with contrast-checked campus accents (helpers adapted from PR #18).
 function uniMix(a, b, k) { var o = '#'; for (var i = 1; i < 7; i += 2) o += Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - k) + parseInt(b.slice(i, i + 2), 16) * k).toString(16).padStart(2, '0'); return o; }
 function uniLum(hex) { var c = [1, 3, 5].map(function (i) { var v = parseInt(hex.slice(i, i + 2), 16) / 255; return v <= .04045 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; }
 function uniContrast(a, b) { var x = uniLum(a), y = uniLum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); }
 function uniReadable(col, bg, dark) { for (var i = 0; i < 30 && uniContrast(col, bg) < 4.5; i++) col = uniMix(col, dark ? '#FFFFFF' : '#000000', .16); return col; }
 function applyUniTheme(uni, dark) {
-  var el = document.documentElement, keys = ['--accent', '--accent-hover', '--accent-ink', '--accent-soft', '--accent-text', '--uni-secondary', '--earned', '--lav', '--sky', '--sky-soft', '--pending-a', '--pending-b'];
-  if (uni !== 'tu') {
-    var cbg=dark?'#171A20':'#FFFFFF', pink='#C02570', ca=dark?uniReadable('#E45B9B',cbg,true):pink, cs=uniMix(cbg,pink,dark?.23:.09);
-    var ct=uniReadable(dark?'#F5A4CC':pink,cs,dark), ci=uniContrast(ca,'#000000')>=uniContrast(ca,'#FFFFFF')?'#000000':'#FFFFFF', ch=uniMix(ca,dark?'#FFFFFF':'#000000',.10);
-    if(uniContrast(ch,ci)<4.5)ch=ca;
-    var cv={'--accent':ca,'--accent-hover':ch,'--accent-ink':ci,'--accent-soft':cs,'--accent-text':ct,'--uni-secondary':'#F5A4CC','--earned':ca,'--lav':dark?'#C985AC':'#E9A0C4','--sky':dark?'#F5A4CC':'#A63F76','--sky-soft':dark?'#392434':'#FCE8F2','--pending-a':dark?'#492A3D':'#F6CDE2','--pending-b':dark?'#36232F':'#FCEAF3'};
-    keys.forEach(function(k){el.style.setProperty(k,cv[k]);});el.setAttribute('data-uni','cu');var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#171A20':pink;return;
-  }
-  var bg = dark ? '#171A20' : '#FFFFFF', soft = uniMix(bg, '#C3002F', dark ? .21 : .09), a = dark ? uniReadable('#C3002F', bg, true) : '#C3002F', txt = dark ? '#FFD13F' : uniReadable(a, soft, false);
-  var ink = uniContrast(a, '#000000') >= uniContrast(a, '#FFFFFF') ? '#000000' : '#FFFFFF', hover = uniMix(a, dark ? '#FFFFFF' : '#000000', .10);
-  if (uniContrast(hover, ink) < 4.5) hover = a;
-  var v = { '--accent': a, '--accent-hover': hover, '--accent-ink': ink, '--accent-soft': soft, '--accent-text': txt, '--uni-secondary': '#FFD13F', '--earned': a, '--lav': '#FFD13F', '--sky': dark ? '#FFD13F' : '#D6A800', '--sky-soft': dark ? '#3C3219' : '#FFF3C2', '--pending-a': dark ? '#55451A' : '#FFE582', '--pending-b': dark ? '#342B17' : '#FFF4CD' };
-  keys.forEach(function (k) { el.style.setProperty(k, v[k]); }); el.setAttribute('data-uni', 'tu'); var meta=document.querySelector('meta[name="theme-color"]'); if(meta)meta.content=dark?'#171A20':'#C3002F';
+  var el=document.documentElement, tu=uni==='tu', bg=dark?'#171A20':'#FFFFFF';
+  var base=tu?'#B92342':'#C02570';
+  var a=dark?(tu?'#FF8294':'#F08ABC'):base;
+  var soft=uniMix(bg,base,dark?.18:.07);
+  var txt=uniReadable(dark?a:base,soft,dark);
+  var ink=uniContrast(a,'#000000')>=uniContrast(a,'#FFFFFF')?'#000000':'#FFFFFF';
+  var hover=uniMix(a,dark?'#FFFFFF':'#000000',.10);
+  if(uniContrast(hover,ink)<4.5)hover=a;
+  // Reset legacy university-wide chart/status overrides to shared CSS tokens.
+  ['--earned','--lav','--sky','--sky-soft','--pending-a','--pending-b'].forEach(function(k){el.style.removeProperty(k);});
+  var v={'--accent':a,'--accent-hover':hover,'--accent-ink':ink,'--accent-soft':soft,'--accent-text':txt,'--uni-secondary':tu?'#FFD13F':'#F5A4CC'};
+  Object.keys(v).forEach(function(k){el.style.setProperty(k,v[k]);});
+  el.setAttribute('data-uni',tu?'tu':'cu');
+  var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#0F1115':'#F7F8FA';
 }
 function UniPicker(p) {
   return html`<${Seg} label=${t('uni.label')} value=${p.value} onChange=${p.onChange} options=${[{ v: 'cu', l: t('uni.cu') }, { v: 'tu', l: t('uni.tu') }]} />`;

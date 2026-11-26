@@ -177,3 +177,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner-approved TU wordmark: Space yellow/gold, TU red; logo yellow background with red G. CU unchanged. CI pending.
 
 - Owner refinement: CU wordmark Space uses prior pink accent and CU deeper pink, including dark mode. TU wordmark unchanged; restore red-gradient icon with white G and yellow dot. CI pending.
+
+- Owner-approved neutral UI redesign: shared surfaces and chart/status tokens, neutral GradeSpace wordmark and campus-colored suffix, original SVG logos, solid AI accent and neutral GPA hero. Browser CI/visual check pending; do not merge until approved.
