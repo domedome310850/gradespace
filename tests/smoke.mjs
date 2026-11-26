@@ -52,6 +52,18 @@ async function checkCampusPalette(page, uni, errors) {
   if(!valid) errors.push(uni+' should use neutral shared palette and campus-only accents');
 }
 
+async function checkAiColors(page, uni, errors) {
+  const result=await page.evaluate(uni=>{
+    const el=document.querySelector('[data-testid="sidebar-ai"]'), dot=document.querySelector('.nav-ai-dot');
+    if(!el||!dot)return false;
+    const st=getComputedStyle(el), icon=el.querySelector('.ic'), root=getComputedStyle(document.documentElement);
+    const dark=root.colorScheme==='dark';
+    const expected=uni==='tu'?(dark?'rgb(81, 42, 44)':'rgb(140, 29, 44)'):(dark?'rgb(83, 53, 67)':'rgb(132, 80, 106)');
+    return st.color==='rgb(255, 255, 255)'&&icon&&getComputedStyle(icon).color==='rgb(255, 255, 255)'&&st.backgroundColor===expected&&
+      (uni!=='tu'||(getComputedStyle(dot).backgroundColor==='rgb(255, 209, 63)'&&getComputedStyle(dot).color==='rgb(140, 29, 44)'));
+  },uni);
+  if(!result)errors.push(uni+' AI shortcut colors incorrect');
+}
 async function run(browser, lang, width) {
   const errors = [], overflow = [];
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
@@ -77,6 +89,7 @@ async function run(browser, lang, width) {
   await page.locator('#au-student').fill('6940102426');
   await page.locator('#au-student').press('Enter');
   await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-A',{exact:false}).waitFor();
+  await checkAiColors(page,'cu',errors);
   if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='2900111'||String(c.code||'').startsWith('2900111.'));if(!c)return false;const catalog=GradeSpace.catalogSearch('2900111').find(x=>x.code==='2900111');const result=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return !!catalog&&/[A-Za-z]/.test(result)&&!/[\u0E00-\u0E7F]/.test(result)&&result===GradeSpace.standardCourseName(c); })))errors.push('CU English course title should not depend on stored Thai title');
   if(await page.evaluate(()=>window.__studentId!=='6940102426')) errors.push('login did not save student ID');
   if(await page.locator('.side .nav-item').first().getAttribute('href')!=='#dashboard') errors.push('overview is not first menu');
@@ -484,6 +497,7 @@ async function runTU(browser, lang, width) {
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
   if(await page.evaluate(()=>document.documentElement.getAttribute('data-uni'))!=='tu') errors.push('TU theme not applied');
   if(await page.getByTestId('campus-brand').filter({hasText:'TU'}).count()!==2)errors.push('TU workspace wordmarks missing');
+  await checkAiColors(page,'tu',errors);
   if(!(await page.getByTestId('campus-brand').first().evaluate(el=>{const w=el.querySelector('.brand-word'),c=el.querySelector('.brand-campus'),a=getComputedStyle(w),b=getComputedStyle(c);return a.fontSize===b.fontSize&&a.fontWeight===b.fontWeight&&b.backgroundColor==='rgba(0, 0, 0, 0)'&&b.paddingLeft==='0px'&&getComputedStyle(el.querySelector('.brand-name-accent')).color!==b.color;})))errors.push('TU suffix should match brand size without badge and use distinct color');
   if(!(await page.locator('.side .brand-mark').evaluate(el=>el.querySelector('path').getAttribute('stroke')==='#fff'&&el.querySelector('stop[offset="55%"]').getAttribute('stop-color')==='#8C1D2C'&&el.querySelector('circle').getAttribute('fill')==='#FFD13F')))errors.push('TU logo should have red background, white G and yellow dot');
   await checkCampusPalette(page,'tu',errors);
