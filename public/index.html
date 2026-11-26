@@ -2200,6 +2200,14 @@ var Scan = (function () {
     if (byKey.length === 1) return byKey[0];
     return byKey.find(function(c) { return !sectionOf(c); }) || null;
   }
+  function externalMatch(state, course, existing, a) {
+    var matches=existing.filter(function(x){
+      if(norm(hintName(x))!==norm(a.name))return false;
+      if(!a.group)return true;
+      return state.categories.some(function(k){return k.courseId===course.id&&k.id===x.categoryId&&norm(k.name)===norm(a.group);});
+    });
+    return matches.length===1?matches[0]:null;
+  }
   // Summaries shown before importing
   function preview(state, semesterId, courses, loose) {
     return (courses || []).map(function (sc) {
@@ -2209,7 +2217,7 @@ var Scan = (function () {
       return {
         name: sc.name || sc.code || '?', code: sc.code || '', credits: num(sc.credits),
         match: match,
-        rows: items.map(function (a) { return { a: a, hit: match ? matchAssessment(existing, a) : null }; }),
+        rows: items.map(function (a) { return { a: a, hit: match ? (sc._targetId?externalMatch(state,match,existing,a):matchAssessment(existing,a)) : null }; }),
         items: items.length, scored: items.filter(function (a) { return num(a.score) !== null; }).length,
         grading: gradingSummary(sc.grading), rules: scanRules(sc.grading)
       };
@@ -2292,7 +2300,7 @@ var Scan = (function () {
       items.forEach(function (a) {
         var score = num(a.score), max = num(a.max), weight = num(a.weight);
         var cat = a.group ? catFor(a.group) : null;
-        var hit = opts&&opts.external ? existing.find(function(x){return norm(hintName(x))===norm(a.name)&&(!cat||x.categoryId===cat.id);}) : matchAssessment(existing, a);
+        var hit = opts&&opts.external ? externalMatch(state,course,existing,a) : matchAssessment(existing, a);
         if (hit) {
           if (score !== null && score >= 0 && (!(opts&&opts.external)||hit.score==null) && (!(opts&&opts.external)||score<=(hit.max||max||0))) { hit.score = score; hit.status = 'graded'; }
           if (max !== null && max > 0 && (!(opts&&opts.external)||hit.max==null)) hit.max = max;
@@ -9561,7 +9569,7 @@ function AskAiModal(p) {
   function readyTargets(){
     if(!draft||mapping.length!==draft.courses.length)return false;
     var ids=new Set();
-    return mapping.every(function(m){if(m.id==='__new')return !!m.name.trim()&&m.credits!==''&&Number.isFinite(Number(m.credits))&&Number(m.credits)>=0&&Number(m.credits)<=30;
+    return mapping.every(function(m){if(m.id==='__new'){var key='new:'+m.name.trim().toLowerCase();if(ids.has(key)||available.some(function(c){return String(c.name||'').trim().toLowerCase()===m.name.trim().toLowerCase();}))return false;ids.add(key);return !!m.name.trim()&&m.credits!==''&&Number.isFinite(Number(m.credits))&&Number(m.credits)>=0&&Number(m.credits)<=30;}
       if(!m.id||ids.has(m.id)||!available.some(function(c){return c.id===m.id;}))return false;ids.add(m.id);return true;});
   }
   function reviewTargets(){
@@ -9572,7 +9580,7 @@ function AskAiModal(p) {
       if(c)out.assessments=sc.assessments.map(function(a){
         var cats=state.categories.filter(function(k){return k.courseId===c.id;});
         var matches=state.assessments.filter(function(x){var k=cats.find(function(y){return y.id===x.categoryId;});return String(x.name||'').trim().toLowerCase()===a.name.toLowerCase()&&(!a.group||(k&&k.name.toLowerCase()===a.group.toLowerCase()));});
-        if(a.max==null&&matches.length===1&&matches[0].max>0)return Object.assign({},a,{max:matches[0].max,_m:String(matches[0].max)});
+        if(matches.length===1){var old=matches[0];return Object.assign({},a,{max:old.max>0?old.max:a.max,_m:old.max>0?String(old.max):a._m,score:old.score!=null?old.score:a.score,_s:old.score!=null?String(old.score):a._s});}
         return a;
       });
       return out;
