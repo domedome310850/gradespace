@@ -1,3 +1,7 @@
+## 2026-11-26 — ChatGPT: correct TU AI circle colors
+
+- Owner clarified: deep red circle (#8C1D2C), yellow symbol (#FFD13F), not the reverse. Updated mobile AI and desktop FAB, smoke assertion, cache v21. CU and sidebar AI unchanged; CI pending.
+
 ## 2026-11-26 — ChatGPT: fresh Chula two-tone identity
 
 - CU uses rich campus pink (#A71D5D) for primary actions, fresh petal pink (#F4A5C9) with deep pink glyph for circular AI, and pink details for active navigation and GPA. Sidebar AI retains white label/icon with a richer pink background. Neutral surfaces/status cards and original logos remain; TU yellow/red AI refinement unchanged. Smoke assertions and cache v20. Device review/CI pending.
