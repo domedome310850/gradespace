@@ -63,7 +63,7 @@ Find code with search (`grep -n "^function CourseCard"`), not by line number —
   desktop) opens `AiHubModal` — ChatGPT/Claude connector card first (coming soon), then scan/paste/quick tools.
   Connectors: student's own AI reads/proposes, the student approves every change in GradeSpace.
   Until the connector is in ChatGPT's directory (free plans can't add custom ones), `AskAiModal` is a copy-paste
-  bridge: copy JSON → AI answers with a ```gradespace-scores block → paste → approve rows. Never creates items. Help and Feedback share `HelpHub`. Don't add a sixth bottom item — put it under You instead.
+  bridge (“Ask your AI”: ChatGPT, Claude or Gemini; question box + one tap copies and opens the AI): copy JSON → AI answers with a ```gradespace-scores block → paste → approve rows. Never creates items. Help and Feedback share `HelpHub`. Don't add a sixth bottom item — put it under You instead.
   **Universities:** `uniOf(state)` / `isCU(state)` read `settings.institution` (`''` → Chula). Anything that talks
   to Reg Chula, Chula GenEd, CBS study plans or exam rooms must stay behind `isCU`. Thammasat data lives in
   `TU_GENED` / `TU_TBS` / `TU_CATALOG`; `CATALOG.get/search` switch by university.

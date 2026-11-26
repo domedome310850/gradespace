@@ -1,3 +1,8 @@
+## 2026-11-26 — Claude (claude.ai): “Ask your AI” with Gemini, no raw text on screen
+
+- `public/index.html`: the copy-paste bridge is now called “Ask your AI” / “ถาม AI ของคุณ” and Gemini is added everywhere ChatGPT and Claude were named (AI menu, connect cards: new “GradeSpace in Gemini”, coming soon; first-visit hint). The copy step no longer shows the raw JSON: it says what the AI will get (courses, items, term; no email/ID), has a question box with three ready questions, and one button per AI (ChatGPT, Claude, Gemini) that opens it and copies courses + question in one tap. The exact text is under “See exactly what is copied”. TH/EN.
+- `tests/smoke.mjs`: Gemini connect card and button; the typed question ends the copied text.
+
 ## 2026-11-26 — Claude (claude.ai): bring back a university space that was put aside by mistake
 
 - `public/index.html`: one account was found with the Chula label active, an empty current space, and all its Chula data (14 courses, 47 items, years, terms) stored under `settings.spaces.cu` (put aside when switching to Thammasat, then only the label went back). Nothing was lost. `Store.normalize` now runs `healSpace`: if the active university's stored space holds data and the current space is empty, it is brought back (nothing merged or deleted). `switchSpace` never puts an empty space over a stored one with data, and if both hold data the older one is kept as `spaces['<uni>-<savedAt>']`. `window.GradeSpace` exposes `Store` and `switchSpace` for tests.

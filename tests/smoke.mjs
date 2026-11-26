@@ -90,14 +90,17 @@ async function run(browser, lang, width) {
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
   await page.getByTestId('ai-hub').waitFor();
   if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card missing');
-  if(!(await page.getByTestId('connect-gpt').isVisible())||!(await page.getByTestId('connect-claude').isVisible())) errors.push('AI hub should list ChatGPT and Claude');
+  if(!(await page.getByTestId('connect-gpt').isVisible())||!(await page.getByTestId('connect-claude').isVisible())||!(await page.getByTestId('connect-gemini').isVisible())) errors.push('AI hub should list ChatGPT, Claude and Gemini');
   if(await page.locator('.chat-input').count()) errors.push('GradeSpace should not have its own chat');
   if(await page.locator('[data-testid="ai-hub"] .hub-tools .hub-row').count()!==3) errors.push('AI hub should keep 3 tools');
   await page.keyboard.press('Escape');
   // Copy-paste bridge to the student's own AI (works on free plans).
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
   await page.getByTestId('askai-open').click();
+  await page.getByTestId('askai-question').fill('Need on final?');
+  if(!(await page.getByTestId('askai-go-gemini').isVisible())) errors.push('ask-AI should offer ChatGPT, Claude and Gemini');
   const prompt=await page.getByTestId('askai-prompt').inputValue();
+  if(!prompt.trim().endsWith('Need on final?')) errors.push('ask-AI text should end with the question');
   if(!prompt.includes('"gradespace":1')||!prompt.includes('2900111')) errors.push('ask-AI text lacks course data');
   if(prompt.includes('test@example.com')||prompt.includes('6940102426')) errors.push('ask-AI text leaks email or student ID');
   await page.getByTestId('ask-ai').locator('.seg button').nth(1).click();

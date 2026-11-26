@@ -847,7 +847,7 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .chat-bubble ul{margin:6px 0 0;padding-left:18px}.chat-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chat-chip{border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));background:var(--surface);color:var(--accent-text);border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
 .chat-input{display:flex;gap:8px}.chat-input .input{flex:1;min-width:0;font-size:16px}
-/* Connect ChatGPT / Claude card, shown first in the AI sheet (2026-11-26). */
+/* Connect ChatGPT / Claude / Gemini card, shown first in the AI sheet (2026-11-26). */
 .connect-card{display:grid;gap:8px;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;background:var(--accent-soft)}
 .connect-soon{font-size:11.5px;font-weight:650;color:var(--accent-text);border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:999px;padding:1px 8px;white-space:nowrap}
 .connect-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}.connect-tile>div{display:grid;gap:2px;min-width:0}.connect-tile{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--muted)}
@@ -880,6 +880,12 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 }
 /* Ask your AI by copy-paste (2026-11-26). */
 .askai-card{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.askai-sends{display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--accent-soft, var(--surface-2));font-size:13.5px}
+.askai-q{width:100%;resize:vertical;margin-top:6px}.askai-ideas{display:flex;gap:6px;flex-wrap:wrap}.askai-ideas .chat-chip{white-space:normal;text-align:left}
+.askai-go{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.askai-ai{justify-content:space-between;text-align:left;padding:10px 12px;min-height:56px}
+.askai-ai .grow{display:flex;flex-direction:column;gap:2px;min-width:0}
+@media (max-width:560px){.askai-ai{min-height:46px;padding:8px;justify-content:center;text-align:center}.askai-ai .tiny,.askai-ai svg{display:none}}
+.askai-raw summary{cursor:pointer;color:var(--muted);margin-bottom:6px}
 .askai-text{width:100%;min-height:150px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
 .askai-rows{display:grid;gap:6px}.askai-row{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px}.askai-row input{margin-top:3px}
 .askai-row.bad{opacity:.65}.askai-row.bad .small{color:var(--bad)}
@@ -2748,19 +2754,19 @@ en: {
   'paste.btn@tu': 'Paste scores', 'paste.title@tu': 'Paste a score table',
   'paste.intro@tu': 'Open {c} on your class website, select the score table (each row: item, score / full), copy, and paste it here.',
   'scan.intro@tu': 'Pick screenshots from your class website: the syllabus grading page and the score page work best. AI reads them and shows you what it found before anything is added.',
-  'connect.title': 'Use GradeSpace from ChatGPT or Claude', 'connect.soon': 'Coming soon', 'connect.with': 'Connect {n}',
+  'connect.title': 'Use GradeSpace from ChatGPT, Claude or Gemini', 'connect.soon': 'Coming soon', 'connect.with': 'Connect {n}',
   'connect.why': 'Your AI will read your courses and suggest scores for you to approve here. It switches on after GradeSpace gets secure sign-in, so nobody else can reach your grades.',
   'connect.own': 'Or ask GradeSpace AI now:',
-  'askai.title': 'Ask ChatGPT or Claude', 'askai.step1': '1. Copy to your AI', 'askai.step2': '2. Paste the answer',
-  'askai.cardT': 'Use your AI now (works on free plans)', 'askai.cardP': 'Copy this term’s courses into ChatGPT or Claude, ask anything, then paste its answer back to save new scores.', 'askai.cardBtn': 'Ask your AI',
-  'askai.copyIntro': 'Copy this text, paste it into ChatGPT or Claude, then type your question at the end.', 'askai.copy': 'Copy text', 'askai.copiedBtn': 'Copied ✓', 'askai.copied': 'Copied. Paste it into your AI.',
-  'askai.openGpt': 'Open ChatGPT', 'askai.openClaude': 'Open Claude', 'askai.next': 'Got an answer? Paste it',
+  'askai.title': 'Ask your AI', 'askai.step1': '1. Copy to your AI', 'askai.step2': '2. Paste the answer',
+  'askai.cardT': 'Use your AI now (works on free plans)', 'askai.cardP': 'Copy this term’s courses into ChatGPT, Claude or Gemini, ask anything, then paste its answer back to save new scores.', 'askai.cardBtn': 'Ask your AI',
+  'askai.copyIntro': 'Tap an AI: GradeSpace copies your courses and question, then opens it. Just paste and send.', 'askai.copy': 'Copy text', 'askai.copiedBtn': 'Copied ✓', 'askai.copied': 'Copied. Paste it into your AI.',
+  'askai.openGpt': 'Open ChatGPT', 'askai.openClaude': 'Open Claude', 'askai.openGemini': 'Open Gemini', 'askai.sends': 'Your AI gets {c} courses and {n} items · {s} (no email or student ID)', 'askai.pick': 'What do you want to ask?', 'askai.qPh': 'Type a question, or pick one below (optional)', 'askai.idea1': 'What do I need on the final to get an A?', 'askai.idea2': 'Which course should I worry about most?', 'askai.idea3': 'Plan my study this week', 'askai.goWith': 'Copy and open', 'askai.howPaste': 'Copied. In the AI’s chat box, paste (long-press or Ctrl+V) and send.', 'askai.show': 'See exactly what is copied', 'askai.next': 'Got an answer? Paste it',
   'askai.privacy': 'Only course names, items and scores are copied — no email or student ID. Your AI provider’s own privacy terms apply to what you paste there.',
   'askai.pasteIntro': 'Paste the AI’s whole answer. GradeSpace reads the gradespace-scores block and shows each change for you to approve.', 'askai.pastePh': 'Paste the answer here',
   'askai.check': 'Check', 'askai.noBlock': 'No score list found. Ask your AI to “give the gradespace-scores block”.', 'askai.badJson': 'The score list is broken. Ask your AI to send the gradespace-scores block again.',
   'askai.noCourse': 'Course not found here — skipped', 'askai.noItem': 'Item not found in this course — skipped (GradeSpace never creates items)', 'askai.badScore': 'Score doesn’t fit full marks — skipped',
   'askai.was': 'was {o}', 'askai.save': 'Save {n} scores', 'askai.saved': 'Saved {n} scores',
-  'aihub.title': 'Your AI', 'hub.bridge': 'GradeSpace connects your own AI to your grades. Ask in ChatGPT or Claude; it reads your courses and suggests scores, and you approve every change here.',
+  'aihub.title': 'Your AI', 'hub.bridge': 'GradeSpace connects your own AI to your grades. Ask in ChatGPT, Claude or Gemini; it reads your courses and suggests scores, and you approve every change here.',
   'hub.chatgptHow': 'Type @GradeSpace in ChatGPT', 'hub.claudeHow': 'Add GradeSpace as a connector', 'hub.tools': 'Tools you can use now:',
   'chat.title': 'GradeSpace AI', 'chat.ph': 'Ask or type a score, e.g. “quiz 2 econ 18/20”', 'chat.send': 'Send', 'chat.nav': 'AI',
   'chat.hello': 'Hi! I can check your GPA, work out what you need for a grade, list upcoming exams and work, and record scores you type. Everything stays on this device.',
@@ -2789,8 +2795,8 @@ en: {
   'wi.set.even': 'Same grade everywhere', 'wi.set.near': 'Fewest changes from now', 'wi.set.heavy': 'Focus on high-credit courses', 'wi.set.focus': 'All-in on a few courses', 'wi.use': 'Try this set',
   'wi.note': 'Confirmed grades stay as they are. “Out of reach” means your scores so far can’t reach that grade under the course’s cut-offs.', 'wi.link': 'Try grades',
   'plan.btnShort': 'By major', 'dash.coursesS': '{n} courses · {p} ongoing', 'dash.gradedS': 'graded {g}/{n}', 'dash.creditsS': '{n} cr earned',
-  'hub2.aiH': 'With your own AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Ask ChatGPT or Claude', 'hub2.askP': 'Copy & paste · works on free plans',
-  'hub2.gptT': '@GradeSpace in ChatGPT', 'hub2.gptP': 'Direct link, no copying', 'hub2.claudeT': 'GradeSpace in Claude', 'hub2.claudeP': 'Add as a connector',
+  'hub2.aiH': 'With your own AI', 'hub2.toolsH': 'Tools in GradeSpace', 'hub2.askT': 'Ask your AI', 'hub2.askP': 'ChatGPT, Claude or Gemini · copy & paste · free plans work',
+  'hub2.gptT': '@GradeSpace in ChatGPT', 'hub2.gptP': 'Direct link, no copying', 'hub2.claudeT': 'GradeSpace in Claude', 'hub2.claudeP': 'Add as a connector', 'hub2.geminiT': 'GradeSpace in Gemini', 'hub2.geminiP': 'Connect directly, no copying',
   'hub2.scanP': 'Read scores from screenshots', 'hub2.pasteP': 'Paste a score table', 'hub2.quickP': 'Type one score',
   'hub2.note': 'GradeSpace has no AI of its own. Your AI suggests; you approve every change here.',
   'tup.title': 'Pick Thammasat courses', 'tup.intro': 'Tick courses and add them to a term. GenEd groups follow the 2566 GenEd program; subject groups come from the TBS BBA course list.',
@@ -2803,8 +2809,8 @@ en: {
   'tuge.add': 'Add', 'tuge.have': 'Added', 'tuge.source': 'List from TU’s General Education Program document (2566). Confirm what is open on reg.tu.ac.th before registering.',
   'tu.examNote': 'Thammasat exam dates are not synced yet. Add the date to the Midterm/Final item in each course and it will show in your calendar.',
   'ai.pasteTGeneric': 'Paste a score table', 'ai.pastePGeneric': 'Copy scores from your class site, paste them and check each row',
-  'fab.hide': 'Hide for now', 'fab.introT': 'Your AI + GradeSpace', 'fab.introP': 'Scan, paste or type scores here. Soon: use ChatGPT or Claude with your grades.',
-  'fab.introPGeneric': 'Scan, paste or type scores here. Soon: use ChatGPT or Claude with your grades.', 'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
+  'fab.hide': 'Hide for now', 'fab.introT': 'Your AI + GradeSpace', 'fab.introP': 'Scan, paste or type scores here. Soon: use ChatGPT, Claude or Gemini with your grades.',
+  'fab.introPGeneric': 'Scan, paste or type scores here. Soon: use ChatGPT, Claude or Gemini with your grades.', 'fab.try': 'Try it', 'fab.later': 'Later', 'acct.menu': 'Account, language and theme', 'search.short': 'Search',
   'reg.teachers': 'instructor {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'Exam dates from Chula Reg, updated automatically every day',
@@ -3257,19 +3263,19 @@ th: {
   'paste.btn@tu': 'วางคะแนน', 'paste.title@tu': 'วางตารางคะแนน',
   'paste.intro@tu': 'เปิดวิชา {c} ในเว็บรายวิชา ลากเลือกตารางคะแนน (แต่ละแถว: ชื่องาน คะแนน / เต็ม) คัดลอก แล้ววางที่นี่',
   'scan.intro@tu': 'เลือกภาพหน้าจอจากเว็บรายวิชา หน้าเกณฑ์การให้คะแนนในประมวลรายวิชาและหน้าคะแนนจะได้ผลดีที่สุด AI จะอ่านแล้วสรุปให้ดูก่อนเพิ่มข้อมูล',
-  'connect.title': 'ใช้ GradeSpace ผ่าน ChatGPT หรือ Claude', 'connect.soon': 'เร็ว ๆ นี้', 'connect.with': 'เชื่อม {n}',
+  'connect.title': 'ใช้ GradeSpace ผ่าน ChatGPT, Claude หรือ Gemini', 'connect.soon': 'เร็ว ๆ นี้', 'connect.with': 'เชื่อม {n}',
   'connect.why': 'AI ที่คุณใช้จะอ่านวิชาและเสนอคะแนนให้คุณกดยืนยันในนี้ จะเปิดให้ใช้หลังจาก GradeSpace มีระบบเข้าสู่ระบบที่ปลอดภัย เพื่อไม่ให้คนอื่นเข้าถึงคะแนนของคุณได้',
   'connect.own': 'หรือถาม GradeSpace AI ได้เลยตอนนี้:',
-  'askai.title': 'ถาม ChatGPT หรือ Claude', 'askai.step1': '1. คัดลอกไปถาม', 'askai.step2': '2. วางคำตอบ',
-  'askai.cardT': 'ใช้ AI ของคุณได้เลยตอนนี้ (แพ็กเกจฟรีก็ได้)', 'askai.cardP': 'คัดลอกวิชาเทอมนี้ไปถาม ChatGPT หรือ Claude ได้ทุกเรื่อง แล้ววางคำตอบกลับมาเพื่อบันทึกคะแนนใหม่', 'askai.cardBtn': 'ถาม AI ของคุณ',
-  'askai.copyIntro': 'คัดลอกข้อความนี้ไปวางใน ChatGPT หรือ Claude แล้วพิมพ์คำถามต่อท้าย', 'askai.copy': 'คัดลอกข้อความ', 'askai.copiedBtn': 'คัดลอกแล้ว ✓', 'askai.copied': 'คัดลอกแล้ว ไปวางใน AI ได้เลย',
-  'askai.openGpt': 'เปิด ChatGPT', 'askai.openClaude': 'เปิด Claude', 'askai.next': 'ได้คำตอบแล้ว? วางที่นี่',
+  'askai.title': 'ถาม AI ของคุณ', 'askai.step1': '1. คัดลอกไปถาม', 'askai.step2': '2. วางคำตอบ',
+  'askai.cardT': 'ใช้ AI ของคุณได้เลยตอนนี้ (แพ็กเกจฟรีก็ได้)', 'askai.cardP': 'คัดลอกวิชาเทอมนี้ไปถาม ChatGPT, Claude หรือ Gemini ได้ทุกเรื่อง แล้ววางคำตอบกลับมาเพื่อบันทึกคะแนนใหม่', 'askai.cardBtn': 'ถาม AI ของคุณ',
+  'askai.copyIntro': 'กดเลือก AI แล้ว GradeSpace จะคัดลอกวิชากับคำถามให้และเปิด AI นั้น แค่วางแล้วกดส่ง', 'askai.copy': 'คัดลอกข้อความ', 'askai.copiedBtn': 'คัดลอกแล้ว ✓', 'askai.copied': 'คัดลอกแล้ว ไปวางใน AI ได้เลย',
+  'askai.openGpt': 'เปิด ChatGPT', 'askai.openClaude': 'เปิด Claude', 'askai.openGemini': 'เปิด Gemini', 'askai.sends': 'AI จะได้ {c} วิชา {n} งาน · {s} (ไม่มีอีเมลหรือเลขนิสิต)', 'askai.pick': 'อยากถามอะไร', 'askai.qPh': 'พิมพ์คำถาม หรือเลือกด้านล่าง (ไม่ใส่ก็ได้)', 'askai.idea1': 'ไฟนอลต้องได้เท่าไหร่ถึงจะได้ A', 'askai.idea2': 'วิชาไหนน่าห่วงที่สุด', 'askai.idea3': 'ช่วยวางแผนอ่านหนังสือสัปดาห์นี้', 'askai.goWith': 'คัดลอกแล้วเปิด', 'askai.howPaste': 'คัดลอกแล้ว ไปที่ช่องแชทของ AI กดค้างแล้ววาง (หรือ Ctrl+V) แล้วกดส่ง', 'askai.show': 'ดูข้อความที่จะคัดลอก', 'askai.next': 'ได้คำตอบแล้ว? วางที่นี่',
   'askai.privacy': 'คัดลอกเฉพาะชื่อวิชา งาน และคะแนน ไม่มีอีเมลหรือเลขนิสิต ข้อมูลที่คุณวางในบริการ AI จะอยู่ภายใต้นโยบายความเป็นส่วนตัวของผู้ให้บริการนั้น',
   'askai.pasteIntro': 'วางคำตอบของ AI ทั้งหมด GradeSpace จะอ่านเฉพาะบล็อก gradespace-scores แล้วแสดงทีละรายการให้คุณยืนยัน', 'askai.pastePh': 'วางคำตอบที่นี่',
   'askai.check': 'ตรวจ', 'askai.noBlock': 'ไม่พบรายการคะแนน ลองบอก AI ว่า “ขอบล็อก gradespace-scores”', 'askai.badJson': 'รายการคะแนนเสียหาย ลองให้ AI ส่งบล็อก gradespace-scores ใหม่',
   'askai.noCourse': 'ไม่พบวิชานี้ — ข้าม', 'askai.noItem': 'ไม่พบงานนี้ในวิชา — ข้าม (GradeSpace ไม่สร้างงานเอง)', 'askai.badScore': 'คะแนนไม่สอดคล้องกับคะแนนเต็ม — ข้าม',
   'askai.was': 'เดิม {o}', 'askai.save': 'บันทึก {n} คะแนน', 'askai.saved': 'บันทึก {n} คะแนนแล้ว',
-  'aihub.title': 'AI ของคุณ', 'hub.bridge': 'GradeSpace เป็นตัวเชื่อม AI ของคุณเองเข้ากับคะแนน ถามใน ChatGPT หรือ Claude ได้เลย AI จะอ่านวิชาและเสนอคะแนน แล้วคุณกดยืนยันทุกครั้งในนี้',
+  'aihub.title': 'AI ของคุณ', 'hub.bridge': 'GradeSpace เป็นตัวเชื่อม AI ของคุณเองเข้ากับคะแนน ถามใน ChatGPT, Claude หรือ Gemini ได้เลย AI จะอ่านวิชาและเสนอคะแนน แล้วคุณกดยืนยันทุกครั้งในนี้',
   'hub.chatgptHow': 'พิมพ์ @GradeSpace ใน ChatGPT', 'hub.claudeHow': 'เพิ่ม GradeSpace เป็นตัวเชื่อมใน Claude', 'hub.tools': 'เครื่องมือที่ใช้ได้ตอนนี้:',
   'chat.title': 'GradeSpace AI', 'chat.ph': 'ถามหรือพิมพ์คะแนน เช่น “quiz 2 econ 18/20”', 'chat.send': 'ส่ง', 'chat.nav': 'AI',
   'chat.hello': 'สวัสดี! ถามเกรดเฉลี่ย ถามว่าต้องได้เท่าไหร่ถึงจะได้เกรดที่อยากได้ ดูสอบและงานที่ใกล้ถึง หรือพิมพ์คะแนนให้บันทึกได้เลย ข้อมูลอยู่ในเครื่องนี้ทั้งหมด',
@@ -3298,8 +3304,8 @@ th: {
   'wi.set.even': 'ได้เท่ากันทุกวิชา', 'wi.set.near': 'เปลี่ยนจากตอนนี้น้อยที่สุด', 'wi.set.heavy': 'เน้นวิชาหน่วยกิตเยอะ', 'wi.set.focus': 'ทุ่มบางวิชา ปล่อยบางวิชา', 'wi.use': 'ลองชุดนี้',
   'wi.note': 'เกรดจริงที่บันทึกแล้วไม่เปลี่ยน “ไม่ทันแล้ว” หมายถึงคะแนนที่มีอยู่ไปไม่ถึงเกรดนั้นตามเกณฑ์ของวิชา', 'wi.link': 'ลองสมมติเกรด',
   'plan.btnShort': 'ตามสาขา', 'dash.coursesS': '{n} วิชา · เรียน {p}', 'dash.gradedS': 'ตรวจ {g}/{n} งาน', 'dash.creditsS': 'ได้ {n} นก.',
-  'hub2.aiH': 'ใช้กับ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'ถาม ChatGPT หรือ Claude', 'hub2.askP': 'คัดลอก-วาง · แพ็กเกจฟรีก็ใช้ได้',
-  'hub2.gptT': '@GradeSpace ใน ChatGPT', 'hub2.gptP': 'เชื่อมตรง ไม่ต้องคัดลอก', 'hub2.claudeT': 'GradeSpace ใน Claude', 'hub2.claudeP': 'เพิ่มเป็นตัวเชื่อม',
+  'hub2.aiH': 'ใช้กับ AI ของคุณ', 'hub2.toolsH': 'เครื่องมือใน GradeSpace', 'hub2.askT': 'ถาม AI ของคุณ', 'hub2.askP': 'ChatGPT, Claude หรือ Gemini · คัดลอก-วาง · แพ็กเกจฟรีก็ใช้ได้',
+  'hub2.gptT': '@GradeSpace ใน ChatGPT', 'hub2.gptP': 'เชื่อมตรง ไม่ต้องคัดลอก', 'hub2.claudeT': 'GradeSpace ใน Claude', 'hub2.claudeP': 'เพิ่มเป็นตัวเชื่อม', 'hub2.geminiT': 'GradeSpace ใน Gemini', 'hub2.geminiP': 'เชื่อมตรง ไม่ต้องคัดลอก',
   'hub2.scanP': 'อ่านคะแนนจากภาพหน้าจอ', 'hub2.pasteP': 'วางตารางคะแนน', 'hub2.quickP': 'พิมพ์คะแนนทีละรายการ',
   'hub2.note': 'GradeSpace ไม่มี AI ของตัวเอง AI ของคุณเป็นคนเสนอ คุณเป็นคนยืนยันทุกครั้ง',
   'tup.title': 'เลือกวิชาธรรมศาสตร์', 'tup.intro': 'ติ๊กวิชาแล้วเพิ่มเข้าเทอมที่เลือก หมวด GenEd อ้างอิงหลักสูตรวิชาศึกษาทั่วไป 2566 ส่วนหมวดวิชาอ้างอิงรายวิชา TBS BBA',
@@ -3312,8 +3318,8 @@ th: {
   'tuge.add': 'เพิ่ม', 'tuge.have': 'เพิ่มแล้ว', 'tuge.source': 'รายชื่อจากเอกสารหลักสูตรวิชาศึกษาทั่วไป มธ. (พ.ศ. 2566) ตรวจวิชาที่เปิดสอนใน reg.tu.ac.th ก่อนลงทะเบียน',
   'tu.examNote': 'ยังไม่ได้ดึงวันสอบของธรรมศาสตร์อัตโนมัติ ใส่วันที่ในงาน “สอบกลางภาค/ปลายภาค” ของแต่ละวิชา แล้ววันสอบจะขึ้นในปฏิทิน',
   'ai.pasteTGeneric': 'วางตารางคะแนน', 'ai.pastePGeneric': 'คัดลอกคะแนนจากเว็บรายวิชามาวาง แล้วตรวจทีละแถว',
-  'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'AI ของคุณ + GradeSpace', 'fab.introP': 'สแกน วาง หรือพิมพ์คะแนนได้ที่นี่ เร็ว ๆ นี้ใช้ ChatGPT หรือ Claude กับคะแนนของคุณได้',
-  'fab.introPGeneric': 'สแกน วาง หรือพิมพ์คะแนนได้ที่นี่ เร็ว ๆ นี้ใช้ ChatGPT หรือ Claude กับคะแนนของคุณได้', 'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
+  'fab.hide': 'ซ่อนไว้ก่อน', 'fab.introT': 'AI ของคุณ + GradeSpace', 'fab.introP': 'สแกน วาง หรือพิมพ์คะแนนได้ที่นี่ เร็ว ๆ นี้ใช้ ChatGPT, Claude หรือ Gemini กับคะแนนของคุณได้',
+  'fab.introPGeneric': 'สแกน วาง หรือพิมพ์คะแนนได้ที่นี่ เร็ว ๆ นี้ใช้ ChatGPT, Claude หรือ Gemini กับคะแนนของคุณได้', 'fab.try': 'ลองเลย', 'fab.later': 'ไว้ทีหลัง', 'acct.menu': 'บัญชี ภาษา และธีม', 'search.short': 'ค้นหา',
   'reg.teachers': 'ผู้สอน {t}',
   'reg.secLine': 'Sec {s}: {w}',
   'exam.srcReg': 'วันสอบจากระบบทะเบียน (Reg จุฬาฯ) อัปเดตอัตโนมัติทุกวัน',
@@ -8223,7 +8229,7 @@ function AssistantModal(p) {
 
 /* ================= AI hub =================
    GradeSpace has no AI of its own (owner decision 2026-11-26): it is the bridge between the student's
-   own AI (ChatGPT, Claude) and their grades. Until secure sign-in + OAuth ship, the connect options are
+   own AI (ChatGPT, Claude, Gemini) and their grades. Until secure sign-in + OAuth ship, the connect options are
    shown as coming soon; the in-site tools (screenshot scan, paste, quick score) stay here. */
 function AiHubModal(p) {
   var state = useApp(), cur = curSemester(state);
@@ -8237,7 +8243,8 @@ function AiHubModal(p) {
   var ai = [
     { k: 'ask', tid: 'askai-open', icon: 'clipboard', title: t('hub2.askT'), sub: t('hub2.askP'), run: function () { go('askAi', {}); } },
     { k: 'gpt', tid: 'connect-gpt', icon: 'link', title: t('hub2.gptT'), sub: t('hub2.gptP'), soon: true },
-    { k: 'claude', tid: 'connect-claude', icon: 'link', title: t('hub2.claudeT'), sub: t('hub2.claudeP'), soon: true }
+    { k: 'claude', tid: 'connect-claude', icon: 'link', title: t('hub2.claudeT'), sub: t('hub2.claudeP'), soon: true },
+    { k: 'gemini', tid: 'connect-gemini', icon: 'link', title: t('hub2.geminiT'), sub: t('hub2.geminiP'), soon: true }
   ];
   var tools = [
     { k: 'scan', icon: 'zap', title: t('ai.scanT'), sub: canScan() ? t('hub2.scanP') : t('ai.noScan'), off: !canScan(), run: function () { go('scan', { semesterId: cur && cur.id }); } },
@@ -8253,12 +8260,12 @@ function AiHubModal(p) {
       <p className="tiny muted" style=${{ margin: '12px 4px 0' }}>${t('hub2.note')}</p>
     </div><//>`;
 }
-/* ===== Ask your own AI by copy-paste (works on every ChatGPT/Claude plan, incl. Free) =====
+/* ===== Ask your own AI by copy-paste (works on every ChatGPT/Claude/Gemini plan, incl. Free) =====
    The student copies a summary of this term's courses into their AI; the AI answers with a small JSON
    block; the student pastes it back and approves each row. Only existing courses/items are matched;
    nothing is created. No email, student ID or account data goes into the copied text. */
 var ASKAI_TAG = 'gradespace-scores';
-function askAiPrompt(state) {
+function askAiPrompt(state, question) {
   var cur = curSemester(state);
   var courses = state.courses.filter(function (c) { return !cur || c.semesterId === cur.id; }).map(function (c) {
     var sm = C.courseSummary(c, state), g = C.courseGrade(c, state);
@@ -8280,7 +8287,7 @@ function askAiPrompt(state) {
     'If I tell you new scores, end your reply with a ```' + ASKAI_TAG + ' code block containing JSON like {"updates":[{"code":"course code","item":"exact item name from the data","score":number,"max":number}]}. Only use courses and items that exist in the data.',
     'My question: '
   ];
-  return rules.slice(0, 3).join('\n') + '\n\n```json\n' + JSON.stringify({ gradespace: 1, courses: courses }) + '\n```\n\n' + rules[3];
+  return rules.slice(0, 3).join('\n') + '\n\n```json\n' + JSON.stringify({ gradespace: 1, courses: courses }) + '\n```\n\n' + rules[3] + String(question || '').trim();
 }
 function parseAskAi(text, state) {
   var raw = String(text || ''), m = raw.match(new RegExp('```\\s*' + ASKAI_TAG + '\\s*([\\s\\S]*?)```')) || raw.match(/(\{[\s\S]*"updates"[\s\S]*\})/);
@@ -8300,7 +8307,16 @@ function parseAskAi(text, state) {
 function AskAiModal(p) {
   var state = useApp();
   var ts = useState(p.props && p.props.step === 'paste' ? 'paste' : 'copy'), tab = ts[0], setTab = ts[1];
-  var prompt = askAiPrompt(state);
+  var qs = useState(''), question = qs[0], setQuestion = qs[1];
+  var prompt = askAiPrompt(state, question);
+  var curS = curSemester(state), mine = state.courses.filter(function (c) { return !curS || c.semesterId === curS.id; });
+  var nItems = state.assessments.filter(function (a) { return mine.some(function (c) { return c.id === a.courseId; }); }).length;
+  var AIS = [{ k: 'gpt', n: 'ChatGPT', url: 'https://chatgpt.com/' }, { k: 'claude', n: 'Claude', url: 'https://claude.ai/new' }, { k: 'gemini', n: 'Gemini', url: 'https://gemini.google.com/app' }];
+  function copyOpen(ai) {
+    // Open first (still inside the tap, so it isn't blocked as a pop-up), then copy.
+    try { window.open(ai.url, '_blank', 'noopener'); } catch (e) { /* ignore */ }
+    copy();
+  }
   var ps = useState(''), pasted = ps[0], setPasted = ps[1];
   var rs = useState(null), res = rs[0], setRes = rs[1];
   var ks = useState({}), keep = ks[0], setKeep = ks[1];
@@ -8322,13 +8338,19 @@ function AskAiModal(p) {
     <div className="stack" data-testid="ask-ai" style=${{ gap: 12 }}>
       <${Seg} label=${t('askai.title')} value=${tab} onChange=${setTab} options=${[{ v: 'copy', l: t('askai.step1') }, { v: 'paste', l: t('askai.step2') }]} />
       ${tab === 'copy' ? html`<${React.Fragment}>
-        <p className="small" style=${{ margin: 0 }}>${t('askai.copyIntro')}</p>
-        <textarea className="input askai-text" readOnly=${true} value=${prompt} data-testid="askai-prompt" onFocus=${function (e) { e.target.select(); }} aria-label=${t('askai.step1')}></textarea>
-        <div className="row wrap" style=${{ gap: 8 }}>
-          <button className="btn primary" onClick=${copy}><${Icon} n="clipboard" s=${16} />${copied ? t('askai.copiedBtn') : t('askai.copy')}</button>
-          <a className="btn" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">${t('askai.openGpt')} ↗</a>
-          <a className="btn" href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">${t('askai.openClaude')} ↗</a>
-        </div>
+        <div className="askai-sends" data-testid="askai-sends"><${Icon} n="book" s=${16} /><span>${t('askai.sends', { c: mine.length, n: nItems, s: curS ? semFull(state, curS) : '' })}</span></div>
+        <label className="field" style=${{ margin: 0 }}><span className="small" style=${{ fontWeight: 600 }}>${t('askai.pick')}</span>
+          <textarea className="input askai-q" rows="2" value=${question} data-testid="askai-question" placeholder=${t('askai.qPh')} onChange=${function (e) { setQuestion(e.target.value); setCopied(false); }}></textarea></label>
+        <div className="askai-ideas">${['askai.idea1', 'askai.idea2', 'askai.idea3'].map(function (k) {
+          return html`<button key=${k} type="button" className=${'chat-chip' + (question === t(k) ? ' on' : '')} onClick=${function () { setQuestion(t(k)); setCopied(false); }}>${t(k)}</button>`; })}</div>
+        <div className="askai-go">${AIS.map(function (ai) {
+          return html`<button key=${ai.k} type="button" className="btn askai-ai" data-testid=${'askai-go-' + ai.k} onClick=${function () { copyOpen(ai); }}>
+            <span className="grow"><b>${ai.n}</b><span className="tiny muted">${t('askai.goWith')}</span></span><${Icon} n="chevronRight" /></button>`; })}</div>
+        <p className="tiny muted" style=${{ margin: 0 }}>${copied ? t('askai.howPaste') : t('askai.copyIntro')}</p>
+        <details className="askai-raw"><summary className="tiny">${t('askai.show')}</summary>
+          <textarea className="input askai-text" readOnly=${true} value=${prompt} data-testid="askai-prompt" onFocus=${function (e) { e.target.select(); }} aria-label=${t('askai.step1')}></textarea>
+          <button className="btn sm" style=${{ marginTop: 6 }} onClick=${copy}><${Icon} n="clipboard" s=${14} />${copied ? t('askai.copiedBtn') : t('askai.copy')}</button>
+        </details>
         <p className="tiny muted" style=${{ margin: 0 }}>${t('askai.privacy')}</p>
         <button className="btn ghost sm" style=${{ justifySelf: 'start' }} onClick=${function () { setTab('paste'); }}>${t('askai.next')} ›</button>
       <//>` : html`<${React.Fragment}>
