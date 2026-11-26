@@ -1,3 +1,9 @@
+## 2026-11-26 — ChatGPT: TBS academic advisory, TU palette, profile sign-out
+
+- Add source-scoped advisory audit and simple prerequisite checks in `public/academic-core.js`; dashboard with per-university saved academic profile, provisional credit allocation, prioritized missing-course suggestions, graduation checklist and warnings. Unknown rules require manual review; no enrollment or degree certification.
+- Strong TU red/gold palette, direct sign-out from profile and desktop account menu using existing save-before-sign-out confirmation. CU data and theme remain separate.
+- Cache the new module and add advisory and browser regression tests. Browser CI pending; detailed curriculum verification and live REG remain out of scope.
+
 ## 2026-11-26 — ChatGPT: align TU planner with TBS registration and curriculum rules
 
 - `public/index.html`: source-backed registration guide, 11 track-specific required-course checklists, major elective baskets, provisional course types, retake planning for recorded F/U/W or low grades in selected required-major courses, and fail-closed legacy shared Chula schedule/policy isolation. No auto-registration, grade or graduation decisions.

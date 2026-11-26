@@ -352,6 +352,12 @@ async function runTU(browser, lang, width) {
   for (const fn of ['gs_reg_offerings','gs_reg_request','gs_exam_device']) if(rpcs.includes(fn)) errors.push('TU mode called Chula-only '+fn);
   if(!(await page.getByTestId('tu-exam-note').isVisible())) errors.push('TU exam note missing');
   if(await page.locator('.sp-card').count()) errors.push('CBS study plan card shown for TU');
+  if(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--uni-secondary').trim())!=='#FFD13F') errors.push('TU gold palette missing');
+  if(!(await page.getByTestId('tu-academic').isVisible())) errors.push('TU academic profile missing');
+  await page.evaluate(()=>{location.hash='me';}); await page.waitForTimeout(300);
+  await page.getByTestId('profile-signout').click();
+  if(!(await page.locator('.modal').isVisible())) errors.push('profile sign-out confirmation missing');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(150);
   // GenEd: TU list, add TU101 through the course form.
   await page.evaluate(()=>{location.hash='years';}); await page.waitForTimeout(300);
   await page.getByTestId('tu-gened-open').click();

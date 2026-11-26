@@ -1,6 +1,6 @@
 // Only public, static assets are cached. Never cache account, scan, or RPC responses.
-const CACHE='gradespace-shell-v2';
-const STATIC=['/','/index.html','/manifest.webmanifest','/app-icon.svg','/planning-core.js'];
+const CACHE='gradespace-shell-v3';
+const STATIC=['/','/index.html','/manifest.webmanifest','/app-icon.svg','/planning-core.js','/academic-core.js'];
 const LIBS=[
 'https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js',
 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js',

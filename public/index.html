@@ -887,8 +887,14 @@ select.select { appearance: none; -webkit-appearance: none; padding-right: 38px 
 .help-tabs{margin:4px 0 6px}.help-tabs .seg{max-width:360px}
 /* Thammasat GenEd picker (2026-11-26). */
 .tuge-group h3{font-size:14px;margin:16px 0 4px;color:var(--accent-text)}.tuge-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
-:root[data-uni="tu"] .brand-mark rect{fill:var(--accent)}:root[data-uni="tu"] .brand-mark circle{fill:var(--uni-secondary)}:root[data-uni="tu"] .brand-mark{box-shadow:none}
-:root[data-uni="tu"] .ai-fab{background:linear-gradient(135deg,#D9485C,#BC3346 55%,#8E1F2F);box-shadow:0 8px 22px rgba(188,51,70,.38),0 0 0 4px color-mix(in srgb,var(--bg) 70%,transparent)}
+:root[data-uni="tu"] .brand-mark rect{fill:#C3002F}:root[data-uni="tu"] .brand-mark circle{fill:var(--uni-secondary)}:root[data-uni="tu"] .brand-mark{box-shadow:none}
+:root[data-uni="tu"] .ai-fab{background:linear-gradient(135deg,#D90038,#C3002F 55%,#8C0022);box-shadow:0 8px 22px rgba(195,0,47,.38),0 0 0 4px color-mix(in srgb,var(--bg) 70%,transparent)}
+:root[data-uni="tu"] .nav-item[aria-current="page"]{border-inline-start:3px solid #FFD13F}
+:root[data-uni="tu"] .metric.hero{border-bottom:4px solid #FFD13F}
+:root[data-uni="tu"] [data-testid="tu-academic"] progress{accent-color:var(--accent)}
+.me-signout{width:100%;text-align:start;cursor:pointer;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);color:var(--bad);margin-top:12px;font-weight:600}
+.me-signout:hover{background:var(--bad-soft)}
+.me-signout>.ic{color:var(--bad)}
 /* AI assistant (floating button), command search and account menu (2026-11-25). */
 .top-search{display:flex;align-items:center;gap:10px;height:40px;width:min(520px,100%);padding:0 10px 0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
 .top-search:hover{border-color:var(--line-strong);color:var(--ink)}.top-search kbd{margin-left:auto;font:600 11px var(--font);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px}
@@ -1250,6 +1256,7 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-s
 <div id="root"></div>
 <noscript>GradeSpace needs JavaScript to run.</noscript>
 <script src="./planning-core.js"></script>
+<script src="./academic-core.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
@@ -2727,6 +2734,61 @@ var SharedCatalog = (function () {
 
 var I18N = {
 en: {
+"academic.title": "Academic progress · TBS Thai 2566",
+"academic.scope": "Only the Thai four-year 2023 curriculum is supported. Choose your actual curriculum revision, not just admission year.",
+"academic.none": "Not selected / other curriculum",
+"academic.track": "Select confirmed major / concentration",
+"academic.credits": "Provisionally allocated credits",
+"academic.remaining": "Remaining to 135 (including unverified allocations)",
+"academic.genRequired": "Required GenEd slots",
+"academic.genExtra": "Additional GenEd",
+"academic.core": "Core",
+"academic.major": "Major required (C or higher)",
+"academic.other": "Other / minor elective (review)",
+"academic.free": "Free elective (review)",
+"academic.basket": "Major elective basket",
+"academic.passed": "Courses allocated",
+"academic.missing": "Required courses still missing",
+"academic.retake": "Retake needed",
+"academic.planned": "Planned / no confirmed grade",
+"academic.review": "Needs review",
+"academic.missingStatus": "Not yet satisfied",
+"academic.next": "Next-semester suggestions (choose alternatives, not all)",
+"academic.academic-pass": "Known prerequisite met; check REG",
+"academic.blocked": "Not currently eligible by recorded results",
+"academic.reviewStatus": "Eligibility not verified",
+"academic.noOffering": "No live offering, seat, quota, time-conflict or registration confirmation. Suggestions are not registrations.",
+"academic.source": "Rule as published",
+"academic.reason.prerequisite-missing": "Missing prerequisite",
+"academic.reason.prerequisite-met": "Recorded prerequisite satisfied",
+"academic.reason.no-verified-rule": "No verified rule in snapshot",
+"academic.reason.complex-rule": "Complex rule requires faculty review",
+"academic.reason.already-planned": "Already in target/later term or unknown term",
+"academic.reason.already-passed": "Already passed",
+"academic.reason.prior-unresolved": "Previous result unresolved",
+"academic.reason.special-course": "Special permission required",
+"academic.reason.unknown-course": "Unknown course",
+"academic.reviewList": "Courses requiring allocation or source review",
+"academic.reason.unallocated": "Not allocated to a verified category",
+"academic.reason.credit-source": "Credit or catalog mismatch",
+"academic.reason.special-outcome": "Special grade/outcome requires confirmation",
+"academic.reason.repeat-credit": "Different credits across attempts",
+"academic.reason.allocation-review": "Elective allocation requires review",
+"academic.reason.free-gened100": "Level-100 GenEd cannot be free elective",
+"academic.reason.over-cap": "Exceeds category cap",
+"academic.reason.missing-code": "No course code",
+"academic.graduation": "Graduation checklist",
+"academic.gpa": "Recorded GPAX (not registrar-certified)",
+"academic.majorGpa": "Required-major best-attempt GPA (partial rule check)",
+"academic.gradNote": "Faculty confirmation remains required: minor/double major, substitutions, transfer credit, other elective eligibility, GPA scope and graduation application. Never a graduation certificate.",
+"academic.openPicker": "Open course picker",
+"academic.checkCourse": "Check a specific course code",
+"academic.target": "Planning after selected current semester",
+"academic.noTerm": "Set up your semesters before checking eligibility.",
+"academic.unknown": "Unknown / not enough data",
+"academic.admission": "Admission year (B.E., optional)",
+"academic.allocation": "Tentative allocation (verify with faculty)",
+"academic.unassigned": "Unassigned",
   'ai.btn': 'AI assistant', 'ai.title': 'GradeSpace AI',
   'ai.intro': 'Send score screenshots, paste from MyCourseVille or type a score. You always review the list before anything is saved.',
   'ai.scanT': 'Scan screenshots', 'ai.scanP': 'Read courses and scores from several images at once',
@@ -3236,6 +3298,61 @@ en: {
   'onb4Note': 'Anything not graded yet is counted as still to come, never as zero.', 'goToCourse': 'Go to my course'
 },
 th: {
+"academic.title": "ความคืบหน้าสู่การเรียนจบ · พาณิชย์ ภาคไทย 2566",
+"academic.scope": "รองรับเฉพาะหลักสูตร 4 ปี ภาคภาษาไทย ฉบับ 2566 โปรดเลือกตามฉบับหลักสูตรจริง ไม่ใช่เฉพาะปีเข้า",
+"academic.none": "ยังไม่เลือก / หลักสูตรอื่น",
+"academic.track": "เลือกเอกหรือแขนงที่ยืนยันแล้ว",
+"academic.credits": "หน่วยกิตที่จัดเข้าหมวดได้เบื้องต้น",
+"academic.remaining": "ส่วนที่ยังขาดจาก 135 (รวมหมวดที่ยังไม่ยืนยัน)",
+"academic.genRequired": "GenEd บังคับ/บังคับเลือก",
+"academic.genExtra": "GenEd เพิ่มเติม",
+"academic.core": "วิชาแกน",
+"academic.major": "เอกบังคับ (C ขึ้นไป)",
+"academic.other": "วิชาเลือกอื่น/โท (ต้องตรวจสอบ)",
+"academic.free": "วิชาเลือกเสรี (ต้องตรวจสอบ)",
+"academic.basket": "กลุ่มวิชาเอกเลือก",
+"academic.passed": "วิชาที่นับเข้าเกณฑ์แล้ว",
+"academic.missing": "วิชาบังคับที่ยังขาด",
+"academic.retake": "ต้องเรียนซ้ำ",
+"academic.planned": "อยู่ในแผน / ยังไม่มีเกรดจริง",
+"academic.review": "ต้องตรวจสอบ",
+"academic.missingStatus": "ยังไม่ผ่านเงื่อนไข",
+"academic.next": "วิชาที่ควรพิจารณาเทอมหน้า (เลือกจากตัวเลือก ไม่ใช่ลงทั้งหมด)",
+"academic.academic-pass": "ผ่านวิชาบังคับก่อนที่ตรวจได้; เช็ก REG",
+"academic.blocked": "ยังไม่ผ่านเงื่อนไขตามข้อมูลที่บันทึก",
+"academic.reviewStatus": "ยังยืนยันสิทธิ์ลงไม่ได้",
+"academic.noOffering": "ยังไม่มีข้อมูลสดเรื่องเปิดสอน ที่นั่ง โควตา เวลาเรียนชน หรือผลลงทะเบียน คำแนะนำไม่ใช่การลงทะเบียน",
+"academic.source": "เงื่อนไขตามเอกสาร",
+"academic.reason.prerequisite-missing": "ขาดวิชาบังคับก่อน",
+"academic.reason.prerequisite-met": "มีผลเรียนผ่านวิชาบังคับก่อนแล้ว",
+"academic.reason.no-verified-rule": "ยังไม่มีเงื่อนไขที่ยืนยันได้ในชุดข้อมูล",
+"academic.reason.complex-rule": "เงื่อนไขซับซ้อน ต้องตรวจสอบกับคณะ",
+"academic.reason.already-planned": "มีในเทอมเป้าหมาย/ถัดไป หรือไม่ทราบเทอม",
+"academic.reason.already-passed": "ผ่านแล้ว",
+"academic.reason.prior-unresolved": "ผลการเรียนเดิมยังไม่ชัดเจน",
+"academic.reason.special-course": "ต้องตรวจสิทธิ์พิเศษ",
+"academic.reason.unknown-course": "ไม่พบข้อมูลวิชา",
+"academic.reviewList": "รายวิชาที่ต้องตรวจหมวดหรือแหล่งข้อมูล",
+"academic.reason.unallocated": "ยังไม่ได้จัดเข้าหมวดที่ยืนยันได้",
+"academic.reason.credit-source": "หน่วยกิตหรือข้อมูลรายวิชาไม่ตรง",
+"academic.reason.special-outcome": "ผลการเรียนพิเศษต้องยืนยัน",
+"academic.reason.repeat-credit": "หน่วยกิตการเรียนซ้ำไม่ตรงกัน",
+"academic.reason.allocation-review": "ต้องตรวจสอบการจัดหมวดวิชาเลือก",
+"academic.reason.free-gened100": "GenEd ระดับ 100 นับเป็นเลือกเสรีไม่ได้",
+"academic.reason.over-cap": "เกินจำนวนหน่วยกิตของหมวด",
+"academic.reason.missing-code": "ไม่มีรหัสวิชา",
+"academic.graduation": "เช็กลิสต์ก่อนจบ",
+"academic.gpa": "GPAX จากข้อมูลที่บันทึก (ไม่ใช่ผลยืนยันจากทะเบียน)",
+"academic.majorGpa": "GPA เอกบังคับจากเกรดดีที่สุด (ตรวจเงื่อนไขเบื้องต้น)",
+"academic.gradNote": "ต้องยืนยันกับคณะเรื่องวิชาโท/เอกคู่ วิชาทดแทน เทียบโอน สิทธิ์วิชาเลือก ขอบเขต GPA และการแจ้งจบ ไม่ใช่ใบรับรองจบ",
+"academic.openPicker": "เปิดตัวเลือกรายวิชา",
+"academic.checkCourse": "ตรวจเงื่อนไขรายวิชาตามรหัส",
+"academic.target": "วางแผนต่อจากเทอมปัจจุบันที่เลือก",
+"academic.noTerm": "ตั้งค่าชั้นปีและเทอมก่อนตรวจสิทธิ์ลงวิชา",
+"academic.unknown": "ยังไม่ทราบ / ข้อมูลไม่พอ",
+"academic.admission": "ปีเข้า (พ.ศ. ไม่บังคับ)",
+"academic.allocation": "จัดหมวดเบื้องต้น (ต้องยืนยันกับคณะ)",
+"academic.unassigned": "ยังไม่จัดหมวด",
   'ai.btn': 'ผู้ช่วย AI', 'ai.title': 'GradeSpace AI',
   'ai.intro': 'ส่งภาพหน้าจอคะแนน วางคะแนนจาก MyCourseVille หรือพิมพ์คะแนนได้เลย ระบบจะให้คุณตรวจรายการก่อนบันทึกเสมอ',
   'ai.scanT': 'สแกนภาพหน้าจอ', 'ai.scanP': 'อ่านวิชาและคะแนนจากหลายภาพพร้อมกัน',
@@ -4249,13 +4366,13 @@ function uniLum(hex) { var c = [1, 3, 5].map(function (i) { var v = parseInt(hex
 function uniContrast(a, b) { var x = uniLum(a), y = uniLum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); }
 function uniReadable(col, bg, dark) { for (var i = 0; i < 30 && uniContrast(col, bg) < 4.5; i++) col = uniMix(col, dark ? '#FFFFFF' : '#000000', .16); return col; }
 function applyUniTheme(uni, dark) {
-  var el = document.documentElement, keys = ['--accent', '--accent-hover', '--accent-ink', '--accent-soft', '--accent-text', '--uni-secondary'];
-  if (uni !== 'tu') { keys.forEach(function (k) { el.style.removeProperty(k); }); el.removeAttribute('data-uni'); return; }
-  var bg = dark ? '#171A20' : '#FFFFFF', soft = uniMix(bg, '#BC3346', dark ? .14 : .09), a = uniReadable('#BC3346', bg, dark), txt = uniReadable(a, soft, dark);
+  var el = document.documentElement, keys = ['--accent', '--accent-hover', '--accent-ink', '--accent-soft', '--accent-text', '--uni-secondary', '--earned', '--lav', '--sky', '--sky-soft', '--pending-a', '--pending-b'];
+  if (uni !== 'tu') { keys.forEach(function (k) { el.style.removeProperty(k); }); el.removeAttribute('data-uni'); var meta=document.querySelector('meta[name="theme-color"]'); if(meta)meta.content=dark?'#171A20':'#4F46E5'; return; }
+  var bg = dark ? '#171A20' : '#FFFFFF', soft = uniMix(bg, '#C3002F', dark ? .21 : .09), a = dark ? uniReadable('#C3002F', bg, true) : '#C3002F', txt = dark ? '#FFD13F' : uniReadable(a, soft, false);
   var ink = uniContrast(a, '#000000') >= uniContrast(a, '#FFFFFF') ? '#000000' : '#FFFFFF', hover = uniMix(a, dark ? '#FFFFFF' : '#000000', .10);
   if (uniContrast(hover, ink) < 4.5) hover = a;
-  var v = { '--accent': a, '--accent-hover': hover, '--accent-ink': ink, '--accent-soft': soft, '--accent-text': txt, '--uni-secondary': '#E3B849' };
-  keys.forEach(function (k) { el.style.setProperty(k, v[k]); }); el.setAttribute('data-uni', 'tu');
+  var v = { '--accent': a, '--accent-hover': hover, '--accent-ink': ink, '--accent-soft': soft, '--accent-text': txt, '--uni-secondary': '#FFD13F', '--earned': a, '--lav': '#FFD13F', '--sky': dark ? '#FFD13F' : '#D6A800', '--sky-soft': dark ? '#3C3219' : '#FFF3C2', '--pending-a': dark ? '#55451A' : '#FFE582', '--pending-b': dark ? '#342B17' : '#FFF4CD' };
+  keys.forEach(function (k) { el.style.setProperty(k, v[k]); }); el.setAttribute('data-uni', 'tu'); var meta=document.querySelector('meta[name="theme-color"]'); if(meta)meta.content=dark?'#171A20':'#C3002F';
 }
 function UniPicker(p) {
   return html`<${Seg} label=${t('uni.label')} value=${p.value} onChange=${p.onChange} options=${[{ v: 'cu', l: t('uni.cu') }, { v: 'tu', l: t('uni.tu') }]} />`;
@@ -4270,7 +4387,7 @@ var TU_OUTCOMES = [
 // settings.spaces[<old>] and brings back settings.spaces[<new>] (or an empty space). Stored inside settings
 // because every copy of the site keeps unknown settings keys as they are; nothing is ever deleted.
 var SPACE_KEYS = ['years', 'semesters', 'courses', 'categories', 'assessments'];
-var SPACE_SETTINGS = ['currentSemesterId', 'studyPlan', 'genEdRequired', 'plannedCredits', 'targetCGPA'];
+var SPACE_SETTINGS = ['currentSemesterId', 'studyPlan', 'genEdRequired', 'plannedCredits', 'targetCGPA', 'tuAcademicProfile'];
 function spaceHasData(d) { return SPACE_KEYS.some(function (k) { return Array.isArray(d[k]) && d[k].length; }); }
 function switchSpace(d, from, to) {
   if (from === to) return;
@@ -4411,7 +4528,7 @@ function TuPlanModal(p) {
   var ss = useState(props.semesterId || (curSemester(state) || latestSemester(state) || {}).id || ''), semId = ss[0], setSemId = ss[1];
   var gs = useState('ge1'), grp = gs[0], setGrp = gs[1];
   var ps=useState('thai'), program=ps[0], setProgram=ps[1];
-  var ts=useState(''), trackId=ts[0], setTrackId=ts[1];
+  var ts=useState((state.settings.tuAcademicProfile||{}).track||''), trackId=ts[0], setTrackId=ts[1];
   var track=program==='thai'?TU_TBS_REQUIREMENTS_2566.tracks.find(function(x){return x.id===trackId;}):null;
   function majorRequired(code){return !!track&&track.required.includes(code);}
   function kindFor(x){return x.ge?'gened':track&&(track.core.includes(x.code)||track.required.includes(x.code))?'required':'elective';}
@@ -6642,11 +6759,41 @@ function ReminderPanel(p){
   };
   return html`<section className="hub-mini planning-mini" data-testid="reminders"><div className="hub-mini-label"><${Icon} n="calendar" s=${14}/>${t('hub.due')}<${Tip} text=${t('plan.reminderHint')} /></div><div className="hub-mini-value">${count}<small>${t('hub.items')}</small></div><button type="button" className="hub-mini-action" aria-label=${t(enabled?'plan.reminderOff':'plan.reminderOn')} onClick=${toggle}>${t(enabled?'hub.notifyOff':'hub.notifyOn')} ›</button>${status&&html`<div className="hub-status" role="status">${t(status)}</div>`}</section>`;
 }
+function TuAcademicOverview(p){
+  var state=p.state;
+  var ss=useState(''),query=ss[0],setQuery=ss[1];
+  if(isCU(state)||typeof GSAcademic==='undefined')return null;
+  var profile=state.settings.tuAcademicProfile||{}, track=TU_TBS_REQUIREMENTS_2566.tracks.find(x=>x.id===profile.track&&profile.curriculumYear===2566);
+  function save(next){update(function(d){d.settings.tuAcademicProfile=Object.assign({},d.settings.tuAcademicProfile||{},next);});}
+  var header=html`<div className="stack"><h3>${t('academic.title')}</h3><p className="small muted">${t('academic.scope')}</p><select className="select" aria-label=${t('academic.track')} value=${track?track.id:''} onChange=${e=>save({curriculumYear:e.target.value?2566:null,track:e.target.value,allocations:{}})}><option value="">${t('academic.none')}</option>${TU_TBS_REQUIREMENTS_2566.tracks.map(x=>html`<option key=${x.id} value=${x.id}>${LANG==='th'?x.th:x.en}</option>`)}</select>${track&&html`<label className="small">${t('academic.admission')} <input className="input" type="number" min="2500" max="2600" value=${profile.admissionYear||''} onChange=${e=>save({admissionYear:e.target.value?Number(e.target.value):null})}/></label>`}</div>`;
+  if(!track)return html`<section className="card pad stack" data-testid="tu-academic">${header}</section>`;
+  var cat=GSAcademic.catalog(TU_TBS_THAI_COURSES,TU_GENED), rules=TU_TBS_REQUIREMENTS_2566, structure=TU_TBS_THAI_2566;
+  var terms=C.orderedSemesters(state), termIndex=Object.fromEntries(terms.map((s,i)=>[s.id,i])), current=curSemester(state);
+  var targetIndex=current&&termIndex[current.id]!==undefined?termIndex[current.id]+1:0;
+  var args={courses:state.courses,track,structure,rules,cat,gen:TU_GENED,allocations:profile.allocations||{},prereq:TU_TBS_THAI_PREREQ,targetIndex,termIndex};
+  var result=GSAcademic.audit(args), gpax=C.cumulativeStats(state,'confirmed').gpa;
+  var suggestions=GSAcademic.plan(Object.assign({},args,{result}));
+  function groupName(id){if(id.indexOf('basket')===0){var b=(rules.electiveBaskets[track.id]||[])[Number(id.slice(6))];return b?(LANG==='th'?b.th:b.en):t('academic.basket');}return t('academic.'+id);}
+  function status(x){return t('academic.'+(x.status==='review'?'reviewStatus':x.status));}
+  function eligibilityRow(x){return html`<div className="small stack" style=${{gap:3}} key=${x.code}><b>${x.code} ${cat.byCode[x.code]?(LANG==='th'?cat.byCode[x.code].th:cat.byCode[x.code].en):''}</b><span>${status(x)} · ${t('academic.reason.'+x.reason)}${x.missing&&x.missing.length?' · '+x.missing.join(', '):''}</span>${x.source&&x.source.length?html`<span className="muted">${t('academic.source')}: ${x.source.join(' / ')}</span>`:null}</div>`;}
+  return html`<section className="card pad stack" data-testid="tu-academic" style=${{marginBottom:14,gap:12}}>
+    ${header}
+    <div className="row wrap between"><div><div className="small muted">${t('academic.credits')}</div><b className="num" style=${{fontSize:24}}>${result.earned} / ${structure.minTotal}</b></div><div><div className="small muted">${t('academic.remaining')}</div><b className="num" style=${{fontSize:20}}>${result.remaining}</b></div></div>
+    ${result.groups.map(g=>html`<div key=${g.id} className="stack" style=${{gap:3}}><div className="row wrap between small"><span>${groupName(g.id)}</span><b className="num">${g.earned}/${g.need}</b></div>${g.need>0&&html`<progress style=${{width:'100%',maxWidth:'100%'}} value=${g.earned} max=${g.need}/>`}${g.codes.length>0&&html`<span className="tiny muted">${g.codes.join(' · ')}</span>`}</div>`)}
+    <details open=${result.missing.length>0}><summary><b>${t('academic.missing')} (${result.missing.length})</b></summary>${result.missing.map(m=>html`<div key=${m.group+m.options.join('/')} className="small row wrap between"><span>${m.options.join(' / ')}</span><span className="muted">${t('academic.'+(m.status==='missing'?'missingStatus':m.status))}</span></div>`)}</details>
+    <details><summary><b>${t('academic.reviewList')} (${result.review.length})</b></summary>${result.review.map((r,i)=>html`<div key=${r.code+r.reason+i} className="small stack"><span>${r.code} · ${t('academic.reason.'+r.reason)}</span>${r.reason==='unallocated'&&!track.required.includes(r.code)&&!track.core.includes(r.code)&&html`<label className="tiny">${t('academic.allocation')} <select className="select" value=${args.allocations[r.code]||''} onChange=${e=>save({allocations:Object.assign({},args.allocations,{[r.code]:e.target.value})})}><option value="">${t('academic.unassigned')}</option><option value="other">${t('academic.other')}</option><option value="free">${t('academic.free')}</option></select></label>`}</div>`)}${Object.entries(args.allocations).filter(([code,v])=>v).map(([code,v])=>html`<div className="small row wrap between" key=${code}><span>${code} · ${groupName(v)}</span><button className="btn" onClick=${()=>save({allocations:Object.assign({},args.allocations,{[code]:''})})}>${t('academic.unassigned')}</button></div>`)}</details>
+    <div className="stack"><b>${t('academic.next')}</b><span className="tiny muted">${current?t('academic.target'):t('academic.noTerm')} · ${t('academic.noOffering')}</span>${current&&suggestions.slice(0,8).map(eligibilityRow)}${current&&suggestions.length>8&&html`<details><summary>${suggestions.length-8} ${t('academic.missing')}</summary>${suggestions.slice(8).map(eligibilityRow)}</details>`}
+      <label className="small">${t('academic.checkCourse')} <input className="input" value=${query} onChange=${e=>setQuery(e.target.value)} placeholder="AC201"/></label>${current&&query.trim()&&eligibilityRow(Object.assign({code:cat.normalize(query)},GSAcademic.eligibility(Object.assign({},args,{code:query})) ))}
+      <button className="btn" onClick=${()=>openModal('studyplan',{})}>${t('academic.openPicker')}</button>
+    </div>
+    <div className="stack"><b>${t('academic.graduation')}</b><div className="small">${t('academic.gpa')}: ${gpax==null?t('academic.unknown'):fmt(gpax)} / 2.00</div><div className="small">${t('academic.majorGpa')}: ${result.majorGpa==null?t('academic.unknown'):fmt(result.majorGpa)} / 2.00</div><p className="small muted">${t('academic.gradNote')}</p><a href="https://vnweb68.reg.tu.ac.th/registrar/login" target="_blank" rel="noopener noreferrer">REG TU</a></div>
+  </section>`;
+}
 function Dashboard(p) {
   var personal=React.useContext(PersonalExamContext);
   var state = p.state, cur = curSemester(state);
   if (!cur) return html`<div><div className="page-head"><div><h1>${t('nav.dashboard')}</h1><p>${t('tagline')}</p></div></div>
-    <div className="empty"><h3>${t('start.title')}</h3><p className="no-wrap">${t('start.dashboard')}</p>
+    <${TuAcademicOverview} state=${state} /><div className="empty"><h3>${t('start.title')}</h3><p className="no-wrap">${t('start.dashboard')}</p>
       <a className="btn primary" href="#courses"><${Icon} n="book" />${t('start.goCourses')}</a>
     </div></div>`;
   var courses = sortCourses(state.courses.filter(function (c) { return c.semesterId === cur.id; }));
@@ -6699,6 +6846,7 @@ function Dashboard(p) {
       </div>
       </div>
     </div>
+    <${TuAcademicOverview} state=${state} />
     <div className=${"metrics dashboard-summary" + (showNextTerm(state,cur) ? " has-plan" : "")}>
       <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).gpaCount,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
         sub=${semC.gpa == null ? (semE.gpa != null ? t('gpa.estOnly') : t('confirmedOfN', { a: semC.confirmedCount, n: courses.length }))
@@ -8972,6 +9120,7 @@ function AccountMenu(p) {
       <div className="acct-row"><span>${t('language')}</span><${Seg} label=${t('language')} value=${LANG} onChange=${function (v) { update(function (d) { d.settings.lang = v; }); }} options=${[{ v: 'th', l: 'TH' }, { v: 'en', l: 'EN' }]} /></div>
       <div className="acct-row"><span>${t('theme')}</span><${Seg} label=${t('theme')} value=${theme} onChange=${function (v) { update(function (d) { d.settings.theme = v; }); }} options=${[{ v: 'light', l: t('theme.light') }, { v: 'dark', l: t('theme.dark') }]} /></div>
       <a className="acct-link" href="#preferences" onClick=${function () { setOpen(false); }}><${Icon} n="sliders" s=${16} />${t('nav.settings')}</a>
+      ${user && html`<button type="button" className="btn" data-testid="account-signout" style=${{color:'var(--bad)',width:'100%'}} onClick=${function () { setOpen(false); confirmDialog({ title: t('account.signOutQ'), body: t('account.signOutBody'), confirmLabel: t('account.signOut'), onConfirm: signOut }); }}>${t('account.signOut')}</button>`}
     </div>`}
   </div>`;
 }
@@ -9247,6 +9396,7 @@ function MePage(p) {
       <span className="avatar me-avatar">${user ? initialOf(user) : html`<${Icon} n="user" />`}</span>
       <div className="grow"><b>${user ? user.email : t('me.local')}</b><${SaveState} /></div><${Icon} n="chevronRight" />
     </a>
+    ${user && html`<button type="button" data-testid="profile-signout" className="me-row me-signout" onClick=${function () { confirmDialog({ title: t('account.signOutQ'), body: t('account.signOutBody'), confirmLabel: t('account.signOut'), onConfirm: signOut }); }}><span className="grow">${t('account.signOut')}</span><${Icon} n="chevronRight" /></button>`}
     <h2 className="me-h">${t('me.display')}</h2>
     <div className="card me-list">
       <div className="me-row"><${Icon} n="book" /><span className="grow">${t('uni.label')}</span><${UniPicker} value=${uniOf(state)} onChange=${setUni} /></div>
