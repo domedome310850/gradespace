@@ -1015,6 +1015,20 @@ a.me-row:hover{background:var(--surface-2)}.me-row>.ic{color:var(--muted)}
 :root[data-uni] .banner.info>svg{color:var(--sky)}
 :root[data-uni] .banner a{color:var(--ink);text-underline-offset:2px}
 :root[data-uni] .nav-item[aria-current="page"]{background:var(--accent-soft);color:var(--accent-text)}
+/* Thammasat: deep red and academic gold, with shared neutral surfaces. */
+:root[data-uni="tu"] .brand-campus{color:var(--tu-gold-text)}
+:root[data-uni="tu"] .btn.primary{border-color:var(--tu-red-border)}
+:root[data-uni="tu"] .btn.primary:hover{border-color:var(--tu-red-border)}
+:root[data-uni="tu"] .nav-item[aria-current="page"]{box-shadow:inset 3px 0 var(--tu-gold);color:var(--accent-text)}
+:root[data-uni="tu"] .bottomnav a[aria-current="page"]{color:var(--tu-gold-text);box-shadow:inset 0 -2px var(--tu-gold)}
+:root[data-uni="tu"] .nav-ai-dot,:root[data-uni="tu"] .ai-fab{background:var(--action);color:var(--tu-gold);box-shadow:0 0 0 1px var(--tu-gold),0 0 0 4px var(--surface)}
+:root[data-uni="tu"] .side .nav-ai-main{background:var(--tu-gold-soft);color:var(--tu-gold-text);border-color:color-mix(in srgb,var(--tu-gold) 50%,var(--line))}
+:root[data-uni="tu"] .side .nav-ai-main .ic{color:var(--tu-gold-text)}
+:root[data-uni="tu"] .metric.hero{box-shadow:inset 0 3px var(--tu-gold),var(--shadow)}
+:root[data-uni="tu"] .hub-kicker>span:first-child{color:var(--tu-gold-text)}
+:root[data-uni="tu"] .dash-whatif{color:var(--tu-gold-text)}
+:root[data-uni="tu"] .seg-pick button[aria-pressed="true"]{background:var(--action);color:var(--action-ink);box-shadow:inset 0 -2px var(--tu-gold)}
+:root[data-uni="tu"] [data-testid="tu-academic"] progress{accent-color:var(--tu-gold-text)}
 .thumb-badge { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.66); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
 @media (max-width: 520px) { .scan-score .input { width: 54px; } .scan-row { gap: 8px; padding: 8px 12px; } }
 
@@ -4672,9 +4686,9 @@ function uniContrast(a, b) { var x = uniLum(a), y = uniLum(b); return (Math.max(
 function uniReadable(col, bg, dark) { for (var i = 0; i < 30 && uniContrast(col, bg) < 4.5; i++) col = uniMix(col, dark ? '#FFFFFF' : '#000000', .16); return col; }
 function applyUniTheme(uni, dark) {
   var el=document.documentElement, tu=uni==='tu', bg=dark?'#1C1C20':'#FFFFFF';
-  var base=tu?'#A3454C':'#9C436B';
-  var a=dark?(tu?'#D6A09E':'#D6A2B9'):base;
-  var soft=uniMix(bg,a,dark?.09:.06);
+  var base=tu?'#8C1D2C':'#9C436B';
+  var a=dark?(tu?'#D8B84C':'#D6A2B9'):base;
+  var soft=tu?(dark?'#382124':'#F6ECEE'):uniMix(bg,a,dark?.09:.06);
   var txt=uniReadable(dark?a:base,soft,dark);
   var ink=uniContrast(a,'#000000')>=uniContrast(a,'#FFFFFF')?'#000000':'#FFFFFF';
   var hover=uniMix(a,dark?'#FFFFFF':'#000000',.10);
@@ -4682,6 +4696,10 @@ function applyUniTheme(uni, dark) {
   // Reset legacy university-wide chart/status overrides to shared CSS tokens.
   ['--earned','--lav','--sky','--sky-soft','--pending-a','--pending-b'].forEach(function(k){el.style.removeProperty(k);});
   var v={'--accent':a,'--accent-hover':hover,'--accent-ink':ink,'--accent-soft':soft,'--accent-text':txt,'--uni-secondary':tu?'#FFD13F':'#F5A4CC'};
+  // TU: deep red action surfaces, gold details; CU keeps its neutral actions.
+  var campusKeys=['--action','--action-hover','--action-ink','--tu-gold','--tu-gold-text','--tu-gold-soft','--tu-red-border'];
+  campusKeys.forEach(function(k){el.style.removeProperty(k);});
+  if(tu)Object.assign(v,{'--action':'#8C1D2C','--action-hover':'#741726','--action-ink':'#FFFFFF','--tu-gold':'#D8B84C','--tu-gold-text':dark?'#E4C35E':'#806016','--tu-gold-soft':dark?'#322B1D':'#F8F3E3','--tu-red-border':dark?'#C65B50':'#8C1D2C'});
   Object.keys(v).forEach(function(k){el.style.setProperty(k,v[k]);});
   el.setAttribute('data-uni',tu?'tu':'cu');
   var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#151517':'#F7F8FA';
@@ -5169,7 +5187,7 @@ function CampusBrand(p) {
   return html`<div className="brand-name" data-testid="campus-brand" aria-label=${'GradeSpace '+u}><span className="brand-word">Grade<span className="brand-name-accent">Space</span></span><span className="brand-campus">${u}</span></div>`;
 }
 function Logo(p) {
-  var tu=(p.uni||uniOf())==='tu', colors=tu?['#E33D58','#C3002F','#8C0022']:['#F178AD','#D52B79','#A51A60'];
+  var tu=(p.uni||uniOf())==='tu', colors=tu?['#B73538','#8C1D2C','#641522']:['#F178AD','#D52B79','#A51A60'];
   // Each logo needs its own gradient id: the sidebar copy is hidden on phones, and a
   // gradient referenced from a hidden (display:none) SVG renders black.
   var gid = useRef(null); if (!gid.current) gid.current = 'gsGradient' + (++logoSeq);
