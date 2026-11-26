@@ -524,6 +524,10 @@ async function runTU(browser, lang, width) {
   await page.getByTestId('tup-new-level').selectOption('1');
   await page.getByTestId('tup-new-academic').fill('2569');
   await page.getByTestId('tup-new-kind').selectOption('s1');
+  await page.getByTestId('tup-search').fill('หลักกฎหมายเกี่ยวกับการประกอบธุรกิจ');
+  const law=page.getByTestId('tu-plan').locator('.tup-row').filter({hasText:'BA201'});
+  await law.waitFor();
+  if((await law.locator('.tup-name').innerText()).trim()!=='Business Law')errors.push('TU browse title should be English even when searching Thai');
   await page.getByTestId('tup-search').fill('MK201');
   await page.getByTestId('tu-plan').locator('.tup-row').filter({hasText:'MK201'}).locator('input').check();
   if(!(await page.getByTestId('tup-add').isEnabled()))errors.push('fresh TU workspace cannot add a course');
@@ -536,6 +540,7 @@ async function runTU(browser, lang, width) {
   if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='MK201');const name=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return /[A-Za-z]/.test(name)&&!/[\u0E00-\u0E7F]/.test(name)&&name===GradeSpace.standardCourseName(c)&&GradeSpace.standardCourseName({name:'Unknown custom course',code:''})==='Unknown custom course';})))errors.push('TU English course title should use its own catalog and retain unknown custom course names');
   const fresh=await page.evaluate(()=>({years:GradeSpace.S.state.years,terms:GradeSpace.S.state.semesters,courses:GradeSpace.S.state.courses,current:GradeSpace.S.state.settings.currentSemesterId}));
   if(fresh.years.length!==1||fresh.terms.length!==1||fresh.courses.length!==1||fresh.terms[0].id!==fresh.current||fresh.courses[0].semesterId!==fresh.current)errors.push('first semester/course not saved correctly');
+  if(fresh.courses[0]?.name!=='Principles of Marketing')errors.push('TU saved course title should be English');
   await page.evaluate(()=>{location.hash='dashboard';}); await page.waitForTimeout(300);
   await page.locator('.dashboard-exam-panel').first().waitFor();
   if(await page.evaluate(()=>GradeSpace.S.state.settings.institution)!=='tu') errors.push('institution not saved as tu');
@@ -592,6 +597,7 @@ async function runTU(browser, lang, width) {
   await page.getByTestId('tup-guide-mode').click();
   await page.getByTestId('tup-track').selectOption('AC');
   const guided=page.getByTestId('tup-guided');await guided.waitFor();
+  if((await guided.locator('.tup-row').filter({hasText:'AC201'}).locator('.tup-name').first().innerText()).trim()!=='Fundamental Accounting')errors.push('TU guided plan title should be English');
   await page.getByTestId('tup-bulk').click();
   const selected=await guided.locator('input:checked:not(:disabled)').count();
   if(selected!==2)errors.push('TU accounting semester 1 must select exactly AC201 and IS201, got '+selected);
