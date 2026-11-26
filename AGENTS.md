@@ -175,3 +175,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner refinement: CU/TU suffix same size and weight as GradeSpace, no badge; TU Space red and TU yellow (contrast-aware light/dark). Preserve responsive layout. Address English AI guide overflow at 320px; verify in CI.
 
 - Owner-approved TU wordmark: Space yellow/gold, TU red; logo yellow background with red G. CU unchanged. CI pending.
+
+- Owner refinement: CU wordmark Space uses prior pink accent and CU deeper pink, including dark mode. TU wordmark unchanged; restore red-gradient icon with white G and yellow dot. CI pending.
