@@ -1239,6 +1239,11 @@ body.is-sorting, body.is-sorting * { cursor: grabbing !important; -webkit-user-s
 .ccard-stats .v { margin-top: auto; }
 .ccard-foot { flex-wrap: nowrap; }
 .ccard-foot > .row { flex: 1 1 auto; }
+.ccard-actions { display:flex; align-items:center; gap:6px; flex:0 0 auto; margin-inline-start:auto; }
+.ccard-actions .btn { min-height:34px; }
+.ccard-actions .ccard-delete { width:34px; min-width:34px; padding:5px; color:var(--muted); }
+.ccard-actions .ccard-delete:hover,.ccard-actions .ccard-delete:focus-visible { color:var(--bad); background:var(--bad-soft); border-color:var(--bad); }
+@media(max-width:360px){.ccard-actions{gap:4px}.ccard-actions .btn{padding-inline:7px}.ccard-actions .ccard-delete{padding-inline:4px}}
 .ccard-foot .goal-pick { flex: 1 1 auto; min-width: 0; }
 .ccard-foot .goal-pick-button { width: 100%; justify-content: flex-start; min-width: 0; }
 .goal-pick-label { min-width: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
@@ -3390,7 +3395,7 @@ en: {
   'editX': 'Edit {name}', 'deleteX': 'Delete {name}', 'addToX': 'Add an item to {name}',
   'delYearQ': 'Delete this academic year?', 'delYearBody': '{name}, its semesters, courses and scores will be deleted. You can undo right after.',
   'delSemQ': 'Delete this semester?', 'delSemBody': '{name} and its {n} course(s) with all scores will be deleted. You can undo right after.',
-  'delCourseQ': 'Delete this course?', 'delCourseBody': '{name} and all its assessments will be deleted. You can undo right after.',
+  'delCourseQ': 'Delete this course?', 'delCourseBody': '{name} and all its assessments will be deleted. Its grades and credits will no longer count toward GPA or GPAX. You can undo right after.',
   'delAssessQ': 'Delete this assessment?', 'delAssessBody': '{name} and its score will be deleted. You can undo right after.',
   'delCatQ': 'Delete this category?', 'delCatBody': 'The items in {name} are kept and keep their current weights as separate assessments.',
   'deletedX': 'Deleted {name}', 'restored': 'Restored', 'undo': 'Undo', 'saved': 'Saved', 'delete': 'Delete', 'edit': 'Edit', 'cancel': 'Cancel', 'save': 'Save', 'confirm': 'Confirm', 'close': 'Close', 'remove': 'Remove', 'next': 'Next', 'skip': 'Skip', 'reset': 'Reset', 'all': 'All',
@@ -4058,7 +4063,7 @@ th: {
   'editX': 'แก้ไข {name}', 'deleteX': 'ลบ {name}', 'addToX': 'เพิ่มชิ้นงานใน {name}',
   'delYearQ': 'ลบชั้นปีนี้?', 'delYearBody': '{name} รวมถึงเทอม วิชา และคะแนนทั้งหมดจะถูกลบ กดเลิกทำได้ทันทีหลังลบ',
   'delSemQ': 'ลบเทอมนี้?', 'delSemBody': '{name} และวิชา {n} วิชาพร้อมคะแนนทั้งหมดจะถูกลบ กดเลิกทำได้ทันทีหลังลบ',
-  'delCourseQ': 'ลบวิชานี้?', 'delCourseBody': '{name} และงานทั้งหมดในวิชานี้จะถูกลบ กดเลิกทำได้ทันทีหลังลบ',
+  'delCourseQ': 'ยืนยันการลบรายวิชา?', 'delCourseBody': '{name} และงานทั้งหมดในวิชานี้จะถูกลบ เกรดและหน่วยกิตของวิชานี้จะไม่ถูกนำมาคำนวณ GPA หรือ GPAX อีก สามารถกดเลิกทำได้ทันทีหลังลบ',
   'delAssessQ': 'ลบงานนี้?', 'delAssessBody': '{name} และคะแนนของงานนี้จะถูกลบ กดเลิกทำได้ทันทีหลังลบ',
   'delCatQ': 'ลบหมวดนี้?', 'delCatBody': 'ชิ้นงานใน {name} ยังอยู่ และใช้น้ำหนักเดิมในฐานะงานแยกชิ้น',
   'deletedX': 'ลบ {name} แล้ว', 'restored': 'กู้คืนแล้ว', 'undo': 'เลิกทำ', 'saved': 'บันทึกแล้ว', 'delete': 'ลบ', 'edit': 'แก้ไข', 'cancel': 'ยกเลิก', 'save': 'บันทึก', 'confirm': 'ยืนยัน', 'close': 'ปิด', 'remove': 'เอาออก', 'next': 'ถัดไป', 'skip': 'ข้าม', 'reset': 'รีเซ็ต', 'all': 'ทั้งหมด',
@@ -6615,7 +6620,7 @@ function CourseCard(p) {
   var sec = sectionOf(c);
   var nx = c.finalGrade ? null : nextExamOf(displayExamsFor(c, state, personal), c, state);
   var gl = c.finalGrade ? null : finalExamPassed(c, state, personal) ? { tone: 'ok', text: t('gm.afterFinalCard') } : goalLine(c, state, sum);
-  return html`<article className="card ccard" style=${{ '--cc': courseColor(c.color) }}>
+  return html`<article className="card ccard" data-course-id=${c.id} style=${{ '--cc': courseColor(c.color) }}>
     <div className="ccard-top">
       <div className="grow">
         <a href=${href} className="ccard-name" style=${{ color: 'inherit', textDecoration: 'none' }}>${standardCourseName(c)}</a>
@@ -6636,7 +6641,10 @@ function CourseCard(p) {
     <div className="ccard-slot ccard-exam-slot">${nx && html`<div className="ccard-line"><${Icon} n="calendar" s=${14} /><span>${nextExamText(nx)}</span></div>`}</div>
     <div className="ccard-foot">
       <span className="row" style=${{ gap: 6, minWidth: 0 }}>${p.handle}${c.finalGrade ? null : html`<${GoalPicker} course=${c} state=${state} />`}</span>
-      <a className="btn sm" href=${href}>${t('viewDetails')}</a>
+      <div className="ccard-actions">
+        <a className="btn sm" href=${href}>${t('viewDetails')}</a>
+        <button type="button" className="btn sm icon ccard-delete" data-testid="delete-course-card" aria-label=${t('deleteX', { name: courseDisplayTitle(c) })} title=${t('deleteX', { name: courseDisplayTitle(c) })} onClick=${function () { deleteCourse(c); }}><${Icon} n="trash" s=${16} /></button>
+      </div>
     </div>
   </article>`;
 }
