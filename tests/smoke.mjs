@@ -110,6 +110,23 @@ async function run(browser, lang, width) {
   if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.status==='graded';}))) errors.push('ask-AI did not save HW5');
   if(await page.evaluate(()=>GradeSpace.S.state.assessments.some(x=>/quiz 99/i.test(x.name||'')))) errors.push('ask-AI created an item');
   await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
+  // Full answer: add a course with criteria, groups and items; score an existing item; a new course without credits is held back.
+  const nBefore=await page.evaluate(()=>GradeSpace.S.state.courses.length);
+  if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
+  await page.getByTestId('askai-open').click();
+  const plan={courses:[
+    {code:'2301107',name:'Calculus I',credits:3,grading:{cutoffs:{A:82,'B+':76,B:70}},groups:[{name:'Homework',weight:20}],assessments:[{name:'Midterm',type:'midterm',weight:30,max:60,score:45},{name:'HW1',group:'Homework',max:10,score:8}]},
+    {code:'2900111',assessments:[{name:'HW5',score:4,max:5}]},
+    {code:'9999999',name:'Mystery',assessments:[]}]};
+  await page.getByTestId('askai-paste').fill('Done!\n```gradespace\n'+JSON.stringify(plan)+'\n```');
+  await page.getByTestId('askai-check').click();
+  if(await page.locator('[data-testid="askai-plan"] .askai-row').count()!==3||await page.locator('[data-testid="askai-plan"] .askai-row.bad').count()!==1) errors.push('ask-AI plan should list 3 courses with 1 held back');
+  await page.getByTestId('askai-save').click();
+  const pr=await page.evaluate(()=>{const s=GradeSpace.S.state,c=s.courses.find(x=>x.code==='2301107');const it=c?s.assessments.filter(a=>a.courseId===c.id):[];
+    const hw5=s.assessments.find(x=>x.name==='HW5');return {n:s.courses.length,items:it.length,mid:(it.find(a=>a.type==='midterm')||{}).score,cat:s.categories.some(k=>c&&k.courseId===c.id&&k.name==='Homework'&&k.weight===20),
+      grades:!!(c&&c.customGrades&&c.customGrades.find(g=>g.label==='A').min===82),hw5:hw5&&hw5.score,mystery:s.courses.some(x=>x.code==='9999999')};});
+  if(pr.n!==nBefore+1||pr.items!==2||pr.mid!==45||!pr.cat||!pr.grades||pr.hw5!==4||pr.mystery) errors.push('ask-AI plan saved wrongly: '+JSON.stringify(pr));
+  await page.evaluate(()=>GradeSpace.update(d=>{const c=d.courses.find(x=>x.code==='2301107');d.assessments=d.assessments.filter(a=>a.courseId!==c.id);d.categories=d.categories.filter(k=>k.courseId!==c.id);d.courses=d.courses.filter(x=>x!==c);const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');
