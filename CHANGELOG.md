@@ -1,3 +1,11 @@
+## 2026-11-26 — Claude (claude.ai): “Ask your AI” — 3 simple steps, Gemini, and adding everything (not only scores)
+
+- `public/index.html`:
+  - Renamed to “Ask your AI” / “ถาม AI ของคุณ”; Gemini added wherever ChatGPT and Claude were named (AI menu, a “GradeSpace in Gemini” connect card marked coming soon, first-visit hint).
+  - `AskAiModal` is one screen with 3 numbered steps: ① copy your courses (one button; the text itself is hidden under “See what is copied”) ② open ChatGPT / Claude / Gemini, paste and ask ③ paste the AI’s answer back, review, save. No tabs, no JSON on screen.
+  - The copied instructions now let the AI propose **courses, grade cut-offs (criterion, curve, S/U), item groups with weights, items and scores** in one ```gradespace block, and tell it to **ask the student for anything missing first** (new course: code, name, credits; new item: name and weight or a weighted group) and never guess. `parseAskAiPlan` checks every value and reuses the screenshot-scan path (`Scan.preview` / `Scan.apply`, loose matching). The review lists each course as New/Update with its items (Add/Update, old score shown); a course missing its code/name, or a new course without credits, is held back with “ask your AI first”. Saved with undo. Older ```gradespace-scores answers still work (existing items only). TH/EN.
+- `tests/smoke.mjs`: 3 steps, copied text hidden, Gemini; a pasted block adds a course with cut-offs, a weighted group and 2 items, scores an existing item, and holds back a new course without credits.
+
 ## 2026-11-26 — Claude (claude.ai): bring back a university space that was put aside by mistake
 
 - `public/index.html`: one account was found with the Chula label active, an empty current space, and all its Chula data (14 courses, 47 items, years, terms) stored under `settings.spaces.cu` (put aside when switching to Thammasat, then only the label went back). Nothing was lost. `Store.normalize` now runs `healSpace`: if the active university's stored space holds data and the current space is empty, it is brought back (nothing merged or deleted). `switchSpace` never puts an empty space over a stored one with data, and if both hold data the older one is kept as `spaces['<uni>-<savedAt>']`. `window.GradeSpace` exposes `Store` and `switchSpace` for tests.

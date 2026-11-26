@@ -90,24 +90,43 @@ async function run(browser, lang, width) {
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
   await page.getByTestId('ai-hub').waitFor();
   if(!(await page.getByTestId('connect-card').isVisible())) errors.push('ChatGPT/Claude connect card missing');
-  if(!(await page.getByTestId('connect-gpt').isVisible())||!(await page.getByTestId('connect-claude').isVisible())) errors.push('AI hub should list ChatGPT and Claude');
+  if(!(await page.getByTestId('connect-gpt').isVisible())||!(await page.getByTestId('connect-claude').isVisible())||!(await page.getByTestId('connect-gemini').isVisible())) errors.push('AI hub should list ChatGPT, Claude and Gemini');
   if(await page.locator('.chat-input').count()) errors.push('GradeSpace should not have its own chat');
   if(await page.locator('[data-testid="ai-hub"] .hub-tools .hub-row').count()!==3) errors.push('AI hub should keep 3 tools');
   await page.keyboard.press('Escape');
   // Copy-paste bridge to the student's own AI (works on free plans).
   if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
   await page.getByTestId('askai-open').click();
+  if(!(await page.getByTestId('askai-go-gemini').isVisible())) errors.push('ask-AI should offer ChatGPT, Claude and Gemini');
   const prompt=await page.getByTestId('askai-prompt').inputValue();
+  if(await page.locator('[data-testid="ask-ai"] .askai-step').count()!==3) errors.push('ask-AI should show 3 steps');
+  if(await page.getByTestId('askai-prompt').isVisible()) errors.push('ask-AI should hide the copied text by default');
   if(!prompt.includes('"gradespace":1')||!prompt.includes('2900111')) errors.push('ask-AI text lacks course data');
   if(prompt.includes('test@example.com')||prompt.includes('6940102426')) errors.push('ask-AI text leaks email or student ID');
-  await page.getByTestId('ask-ai').locator('.seg button').nth(1).click();
   await page.getByTestId('askai-paste').fill('Sure!\n```gradespace-scores\n{"updates":[{"code":"2900111","item":"HW5","score":4,"max":5},{"code":"2900111","item":"Quiz 99","score":3,"max":5}]}\n```');
-  await page.getByTestId('ask-ai').getByRole('button',{name:lang==='th'?'ตรวจ':'Check',exact:true}).click();
+  await page.getByTestId('askai-check').click();
   if(await page.locator('.askai-row').count()!==2||await page.locator('.askai-row.bad').count()!==1) errors.push('ask-AI review should list 1 valid and 1 skipped row');
   await page.getByTestId('askai-save').click();
   if(!(await page.evaluate(()=>{const a=GradeSpace.S.state.assessments.find(x=>x.name==='HW5');return a&&a.score===4&&a.status==='graded';}))) errors.push('ask-AI did not save HW5');
   if(await page.evaluate(()=>GradeSpace.S.state.assessments.some(x=>/quiz 99/i.test(x.name||'')))) errors.push('ask-AI created an item');
   await page.evaluate(()=>GradeSpace.update(d=>{const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
+  // Full answer: add a course with criteria, groups and items; score an existing item; a new course without credits is held back.
+  const nBefore=await page.evaluate(()=>GradeSpace.S.state.courses.length);
+  if(width<=900) await page.getByTestId('nav-ai').click(); else await page.locator('.ai-fab').click();
+  await page.getByTestId('askai-open').click();
+  const plan={courses:[
+    {code:'2301107',name:'Calculus I',credits:3,grading:{cutoffs:{A:82,'B+':76,B:70}},groups:[{name:'Homework',weight:20}],assessments:[{name:'Midterm',type:'midterm',weight:30,max:60,score:45},{name:'HW1',group:'Homework',max:10,score:8}]},
+    {code:'2900111',assessments:[{name:'HW5',score:4,max:5}]},
+    {code:'9999999',name:'Mystery',assessments:[]}]};
+  await page.getByTestId('askai-paste').fill('Done!\n```gradespace\n'+JSON.stringify(plan)+'\n```');
+  await page.getByTestId('askai-check').click();
+  if(await page.locator('[data-testid="askai-plan"] .askai-row').count()!==3||await page.locator('[data-testid="askai-plan"] .askai-row.bad').count()!==1) errors.push('ask-AI plan should list 3 courses with 1 held back');
+  await page.getByTestId('askai-save').click();
+  const pr=await page.evaluate(()=>{const s=GradeSpace.S.state,c=s.courses.find(x=>x.code==='2301107');const it=c?s.assessments.filter(a=>a.courseId===c.id):[];
+    const hw5=s.assessments.find(x=>x.name==='HW5');return {n:s.courses.length,items:it.length,mid:(it.find(a=>a.type==='midterm')||{}).score,cat:s.categories.some(k=>c&&k.courseId===c.id&&k.name==='Homework'&&k.weight===20),
+      grades:!!(c&&c.customGrades&&c.customGrades.find(g=>g.label==='A').min===82),hw5:hw5&&hw5.score,mystery:s.courses.some(x=>x.code==='9999999')};});
+  if(pr.n!==nBefore+1||pr.items!==2||pr.mid!==45||!pr.cat||!pr.grades||pr.hw5!==4||pr.mystery) errors.push('ask-AI plan saved wrongly: '+JSON.stringify(pr));
+  await page.evaluate(()=>GradeSpace.update(d=>{const c=d.courses.find(x=>x.code==='2301107');d.assessments=d.assessments.filter(a=>a.courseId!==c.id);d.categories=d.categories.filter(k=>k.courseId!==c.id);d.courses=d.courses.filter(x=>x!==c);const a=d.assessments.find(x=>x.name==='HW5');a.score=null;a.status='pending';}));
   await page.locator('.topbar .top-search').click();
   await page.locator('.cmd-input').waitFor();
   await page.keyboard.press('Escape');
