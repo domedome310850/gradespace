@@ -76,7 +76,7 @@ async function run(browser, lang, width) {
   await page.locator('#au-student').fill('6940102426');
   await page.locator('#au-student').press('Enter');
   await page.locator('.dashboard-upcoming-list').getByText('TEST-ROOM-A',{exact:false}).waitFor();
-  if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='2900111'||c.code.startsWith('2900111.'));if(!c)return false;const catalog=GradeSpace.catalogSearch('2900111').find(x=>x.code==='2900111');const result=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return !!catalog&&/[A-Za-z]/.test(result)&&!/[\u0E00-\u0E7F]/.test(result)&&result===GradeSpace.standardCourseName(c); })))errors.push('CU English course title should not depend on stored Thai title');
+  if(!(await page.evaluate(()=>{const c=GradeSpace.S.state.courses.find(c=>c.code==='2900111'||String(c.code||'').startsWith('2900111.'));if(!c)return false;const catalog=GradeSpace.catalogSearch('2900111').find(x=>x.code==='2900111');const result=GradeSpace.standardCourseName({...c,name:'ชื่อวิชาทดสอบ'});return !!catalog&&/[A-Za-z]/.test(result)&&!/[\u0E00-\u0E7F]/.test(result)&&result===GradeSpace.standardCourseName(c); })))errors.push('CU English course title should not depend on stored Thai title');
   if(await page.evaluate(()=>window.__studentId!=='6940102426')) errors.push('login did not save student ID');
   if(await page.locator('.side .nav-item').first().getAttribute('href')!=='#dashboard') errors.push('overview is not first menu');
   if(await page.locator('.side .nav-item[aria-current="page"]').getAttribute('href')!=='#dashboard') errors.push('overview is not default');
