@@ -622,6 +622,11 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .course-start-action .btn { padding: 9px 14px; }
 .course-start-action .btn.primary { font-weight: 700; }
 .course-start-action .ai-entry .lbl-s{display:none}
+.dashboard-start { border-top: 4px solid var(--accent); margin-top: 12px; padding: clamp(18px, 4vw, 32px); }
+.dashboard-start h2 { font-size: clamp(24px, 4vw, 32px); }
+.dashboard-start .course-start-action { flex-direction: column; align-items: stretch; }
+.dashboard-start .course-start-action .btn { min-height: 48px; justify-content: center; }
+.dashboard-start .course-start-action .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-size: 16px; }
 @media (max-width: 720px) {
   .course-start {
     grid-template-columns: 1fr; gap: 10px; padding: 18px;
@@ -3376,6 +3381,11 @@ en: {
   'start.manual': 'Or add a course manually',
   'start.dashboard': 'Go to My Courses, then tap “Pick by major” to add the courses you take.',
   'start.goCourses': 'Go to My Courses',
+  'start.welcome': 'Welcome to GradeSpace',
+  'start.next': 'Select the courses you are taking this semester and add them together. Then use AI to enter grading rules and scores.',
+  'start.ctaPlan': 'Add this semester’s courses',
+  'start.termTitle': 'Set up your semester',
+  'start.aiAfterAdd': 'Courses saved! Use AI to add grading rules and scores, or close this window to do it later.',
   'emptyStartT': 'Start with one course', 'emptyStartP': 'Add a course you’re taking, enter its assessments and weights, and GradeSpace works out where you stand.',
   'addFirstCourse': 'Add your first course', 'tryDemo': 'Try with demo data', 'addCourse': 'Add course', 'quickScore': 'Quick score entry',
   'viewingSemester': 'Showing', 'curSemGPA': 'Semester GPA', 'cumGPA': 'Cumulative GPA (GPAX)', 'cumGPAEst': 'Estimated GPAX',
@@ -4045,6 +4055,11 @@ th: {
   'start.manual': 'หรือเพิ่มวิชาเอง',
   'start.dashboard': 'ไปที่ “วิชาของฉัน” แล้วกด “เลือกวิชาตามสาขา” เพื่อเพิ่มวิชาที่เรียนอยู่',
   'start.goCourses': 'ไปที่วิชาของฉัน',
+  'start.welcome': 'ยินดีต้อนรับสู่ GradeSpace',
+  'start.next': 'เลือกรายวิชาที่เรียนอยู่ในเทอมนี้แล้วเพิ่มพร้อมกัน จากนั้นใช้ AI ช่วยกรอกเกณฑ์เกรดและคะแนนได้เลย',
+  'start.ctaPlan': 'เพิ่มวิชาที่เรียนในเทอมนี้',
+  'start.termTitle': 'เริ่มจัดรายวิชาในเทอมนี้',
+  'start.aiAfterAdd': 'เพิ่มวิชาสำเร็จ! ใช้ AI ช่วยเพิ่มเกณฑ์เกรดและคะแนนได้เลย หรือปิดหน้าต่างนี้แล้วทำภายหลัง',
   'emptyStartT': 'เริ่มจากวิชาเดียวก่อน', 'emptyStartP': 'เพิ่มวิชาที่เรียนอยู่ กรอกงานและน้ำหนักคะแนน แล้ว GradeSpace จะคำนวณให้ว่าตอนนี้คุณอยู่ตรงไหน',
   'addFirstCourse': 'เพิ่มวิชาแรก', 'tryDemo': 'ลองใช้ข้อมูลตัวอย่าง', 'addCourse': 'เพิ่มวิชา', 'quickScore': 'กรอกคะแนนด่วน',
   'viewingSemester': 'กำลังดู', 'curSemGPA': 'GPA เทอมนี้', 'cumGPA': 'GPA สะสม (GPAX)', 'cumGPAEst': 'GPAX รวมคาดการณ์',
@@ -5136,7 +5151,17 @@ function commit(next, opts) {
   var hasCourse = hasRealCourseHistory(next);
   // Account-wide, not per semester/campus. Preserve the marker through undo, deletes and imports.
   if (seen || hasCourse) next.settings.firstCourseAiSeen = true;
-  if (!seen && hasCourse && !(opts && opts.skipFirstCourseAi) && !(S.modal && S.modal.type === 'scan')) S.firstCourseAiPending = true;
+  // Recommend the existing AI Hub after explicit course-add flows, not edits, imports, undo or campus changes.
+  if (prior && !(opts && opts.skipFirstCourseAi) && S.modal &&
+      ['course', 'plan', 'tuPlan', 'studyplan', 'gened', 'tuGened'].indexOf(S.modal.type) >= 0 &&
+      uniOf(prior) === uniOf(next)) {
+    var oldIds = new Set(prior.courses.map(function (c) { return c.id; }));
+    var added = next.courses.filter(function (c) { return !c.demo && !c.finalGrade && !oldIds.has(c.id); });
+    if (added.length) {
+      var latest = added[added.length - 1];
+      S.firstCourseAiPending = { semesterId: latest.semesterId, courseId: latest.id, campus: uniOf(next) };
+    }
+  }
   if (opts && opts.undo) S.undo = { prev: S.state };
   ensureCourseColors(next);
   next.updatedAt = Date.now();
@@ -6971,6 +6996,18 @@ function SortableGrid(p) {
 }
 
 /* ================= dashboard ================= */
+function DashboardStart(p) {
+  var state = p.state, cur = curSemester(state), props = { semesterId: cur && cur.id };
+  return html`<section className="course-start dashboard-start" data-testid="dashboard-start" aria-label=${t('start.welcome')}>
+    <span className="course-start-kicker"><${Icon} n="book" s=${16} />${state.courses.length && cur ? semFull(state, cur) : t('start.welcome')}</span>
+    <h2>${t('start.termTitle')}</h2>
+    <p className="course-start-desc">${t('start.next')}</p>
+    <div className="course-start-action">
+      <button type="button" className="btn primary" data-testid="dashboard-semester-courses" onClick=${function () { openModal('plan', props); }}><${Icon} n="plus" />${t('start.ctaPlan')}</button>
+      <button type="button" className="btn ghost" onClick=${function () { openModal('course', props); }}>${t('start.manual')}</button>
+    </div>
+  </section>`;
+}
 function EmptyStart() {
   return html`<section className="course-start" aria-label=${t('start.kicker')}>
     <span className="course-start-kicker"><${Icon} n="book" s=${14} />${t('start.kicker')}</span>
@@ -6982,7 +7019,7 @@ function EmptyStart() {
       <div className="course-start-step"><b>3</b><span>${t('start.step3')}</span></div>
     </div>
     <div className="course-start-action">
-      <button className="btn primary" onClick=${function () { openModal('plan', {}); }}><${Icon} n="layers" />${t('plan.btn')}</button>
+      <button className="btn primary" onClick=${function () { openModal('plan', {}); }}><${Icon} n="layers" />${t('start.ctaPlan')}</button>
       <button className="btn" onClick=${function () { openModal('course', {}); }}><${Icon} n="plus" />${t('start.manual')}</button>
       <${AiEntryButton} />
     </div>
@@ -7243,10 +7280,9 @@ function TuAcademicOverview(p){
 function Dashboard(p) {
   var personal=React.useContext(PersonalExamContext);
   var state = p.state, cur = curSemester(state);
-  if (!cur) return html`<div><div className="page-head"><div><h1>${t('nav.dashboard')}</h1><p>${t('tagline')}</p></div></div>
-    <${TuAcademicOverview} state=${state} /><div className="empty"><h3>${t('start.title')}</h3><p className="no-wrap">${t('start.dashboard')}</p>
-      <a className="btn primary" href="#courses"><${Icon} n="book" />${t('start.goCourses')}</a>
-    </div></div>`;
+  if (!cur || !state.courses.length) return html`<div><div className="page-head"><div><h1>${t('nav.dashboard')}</h1><p>${t('tagline')}</p></div></div>
+    <${DashboardStart} state=${state} />
+    <${TuAcademicOverview} state=${state} /></div>`;
   var courses = sortCourses(state.courses.filter(function (c) { return c.semesterId === cur.id; }));
   var semC = C.semesterStats(state, cur.id, 'confirmed'), semE = C.semesterStats(state, cur.id, 'estimated');
   var cumC = C.cumulativeStats(state, 'confirmed'), cumE = C.cumulativeStats(state, 'estimated');
@@ -7296,6 +7332,7 @@ function Dashboard(p) {
       </div>
       </div>
     </div>
+    ${!courses.length && html`<${DashboardStart} state=${state} />`}
     <${TuAcademicOverview} state=${state} />
     <div className=${"metrics dashboard-summary" + (showNextTerm(state,cur) ? " has-plan" : "")}>
       <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).gpaCount,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}
@@ -9384,7 +9421,7 @@ function AssistantModal(p) {
    shown as coming soon; the in-site tools (screenshot scan, paste, quick score) stay here. */
 function AiHubModal(p) {
   var state = useApp(), cur = state.semesters.find(function (s) { return s.id === (p.props && p.props.semesterId); }) || curSemester(state);
-  var firstOpen = state.courses.find(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); });
+  var firstOpen = state.courses.find(function (c) { return p.props && c.id === p.props.courseId && !c.finalGrade && (!cur || c.semesterId === cur.id); }) || state.courses.find(function (c) { return !c.finalGrade && (!cur || c.semesterId === cur.id); });
   function go(type, props) { closeModal(); openModal(type, props); }
   var row = function (o) {
     return html`<button key=${o.k} type="button" className=${"me-row hub-row"+(o.recommended?" hub-recommended":"")} data-testid=${o.tid || null} disabled=${!!o.off} aria-disabled=${o.soon ? 'true' : null} onClick=${o.soon ? null : o.run}>
@@ -9403,7 +9440,7 @@ function AiHubModal(p) {
   ];
   return html`<${Modal} title=${t('aihub.title')} onClose=${closeModal}>
     <div data-testid="ai-hub">
-      ${p.props && p.props.firstCourse && html`<div className="banner info" data-testid="first-course-ai-tip">${LANG==='th'?'เพิ่มวิชาแรกแล้ว! ลองใช้ AI ช่วยเพิ่มเกณฑ์เกรดและคะแนนได้เลย หรือปิดหน้าต่างนี้แล้วทำภายหลัง':'Your first course is added! Try AI to add grading rules and scores, or close this window and do it later.'}</div>`}
+      ${p.props && p.props.firstCourse && html`<div className="banner info" data-testid="first-course-ai-tip">${t('start.aiAfterAdd')}</div>`}
       <p className="small muted hub-intro">${t('ai.entryHint')}</p>
       <h2 className="me-h" style=${{ marginTop: 0 }}>${t('hub2.aiH')}</h2>
       <div className="card me-list hub-ai-card" data-testid="connect-card">${ai.map(row)}</div>
@@ -9951,10 +9988,12 @@ function App() {
   var personal = usePersonalExams(state);
   LANG = state.settings.lang || LANG;
   useEffect(function () {
-    // Do not interrupt Save & add another or any open dialog; show once after the add flow closes.
+    // Wait until the add flow closes; a batch produces just one existing AI Hub.
     if (!S.firstCourseAiPending || S.modal) return;
+    var pending = S.firstCourseAiPending;
     S.firstCourseAiPending = false;
-    if (hasRealCourseHistory(S.state)) openModal('chat', { firstCourse: true });
+    if (uniOf(S.state) === pending.campus && S.state.courses.some(function (c) { return c.id === pending.courseId && !c.finalGrade; }))
+      openModal('chat', { firstCourse: true, semesterId: pending.semesterId, courseId: pending.courseId });
   }, [state, S.modal]);
   if (S.web) { try { localStorage.setItem('gradespace.lang', LANG); } catch (e) { /* ignore */ } }
   useEffect(function () {
