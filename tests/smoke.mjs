@@ -518,8 +518,8 @@ async function runTU(browser, lang, width) {
   else{await page.evaluate(()=>location.hash='me');await page.locator('.me-page button',{hasText:lang.toUpperCase()}).click();}
   await page.waitForFunction(l=>document.documentElement.lang===l,lang);
   // Fresh TU workspace: create the first term through the picker, not by injecting a test semester.
-  await page.evaluate(()=>location.hash='courses');
-  await page.locator('.course-start-action .btn.primary').click();
+  await page.getByTestId('dashboard-start').waitFor();
+  await page.getByTestId('dashboard-first-course').click();
   await page.getByTestId('tup-new-term').waitFor();
   await page.getByTestId('tup-new-level').selectOption('1');
   await page.getByTestId('tup-new-academic').fill('2569');
@@ -602,8 +602,10 @@ async function runTU(browser, lang, width) {
   const selected=await guided.locator('input:checked:not(:disabled)').count();
   if(selected!==2)errors.push('TU accounting semester 1 must select exactly AC201 and IS201, got '+selected);
   if(!(await guided.locator('.tup-row').filter({hasText:'AC201'}).locator('input').isChecked()))errors.push('AC201 not selected by guided bulk');
-  await page.getByTestId('tup-add').click(); await page.waitForTimeout(300);
-  if(await page.getByTestId('ai-hub').count())errors.push('AI recommendation repeated after later TU course');
+  await page.getByTestId('tup-add').click();
+  await page.getByTestId('first-course-ai-tip').waitFor();
+  await page.keyboard.press('Escape');
+  await page.getByTestId('ai-hub').waitFor({state:'detached'});
   if(!(await page.evaluate(()=>GradeSpace.S.state.courses.some(c=>c.code==='AC201')&&GradeSpace.S.state.courses.some(c=>c.code==='IS201')&&GradeSpace.S.state.settings.tuAcademicProfile.track==='AC'))) errors.push('TU guided picker did not add the named accounting courses and persist major');
   if(!(await page.evaluate(()=>GradeSpace.catalogSearch('AC396').some(x=>x.code==='AC396'&&x.cr===1.5))))errors.push('Thai scoped catalog credits incorrect');
   if(await page.evaluate(()=>GradeSpace.S.state.courses.filter(c=>c.code==='TU101').length)!==1)errors.push('TU101 duplicate');
@@ -728,8 +730,8 @@ async function runCampusAdmin(browser) {
 }
 
 
-// A fresh CU account: recommend only after a successful first add, not during the form,
-// and never again after deletion, undo or reload.
+// A fresh CU account: direct dashboard CTA and AI Hub after each explicit successful add,
+// not during the form, programmatic restoration or reload.
 async function runFirstCourseCU(browser) {
   const errors=[];
   const ctx=await browser.newContext({viewport:{width:390,height:900}});
@@ -748,9 +750,10 @@ async function runFirstCourseCU(browser) {
   await page.locator('#au-e').press('Enter');
   await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.cloud&&GradeSpace.S.state.settings.institution==='cu');
   if(await page.getByTestId('ai-hub').count())errors.push('AI opened before any CU course');
-  await page.evaluate(()=>location.hash='courses');
-  await page.locator('.course-start-action .btn').nth(1).click();
+  await page.getByTestId('dashboard-start').waitFor();
+  await page.getByTestId('dashboard-first-course').click();
   await page.locator('#c-name').fill('First course');
+  if(await page.getByTestId('ai-hub').count())errors.push('AI opened before course save');
   await page.locator('.modal-foot .btn.primary').click();
   await page.getByTestId('first-course-ai-tip').waitFor();
   if(!(await page.getByTestId('askai-open').isVisible()))errors.push('first CU course should recommend AI import');
@@ -765,6 +768,14 @@ async function runFirstCourseCU(browser) {
   await page.reload();
   await page.waitForFunction(()=>window.GradeSpace&&GradeSpace.S.cloud&&GradeSpace.S.state.courses.length===1);
   if(await page.getByTestId('ai-hub').count())errors.push('AI recommendation repeated after reload');
+  await page.evaluate(()=>location.hash='courses');
+  await page.locator('.courses-actions .btn.primary').click();
+  await page.locator('#c-name').fill('Second course');
+  await page.locator('.modal-foot .btn.primary').click();
+  await page.getByTestId('first-course-ai-tip').waitFor();
+  await page.keyboard.press('Escape');
+  await page.getByTestId('ai-hub').waitFor({state:'detached'});
+  if(!(await page.evaluate(()=>GradeSpace.S.state.courses.length===2)))errors.push('second CU course not saved');
   await ctx.close();
   console.log('First CU course: errors '+(errors.join(' | ')||'none'));
   return errors.length;

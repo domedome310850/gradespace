@@ -1,3 +1,7 @@
+## 2026-11-27 — ChatGPT: direct first-course CTA and reuse AI Hub after course adds
+
+- `public/index.html`: empty dashboard now has a prominent, bilingual direct first-course CTA (CU course form, TU picker) with a short next-step explanation and secondary add path. Reuse the existing AI Hub after explicit successful course-add flows, once per completed batch, with the added semester and course context for paste. No popup on edits, AI import, undo, reload or campus switching; preserve existing data and privacy. `tests/smoke.mjs`: exercise fresh CU/TU dashboard CTA and later manual/batch additions; browser CI pending. `public/sw.js`: cache v24. No auth or database changes.
+
 ## 2026-11-26 — ChatGPT: course-local grade recording reminder
 
 - `public/index.html`: remove the dashboard-wide completed-course banner. Show a bilingual completed-score reminder and direct official-grade action within each calculated course card, in both course grids. Existing official-grade dialog and calculation unchanged. Browser CI pending.
