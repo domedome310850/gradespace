@@ -3382,9 +3382,10 @@ en: {
   'start.dashboard': 'Go to My Courses, then tap “Pick by major” to add the courses you take.',
   'start.goCourses': 'Go to My Courses',
   'start.welcome': 'Welcome to GradeSpace',
-  'start.next': 'Start by adding a course. Then add grading rules and scores with AI or enter them yourself.',
-  'start.ctaPlan': 'Choose multiple courses',
-  'start.aiAfterAdd': 'Course added! Use AI to add grading rules and scores, or close this window to do it later.',
+  'start.next': 'Select the courses you are taking this semester and add them together. Then use AI to enter grading rules and scores.',
+  'start.ctaPlan': 'Add this semester’s courses',
+  'start.termTitle': 'Set up your semester',
+  'start.aiAfterAdd': 'Courses saved! Use AI to add grading rules and scores, or close this window to do it later.',
   'emptyStartT': 'Start with one course', 'emptyStartP': 'Add a course you’re taking, enter its assessments and weights, and GradeSpace works out where you stand.',
   'addFirstCourse': 'Add your first course', 'tryDemo': 'Try with demo data', 'addCourse': 'Add course', 'quickScore': 'Quick score entry',
   'viewingSemester': 'Showing', 'curSemGPA': 'Semester GPA', 'cumGPA': 'Cumulative GPA (GPAX)', 'cumGPAEst': 'Estimated GPAX',
@@ -4055,8 +4056,9 @@ th: {
   'start.dashboard': 'ไปที่ “วิชาของฉัน” แล้วกด “เลือกวิชาตามสาขา” เพื่อเพิ่มวิชาที่เรียนอยู่',
   'start.goCourses': 'ไปที่วิชาของฉัน',
   'start.welcome': 'ยินดีต้อนรับสู่ GradeSpace',
-  'start.next': 'เริ่มจากเพิ่มวิชาที่เรียนอยู่ จากนั้นใช้ AI ช่วยเพิ่มเกณฑ์เกรดและคะแนน หรือกรอกเองได้',
-  'start.ctaPlan': 'เลือกหลายวิชา',
+  'start.next': 'เลือกรายวิชาที่เรียนอยู่ในเทอมนี้แล้วเพิ่มพร้อมกัน จากนั้นใช้ AI ช่วยกรอกเกณฑ์เกรดและคะแนนได้เลย',
+  'start.ctaPlan': 'เพิ่มวิชาที่เรียนในเทอมนี้',
+  'start.termTitle': 'เริ่มจัดรายวิชาในเทอมนี้',
   'start.aiAfterAdd': 'เพิ่มวิชาสำเร็จ! ใช้ AI ช่วยเพิ่มเกณฑ์เกรดและคะแนนได้เลย หรือปิดหน้าต่างนี้แล้วทำภายหลัง',
   'emptyStartT': 'เริ่มจากวิชาเดียวก่อน', 'emptyStartP': 'เพิ่มวิชาที่เรียนอยู่ กรอกงานและน้ำหนักคะแนน แล้ว GradeSpace จะคำนวณให้ว่าตอนนี้คุณอยู่ตรงไหน',
   'addFirstCourse': 'เพิ่มวิชาแรก', 'tryDemo': 'ลองใช้ข้อมูลตัวอย่าง', 'addCourse': 'เพิ่มวิชา', 'quickScore': 'กรอกคะแนนด่วน',
@@ -6997,12 +6999,12 @@ function SortableGrid(p) {
 function DashboardStart(p) {
   var state = p.state, cur = curSemester(state), props = { semesterId: cur && cur.id };
   return html`<section className="course-start dashboard-start" data-testid="dashboard-start" aria-label=${t('start.welcome')}>
-    <span className="course-start-kicker"><${Icon} n="book" s=${16} />${t('start.welcome')}</span>
-    <h2>${t('addFirstCourse')}</h2>
+    <span className="course-start-kicker"><${Icon} n="book" s=${16} />${state.courses.length && cur ? semFull(state, cur) : t('start.welcome')}</span>
+    <h2>${t('start.termTitle')}</h2>
     <p className="course-start-desc">${t('start.next')}</p>
     <div className="course-start-action">
-      <button type="button" className="btn primary" data-testid="dashboard-first-course" onClick=${function () { openModal(isCU(state) ? 'course' : 'plan', props); }}><${Icon} n="plus" />${t('addFirstCourse')}</button>
-      <button type="button" className="btn ghost" onClick=${function () { openModal(isCU(state) ? 'plan' : 'course', props); }}>${t(isCU(state) ? 'start.ctaPlan' : 'start.manual')}</button>
+      <button type="button" className="btn primary" data-testid="dashboard-semester-courses" onClick=${function () { openModal('plan', props); }}><${Icon} n="plus" />${t('start.ctaPlan')}</button>
+      <button type="button" className="btn ghost" onClick=${function () { openModal('course', props); }}>${t('start.manual')}</button>
     </div>
   </section>`;
 }
@@ -7017,7 +7019,7 @@ function EmptyStart() {
       <div className="course-start-step"><b>3</b><span>${t('start.step3')}</span></div>
     </div>
     <div className="course-start-action">
-      <button className="btn primary" onClick=${function () { openModal('plan', {}); }}><${Icon} n="layers" />${t('plan.btn')}</button>
+      <button className="btn primary" onClick=${function () { openModal('plan', {}); }}><${Icon} n="layers" />${t('start.ctaPlan')}</button>
       <button className="btn" onClick=${function () { openModal('course', {}); }}><${Icon} n="plus" />${t('start.manual')}</button>
       <${AiEntryButton} />
     </div>
@@ -7330,6 +7332,7 @@ function Dashboard(p) {
       </div>
       </div>
     </div>
+    ${!courses.length && html`<${DashboardStart} state=${state} />`}
     <${TuAcademicOverview} state=${state} />
     <div className=${"metrics dashboard-summary" + (showNextTerm(state,cur) ? " has-plan" : "")}>
       <${Metric} hero=${true} label=${t('curSemGPA')} tip=${t('tip.semGPA')} value=${gpaValue(semC.gpa, semE.gpa)} extra=${t('gpa.coverage', {n:(semC.gpa == null ? semE : semC).gpaCount,c:fmtT((semC.gpa == null ? semE : semC).gpaCredits)})}

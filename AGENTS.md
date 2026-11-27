@@ -193,3 +193,5 @@ data and fails on any error or sideways scrolling. Also click through what you c
 - Owner requested trash icon on each course card; reuse existing confirmation and undo. Deleted course and related assessments/categories no longer contribute to semester/cumulative GPA; test confirmed and estimated modes in CU/TU. Browser CI pending.
 
 - Owner feedback (2026-11-27): clear direct dashboard first-course CTA, then reuse existing AI Hub after each successful explicit course-add flow, once per batch, never during Save & add another; contextual semester/paste course. Existing external AI import/review unchanged. Browser CI pending; do not merge until approved.
+
+- Owner clarification (2026-11-27): onboarding is semester-first, not a single first course. Main CTA opens the existing multi-course picker for CU/TU; manual entry secondary. Show it on empty selected terms too, then reuse the same AI Hub once after the selected batch. CI pending.
